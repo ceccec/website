@@ -32,4 +32,3 @@ export const CloseIcon: React.FC<IconProps> = (props) => {
     </svg>
   )
 }
-;``

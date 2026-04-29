@@ -34,17 +34,19 @@ export const Image: React.FC<Props> = (props) => {
   let alt = altFromProps
   let src: null | StaticImageData | string | undefined = srcFromProps
 
-  const hasDarkModeFallback =
-    resource?.darkModeFallback &&
-    typeof resource.darkModeFallback === 'object' &&
-    resource.darkModeFallback !== null &&
-    typeof resource.darkModeFallback.filename === 'string'
+  const populatedResource = resource && typeof resource === 'object' ? resource : undefined
 
-  if (!src && resource && typeof resource !== 'string') {
-    width = resource.width
-    height = resource.height
-    alt = resource.alt
-    src = resource.url
+  const hasDarkModeFallback =
+    populatedResource?.darkModeFallback &&
+    typeof populatedResource.darkModeFallback === 'object' &&
+    populatedResource.darkModeFallback !== null &&
+    typeof populatedResource.darkModeFallback.filename === 'string'
+
+  if (!src && populatedResource) {
+    width = populatedResource.width
+    height = populatedResource.height
+    alt = populatedResource.alt
+    src = populatedResource.url
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -84,8 +86,8 @@ export const Image: React.FC<Props> = (props) => {
         width={!fill ? (width ?? undefined) : undefined}
       />
       {hasDarkModeFallback &&
-        typeof resource.darkModeFallback === 'object' &&
-        resource.darkModeFallback !== null && (
+        typeof populatedResource?.darkModeFallback === 'object' &&
+        populatedResource.darkModeFallback !== null && (
           <NextImage
             alt={alt || ''}
             className={`${baseClasses} ${classes.themeDark}`}
@@ -101,7 +103,7 @@ export const Image: React.FC<Props> = (props) => {
             priority={priority}
             quality={90}
             sizes={sizes}
-            src={resource.darkModeFallback.url || ''}
+            src={populatedResource.darkModeFallback.url || ''}
             width={!fill ? (width ?? undefined) : undefined}
           />
         )}

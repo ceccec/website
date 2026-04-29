@@ -86,7 +86,7 @@ export const useGetInstalls: UseGetInstalls = (args) => {
         }
       }
 
-      loadInitialInstalls()
+      void loadInitialInstalls()
     }
 
     return () => {

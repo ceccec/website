@@ -25,17 +25,16 @@ export const PlanSelector: React.FC<PlanSelectorProps> = (props) => {
               const checked = selectedPlan?.id === plan?.id
 
               return (
-                <>
+                <Fragment key={plan.id}>
                   <LargeRadio
                     checked={checked}
                     id={plan.id}
-                    key={plan.id}
                     label={<div className={classes.plan}>{name}</div>}
                     name={name}
                     onChange={onChange}
                     value={plan}
                   />
-                </>
+                </Fragment>
               )
             })}
         </div>

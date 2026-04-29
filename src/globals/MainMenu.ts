@@ -1,9 +1,8 @@
 import type { GlobalConfig } from 'payload'
 
-import { revalidatePath } from 'next/cache'
-
 import { isAdmin } from '../access/isAdmin'
 import link from '../fields/link'
+import { revalidateRootLayout } from '../utilities/revalidateMarketingRoutes'
 
 export const MainMenu: GlobalConfig = {
   slug: 'main-menu',
@@ -192,6 +191,6 @@ export const MainMenu: GlobalConfig = {
     }),
   ],
   hooks: {
-    afterChange: [() => revalidatePath('/', 'layout')],
+    afterChange: [() => revalidateRootLayout()],
   },
 }

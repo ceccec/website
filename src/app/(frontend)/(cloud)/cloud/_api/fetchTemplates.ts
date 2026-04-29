@@ -2,6 +2,8 @@ import type { Template } from '@root/payload-cloud-types'
 
 import { TEMPLATES } from '@data/templates'
 
+import type { GraphQLJsonBody } from './graphqlJson'
+
 import { payloadCloudToken } from './token'
 
 export const fetchTemplates = async (): Promise<Template[]> => {
@@ -20,11 +22,12 @@ export const fetchTemplates = async (): Promise<Template[]> => {
     next: { tags: ['templates'] },
   })
     ?.then((res) => res.json())
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as GraphQLJsonBody<{ Templates?: { docs?: Template[] } }>
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
       }
-      return res?.data?.Templates?.docs
+      return res?.data?.Templates?.docs ?? []
     })
 
   return doc

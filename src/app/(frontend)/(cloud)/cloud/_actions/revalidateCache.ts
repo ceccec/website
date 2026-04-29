@@ -1,6 +1,7 @@
 'use server'
 
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
+import { revalidatePath } from 'next/cache'
 
 // this will invalidate the Next.js `Client-Side Router Cache`
 // this type of cache is store during the user's session for client-side navigation
@@ -17,15 +18,14 @@ export async function revalidateCache(args: { path?: string; tag?: string }): Pr
 
   try {
     if (tag) {
-      revalidateTag(tag)
+      revalidateTagImmediate(tag)
     }
 
     if (path) {
       revalidatePath(path)
     }
+    await Promise.resolve()
   } catch (error: unknown) {
     console.error(error) // eslint-disable-line no-console
   }
-
-  return
 }

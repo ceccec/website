@@ -80,7 +80,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
         </aside>
         <main className={[classes.main, 'cols-10 start-4 cols-m-8 start-m-1'].join(' ')}>
           <h1 className={classes.name}>{partner.name}</h1>
-          {bannerImage && typeof bannerImage !== 'string' && (
+          {bannerImage && typeof bannerImage === 'object' && bannerImage !== null && (
             <Media className={classes.banner} resource={bannerImage} />
           )}
           <div className={classes.detailsMobile}>
@@ -98,7 +98,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
             <h3>Ideal Project</h3>
             <RichText content={idealProject} />
           </div>
-          {caseStudy && typeof caseStudy !== 'string' && (
+          {caseStudy && typeof caseStudy === 'object' && caseStudy !== null && (
             <Link className={classes.caseStudy} href={`/case-studies/${caseStudy.slug}`}>
               <div className={classes.caseStudyText}>
                 <h6>
@@ -108,7 +108,8 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
                 <small>{caseStudy.meta?.description}</small>
               </div>
               <div className={classes.caseStudyImage}>
-                {typeof caseStudy.featuredImage !== 'string' && (
+                {typeof caseStudy.featuredImage === 'object' &&
+                  caseStudy.featuredImage !== null && (
                   <Media resource={caseStudy.featuredImage} />
                 )}
               </div>
@@ -144,7 +145,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           )}
-          {contactForm && typeof contactForm !== 'string' && (
+          {contactForm && typeof contactForm === 'object' && contactForm !== null && (
             <div className={classes.contactForm} id="contact">
               <h3>Contact {partner.name}</h3>
               <div className={classes.form}>
@@ -172,7 +173,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
                       {
                         name: 'partnerId',
                         blockType: 'text',
-                        defaultValue: partner.id,
+                        defaultValue: String(partner.id),
                         label: 'Partner ID',
                         required: false,
                       },

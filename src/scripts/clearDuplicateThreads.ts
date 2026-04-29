@@ -1,5 +1,9 @@
-import { getPayload } from 'payload'
+/**
+ * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
+ * @see https://payloadcms.com/docs/local-api/overview
+ */
 import config from '@payload-config'
+import { getPayload } from 'payload'
 
 async function clearDuplicateThreads() {
   const payload = await getPayload({ config })

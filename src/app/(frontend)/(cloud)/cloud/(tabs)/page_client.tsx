@@ -24,7 +24,7 @@ const debounce = 350
 export const CloudPage: React.FC<{
   initialState: ProjectsRes
   templates: Template[]
-  user: User
+  user?: null | User
 }> = ({ initialState, templates }) => {
   const { user } = useAuth()
   const [selectedTeam, setSelectedTeam] = React.useState<'none' | string>()
@@ -70,7 +70,7 @@ export const CloudPage: React.FC<{
         prevSelectedTeam.current = selectedTeam
       }
 
-      const doFetch = async () => {
+      const doFetch = () => {
         // give the illusion of loading, so that fast network connections appear to flash
         // this gives the user a visual indicator that something is happening
         const start = Date.now()
@@ -109,7 +109,7 @@ export const CloudPage: React.FC<{
           setError(error.message || 'Something went wrong')
         }
       }
-      doFetch()
+      void doFetch()
     }
   }, [page, debouncedSearch, selectedTeam, enableSearch, user])
 

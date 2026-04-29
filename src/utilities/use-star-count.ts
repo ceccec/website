@@ -5,10 +5,17 @@ export const useStarCount = (): string | undefined => {
 
   React.useEffect(() => {
     const getStarCount = async (): Promise<void> => {
-      const { totalStars } = await fetch('/api/star-count', { next: { revalidate: 900 } }).then(
+      const raw: unknown = await fetch('/api/star-count', { next: { revalidate: 900 } }).then(
         (res) => res.json(),
       )
-      if (totalStars) {
+      const totalStars =
+        typeof raw === 'object' &&
+        raw !== null &&
+        'totalStars' in raw &&
+        typeof (raw as { totalStars: unknown }).totalStars === 'number'
+          ? (raw as { totalStars: number }).totalStars
+          : null
+      if (totalStars != null) {
         if (totalStars > 1000) {
           setStarCount((totalStars / 1000).toFixed(1) + 'k')
         } else {

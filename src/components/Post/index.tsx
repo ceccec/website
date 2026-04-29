@@ -63,10 +63,13 @@ export const Post: React.FC<Partial<PostType>> = (props) => {
                       label: (
                         <span className={classes.allPosts}>
                           <ArrowRightIcon />
-                          {typeof category !== 'string' && category?.name}
+                          {typeof category === 'object' && category !== null && category?.name}
                         </span>
                       ),
-                      url: typeof category !== 'string' ? `/posts/${category?.slug}` : 'posts/blog',
+                      url:
+                        typeof category === 'object' && category !== null
+                          ? `/posts/${category?.slug}`
+                          : 'posts/blog',
                     },
                     {
                       ...(publishedOn && {
@@ -76,7 +79,8 @@ export const Post: React.FC<Partial<PostType>> = (props) => {
                   ]}
                 />
                 <h1 className={classes.title}>{title}</h1>
-                {typeof category !== 'string' &&
+                {typeof category === 'object' &&
+                  category !== null &&
                   category?.slug === 'guides' &&
                   (authorType === 'guest' ? (
                     <span className={classes.guideBadge}>Community Guide</span>
@@ -95,7 +99,8 @@ export const Post: React.FC<Partial<PostType>> = (props) => {
             <div className={classes.heroImageWrap}>
               {featuredMedia === 'upload'
                 ? image &&
-                  typeof image !== 'string' && (
+                  typeof image === 'object' &&
+                  image !== null && (
                     <Media className={classes.heroImage} priority resource={image} />
                   )
                 : videoUrl && <Video {...getVideo(videoUrl)} />}
@@ -103,7 +108,8 @@ export const Post: React.FC<Partial<PostType>> = (props) => {
             <div className={classes.mobileImage}>
               {featuredMedia === 'upload'
                 ? image &&
-                  typeof image !== 'string' && (
+                  typeof image === 'object' &&
+                  image !== null && (
                     <Media className={classes.heroImage} priority resource={image} />
                   )
                 : videoUrl && <Video {...getVideo(videoUrl)} />}

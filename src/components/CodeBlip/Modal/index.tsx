@@ -8,7 +8,7 @@ import React, { useEffect, useId, useRef, useState } from 'react'
 import { useCodeBlip } from '../CodeBlipContext'
 import classes from './index.module.scss'
 
-const Modal: React.FC = ({}) => {
+const Modal: React.FC = () => {
   const closeRef = useRef<HTMLButtonElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dialogRef, animate] = useAnimate()
@@ -34,7 +34,9 @@ const Modal: React.FC = ({}) => {
   }, [isOpen])
 
   const handleClose = () => {
-    animate(dialogRef.current, { opacity: 0 }, { duration: 0.15, ease: easing }).then(closeModal)
+    void animate(dialogRef.current, { opacity: 0 }, { duration: 0.15, ease: easing }).then(
+      closeModal,
+    )
 
     if (containerRef.current) {
       animate(containerRef.current, { x: 20 })
@@ -53,7 +55,6 @@ const Modal: React.FC = ({}) => {
       style={{ opacity: 0 }}
     >
       <button
-        autoFocus
         className={classes.close}
         onClick={handleClose}
         ref={closeRef}

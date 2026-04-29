@@ -6,11 +6,11 @@ export const PillBlock: Block = {
     {
       name: 'text',
       type: 'text',
-      required: true,
-      label: 'Text',
       admin: {
         description: 'E.g., "1. DEFINE WORK" or "2. QUEUE JOBS"',
       },
+      label: 'Text',
+      required: true,
     },
   ],
   interfaceName: 'PillBlock',

@@ -5,7 +5,7 @@ import React from 'react'
 
 import { CommunityHelpPage } from './client_page'
 
-const Page = async (props) => {
+const Page = (props) => {
   return <CommunityHelpPage {...props} />
 }
 

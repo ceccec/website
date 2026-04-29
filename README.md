@@ -34,7 +34,7 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 
 Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
-**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI (no `VERCEL`, no `postgres://…` URL) that executes **`pnpm run workers:build`** (migrate → OpenNext). Set **`PAYLOAD_SECRET`** for [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/#environment-variables) so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
+**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI (no `VERCEL`, no `postgres://…` URL) that executes **`pnpm run workers:build`** (migrate → OpenNext). Set **`PAYLOAD_SECRET`** under **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
 
 ---
 
@@ -131,6 +131,8 @@ pnpm run deploy:dry
 
 References: [DEPLOYMENT.md](./DEPLOYMENT.md), [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md).
 
+**Minimal vs full Cloudflare stack:** Default [`wrangler.jsonc`](./wrangler.jsonc) is enough to ship. Extra products (KV, Queues, Hyperdrive, Workers AI, Vectorize, …) are **optional** — merge snippets from [`config/wrangler.optional-bindings.jsonc`](./config/wrangler.optional-bindings.jsonc) only after you provision them ([DEPLOYMENT.md](./DEPLOYMENT.md#minimal-cloudflare-vs-optional-platform-bindings-choose-what-you-use)).
+
 ---
 
 ## Runtime & environment
@@ -147,6 +149,8 @@ Resolved in [`src/lib/deploymentTarget.ts`](./src/lib/deploymentTarget.ts) (see 
 
 Templates: [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1) · [**with-vercel-website**](https://github.com/payloadcms/payload/tree/main/templates/with-vercel-website)
 
+**Cloudflare / Deploy catalog:** every variable the [Deploy to Cloudflare](https://developers.cloudflare.com/workers/platform/deploy-buttons/) flow can document is listed in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json). After changing descriptions, run **`pnpm sync:cloudflare-bindings`** so [`package.json`](./package.json) `cloudflare` stays in sync.
+
 **Scripts (copy one line)**
 
 ```bash
@@ -157,6 +161,7 @@ pnpm run workers:build      # deploy:database + opennext:build (also invoked by 
 pnpm run workers:deploy     # deploy Worker after workers:build
 pnpm run deploy             # deploy:database + full Worker pipeline
 pnpm run deploy:dry         # dry-run Vercel + Cloudflare configs
+pnpm sync:cloudflare-bindings  # config/cloudflare.bindings.json → package.json `cloudflare`
 ```
 
 ---

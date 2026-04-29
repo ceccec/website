@@ -7,6 +7,7 @@ import { CopyToClipboard } from '@components/CopyToClipboard/index'
 import { Gutter } from '@components/Gutter/index'
 import { Secret } from '@forms/fields/Secret/index'
 import Label from '@forms/Label/index'
+import { parseOptionalValuePayload, readJsonUnknown } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 
 import classes from './page.module.scss'
@@ -35,7 +36,7 @@ export const ProjectFileStoragePage: React.FC<{
   team: Team
 }> = ({ environmentSlug, project, team }) => {
   const loadPassword = React.useCallback(async () => {
-    const { value } = await fetch(
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/cognito-password${
         environmentSlug ? `?env=${environmentSlug}` : ''
       }`,
@@ -45,10 +46,10 @@ export const ProjectFileStoragePage: React.FC<{
           'Content-Type': 'application/json',
         },
       },
-    ).then((res) => res.json())
-
-    return value
-  }, [project?.id])
+    )
+    const body = await readJsonUnknown(res)
+    return parseOptionalValuePayload(body)
+  }, [environmentSlug, project?.id])
 
   return (
     <Gutter>

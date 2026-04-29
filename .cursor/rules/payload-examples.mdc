@@ -1,0 +1,15 @@
+---
+description: Official examples & templates — examples/overview (reference apps)
+globs: scripts/**/*.{mjs,ts,js}
+alwaysApply: false
+---
+
+# Payload examples (official)
+
+- **Docs:** [Examples overview](https://payloadcms.com/docs/examples/overview) — official templates, starters, and reference applications.
+- **This repo:** When adding a feature, compare with the **closest** official example; copy patterns, not file-for-file (this codebase has its own layout).
+- **Upgrades:** Example repos may track latest Payload; align version in `package.json` before diffing.
+
+## Checklist
+
+- [ ] Skim the relevant example in the overview before a large feature (auth, multi-tenant, ecommerce, etc.).

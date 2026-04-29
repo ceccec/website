@@ -1,0 +1,27 @@
+---
+description: Deployment & production — build without DB, deploy, abuse prevention, performance (hub)
+alwaysApply: true
+---
+
+# Payload deployment & production
+
+Start from the **official doc** for each topic; use the **Cursor rule** for this repo’s paths.
+
+| Topic | Official doc | Cursor rule |
+|-------|--------------|-------------|
+| **Building without a DB** | [Building without a database connection](https://payloadcms.com/docs/production/building-without-a-db-connection) | This hub — **build/config** below |
+| **Deployment** | [Deployment](https://payloadcms.com/docs/production/deployment) | `payload-security-deployment.mdc` |
+| **Preventing abuse** | [Preventing abuse](https://payloadcms.com/docs/production/preventing-abuse) | `payload-security-deployment.mdc` |
+| **Performance** | [Performance overview](https://payloadcms.com/docs/performance/overview) | `payload-performance.mdc` |
+
+**This repo (CI / static build):** `next.config.js`, `scripts/build.mjs`, `scripts/lib/deploymentTarget.mjs` — follow Payload’s guidance so **build** and **SSG** do not require a live database unless you intentionally connect; use draft/fake config or exclude DB-dependent generation per docs.
+
+## Checklist
+
+- [ ] CI matches **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no `DATABASE_URI` (or equivalent) is present.
+- [ ] **[Deployment](https://payloadcms.com/docs/production/deployment)** and **[preventing abuse](https://payloadcms.com/docs/production/preventing-abuse)** reflected in `payload-security-deployment.mdc` (origins, secrets, API exposure).
+- [ ] Runtime **[performance](https://payloadcms.com/docs/performance/overview)** via `payload-performance.mdc` (`depth`, `select`, indexes).
+
+**More:** Feature index → `payload-features-overview.mdc` · Ecosystem → `payload-ecosystem.mdc` · Basics → `payload-basics.mdc` (always-on)
+
+Regenerate via `pnpm generate:cursor-rules:payload` after editing `scripts/generate-payload-cursor-rules.mjs`.

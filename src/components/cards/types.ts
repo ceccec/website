@@ -18,7 +18,7 @@ export interface SquareCardProps extends SharedProps {
 export interface ContentMediaCardProps extends SharedProps {
   authors: Post['authors'] | Post['guestAuthor']
   href: string
-  media: Media | string
+  media: Media | number | string
   orientation?: 'horizontal' | 'vertical'
   publishedOn?: string
   style?: 'default' | 'minimal'

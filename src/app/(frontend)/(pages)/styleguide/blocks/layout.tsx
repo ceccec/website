@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   },
 }
 
-export default async ({ children }) => {
+export default ({ children }) => {
   return <>{children}</>
 }

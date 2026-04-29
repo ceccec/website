@@ -4,9 +4,17 @@ import { PartnerCard } from '@components/cards/PartnerCard'
 
 import classes from './index.module.scss'
 
+/** Matches directory filters: taxonomy stored as string keys, not relation ids */
+type PartnerDirectoryEntry = {
+  budgets: string[]
+  industries: string[]
+  regions: string[]
+  specialties: string[]
+} & Omit<Partner, 'budgets' | 'industries' | 'regions' | 'specialties'>
+
 type PartnerGridProps = {
   featured?: boolean
-  partners: (Partner | string)[]
+  partners: (number | Partner | PartnerDirectoryEntry | string)[]
 }
 
 export const PartnerGrid = (props: PartnerGridProps) => {
@@ -15,8 +23,12 @@ export const PartnerGrid = (props: PartnerGridProps) => {
     <div className={classes.PartnerGridWrap}>
       {partners?.map((partner) => {
         return (
-          typeof partner !== 'string' && (
-            <PartnerCard {...partner} key={partner.id + featured ? '_featured' : ''} />
+          typeof partner === 'object' &&
+          partner !== null && (
+            <PartnerCard
+              {...partner}
+              key={`${partner.id}${featured === true ? '_featured' : ''}`}
+            />
           )
         )
       })}

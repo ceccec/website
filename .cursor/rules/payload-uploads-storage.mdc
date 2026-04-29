@@ -1,0 +1,18 @@
+---
+description: Upload fields, media collections, storage adapters (S3/R2/Vercel Blob)
+globs: src/**/*media*/**/*.{ts,tsx},src/**/*upload*/**/*.{ts,tsx},src/plugins/**/*storage*.{ts,tsx},src/**/*storage*.{ts,tsx}
+alwaysApply: false
+---
+
+# Uploads & storage
+
+- **Docs:** [Upload field](https://payloadcms.com/docs/fields/upload) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters)
+- **Collections:** `media` (and any upload-enabled collection) — **relationType**, **filterOptions**, and **storage plugin** must agree with deployment target (Cloudflare vs Vercel vs Node).
+- **Plugins:** This repo may use `@payloadcms/storage-r2`, `@payloadcms/storage-vercel-blob`, etc. — configure under **plugins** in `payload.config.ts` via `src/plugins`.
+- **Lexical:** `UploadFeature` in `payloadLexicalEditor.ts` references upload collections and optional extra fields (`enableLink`, etc.).
+- **URLs:** Prefer Payload-generated URLs or your CDN domain from env; do not hard-code bucket hosts in components.
+
+## Checklist
+
+- [ ] New env for bucket/credentials documented in `.env.example`.
+- [ ] Preview URLs work for both admin and frontend if using signed URLs.

@@ -75,12 +75,13 @@ const RadioGroup: React.FC<
 
           return (
             <li className={classes.li} key={index}>
-              <label className={classes.radioWrap} htmlFor={optionId} onClick={onClick}>
+              <label className={classes.radioWrap} htmlFor={optionId}>
                 <input
                   checked={isSelected}
                   id={optionId}
                   onChange={() => {
                     onChange(option.value)
+                    onClick?.()
                   }}
                   type="radio"
                 />

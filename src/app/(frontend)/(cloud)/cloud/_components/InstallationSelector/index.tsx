@@ -4,7 +4,7 @@ import { LoadingShimmer } from '@components/LoadingShimmer/index'
 import { Select } from '@forms/fields/Select/index'
 import Label from '@forms/Label/index'
 import { usePopupWindow } from '@root/utilities/use-popup-window'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { InstallationSelectorProps } from './types'
 
@@ -12,6 +12,15 @@ import { MenuList } from './components/MenuList/index'
 import { Option } from './components/Option/index'
 import { SingleValue } from './components/SingleValue/index'
 import classes from './index.module.scss'
+
+function createInstallationMenuList(
+  href: string,
+  openPopupWindow: (event: React.MouseEvent<HTMLAnchorElement>) => void,
+) {
+  return function InstallationMenuList(props: React.ComponentProps<typeof MenuList>) {
+    return <MenuList {...props} href={href} openPopupWindow={openPopupWindow} />
+  }
+}
 
 export const InstallationSelector: React.FC<InstallationSelectorProps> = (props) => {
   const {
@@ -55,8 +64,14 @@ export const InstallationSelector: React.FC<InstallationSelectorProps> = (props)
           onInstall()
         }
       }
+      await Promise.resolve()
     },
   })
+
+  const MenuListSlot = useMemo(
+    () => createInstallationMenuList(href, openPopupWindow),
+    [href, openPopupWindow],
+  )
 
   useEffect(() => {
     if (selectAfterLoad.current) {
@@ -78,9 +93,7 @@ export const InstallationSelector: React.FC<InstallationSelectorProps> = (props)
       {!loading && (
         <Select
           components={{
-            MenuList: (menuListProps) => (
-              <MenuList {...menuListProps} href={href} openPopupWindow={openPopupWindow} />
-            ),
+            MenuList: MenuListSlot,
             Option,
             SingleValue,
           }}

@@ -5,6 +5,7 @@ import type { Project, Team } from '@root/payload-cloud-types'
 import { Banner } from '@components/Banner/index'
 import { Gutter } from '@components/Gutter/index'
 import { Secret } from '@forms/fields/Secret/index'
+import { parseOptionalValuePayload, readJsonUnknown } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 
 export const ProjectDatabasePage: React.FC<{
@@ -13,7 +14,7 @@ export const ProjectDatabasePage: React.FC<{
   team: Team
 }> = ({ environmentSlug, project, team }) => {
   const loadConnectionString = React.useCallback(async () => {
-    const { value } = await fetch(
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/atlas-connection${
         environmentSlug ? `?env=${environmentSlug}` : ''
       }`,
@@ -23,10 +24,10 @@ export const ProjectDatabasePage: React.FC<{
           'Content-Type': 'application/json',
         },
       },
-    ).then((res) => res.json())
-
-    return value
-  }, [project?.id])
+    )
+    const body = await readJsonUnknown(res)
+    return parseOptionalValuePayload(body)
+  }, [environmentSlug, project?.id])
 
   return (
     <Gutter>

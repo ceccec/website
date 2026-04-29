@@ -9,7 +9,7 @@ import classes from './index.module.scss'
 
 type ParallaxProps = {
   className?: string
-  media: { image: MediaType | string }[]
+  media: { image: MediaType | number | string }[]
 } & {
   priority?: MediaProps['priority']
 }

@@ -1,6 +1,7 @@
 import type { Deployment, Plan, Project, Team } from '@root/payload-cloud-types'
 
 import { useAuth } from '@root/providers/Auth/index'
+import { parseRestMessagePayload } from '@utilities/payloadCloudJson'
 import { qs } from '@utilities/qs'
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 
@@ -52,17 +53,16 @@ export const useCloudAPI = <R>(args: {
 
           setReqStatus(req.status)
 
-          const json: R = await req.json()
+          const json: unknown = await req.json()
 
           if (req.ok) {
             timer = setTimeout(() => {
-              setResult(json)
+              setResult(json as R)
               setError('')
               setIsLoading(false)
             }, delay)
           } else {
-            // @ts-expect-error
-            setError(json?.message || 'Something went wrong')
+            setError(parseRestMessagePayload(json))
           }
         } catch (err: unknown) {
           const message = (err as Error)?.message || 'Something went wrong'

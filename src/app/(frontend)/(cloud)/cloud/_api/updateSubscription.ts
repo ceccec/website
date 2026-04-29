@@ -24,5 +24,5 @@ export const updateSubscription = async (
     return res.json()
   })
 
-  return sub
+  return sub as Subscription
 }

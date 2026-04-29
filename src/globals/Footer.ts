@@ -1,9 +1,8 @@
 import type { GlobalConfig } from 'payload'
 
-import { revalidatePath } from 'next/cache'
-
 import { isAdmin } from '../access/isAdmin'
 import link from '../fields/link'
+import { revalidateRootLayout } from '../utilities/revalidateMarketingRoutes'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
@@ -36,6 +35,6 @@ export const Footer: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [() => revalidatePath('/', 'layout')],
+    afterChange: [() => revalidateRootLayout()],
   },
 }

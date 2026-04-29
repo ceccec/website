@@ -1,0 +1,18 @@
+---
+description: Generated Payload types, strict narrowing, avoid masking schema drift
+globs: "**/payload-types.ts","**/payload-cloud-types.ts"
+alwaysApply: false
+---
+
+# TypeScript with Payload
+
+- **Docs:** [TypeScript](https://payloadcms.com/docs/typescript/overview)
+- **Generated:** `payload-types.ts` (path from `typescript.outputFile` in config). Run **`pnpm generate:types`** after collection/global/field/plugin changes.
+- **Relations:** Prefer **generated unions** (`number | Media`) + runtime narrowing over `as any`.
+- **Cloud types:** `payload-cloud-types.ts` or similar — keep separate from CMS types when APIs differ.
+- **Do not** manually duplicate large interfaces that **generate:types** can produce unless bridging external APIs.
+
+## Checklist
+
+- [ ] CI or pre-commit runs **generate:types** when schema changes (or document manual step).
+- [ ] Use **`Config`** collection slug unions (`keyof Config['collections']`) where appropriate (`getDocument`).

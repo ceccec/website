@@ -107,7 +107,7 @@ export const useFormField = <T extends Value>(options): FormField<T> => {
 
   useEffect(() => {
     if (path && (debouncedValue !== undefined || !fieldExists)) {
-      sendField(debouncedValue)
+      void sendField(debouncedValue)
     }
   }, [debouncedValue, sendField, fieldExists, path])
 

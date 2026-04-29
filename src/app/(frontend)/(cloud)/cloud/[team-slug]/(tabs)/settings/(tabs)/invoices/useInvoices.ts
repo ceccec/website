@@ -86,18 +86,18 @@ export const useInvoices = (args: {
   )
 
   useEffect(() => {
-    loadInvoices()
+    void loadInvoices()
   }, [loadInvoices])
 
   const refreshInvoices = useCallback(() => {
-    loadInvoices()
+    void loadInvoices()
   }, [loadInvoices])
 
   const loadMoreInvoices = useCallback(() => {
     if (result?.has_more && result?.data?.length) {
       const lastInvoice = result?.data?.[result?.data?.length - 1]
       const lastInvoiceID = lastInvoice.id
-      loadInvoices(undefined, lastInvoiceID)
+      void loadInvoices(undefined, lastInvoiceID)
     }
   }, [loadInvoices, result])
 

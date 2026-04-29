@@ -1,10 +1,12 @@
 import type { CollectionConfig } from 'payload'
 
-import { revalidatePath } from 'next/cache'
-
 import { isAdmin, isAdminFieldLevel } from '../access/isAdmin'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
+import {
+  revalidateMarketingDocument,
+  revalidatePartner,
+} from '../utilities/revalidateMarketingRoutes'
 
 export const Partners: CollectionConfig = {
   slug: 'partners',
@@ -347,9 +349,12 @@ export const Partners: CollectionConfig = {
   hooks: {
     afterChange: [
       ({ doc }) => {
-        revalidatePath(`/partners/${doc.slug}`)
-        revalidatePath(`/partners`, 'page')
-        console.log(`Revalidated: /partners/${doc.slug}`)
+        revalidateMarketingDocument('partners', doc.id, () => revalidatePartner(doc.slug))
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidateMarketingDocument('partners', doc.id, () => revalidatePartner(doc.slug))
       },
     ],
   },

@@ -7,6 +7,7 @@ import { notFound, redirect } from 'next/navigation'
 
 import type { Subscription } from './fetchSubscriptions'
 import type { Customer, TeamWithCustomer } from './fetchTeam'
+import type { GraphQLJsonBody } from './graphqlJson'
 
 import { payloadCloudToken } from './token'
 
@@ -24,7 +25,7 @@ export const fetchProject = async (args: {
     throw new Error('No token provided')
   }
 
-  const doc: Project = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const doc = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: PROJECT_QUERY,
       variables: {
@@ -40,13 +41,17 @@ export const fetchProject = async (args: {
     next: { tags: [`project_${projectSlug}`] },
   })
     ?.then((res) => res.json())
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as GraphQLJsonBody<{ Projects?: { docs?: Project[] } }>
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
       }
       return res?.data?.Projects?.docs?.[0]
     })
 
+  if (!doc) {
+    throw new Error('Project not found')
+  }
   return doc
 }
 
@@ -116,7 +121,11 @@ export const fetchProjectWithSubscription = async (args: {
     },
   )
     ?.then((res) => res.json())
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as {
+        error?: string
+        errors?: { message?: string }[]
+      } & ProjectWithSubscriptionWithTeamAndCustomer
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
       }

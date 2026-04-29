@@ -40,6 +40,7 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
   }
 
   if (accordion && accordion.length > 0 && mediaRefs.current.length !== accordion.length) {
+    /* eslint-disable-next-line @eslint-react/no-create-ref -- one ref object per accordion panel */
     mediaRefs.current = accordion.map((_, i) => mediaRefs.current[i] || createRef())
   }
 

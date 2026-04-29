@@ -10,7 +10,7 @@ export type RelatedPostsBlock = {
   blockType: 'relatedPosts'
   disableGutter?: boolean
   id?: string
-  relatedPosts: (Post | string)[] | null
+  relatedPosts: (number | Post | string)[] | null
   style?: 'default' | 'minimal'
 }
 
@@ -30,10 +30,12 @@ export const RelatedPosts: React.FC<RelatedPostsBlock> = (props) => {
         <h4 className={classes.title}>Related Posts</h4>
         <div className={classes.grid}>
           {relatedPosts
-            .filter((post) => typeof post !== 'string')
+            .filter((post): post is Post => typeof post === 'object' && post !== null)
             .map((post) => {
               const postCategory =
-                post.category && typeof post.category !== 'string' ? post.category.slug : 'blog'
+                post.category && typeof post.category === 'object'
+                  ? post.category.slug
+                  : 'blog'
 
               const thumbnailAsset =
                 post.featuredMedia === 'upload'
@@ -43,8 +45,7 @@ export const RelatedPosts: React.FC<RelatedPostsBlock> = (props) => {
                     : post.thumbnail
 
               return (
-                typeof post !== 'string' && (
-                  <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
+                <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
                     <ContentMediaCard
                       authors={post.authorType === 'team' ? post.authors : post.guestAuthor}
                       href={`/posts/${postCategory}/${post.slug}`}
@@ -54,7 +55,6 @@ export const RelatedPosts: React.FC<RelatedPostsBlock> = (props) => {
                       title={post.title}
                     />
                   </div>
-                )
               )
             })}
         </div>

@@ -129,7 +129,7 @@ const CardList: React.FC<CreditCardListType> = (props) => {
             appearance="primary"
             label={isLoading === 'saving' ? 'Saving...' : 'Save new card'}
             onClick={() => {
-              saveNewPaymentMethod(newCardID.current)
+              void saveNewPaymentMethod(newCardID.current)
             }}
           />
         )}

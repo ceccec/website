@@ -1,4 +1,4 @@
-import type { Category } from '@root/payload-types'
+import type { Category, Post } from '@root/payload-types'
 
 import { BackgroundGrid } from '@components/BackgroundGrid'
 import { BackgroundScanline } from '@components/BackgroundScanline'
@@ -8,6 +8,7 @@ import { FeaturedBlogPost } from '@components/FeaturedBlogPost'
 import { Gutter } from '@components/Gutter'
 import { fetchArchive, fetchArchives } from '@data'
 import { ArrowIcon } from '@icons/ArrowIcon'
+import { ARCHIVES_CACHE_TAG } from '@root/utilities/revalidateMarketingRoutes'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
@@ -52,7 +53,7 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
   const getArchives = draft
     ? fetchArchives
     : unstable_cache(fetchArchives, [`archives`], {
-        tags: ['archives'],
+        tags: [ARCHIVES_CACHE_TAG],
       })
 
   const archive = await getArchive(category)
@@ -61,7 +62,11 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
   const { description, headline } = archive
   const posts = archive.posts?.docs || []
 
-  const latestPost = posts[0]
+  const rawLatest = posts[0]
+  const latestPost =
+    rawLatest !== undefined && typeof rawLatest === 'object' && rawLatest !== null
+      ? rawLatest
+      : undefined
 
   return (
     <>
@@ -89,14 +94,12 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
               </p>
             </div>
           </div>
-          {latestPost && typeof latestPost !== 'string' && (
-            <FeaturedBlogPost {...latestPost} category={category} />
-          )}
+          {latestPost && <FeaturedBlogPost {...latestPost} category={category} />}
           {posts && Array.isArray(posts) && posts.length > 0 ? (
             <div className={[classes.cardGrid, 'grid'].filter(Boolean).join(' ')}>
               {(posts || [])
                 .slice(1)
-                .filter((post) => typeof post !== 'string')
+                .filter((post): post is Post => typeof post === 'object' && post !== null)
                 .map((post) => {
                   const thumbnailAsset =
                     post.featuredMedia === 'upload'
@@ -106,17 +109,15 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
                         : post.thumbnail
 
                   return (
-                    typeof post !== 'string' && (
-                      <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
-                        <ContentMediaCard
-                          authors={post.authors}
-                          href={`/posts/${category}/${post.slug}`}
-                          media={thumbnailAsset ?? ''}
-                          publishedOn={post.publishedOn}
-                          title={post.title}
-                        />
-                      </div>
-                    )
+                    <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
+                      <ContentMediaCard
+                        authors={post.authors}
+                        href={`/posts/${category}/${post.slug}`}
+                        media={thumbnailAsset ?? ''}
+                        publishedOn={post.publishedOn}
+                        title={post.title}
+                      />
+                    </div>
                   )
                 })}
             </div>

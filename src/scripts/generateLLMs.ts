@@ -35,5 +35,4 @@ async function generateLLMs() {
   console.log(`Wrote llms-full.txt to ${fullFilePath}`)
 }
 
-// @ts-expect-error - this is fine, typescript won't need to compile this
 await generateLLMs()

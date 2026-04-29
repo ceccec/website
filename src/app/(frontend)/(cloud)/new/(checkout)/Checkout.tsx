@@ -79,6 +79,24 @@ const Checkout: React.FC<{
     team: project?.team,
   } as CheckoutState)
 
+  const projectTeam = project?.team
+  const teamSelectorInitialValue =
+    typeof projectTeam === 'object' && projectTeam !== null && 'id' in projectTeam
+      ? projectTeam.id
+      : ''
+
+  const planForPrice = checkoutState?.plan
+  const planPriceJsonString =
+    typeof planForPrice === 'object' && planForPrice !== null && 'priceJSON' in planForPrice
+      ? (planForPrice.priceJSON?.toString() ?? '')
+      : ''
+
+  const projectTemplate = project?.template
+  const templateSelectInitialValue =
+    typeof projectTemplate === 'object' && projectTemplate !== null && 'id' in projectTemplate
+      ? projectTemplate.id
+      : projectTemplate
+
   const handleCardChange = useCallback((incomingPaymentMethod: string) => {
     dispatchCheckoutState({
       type: 'SET_PAYMENT_METHOD',
@@ -195,13 +213,7 @@ const Checkout: React.FC<{
                   <TeamSelector
                     className={classes.teamSelector}
                     enterpriseOnly={true}
-                    initialValue={
-                      typeof project?.team === 'object' &&
-                      project?.team !== null &&
-                      'id' in project?.team
-                        ? project?.team?.id
-                        : ''
-                    }
+                    initialValue={teamSelectorInitialValue}
                     onChange={handleTeamChange}
                     required
                     user={user}
@@ -210,13 +222,7 @@ const Checkout: React.FC<{
                 <div className={classes.totalPriceSection}>
                   <Label htmlFor="" label="Total cost" />
                   <p className={classes.totalPrice}>
-                    {priceFromJSON(
-                      typeof checkoutState?.plan === 'object' &&
-                        checkoutState?.plan !== null &&
-                        'priceJSON' in checkoutState?.plan
-                        ? checkoutState?.plan?.priceJSON?.toString()
-                        : '',
-                    )}
+                    {priceFromJSON(planPriceJsonString)}
                     {checkoutState?.freeTrial && (
                       <Fragment>
                         <br />
@@ -296,17 +302,11 @@ const Checkout: React.FC<{
                     {isClone && (
                       <Select
                         disabled
-                        initialValue={
-                          typeof project?.template === 'object' &&
-                          project?.template !== null &&
-                          'id' in project?.template
-                            ? project?.template?.id
-                            : project?.template
-                        }
+                        initialValue={templateSelectInitialValue}
                         label="Template"
                         options={[
                           { label: 'None', value: '' },
-                          ...(templates || [])?.map((template) => ({
+                          ...(templates ?? []).map((template) => ({
                             label: template.name || '',
                             value: template.id,
                           })),

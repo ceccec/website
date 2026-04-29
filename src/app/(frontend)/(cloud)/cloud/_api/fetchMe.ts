@@ -1,6 +1,7 @@
 import type { User } from '@root/payload-cloud-types'
 
 import { ME_QUERY } from '@data/me'
+import { parseMeUserFromData, readPayloadGraphQLResponse } from '@utilities/payloadCloudJson'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -11,7 +12,7 @@ export const fetchMe = async (args?: {
   userRedirect?: string
 }): Promise<{
   token?: string
-  user: User
+  user?: User
 }> => {
   const { nullUserRedirect, userRedirect } = args || {}
   const cookieStore = await cookies()
@@ -29,9 +30,13 @@ export const fetchMe = async (args?: {
     next: { tags: ['user'] },
   })
 
-  const json = await meUserReq.json()
-
-  const user = json?.data?.meUser?.user
+  let user: undefined | User
+  try {
+    const envelope = await readPayloadGraphQLResponse(meUserReq)
+    user = parseMeUserFromData(envelope.data)
+  } catch {
+    user = undefined
+  }
 
   if (userRedirect && meUserReq.ok && user) {
     redirect(userRedirect)

@@ -26,7 +26,9 @@ export const TeamMemberRow: React.FC<{
 
   // Called when there's a change in the roles of the team member. It triggers the onUpdateRoles prop.
   const handleRolesChange = (newRoles: any) => {
-    onUpdateRoles && onUpdateRoles(newRoles)
+    if (onUpdateRoles) {
+      onUpdateRoles(newRoles)
+    }
   }
 
   const isRoleClearable = initialRoles && initialRoles.length > 1

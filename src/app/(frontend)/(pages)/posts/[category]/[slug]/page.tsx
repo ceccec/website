@@ -52,7 +52,7 @@ export async function generateStaticParams() {
 
   return posts
     .map(({ slug, category }) => {
-      if (!category || typeof category === 'string' || !category.slug) {
+      if (!category || typeof category !== 'object' || category === null || !('slug' in category)) {
         return null
       }
 
@@ -79,12 +79,20 @@ export async function generateMetadata({
   let ogImage: null | string = null
 
   if (post) {
-    if (post?.meta?.image && typeof post.meta.image !== 'string' && post.meta.image?.url) {
+    if (
+      post?.meta?.image &&
+      typeof post.meta.image === 'object' &&
+      post.meta.image !== null &&
+      'url' in post.meta.image &&
+      post.meta.image?.url
+    ) {
       ogImage = post.meta.image.url
     } else if (
       post.featuredMedia === 'upload' &&
       post.image &&
-      typeof post.image !== 'string' &&
+      typeof post.image === 'object' &&
+      post.image !== null &&
+      'url' in post.image &&
       post.image?.url
     ) {
       ogImage = post.image.url

@@ -12,8 +12,8 @@ export const MediaBlock: Block = {
         {
           name: 'position',
           type: 'select',
-          enumName: 'mb_pos',
           defaultValue: 'default',
+          enumName: 'mb_pos',
           options: [
             {
               label: 'Default',

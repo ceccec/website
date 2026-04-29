@@ -7,9 +7,9 @@ import React, { useEffect, useState } from 'react'
 
 import classes from './index.module.scss'
 
-type LogoItem = MediaType
+type LogoItem = MediaType | number
 
-export const LogoShowcase: React.FC<{ logos: Array<MediaType> }> = ({ logos }) => {
+export const LogoShowcase: React.FC<{ logos: Array<MediaType | number> }> = ({ logos }) => {
   const [activeLogos, setActiveLogos] = useState<LogoItem[]>([])
   const [animatingIndex, setAnimatingIndex] = useState<null | number>(null)
   const [inactiveLogos, setInactiveLogos] = useState<LogoItem[]>([])

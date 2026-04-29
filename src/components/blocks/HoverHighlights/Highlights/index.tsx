@@ -39,6 +39,7 @@ export const Highlights: React.FC<{
                 .filter(Boolean)
                 .join(' ')}
               key={index}
+              onFocus={() => handleHover(index)}
               onMouseOver={() => handleHover(index)}
             >
               {child}

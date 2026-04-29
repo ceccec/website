@@ -11,9 +11,9 @@ type Props = {
   alt: string
   caption?: string
   srcDark?: string
-  srcDarkId?: string
+  srcDarkId?: number | string
   srcLight?: string
-  srcLightId?: string
+  srcLightId?: number | string
 }
 
 export const LightDarkImage: (props: Props) => null | React.JSX.Element = ({

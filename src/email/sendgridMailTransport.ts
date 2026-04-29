@@ -13,7 +13,6 @@ export function createSendGridMailTransport(options: { apiKey?: string }) {
 
   return {
     name: 'sendgrid-mail',
-    version: '8.0.0',
     send(mail: { normalize: (cb: (err: Error | null, source?: Record<string, unknown>) => void) => void }, callback: MailCallback) {
       mail.normalize((err, source) => {
         if (err) {
@@ -24,38 +23,22 @@ export function createSendGridMailTransport(options: { apiKey?: string }) {
 
         Object.keys(source || {}).forEach((key) => {
           switch (key) {
-            case 'subject':
-            case 'text':
-            case 'html':
-              msg[key] = source![key]
+            case 'alternatives': {
+              const alternatives = (source!.alternatives as object[]).map((entry: Record<string, unknown>) => ({
+                type: entry.contentType,
+                content: entry.content,
+              }))
+
+              msg.content = ([] as object[]).concat((msg.content as object[]) || []).concat(alternatives)
               break
-            case 'from':
-            case 'replyTo':
-              msg[key] = ([] as { name?: string; email?: string }[])
-                .concat((source![key] as unknown as object[]) || [])
-                .map((entry: { name?: string; address?: string }) => ({
-                  name: entry.name,
-                  email: entry.address,
-                }))
-                .shift()
-              break
-            case 'to':
-            case 'cc':
-            case 'bcc':
-              msg[key] = ([] as object[]).concat((source![key] as object[]) || []).map(
-                (entry: { name?: string; address?: string }) => ({
-                  name: entry.name,
-                  email: entry.address,
-                }),
-              )
-              break
+            }
             case 'attachments': {
               const attachments = (source!.attachments as object[]).map((entry: Record<string, unknown>) => {
                 const attachment: Record<string, unknown> = {
-                  content: entry.content,
-                  filename: entry.filename,
                   type: entry.contentType,
+                  content: entry.content,
                   disposition: 'attachment',
+                  filename: entry.filename,
                 }
                 if (entry.cid) {
                   attachment.content_id = entry.cid
@@ -67,44 +50,60 @@ export function createSendGridMailTransport(options: { apiKey?: string }) {
               msg.attachments = ([] as object[]).concat((msg.attachments as object[]) || []).concat(attachments)
               break
             }
-            case 'alternatives': {
-              const alternatives = (source!.alternatives as object[]).map((entry: Record<string, unknown>) => ({
-                content: entry.content,
-                type: entry.contentType,
-              }))
-
-              msg.content = ([] as object[]).concat((msg.content as object[]) || []).concat(alternatives)
+            case 'bcc':
+            case 'cc':
+            case 'to':
+              msg[key] = ([] as object[]).concat((source![key] as object[]) || []).map(
+                (entry: { address?: string; name?: string }) => ({
+                  name: entry.name,
+                  email: entry.address,
+                }),
+              )
               break
-            }
+            case 'from':
+            case 'replyTo':
+              msg[key] = ([] as { email?: string; name?: string }[])
+                .concat((source![key] as object[]) || [])
+                .map((entry: { address?: string; name?: string }) => ({
+                  name: entry.name,
+                  email: entry.address,
+                }))
+                .shift()
+              break
+            case 'html':
+            case 'subject':
+            case 'text':
+              msg[key] = source![key]
+              break
             case 'icalEvent': {
               const ical = source!.icalEvent as { content?: string; filename?: string }
               const attachment = {
-                content: ical.content,
-                filename: ical.filename || 'invite.ics',
                 type: 'application/ics',
+                content: ical.content,
                 disposition: 'attachment',
+                filename: ical.filename || 'invite.ics',
               }
               msg.attachments = ([] as object[]).concat((msg.attachments as object[]) || []).concat([attachment])
               break
             }
-            case 'watchHtml': {
-              const alternative = {
-                content: source!.watchHtml,
-                type: 'text/watch-html',
-              }
-              msg.content = ([] as object[]).concat((msg.content as object[]) || []).concat([alternative])
+            case 'messageId':
+              msg.headers = msg.headers || {}
+              ;(msg.headers as Record<string, string>)['message-id'] = source!.messageId as string
               break
-            }
             case 'normalizedHeaders':
               msg.headers = msg.headers || {}
               Object.keys((source!.normalizedHeaders as object) || {}).forEach((header) => {
                 ;(msg.headers as Record<string, string>)[header] = (source!.normalizedHeaders as Record<string, string>)[header]
               })
               break
-            case 'messageId':
-              msg.headers = msg.headers || {}
-              ;(msg.headers as Record<string, string>)['message-id'] = source!.messageId as string
+            case 'watchHtml': {
+              const alternative = {
+                type: 'text/watch-html',
+                content: source!.watchHtml,
+              }
+              msg.content = ([] as object[]).concat((msg.content as object[]) || []).concat([alternative])
               break
+            }
             default:
               msg[key] = source![key]
           }
@@ -127,5 +126,6 @@ export function createSendGridMailTransport(options: { apiKey?: string }) {
           .catch((e: Error) => callback(e))
       })
     },
+    version: '8.0.0',
   }
 }

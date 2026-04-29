@@ -19,9 +19,11 @@ export const VersionSelector: React.FC<{
         className={classes.select}
         defaultValue={initialVersion}
         onChange={(e) => {
-          e.target.value === 'latest'
-            ? router.push('/docs')
-            : router.push(`/docs/${e.target.value}`)
+          if (e.target.value === 'latest') {
+            router.push('/docs')
+          } else {
+            router.push(`/docs/${e.target.value}`)
+          }
         }}
       >
         <option

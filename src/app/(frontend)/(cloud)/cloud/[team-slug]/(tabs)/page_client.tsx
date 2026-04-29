@@ -56,7 +56,7 @@ export const TeamPage: React.FC<{
         searchRef.current = debouncedSearch
       }
 
-      const doFetch = async () => {
+      const doFetch = () => {
         // give the illusion of loading, so that fast network connections appear to flash
         // this gives the user a visual indicator that something is happening
         const start = Date.now()
@@ -84,7 +84,7 @@ export const TeamPage: React.FC<{
           setError(error.message || 'Something went wrong')
         }
       }
-      doFetch()
+      void doFetch()
     }
   }, [page, debouncedSearch, team.id, enableSearch])
 

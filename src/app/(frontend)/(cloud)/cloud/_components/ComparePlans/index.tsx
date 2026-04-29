@@ -6,9 +6,30 @@ import { useModal } from '@faceless-ui/modal'
 import { ArrowIcon } from '@root/icons/ArrowIcon/index'
 import { CheckIcon } from '@root/icons/CheckIcon/index'
 import { CloseIcon } from '@root/icons/CloseIcon/index'
+import { handleActivationKeydown } from '@utilities/keyboardActivation'
 import React, { Fragment } from 'react'
 
 import classes from './index.module.scss'
+
+function comparePlanPriceLabel(plan: Plan): string {
+  if (typeof plan !== 'object' || plan === null || !('priceJSON' in plan)) {
+    return ''
+  }
+  const raw = plan.priceJSON?.toString() || ''
+  try {
+    const parsed = JSON.parse(raw) as { unit_amount?: number }
+    const cents = parsed?.unit_amount
+    if (cents === undefined) {
+      return ''
+    }
+    return (cents / 100).toLocaleString('en-US', {
+      currency: 'USD',
+      style: 'currency',
+    })
+  } catch {
+    return ''
+  }
+}
 
 type ComparePlansProps = {
   handlePlanChange: (value?: null | Plan) => void
@@ -33,28 +54,23 @@ export const ComparePlans: React.FC<ComparePlansProps> = (props) => {
       <Drawer size={plans.length > 2 ? 'l' : 'm'} slug={`comparePlans`} title={'Compare Plans'}>
         <div className={classes.compareTable}>
           {plans?.map((plan, i) => {
-            const getPrice = (plan) => {
-              let price = ''
-              if (typeof plan === 'object' && plan !== null && 'priceJSON' in plan) {
-                price = plan?.priceJSON?.toString() || ''
-                const parsed = JSON.parse(price)
-                return (parsed?.unit_amount / 100).toLocaleString('en-US', {
-                  currency: 'USD',
-                  style: 'currency',
-                })
-              }
-            }
-
             const highlight = plan.highlight ? classes.highlight : ''
 
             return (
-              <div className={classes.planCard} key={i} onClick={() => handleSelect(plan)}>
+              <div
+                className={classes.planCard}
+                key={i}
+                onClick={() => handleSelect(plan)}
+                onKeyDown={(event) => handleActivationKeydown(event, () => handleSelect(plan))}
+                role="button"
+                tabIndex={0}
+              >
                 <PricingCard
                   className={[classes.pricingCard, highlight].join(' ')}
                   description={plan.description}
                   key={plan.name}
                   leader={plan.name}
-                  price={getPrice(plan)}
+                  price={comparePlanPriceLabel(plan)}
                 />
                 <ul className={classes.features}>
                   {plan?.features?.map((feature, i) => {

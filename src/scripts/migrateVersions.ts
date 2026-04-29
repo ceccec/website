@@ -90,4 +90,4 @@ const ensureAtLeastOneVersion = async (): Promise<void> => {
   process.exit(0)
 }
 
-ensureAtLeastOneVersion()
+void ensureAtLeastOneVersion()

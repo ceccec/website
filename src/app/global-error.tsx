@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function GlobalError() {
   return (
-    <html>
+    <html lang="en">
       <body>
         <NextError statusCode={0} />
       </body>

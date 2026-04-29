@@ -176,8 +176,6 @@ export const CaseStudyParallax: React.FC<Props> = (props) => {
         } else {
           setScrollProgress(100)
         }
-        if (totalScrollableDistance < totalDocScrollLength) {
-        }
       }
 
       scheduledAnimationFrame = false

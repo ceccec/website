@@ -3,14 +3,14 @@ import type { Metadata } from 'next'
 
 import { Banner } from '@components/Banner'
 import { RenderDocs } from '@components/RenderDocs'
-import config from '@payload-config'
 import { sanitizeServerEditorConfig } from '@payloadcms/richtext-lexical'
 import { contentLexicalEditorFeatures } from '@root/collections/Docs'
 import { mdxToLexical } from '@root/collections/Docs/mdxToLexical'
+import { getPayload } from '@root/lib/getPayload'
 import { fetchDocs } from '@root/scripts/fetchDocs'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
+import { type RequiredDataFromCollectionSlug } from 'payload'
 import React from 'react'
 
 export type TopicsOrder = { topics: string[] }[]
@@ -29,7 +29,7 @@ export default async function DocsPage(args: {
 
   const topicGroups = await fetchDocs({ ref: 'v3', source: 'local', version: 'v3' })
 
-  const payload = await getPayload({ config })
+  const payload = await getPayload()
 
   let curTopic: null | Topic = null
   let curTopicGroup: any = null

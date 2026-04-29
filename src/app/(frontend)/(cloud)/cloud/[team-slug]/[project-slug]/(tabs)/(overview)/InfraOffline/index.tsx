@@ -149,7 +149,7 @@ export const InfraOffline: React.FC<{
 
     if (!['done'].includes(infraStatus)) {
       projectInterval = setInterval(() => {
-        reloadProject()
+        void reloadProject()
       }, 10_000)
     }
 
@@ -163,12 +163,14 @@ export const InfraOffline: React.FC<{
     let deploymentInterval
     if (reqStatus && reqStatus < 400) {
       deploymentInterval = setInterval(() => {
-        reloadDeployments()
+        void reloadDeployments()
       }, 10_000)
     }
 
     return () => {
-      deploymentInterval && clearInterval(deploymentInterval)
+      if (deploymentInterval) {
+        clearInterval(deploymentInterval)
+      }
     }
   }, [reqStatus, reloadDeployments])
 

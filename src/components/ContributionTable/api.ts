@@ -13,7 +13,7 @@ export const getContribution = async (
   type: 'discussion' | 'issue' | 'pr',
   number: number,
   repo: string,
-): Promise<{ title: string | null; url: string | null }> => {
+): Promise<{ title: null | string; url: null | string }> => {
   const query = `
   query {
     repository(owner: "payloadcms", name: "${repo}") {
@@ -30,13 +30,19 @@ export const getContribution = async (
     headers,
     method: 'POST',
   })
-  const { data } = await res.json()
+  const json: unknown = await res.json()
+  if (!json || typeof json !== 'object' || !('data' in json)) {
+    return { title: null, url: null }
+  }
+  const { data } = json as {
+    data?: { repository?: Record<string, { title?: string; url?: string } | null> }
+  }
   const item = data?.repository?.[contributionType[type]]
   if (!item) {
     return { title: null, url: null }
   }
   return {
-    title: item.title,
-    url: item.url,
+    title: item.title ?? null,
+    url: item.url ?? null,
   }
 }

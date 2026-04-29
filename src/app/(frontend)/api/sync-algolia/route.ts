@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import type { NextRequest, NextResponse } from 'next/server'
 
-import syncToAlgolia from '../../../../scripts/syncToAlgolia'
+import { runAuthorizedSyncGet } from '@root/utilities/runAuthorizedSyncGet'
 
-export async function GET(): Promise<NextResponse> {
-  await syncToAlgolia()
+import { syncToAlgolia } from '../../../../scripts/syncToAlgolia'
 
-  return NextResponse.json((JSON.stringify({ success: true }), { status: 200 }))
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  return runAuthorizedSyncGet(req, () => syncToAlgolia())
 }

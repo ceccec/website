@@ -110,7 +110,6 @@ export async function generateReleaseOgImage(version: string): Promise<Buffer> {
             </div>
           </div>
           <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', gap: 30 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt="Payload CMS"
               height="40"

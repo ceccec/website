@@ -11,7 +11,7 @@ import { PlusIcon } from '@root/icons/PlusIcon/index'
 import { SearchIcon } from '@root/icons/SearchIcon/index'
 import Link from 'next/link'
 import React, { forwardRef, useEffect, useState } from 'react'
-// eslint-disable-next-line import/no-cycle
+
 import type { LinkType, Reference } from '../CMSLink/index'
 
 import classes from './index.module.scss'
@@ -89,7 +89,7 @@ const generateHref = (args: GenerateSlugType): string => {
     return url
   }
 
-  if (type === 'reference' && reference?.value && typeof reference.value !== 'string') {
+  if (type === 'reference' && reference?.value && typeof reference.value === 'object') {
     if (reference.relationTo === 'pages') {
       const value = reference.value as Page
       const breadcrumbs = value?.breadcrumbs
@@ -337,9 +337,9 @@ export const Button = ({
   if (el === 'link') {
     return (
       <Link
+        className={className}
         href={href}
         prefetch={false}
-        className={className}
         {...newTabProps}
         id={id}
         onMouseEnter={() => {

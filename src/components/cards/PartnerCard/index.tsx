@@ -7,13 +7,22 @@ import Link from 'next/link'
 
 import classes from './index.module.scss'
 
-type PartnerCardProps = Partner
+/** Partners index maps taxonomy to string keys for filtering */
+type PartnerDirectoryEntry = {
+  budgets: string[]
+  industries: string[]
+  regions: string[]
+  specialties: string[]
+} & Omit<Partner, 'budgets' | 'industries' | 'regions' | 'specialties'>
+
+type PartnerCardProps = Partner | PartnerDirectoryEntry
 
 export const PartnerCard = (partner: PartnerCardProps) => {
   return (
     <Link className={classes.partnerCard} href={`/partners/${partner.slug}`}>
       <div className={classes.partnerCardImage}>
-        {typeof partner.content.bannerImage !== 'string' && (
+        {typeof partner.content.bannerImage === 'object' &&
+          partner.content.bannerImage !== null && (
           <Media resource={partner.content.bannerImage} />
         )}
       </div>

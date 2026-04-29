@@ -2,7 +2,7 @@ import type { Payload } from 'payload'
 
 import { revalidate } from './revalidate'
 
-export const revalidatePage = async ({
+export const revalidatePage = ({
   collection,
   doc,
   payload,
@@ -10,8 +10,8 @@ export const revalidatePage = async ({
   collection: string
   doc: any // eslint-disable-line @typescript-eslint/no-explicit-any
   payload: Payload
-}): Promise<void> => {
+}): void => {
   if (doc._status === 'published') {
-    revalidate({ slug: doc.slug, collection, payload })
+    void revalidate({ slug: doc.slug, collection, payload })
   }
 }

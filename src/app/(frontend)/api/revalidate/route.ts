@@ -1,9 +1,9 @@
 import type { NextRequest } from 'next/server'
 
-import { revalidateTag } from 'next/cache'
+import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export function GET(request: NextRequest): NextResponse {
   const collection = request.nextUrl.searchParams.get('collection')
   const slug = request.nextUrl.searchParams.get('slug')
   const secret = request.nextUrl.searchParams.get('secret')
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   if (typeof collection === 'string' && typeof slug === 'string') {
-    revalidateTag(`${collection}_${slug}`)
+    revalidateTagImmediate(`${collection}_${slug}`)
     return NextResponse.json({ now: Date.now(), revalidated: true })
   }
 

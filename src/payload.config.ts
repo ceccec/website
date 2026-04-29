@@ -1,98 +1,55 @@
-import fs from 'fs'
-import { revalidateRedirects } from '@hooks/revalidateRedirects'
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
-import { seoPlugin } from '@payloadcms/plugin-seo'
-import {
-  BlocksFeature,
-  EXPERIMENTAL_TableFeature,
-  lexicalEditor,
-  LinkFeature,
-  UploadFeature,
-} from '@payloadcms/richtext-lexical'
-import { r2Storage } from '@payloadcms/storage-r2'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { type CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
-import type { GetPlatformProxyOptions } from 'wrangler'
-import link from '@root/fields/link'
-import { LabelFeature } from '@root/fields/richText/features/label/server'
-import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
-import { googleAnalytics } from '@zubricks/plugin-google-analytics'
-import { revalidateTag } from 'next/cache'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+/**
+ * Payload Config — central definition for Collections, Globals, Fields (via plugins),
+ * Database adapter, Admin UI, and Hooks scope.
+ *
+ * Data retrieval in app code: Local API (`getPayload` from `@root/lib/getPayload`),
+ * REST (`/api`), GraphQL (`/api/graphql`). CLI / `payload run` scripts typically use
+ * `getPayload({ config })` with `@payload-config` (see `fetchDiscord.ts`, `clearDuplicateThreads.ts`).
+ * Lexical slate migration: `src/migrate.ts` uses `@root/lib/getPayload` like Next (same singleton).
+ *
+ * Doc areas ↔ repo:
+ * - Configuration — this file; plugins `src/plugins`; env-driven URL/origins `src/config/trustedOrigins.ts`, `utilities/getURL.ts`
+ * - Database — `resolvePayloadDb` (`src/lib/payloadDb.ts`), Cloudflare bindings `assertCloudflarePayloadBindings`
+ * - Admin UI — `admin.*` below; nav/dashboard slots `components/AfterNavActions`, `components/BeforeDashboard`
+ * - Live preview — `admin.livePreview`; draft route `app/(frontend)/api/preview/route.ts` (secret cookie — `.env.example`)
+ * - Local API — `src/lib/getPayload.ts`, `app/_data`, `utilities/getDocument`, docs pages under `app/(frontend)/(pages)/docs`
+ * - Lexical — `config/payloadLexicalEditor.ts`
+ * - Email — `email/sendgridMailTransport.ts`, `email/nodemailer` adapter below
+ * - Jobs queue — `jobs` below; access `config/jobsAccess.ts`
+ * - TypeScript types — `typescript.outputFile` → generated `payload-types.ts`
+ * - Fields — shared field defs `src/fields`, blocks `src/blocks`, plugin schema `src/plugins/schema`
+ * - Access control — collection `access` in `src/collections`, Cloud helpers `src/access`, tenant checks in plugins
+ * - Hooks — collection/plugin `hooks` in schema plugins; pipeline entry `src/plugins/index.ts`
+ *
+ * @see https://payloadcms.com/docs/getting-started/concepts
+ * @see https://payloadcms.com/docs/configuration/overview
+ * @see https://payloadcms.com/docs/database/overview
+ * @see https://payloadcms.com/docs/fields/overview
+ * @see https://payloadcms.com/docs/access-control/overview
+ * @see https://payloadcms.com/docs/hooks/overview
+ * @see https://payloadcms.com/docs/local-api/overview
+ */
+import fs from 'fs'
 import path from 'path'
-import { buildConfig, type TextField } from 'payload'
+import { buildConfig } from 'payload'
+import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
-import { BlogContent } from './blocks/BlogContent'
-import { BlogMarkdown } from './blocks/BlogMarkdown'
-import { Callout } from './blocks/Callout'
-import { CallToAction } from './blocks/CallToAction'
-import { CardGrid } from './blocks/CardGrid'
-import { CaseStudiesHighlight } from './blocks/CaseStudiesHighlight'
-import { CaseStudyCards } from './blocks/CaseStudyCards'
-import { CaseStudyParallax } from './blocks/CaseStudyParallax'
-import { Code } from './blocks/Code'
-import { CodeFeature } from './blocks/CodeFeature'
-import { ComparisonTable } from './blocks/ComparisonTable'
-import { Content } from './blocks/Content'
-import { ContentGrid } from './blocks/ContentGrid'
-import { DownloadBlock } from './blocks/Download'
-import { CodeExampleBlock, ExampleTabs, MediaExampleBlock } from './blocks/ExampleTabs'
-import { Form } from './blocks/Form'
-import { HoverCards } from './blocks/HoverCards'
-import { HoverHighlights } from './blocks/HoverHighlights'
-import { LinkGrid } from './blocks/LinkGrid'
-import { LogoGrid } from './blocks/LogoGrid'
-import { MediaBlock } from './blocks/Media'
-import { MediaContent } from './blocks/MediaContent'
-import { MediaContentAccordion } from './blocks/MediaContentAccordion'
-import { Pricing } from './blocks/Pricing'
-import { ReusableContent as ReusableContentBlock } from './blocks/ReusableContent'
-import { Slider } from './blocks/Slider'
-import { Statement } from './blocks/Statement'
-import { Steps } from './blocks/Steps'
-import { StickyHighlights } from './blocks/StickyHighlights'
-import { CaseStudies } from './collections/CaseStudies'
-import { Categories } from './collections/Categories'
-import { CommunityHelp } from './collections/CommunityHelp'
-import { Docs } from './collections/Docs'
-import { ArrowBlock } from './collections/Docs/blocks/arrow'
-import { BannerBlock } from './collections/Docs/blocks/banner'
-import { BulletListBlock } from './collections/Docs/blocks/bulletList'
-import { CodeBlock } from './collections/Docs/blocks/code'
-import { LightDarkImageBlock } from './collections/Docs/blocks/lightDarkImage'
-import { PayloadMediaBlock } from './collections/Docs/blocks/payloadMedia'
-import { PillBlock } from './collections/Docs/blocks/pill'
-import { ResourceBlock } from './collections/Docs/blocks/resource'
-import { RestExamplesBlock } from './collections/Docs/blocks/restExamples'
-import { TableWithDrawersBlock } from './collections/Docs/blocks/tableWithDrawers'
-import { UploadBlock } from './collections/Docs/blocks/upload'
-import { VideoDrawerBlock } from './collections/Docs/blocks/VideoDrawer'
-import { YoutubeBlock } from './collections/Docs/blocks/youtube'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Budgets, Industries, Regions, Specialties } from './collections/PartnerFilters'
-import { Partners } from './collections/Partners'
-import { Posts } from './collections/Posts'
-import { ReusableContent } from './collections/ReusableContent'
 import { Users } from './collections/Users'
-import { Footer } from './globals/Footer'
-import { GetStarted } from './globals/GetStarted'
-import { MainMenu } from './globals/MainMenu'
-import { PartnerProgram } from './globals/PartnerProgram'
-import { TopBar } from './globals/TopBar'
-import { opsCounterPlugin } from './plugins/opsCounter'
-import createReleasePost from './scripts/createReleasePost'
-import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
-import redeployWebsite from './scripts/redeployWebsite'
-import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
+import { createCloudflareLogger } from './config/cloudflareLogger'
+import { getCloudflareContextFromWrangler } from './config/getCloudflareContextFromWrangler'
+import { jobsCanRun } from './config/jobsAccess'
+import { payloadLexicalEditor } from './config/payloadLexicalEditor'
+import { getTrustedOrigins } from './config/trustedOrigins'
 import { createSendGridMailTransport } from './email/sendgridMailTransport'
-import { commaSeparatedEnv } from './lib/commaEnv'
+import localization from './i18n/localization'
+import { assertCloudflarePayloadBindings } from './lib/assertCloudflarePayloadBindings'
 import { getDeploymentTarget } from './lib/deploymentTarget'
+import { resolvePayloadDb } from './lib/payloadDb'
+import { getPlugins } from './plugins'
+import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -110,27 +67,6 @@ const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(valu
 const isCLI = process.argv.some((value) => realpath(value)?.endsWith(path.join('payload', 'bin.js')))
 const isProduction = process.env.NODE_ENV === 'production'
 
-const createLog =
-  (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
-    if (typeof objOrMsg === 'string') {
-      fn(JSON.stringify({ level, msg: objOrMsg }))
-    } else {
-      fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
-    }
-  }
-
-const cloudflareLogger = {
-  level: process.env.PAYLOAD_LOG_LEVEL || 'info',
-  trace: createLog('trace', console.debug),
-  debug: createLog('debug', console.debug),
-  info: createLog('info', console.log),
-  warn: createLog('warn', console.warn),
-  error: createLog('error', console.error),
-  fatal: createLog('fatal', console.error),
-  silent: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any
-
 const deploymentTarget = getDeploymentTarget()
 
 const cloudflare: CloudflareContext | undefined =
@@ -140,20 +76,46 @@ const cloudflare: CloudflareContext | undefined =
       : await getCloudflareContext({ async: true })
     : undefined
 
-const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+assertCloudflarePayloadBindings(deploymentTarget, cloudflare)
 
-if (deploymentTarget === 'vercel' && !postgresUrl.trim()) {
-  throw new Error(
-    'Vercel / Postgres requires POSTGRES_URL or DATABASE_URL (postgres://…). On Cloudflare D1, unset those and set PAYLOAD_HOSTING=cloudflare or deploy without VERCEL=1.',
-  )
-}
+const trustedOrigins = getTrustedOrigins()
+
+const adminMetaIcons =
+  process.env.PAYLOAD_ADMIN_FAVICON_URL?.trim()
+    ? [
+        {
+          type: 'image/png',
+          rel: 'icon' as const,
+          url: process.env.PAYLOAD_ADMIN_FAVICON_URL.trim(),
+        },
+      ]
+    : undefined
 
 export default buildConfig({
   admin: {
-    autoLogin: {
-      email: 'dev2@payloadcms.com',
-      password: 'test',
-    },
+    ...(process.env.NODE_ENV !== 'production'
+      ? {
+          autoLogin: {
+            email: 'dev2@payloadcms.com',
+            password: 'test',
+          },
+        }
+      : {}),
+    ...(process.env.PAYLOAD_ADMIN_TITLE_SUFFIX?.trim() ||
+    process.env.PAYLOAD_ADMIN_META_DESCRIPTION?.trim() ||
+    adminMetaIcons
+      ? {
+          meta: {
+            ...(process.env.PAYLOAD_ADMIN_META_DESCRIPTION?.trim()
+              ? { description: process.env.PAYLOAD_ADMIN_META_DESCRIPTION.trim() }
+              : {}),
+            ...(process.env.PAYLOAD_ADMIN_TITLE_SUFFIX?.trim()
+              ? { titleSuffix: process.env.PAYLOAD_ADMIN_TITLE_SUFFIX.trim() }
+              : {}),
+            ...(adminMetaIcons ? { icons: adminMetaIcons } : {}),
+          },
+        }
+      : {}),
     components: {
       afterNavLinks: ['@root/components/AfterNavActions'],
       beforeDashboard: ['@root/components/BeforeDashboard'],
@@ -161,526 +123,48 @@ export default buildConfig({
     importMap: {
       baseDir: dirname,
     },
+    livePreview: {
+      breakpoints: [
+        { name: 'mobile', height: 667, label: 'Mobile', width: 375 },
+        { name: 'tablet', height: 1024, label: 'Tablet', width: 768 },
+        { name: 'desktop', height: 900, label: 'Desktop', width: 1440 },
+      ],
+    },
+    user: Users.slug,
   },
-  blocks: [
-    BlogContent,
-    BlogMarkdown,
-    CodeExampleBlock,
-    MediaExampleBlock,
-    Callout,
-    CallToAction,
-    DownloadBlock,
-    LightDarkImageBlock,
-    PayloadMediaBlock,
-    TableWithDrawersBlock,
-    YoutubeBlock,
-    PillBlock,
-    ArrowBlock,
-    BulletListBlock,
-    CardGrid,
-    CaseStudyCards,
-    CaseStudiesHighlight,
-    UploadBlock,
-    CaseStudyParallax,
-    CodeFeature,
-    Content,
-    ContentGrid,
-    ComparisonTable,
-    Form,
-    HoverCards,
-    HoverHighlights,
-    LinkGrid,
-    LogoGrid,
-    MediaBlock,
-    MediaContent,
-    MediaContentAccordion,
-    RestExamplesBlock,
-    Pricing,
-    ReusableContentBlock,
-    ResourceBlock,
-    Slider,
-    Statement,
-    Steps,
-    StickyHighlights,
-    ExampleTabs,
-    {
-      slug: 'spotlight',
-      fields: [
-        {
-          name: 'element',
-          type: 'select',
-          options: [
-            {
-              label: 'H1',
-              value: 'h1',
-            },
-            {
-              label: 'H2',
-              value: 'h2',
-            },
-            {
-              label: 'H3',
-              value: 'h3',
-            },
-            {
-              label: 'Paragraph',
-              value: 'p',
-            },
-          ],
-        },
-        {
-          name: 'richText',
-          type: 'richText',
-          editor: lexicalEditor(),
-        },
-      ],
-      interfaceName: 'SpotlightBlock',
-    },
-    {
-      slug: 'video',
-      fields: [
-        {
-          name: 'url',
-          type: 'text',
-        },
-      ],
-      interfaceName: 'VideoBlock',
-    },
-    {
-      slug: 'br',
-      fields: [
-        {
-          name: 'ignore',
-          type: 'text',
-        },
-      ],
-
-      interfaceName: 'BrBlock',
-    },
-    VideoDrawerBlock,
-    {
-      slug: 'commandLine',
-      fields: [
-        {
-          name: 'command',
-          type: 'text',
-        },
-      ],
-      interfaceName: 'CommandLineBlock',
-    },
-    {
-      slug: 'command',
-      fields: [
-        {
-          name: 'command',
-          type: 'text',
-          required: true,
-        },
-      ],
-      labels: {
-        plural: 'Command Lines',
-        singular: 'Command Line',
-      },
-    },
-    {
-      slug: 'link',
-      fields: [link()],
-      labels: {
-        plural: 'Links',
-        singular: 'Link',
-      },
-    },
-    {
-      slug: 'templateCards',
-      fields: [
-        {
-          name: 'templates',
-          type: 'array',
-          fields: [
-            {
-              name: 'name',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'description',
-              type: 'textarea',
-              required: true,
-            },
-            {
-              name: 'image',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'slug',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'order',
-              type: 'number',
-              required: true,
-            },
-          ],
-          labels: {
-            plural: 'Templates',
-            singular: 'Template',
-          },
-        },
-      ],
-      interfaceName: 'TemplateCardsBlock',
-    },
-    BannerBlock,
-    CodeBlock,
-    Code,
-  ],
-  collections: [
-    CaseStudies,
-    CommunityHelp,
-    Docs,
-    Media,
-    Pages,
-    Posts,
-    Categories,
-    ReusableContent,
-    Users,
-    Partners,
-    Industries,
-    Specialties,
-    Regions,
-    Budgets,
-  ],
-  cors: [
-    ...new Set(
-      [
-        ...commaSeparatedEnv(process.env.PAYLOAD_CORS_ORIGINS),
-        process.env.PAYLOAD_PUBLIC_APP_URL || '',
-        'https://payloadcms.com',
-        'https://discord.com/api',
-      ].filter(Boolean),
-    ),
-  ],
-  db:
-    deploymentTarget === 'vercel'
-      ? postgresAdapter({
-          pool: {
-            connectionString: postgresUrl,
-          },
-        })
-      : sqliteD1Adapter({ binding: cloudflare!.env.D1 }),
-  logger: isProduction && deploymentTarget === 'cloudflare' ? cloudflareLogger : undefined,
+  blocks: [],
+  collections: [],
+  cors: trustedOrigins,
+  csrf: trustedOrigins,
+  db: resolvePayloadDb({ cloudflare, deploymentTarget }),
+  localization,
+  serverURL: getServerSideURL(),
+  // Cloudflare Workers: JSON line logging (not full PayloadLogger / pino surface).
+   
+  logger:
+    isProduction && deploymentTarget === 'cloudflare' ? (createCloudflareLogger() as any) : undefined,
+  ...(deploymentTarget === 'vercel' ? { sharp } : {}),
   defaultDepth: 1,
-  editor: lexicalEditor({
-    features: ({ defaultFeatures }) => [
-      ...defaultFeatures.filter((feature) => feature.key !== 'link'),
-      LinkFeature({
-        fields({ defaultFields }) {
-          return [
-            ...defaultFields.filter((field) => field.name !== 'url'),
-            {
-              // Own url field to disable URL encoding links starting with '../'
-              name: 'url',
-              type: 'text',
-              label: ({ t }) => t('fields:enterURL'),
-              required: true,
-              validate: (value: string, options) => {
-                return
-              },
-            } as TextField,
-          ]
-        },
-      }),
-      EXPERIMENTAL_TableFeature(),
-      UploadFeature({
-        collections: {
-          media: {
-            fields: [
-              {
-                name: 'enableLink',
-                type: 'checkbox',
-                label: 'Enable Link',
-              },
-              link({
-                appearances: false,
-                disableLabel: true,
-                overrides: {
-                  admin: {
-                    condition: (_, data) => Boolean(data?.enableLink),
-                  },
-                },
-              }),
-            ],
-          },
-        },
-      }),
-      LabelFeature(),
-      LargeBodyFeature(),
-      BlocksFeature({
-        blocks: [
-          'spotlight',
-          'video',
-          'br',
-          'Banner',
-          'VideoDrawer',
-          'templateCards',
-          'Code',
-          'downloadBlock',
-          'commandLine',
-        ],
-      }),
-    ],
-  }),
+  editor: payloadLexicalEditor,
   email: nodemailerAdapter({
     defaultFromAddress: 'info@payloadcms.com',
     defaultFromName: 'Payload',
     ...sendgridConfig,
   }),
-  endpoints: [
-    {
-      handler: syncDocs,
-      method: 'get',
-      path: '/sync/docs',
-    },
-    {
-      handler: redeployWebsite,
-      method: 'post',
-      path: '/redeploy/website',
-    },
-    {
-      handler: refreshMdxToLexical,
-      method: 'get',
-      path: '/refresh/mdx-to-lexical',
-    },
-    {
-      handler: createReleasePost,
-      method: 'post',
-      path: '/create-release-post',
-    },
-    {
-      handler: createReleasePostFromAdmin,
-      method: 'post',
-      path: '/create-release-post-from-admin',
-    },
-  ],
-  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
+  endpoints: [],
+  globals: [],
   graphQL: {
-    disablePlaygroundInProduction: false,
+    disablePlaygroundInProduction: true,
   },
-  plugins: [
-    opsCounterPlugin({
-      max: 200,
-      warnAt: 25,
-    }),
-    googleAnalytics({
-      // Optional: Configure which widgets to enable
-      enabledWidgets: ['analytics-overview', 'top-pages', 'active-users', 'channel-groups'],
-    }),
-    formBuilderPlugin({
-      formOverrides: {
-        fields: ({ defaultFields }) => [
-          ...defaultFields,
-          {
-            name: 'hubSpotFormID',
-            type: 'text',
-            admin: {
-              position: 'sidebar',
-            },
-            label: 'HubSpot Form ID',
-          },
-          {
-            name: 'customID',
-            type: 'text',
-            admin: {
-              description: 'Attached to submission button to track clicks',
-              position: 'sidebar',
-            },
-            label: 'Custom ID',
-          },
-          {
-            name: 'requireRecaptcha',
-            type: 'checkbox',
-            admin: {
-              position: 'sidebar',
-            },
-            label: 'Require reCAPTCHA',
-          },
-        ],
-        hooks: {
-          afterChange: [
-            ({ doc }) => {
-              revalidateTag(`form-${doc.title}`)
-            },
-          ],
-        },
-      },
-      formSubmissionOverrides: {
-        fields: ({ defaultFields }) => [
-          ...defaultFields,
-          {
-            name: 'recaptcha',
-            type: 'text',
-            validate: async (value, { req, siblingData }) => {
-              const form = await req.payload.findByID({
-                id: siblingData?.form,
-                collection: 'forms',
-              })
-
-              if (!form?.requireRecaptcha) {
-                return true
-              }
-
-              if (!value) {
-                return 'Please complete the reCAPTCHA'
-              }
-
-              const res = await fetch(
-                `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY}&response=${value}`,
-                {
-                  method: 'POST',
-                },
-              )
-              const data = await res.json()
-              if (!data.success) {
-                return 'Invalid captcha'
-              } else {
-                return true
-              }
-            },
-          },
-        ],
-        hooks: {
-          afterChange: [
-            async ({ doc, req }) => {
-              req.payload.logger.info('Form Submission Received')
-              req.payload.logger.info(Object.fromEntries(req?.headers.entries()))
-
-              const body = req.json ? await req.json() : {}
-
-              const sendSubmissionToHubSpot = async (): Promise<void> => {
-                const { form, submissionData: submissionDataFromDoc } = doc
-                const portalID = process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY
-
-                // Remove partnerId from HubSpot submission (toEmail already populated by beforeChange hook)
-                const submissionData = submissionDataFromDoc.filter(
-                  (field) => field.field !== 'partnerId',
-                )
-
-                const data = {
-                  context: {
-                    ...('hubspotCookie' in body && { hutk: body?.hubspotCookie }),
-                    pageName: 'pageName' in body ? body?.pageName : '',
-                    pageUri: 'pageUri' in body ? body?.pageUri : '',
-                  },
-                  fields: submissionData.map((key) => ({
-                    name: key.field,
-                    value: key.value,
-                  })),
-                }
-
-                try {
-                  await fetch(
-                    `https://api.hsforms.com/submissions/v3/integration/submit/${portalID}/${form.hubSpotFormID}`,
-                    {
-                      body: JSON.stringify(data),
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      method: 'POST',
-                    },
-                  )
-                } catch (err: unknown) {
-                  req.payload.logger.error({
-                    err,
-                    msg: 'Fetch to HubSpot form submissions failed',
-                  })
-                }
-              }
-              await sendSubmissionToHubSpot()
-            },
-          ],
-          beforeChange: [
-            async ({ data, req }) => {
-              // Look up partner email if partnerId is present and populate toEmail field
-              // This runs before email notifications are sent
-              const partnerIdField = data?.submissionData?.find(
-                (field) => field.field === 'partnerId',
-              )
-
-              if (partnerIdField?.value) {
-                try {
-                  const partner = await req.payload.findByID({
-                    id: partnerIdField.value,
-                    collection: 'partners',
-                    overrideAccess: true,
-                  })
-
-                  if (partner?.email) {
-                    // Add toEmail field to submissionData for email notifications
-                    data.submissionData.push({
-                      field: 'toEmail',
-                      value: partner.email,
-                    })
-                  }
-                } catch (err) {
-                  req.payload.logger.error({
-                    err,
-                    msg: 'Failed to lookup partner email',
-                  })
-                }
-              }
-
-              return data
-            },
-          ],
-        },
-      },
-    }),
-    seoPlugin({
-      collections: ['case-studies', 'pages', 'posts'],
-      globals: ['get-started'],
-      uploadsCollection: 'media',
-    }),
-    nestedDocsPlugin({
-      collections: ['pages'],
-      generateLabel: (_, doc) => doc.title as string,
-      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug as string}`, ''),
-    }),
-    redirectsPlugin({
-      collections: ['case-studies', 'pages', 'posts'],
-      overrides: {
-        hooks: {
-          afterChange: [revalidateRedirects],
-        },
-      },
-    }),
-    ...(deploymentTarget === 'cloudflare'
-      ? [
-          r2Storage({
-            bucket: cloudflare!.env.R2,
-            collections: { media: true },
-          }),
-        ]
-      : [
-          vercelBlobStorage({
-            collections: { media: true },
-            token: process.env.BLOB_READ_WRITE_TOKEN,
-          }),
-        ]),
-  ],
+  jobs: {
+    access: {
+      run: jobsCanRun,
+    },
+    tasks: [],
+  },
+  plugins: getPlugins({ cloudflare, deploymentTarget }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 })
-
-function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
-  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
-    ({ getPlatformProxy }) =>
-      getPlatformProxy({
-        envFiles: [],
-        environment: process.env.CLOUDFLARE_ENV,
-        remoteBindings: false,
-      } satisfies GetPlatformProxyOptions),
-  )
-}

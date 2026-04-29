@@ -33,10 +33,9 @@ export const canUserMangeProject = ({
 
   const userTeams = user?.teams || []
 
+  const team = project?.team
   const projectTeamID =
-    typeof project?.team === 'object' && project?.team !== null && 'id' in project?.team
-      ? project?.team.id
-      : project?.team
+    typeof team === 'object' && team !== null && 'id' in team ? team.id : team
 
   if (!projectTeamID) {
     return false

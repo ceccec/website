@@ -35,8 +35,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             display: 'none',
             visibility: 'hidden',
           }}
+          title="Google Tag Manager"
           width="0"
-        ></iframe>
+        />
       </noscript>
     </Fragment>
   )

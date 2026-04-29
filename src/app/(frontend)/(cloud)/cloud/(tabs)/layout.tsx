@@ -6,7 +6,7 @@ import { ArrowIcon } from '@icons/ArrowIcon'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
-export default async (props) => {
+export default (props) => {
   const { children } = props
 
   return (

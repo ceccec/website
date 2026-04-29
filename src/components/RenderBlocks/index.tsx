@@ -132,9 +132,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
       let nextBlockKey, nextBlockSettings
 
       const currentBlockSettings: Settings = block[getFieldsKeyFromBlock(block)]?.settings
-      let currentBlockTheme
-
-      currentBlockTheme = currentBlockSettings?.theme ?? theme
+      const currentBlockTheme = currentBlockSettings?.theme ?? theme
 
       if (previousBlock) {
         previousBlockKey = getFieldsKeyFromBlock(previousBlock)

@@ -1,6 +1,12 @@
+/** Fields read for preview / live-preview URL building — use generated doc types at call sites. */
+export type PreviewPathDoc = {
+  breadcrumbs?: Array<{ url?: null | string } | null> | null
+  slug?: null | string
+}
+
 export const formatPagePath = (
   collection: string,
-  doc: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  doc: PreviewPathDoc,
   category?: string,
 ): string => {
   const { slug, breadcrumbs } = doc

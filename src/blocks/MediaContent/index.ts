@@ -17,12 +17,12 @@ export const MediaContent: Block = {
             {
               name: 'alignment',
               type: 'select',
-              enumName: 'mc_align',
               admin: {
                 description: 'Choose how to align the content for this block.',
                 width: '50%',
               },
               defaultValue: 'contentMedia',
+              enumName: 'mc_align',
               options: [
                 {
                   label: 'Content + Media',
@@ -37,12 +37,12 @@ export const MediaContent: Block = {
             {
               name: 'mediaWidth',
               type: 'select',
-              enumName: 'mc_width',
               admin: {
                 description: 'Choose how wide the media should be.',
                 width: '50%',
               },
               defaultValue: 'stretch',
+              enumName: 'mc_width',
               options: [
                 {
                   label: 'Stretch To Edge',

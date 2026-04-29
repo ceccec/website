@@ -13,11 +13,11 @@ export const MediaContentAccordion: Block = {
         {
           name: 'alignment',
           type: 'select',
-          enumName: 'mc_align',
           admin: {
             description: 'Choose how to align the content for this block.',
           },
           defaultValue: 'contentMedia',
+          enumName: 'mc_align',
           options: [
             {
               label: 'Content + Media',
@@ -58,12 +58,12 @@ export const MediaContentAccordion: Block = {
                 {
                   name: 'position',
                   type: 'select',
-                  enumName: 'mca_tab_pos',
                   admin: {
                     description: 'Choose how to position the media itself.',
                     width: '50%',
                   },
                   defaultValue: 'normal',
+                  enumName: 'mca_tab_pos',
                   options: [
                     {
                       label: 'Normal',
@@ -82,12 +82,12 @@ export const MediaContentAccordion: Block = {
                 {
                   name: 'background',
                   type: 'select',
-                  enumName: 'mca_tab_bg',
                   admin: {
                     description: 'Select the background you want to sit behind the media.',
                     width: '50%',
                   },
                   defaultValue: 'none',
+                  enumName: 'mca_tab_bg',
                   options: [
                     {
                       label: 'None',

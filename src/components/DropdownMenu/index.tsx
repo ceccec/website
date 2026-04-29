@@ -1,4 +1,5 @@
 import useClickAway from '@root/utilities/use-click-away'
+import { handleActivationKeydown } from '@utilities/keyboardActivation'
 import * as React from 'react'
 
 import classes from './index.module.scss'
@@ -20,6 +21,7 @@ export const DropdownMenu: React.FC<MenuProps> = ({ children, className, menu, o
     <div
       className={[classes.dropdownMenu, className, show && classes.show].filter(Boolean).join(' ')}
       onClick={() => setShow(!show)}
+      onKeyDown={(event) => handleActivationKeydown(event, () => setShow(!show))}
       ref={ref}
       role="button"
       tabIndex={0}

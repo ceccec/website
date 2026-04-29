@@ -73,7 +73,7 @@ export const UniqueRepoName: React.FC<{
         }
       }
 
-      checkRepositoryName()
+      void checkRepositoryName()
     }
 
     return () => {

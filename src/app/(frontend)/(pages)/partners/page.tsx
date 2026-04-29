@@ -39,17 +39,29 @@ export default async function Partners() {
     return {
       ...partner,
       budgets: partner.budgets
-        ?.map((budget) => typeof budget !== 'string' && budget.value)
-        ?.filter((value): value is string => !!value),
+        ?.map((budget) =>
+          typeof budget === 'object' && budget !== null && 'value' in budget ? budget.value : null,
+        )
+        ?.filter((value): value is string => typeof value === 'string' && !!value),
       industries: partner.industries
-        ?.map((industry) => typeof industry !== 'string' && industry.value)
-        ?.filter((value): value is string => !!value),
+        ?.map((industry) =>
+          typeof industry === 'object' && industry !== null && 'value' in industry
+            ? industry.value
+            : null,
+        )
+        ?.filter((value): value is string => typeof value === 'string' && !!value),
       regions: partner.regions
-        ?.map((region) => typeof region !== 'string' && region.value)
-        ?.filter((value): value is string => !!value),
+        ?.map((region) =>
+          typeof region === 'object' && region !== null && 'value' in region ? region.value : null,
+        )
+        ?.filter((value): value is string => typeof value === 'string' && !!value),
       specialties: partner.specialties
-        ?.map((specialty) => typeof specialty !== 'string' && specialty.value)
-        ?.filter((value): value is string => !!value),
+        ?.map((specialty) =>
+          typeof specialty === 'object' && specialty !== null && 'value' in specialty
+            ? specialty.value
+            : null,
+        )
+        ?.filter((value): value is string => typeof value === 'string' && !!value),
     }
   })
 
@@ -58,16 +70,36 @@ export default async function Partners() {
 
   const filterOptions = {
     budgets: filters.budgets.filter((budget) => {
-      return partnerList.some((partner) => partner.budgets.includes(budget.value))
+      return (
+        typeof budget === 'object' &&
+        budget !== null &&
+        'value' in budget &&
+        partnerList.some((partner) => partner.budgets.includes(budget.value))
+      )
     }),
     industries: filters.industries.filter((industry) => {
-      return partnerList.some((partner) => partner.industries.includes(industry.value))
+      return (
+        typeof industry === 'object' &&
+        industry !== null &&
+        'value' in industry &&
+        partnerList.some((partner) => partner.industries.includes(industry.value))
+      )
     }),
     regions: filters.regions.filter((region) => {
-      return partnerList.some((partner) => partner.regions.includes(region.value))
+      return (
+        typeof region === 'object' &&
+        region !== null &&
+        'value' in region &&
+        partnerList.some((partner) => partner.regions.includes(region.value))
+      )
     }),
     specialties: filters.specialties.filter((specialty) => {
-      return partnerList.some((partner) => partner.specialties.includes(specialty.value))
+      return (
+        typeof specialty === 'object' &&
+        specialty !== null &&
+        'value' in specialty &&
+        partnerList.some((partner) => partner.specialties.includes(specialty.value))
+      )
     }),
   }
 

@@ -19,7 +19,7 @@ const Columns: React.FC<Props> = ({ contentFields, padding }) => {
 
   switch (layout) {
     case 'halfAndHalf':
-
+    // fallthrough: same column layout as twoColumns
     case 'twoColumns':
     case 'twoThirdsOneThird': {
       let col1Cols = 6

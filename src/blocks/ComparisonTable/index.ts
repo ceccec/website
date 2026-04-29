@@ -17,8 +17,8 @@ export const ComparisonTable: Block = {
         {
           name: 'style',
           type: 'select',
-          enumName: 'cmp_style',
           defaultValue: 'default',
+          enumName: 'cmp_style',
           label: 'Style',
           options: [
             {

@@ -79,10 +79,21 @@ export const UpdateRolesConfirmationForm: React.FC<UpdateRolesConfirmationFormPr
       },
     )
 
-    const response = await req.json()
+    const raw: unknown = await req.json()
 
     if (!req.ok) {
-      const message = response.message || response?.errors?.[0]?.message
+      let message: string | undefined
+      if (raw && typeof raw === 'object') {
+        const body = raw as Record<string, unknown>
+        if (typeof body.message === 'string') {
+          message = body.message
+        } else if (Array.isArray(body.errors) && body.errors[0] && typeof body.errors[0] === 'object') {
+          const first = body.errors[0] as Record<string, unknown>
+          if (typeof first.message === 'string') {
+            message = first.message
+          }
+        }
+      }
       toast.error(`Failed to update roles: ${message}`)
       closeModal(modalSlug)
       return
@@ -90,7 +101,7 @@ export const UpdateRolesConfirmationForm: React.FC<UpdateRolesConfirmationFormPr
 
     onRolesUpdated(newRoles)
 
-    revalidateCache({
+    await revalidateCache({
       tag: `team_${team.id}`,
     })
 

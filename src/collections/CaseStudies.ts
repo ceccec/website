@@ -1,13 +1,15 @@
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import type { CollectionConfig } from 'payload'
 
-import { revalidatePath } from 'next/cache'
-
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
 import richText from '../fields/richText'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
+import {
+  revalidateCaseStudy,
+  revalidateMarketingDocument,
+} from '../utilities/revalidateMarketingRoutes'
 
 export const CaseStudies: CollectionConfig = {
   slug: 'case-studies',
@@ -108,9 +110,12 @@ export const CaseStudies: CollectionConfig = {
   hooks: {
     afterChange: [
       ({ doc }) => {
-        revalidatePath(`/case-studies/${doc.slug}`)
-        revalidatePath(`/case-studies`, 'page')
-        console.log(`Revalidated: /case-studies/${doc.slug}`)
+        revalidateMarketingDocument('case-studies', doc.id, () => revalidateCaseStudy(doc.slug))
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidateMarketingDocument('case-studies', doc.id, () => revalidateCaseStudy(doc.slug))
       },
     ],
   },

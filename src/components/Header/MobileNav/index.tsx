@@ -13,6 +13,7 @@ import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
 import { useAuth } from '@root/providers/Auth/index'
 import { useHeaderObserver } from '@root/providers/HeaderIntersectionObserver/index'
 import { useStarCount } from '@root/utilities/use-star-count'
+import { handleActivationKeydown } from '@utilities/keyboardActivation'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
@@ -299,6 +300,9 @@ export const MobileNav: React.FC<NavItems> = (props) => {
                     .filter(Boolean)
                     .join(' ')}
                   onClick={toggleModal}
+                  onKeyDown={(event) => handleActivationKeydown(event, toggleModal)}
+                  role="button"
+                  tabIndex={0}
                 >
                   <MenuIcon />
                 </div>

@@ -1,0 +1,34 @@
+---
+description: Admin UI surfaces — metadata, preview, CSS, location, React hooks, locked docs, preferences
+globs: src/payload.config.ts,src/app/(payload)/**/*.{ts,tsx},src/**/*.scss,src/components/AfterNavActions/**/*.{ts,tsx},src/components/BeforeDashboard/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Admin UI surfaces (first-party docs)
+
+Read these **before** swapping views, metadata, or admin styling.
+
+## Doc map
+
+| Feature | Documentation |
+|---------|----------------|
+| **Page metadata** (root / collection / global / view) | [Admin — Metadata](https://payloadcms.com/docs/admin/metadata) |
+| **Draft preview** from admin | [Admin — Preview](https://payloadcms.com/docs/admin/preview) |
+| **Custom CSS / SCSS** (global `custom.scss`, BEM, layers, `@payloadcms/ui/scss`) | [Customizing CSS & SCSS](https://payloadcms.com/docs/admin/customizing-css) |
+| **Move admin URL / folder structure** | [Customizing location](https://payloadcms.com/docs/admin/customizing-location) |
+| **React hooks** (admin UI client, not config `hooks`) | [React hooks](https://payloadcms.com/docs/admin/react-hooks) |
+| **Locked documents** (concurrent editing) | [Locked documents](https://payloadcms.com/docs/admin/locked-documents) |
+| **User preferences** (stored per user) | [Preferences](https://payloadcms.com/docs/admin/preferences) |
+| **Replacing admin UI (React)** | [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) |
+
+## How this differs from other rules
+
+- **`payload-preview-drafts.mdc`:** Next.js **`/api/preview`**, `draftMode`, `NEXT_PRIVATE_DRAFT_SECRET`, and **`@payloadcms/live-preview-react`** on the **marketing site**.
+- **`payload-hooks.mdc`:** Config **collection/global/field hooks** — unrelated to **React hooks** above.
+- **`payload-custom-components.mdc`:** Replacing admin UI with **custom React components** (root, list, edit, document views).
+
+## Checklist
+
+- [ ] Root `admin.meta` (title suffix, icons, OG, robots) matches branding; env-driven favicon if used (`PAYLOAD_ADMIN_FAVICON_URL` pattern).
+- [ ] Collection/global `admin.meta` used when a section needs its own titles/descriptions.
+- [ ] Styling: prefer `@layer payload` / variables from [@payloadcms/ui scss](https://github.com/payloadcms/payload/tree/3.x/packages/ui/src/scss) over brittle deep selectors.

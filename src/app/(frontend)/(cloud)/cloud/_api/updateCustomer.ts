@@ -21,5 +21,5 @@ export const updateCustomer = async (
     return res.json()
   })
 
-  return sub
+  return sub as Customer
 }

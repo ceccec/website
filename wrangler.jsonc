@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Text/JSON env var catalog for Deploy wizard + docs: config/cloudflare.bindings.json → `pnpm sync:cloudflare-bindings` → package.json `cloudflare`.
   // Account targeting (optional): top-level "account_id" OR env CLOUDFLARE_ACCOUNT_ID — https://developers.cloudflare.com/workers/wrangler/configuration/#inheritable-keys
   // Find account ID: https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/
   // Auth: `wrangler login` locally; CI use CLOUDFLARE_API_TOKEN — https://developers.cloudflare.com/workers/wrangler/ci-cd/
@@ -40,6 +41,9 @@
   "images": {
     "binding": "IMAGES"
   },
+  // Optional Cloudflare products (KV, Queues, Hyperdrive, AI, Vectorize, …):
+  // none required for this app — copy snippets from config/wrangler.optional-bindings.jsonc
+  // after you provision resources. Leave unchanged for minimal deploy (all-or-none: opt-in only).
   "observability": {
     "enabled": true
   }

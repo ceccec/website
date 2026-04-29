@@ -27,7 +27,9 @@ export const TeamMembers: React.FC<{
   // This call returns a new function, which is then passed down to the TeamMemberRow component as the onUpdateRoles prop.
   const handleUpdateRoles =
     (index: number, member: Member) => (newRoles: ('admin' | 'owner' | 'user')[]) => {
-      onUpdateRoles && onUpdateRoles(index, newRoles, member)
+      if (onUpdateRoles) {
+        onUpdateRoles(index, newRoles, member)
+      }
     }
   return (
     <div className={[classes.members, className].filter(Boolean).join(' ')}>

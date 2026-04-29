@@ -13,7 +13,8 @@ export interface Props {
   onLoad?: () => void
   priority?: boolean // for NextImage only
   ref?: Ref<HTMLImageElement | HTMLVideoElement | null>
-  resource?: TypedUploadCollection[UploadCollectionSlug] // for Payload media
+  /** Populated upload doc or numeric id when depth=0 */
+  resource?: number | TypedUploadCollection[UploadCollectionSlug]
   sizes?: string // for NextImage only
   src?: null | StaticImageData | string // for static media
   videoClassName?: string

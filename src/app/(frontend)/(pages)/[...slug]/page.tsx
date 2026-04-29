@@ -65,7 +65,7 @@ export async function generateMetadata({
 
   let ogImage: Media | null = null
 
-  if (page && page.meta?.image && typeof page.meta.image !== 'string') {
+  if (page && page.meta?.image && typeof page.meta.image === 'object' && page.meta.image !== null) {
     ogImage = page.meta.image
   }
 

@@ -18,7 +18,8 @@ export const HoverHighlights: Block = {
         {
           name: 'highlights',
           type: 'array',
-          dbName: 'rows',
+          // Explicit dbName avoids Drizzle/SQLite failing to infer nested array relations (SSG/build).
+          dbName: 'hhl_highlight_rows',
           fields: [
             {
               name: 'text',

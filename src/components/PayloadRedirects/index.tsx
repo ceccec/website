@@ -1,7 +1,7 @@
 import type { CaseStudy, Page, Post } from '@types'
 import type React from 'react'
 
-import { getCachedDocument } from '@utilities/getDocument'
+import { getCachedDocumentById } from '@utilities/getDocument'
 import { getCachedRedirects } from '@utilities/getRedirects'
 import { notFound, redirect } from 'next/navigation'
 
@@ -29,7 +29,7 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
       const collection = redirectItem.to?.reference?.relationTo
       const id = redirectItem.to?.reference?.value
 
-      const document = await getCachedDocument(collection, id)()
+      const document = await getCachedDocumentById(collection, id)()
       redirectUrl =
         redirectItem.to?.reference?.relationTo === 'posts'
           ? '/blog/'
@@ -37,12 +37,18 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
             ? '/case-studies/'
             : `${'breadcrumbs' in document && document.breadcrumbs?.at(-1)?.url}`
     } else {
-      redirectUrl =
-        redirectItem.to?.reference?.relationTo === 'posts'
-          ? `/blog/${redirectItem.to?.reference?.value?.slug}`
-          : redirectItem.to?.reference?.relationTo === 'case-studies'
-            ? `/case-studies/${redirectItem.to?.reference?.value?.slug}`
-            : `${redirectItem.to?.reference?.value?.breadcrumbs?.at(-1)?.url}`
+      const refVal = redirectItem.to?.reference?.value
+      const relTo = redirectItem.to?.reference?.relationTo
+      if (typeof refVal === 'object' && refVal !== null) {
+        redirectUrl =
+          relTo === 'posts'
+            ? `/blog/${(refVal as Post).slug}`
+            : relTo === 'case-studies'
+              ? `/case-studies/${(refVal as CaseStudy).slug}`
+              : `${(refVal as Page).breadcrumbs?.at(-1)?.url}`
+      } else {
+        redirectUrl = ''
+      }
     }
 
     if (redirectUrl) {

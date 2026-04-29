@@ -13,13 +13,15 @@ const AuthorContent: React.FC<{
 }> = (props) => {
   const { author } = props
 
-  if (!author || typeof author === 'string') {
+  if (!author || typeof author !== 'object' || author === null) {
     return null
   }
 
   return (
     <div className={classes.author}>
-      {author?.photo && typeof author?.photo !== 'string' && (
+      {author?.photo &&
+        typeof author?.photo === 'object' &&
+        author?.photo !== null && (
         <Media className={classes.authorImage} resource={author?.photo} />
       )}
       <div className={classes.authorInfo}>
@@ -44,7 +46,7 @@ export const AuthorsList: React.FC<{
       <span className={classes.authorLabel}>Author{authors.length > 1 && 's'}</span>
       {authors?.map((author, index) => (
         <Fragment key={index}>
-          {author && typeof author !== 'string' && (
+          {author && typeof author === 'object' && author !== null && (
             <Fragment>
               {author?.twitter ? (
                 <Link

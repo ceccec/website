@@ -68,7 +68,7 @@ export const RepoExists: React.FC<{
         }
       }
 
-      checkRepositoryName()
+      void checkRepositoryName()
     }
 
     return () => {

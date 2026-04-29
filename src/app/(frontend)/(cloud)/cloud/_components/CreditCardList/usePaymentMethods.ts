@@ -109,7 +109,7 @@ export const usePaymentMethods = (args: {
     if (initialValue) {
       return
     }
-    getPaymentMethods()
+    void getPaymentMethods()
   }, [getPaymentMethods, initialValue])
 
   const deletePaymentMethod = useCallback(

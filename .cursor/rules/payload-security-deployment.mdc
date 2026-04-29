@@ -1,0 +1,20 @@
+---
+description: Deployment, abuse prevention, secrets, CORS, CSRF, serverURL, trusted origins
+globs: src/config/trustedOrigins.ts,src/utilities/getURL.ts,src/payload.config.ts
+alwaysApply: false
+---
+
+# Security & deployment (Payload)
+
+- **Docs:** [Deployment](https://payloadcms.com/docs/production/deployment) · [Preventing abuse](https://payloadcms.com/docs/production/preventing-abuse) · [Building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection) (hub: `payload-deployment.mdc`) · [CORS / CSRF](https://payloadcms.com/docs/security/overview)
+- **Secrets:** `PAYLOAD_SECRET` must be strong and unique per environment; **never** client-expose. Draft / preview secrets: **server-only** (`NEXT_PRIVATE_*` patterns).
+- **Abuse:** Rate-limit / protect public REST, GraphQL, and auth routes; lock down **GraphQL** if exposed; avoid expensive defaults on anonymous APIs (see [preventing abuse](https://payloadcms.com/docs/production/preventing-abuse)).
+- **CORS / CSRF:** `cors` and `csrf` in `payload.config.ts` — **this repo:** `getTrustedOrigins()` from `src/config/trustedOrigins.ts`; align with **live domains** and preview URLs.
+- **serverURL / cookie domain:** `getServerSideURL()` / utilities — must match how users reach admin and API over HTTPS in prod.
+- **File / env access:** Admin and API routes should not leak `process.env` to the client bundle.
+
+## Checklist
+
+- [ ] Staging and production have distinct **secrets** and **DB** credentials.
+- [ ] `trustedOrigins` includes admin origin, site origin, and preview origin if different.
+- [ ] Public APIs and login routes reviewed for **abuse** (limits, auth, GraphQL exposure).

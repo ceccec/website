@@ -45,7 +45,7 @@ export const Logout: React.FC = () => {
         isRequesting.current = false
       }
 
-      doLogout()
+      void doLogout()
     }
   }, [logout, user])
 

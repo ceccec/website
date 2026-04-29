@@ -72,7 +72,7 @@ export const useSubscription = (args: {
       isRequesting.current = false
     }
 
-    makeRetrieval()
+    void makeRetrieval()
 
     return () => {
       clearTimeout(timer)
@@ -83,11 +83,11 @@ export const useSubscription = (args: {
     if (initialValue) {
       return
     }
-    getSubscriptions()
+    void getSubscriptions()
   }, [getSubscriptions, initialValue])
 
   const refreshSubscription = useCallback(() => {
-    getSubscriptions()
+    void getSubscriptions()
   }, [getSubscriptions])
 
   const updateSubscription = useCallback(
@@ -142,7 +142,7 @@ export const useSubscription = (args: {
         isRequesting.current = false
       }
 
-      makeUpdate()
+      void makeUpdate()
 
       return () => {
         clearTimeout(timer)

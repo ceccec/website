@@ -17,8 +17,8 @@ const additionalFields: Field[] = [
   {
     name: 'type',
     type: 'select',
-    enumName: 'link_row_kind',
     defaultValue: 'link',
+    enumName: 'link_row_kind',
     options: [
       { label: 'Link', value: 'link' },
       { label: 'NPM CTA', value: 'npmCta' },

@@ -1,9 +1,13 @@
+/**
+ * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
+ * @see https://payloadcms.com/docs/local-api/overview
+ */
 // @ts-ignore
 import * as discordMDX from 'discord-markdown'
 const { toHTML } = discordMDX
+import config from '@payload-config'
 import cliProgress from 'cli-progress'
 import { getPayload } from 'payload'
-import config from '@payload-config'
 
 import sanitizeSlug from '../utilities/sanitizeSlug'
 
@@ -42,7 +46,7 @@ type Message = {
 
 type ExistingThread = {
   discordID: string
-  docId: string
+  docId: number
   messageCount: number
 }
 

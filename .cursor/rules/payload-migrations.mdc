@@ -1,0 +1,17 @@
+---
+description: Payload migrations — CLI, adapters, production workflow
+globs: src/migrations/**/*.{ts,js},scripts/**/*migrate*.{mjs,js,ts},src/payload.config.ts
+alwaysApply: false
+---
+
+# Migrations
+
+- **Docs:** [Database migrations](https://payloadcms.com/docs/database/migrations)
+- **CLI:** `payload migrate`, `payload migrate:create`, etc. — adapter-specific (Postgres, MongoDB, SQLite/D1).
+- **This repo:** `package.json` scripts (`deploy:database`, `migrate-lexical-script`, etc.) — follow deployment docs for **Cloudflare vs Vercel**.
+- **Order:** Ship migrations **before** relying on new columns/tables; coordinate with **generate:types** after schema codegen from migrations when applicable.
+
+## Checklist
+
+- [ ] Migration tested against clean DB and existing data snapshot when risky.
+- [ ] Lexical / plugins: dedicated migrations (`migrateSlateToLexical` etc.) run in controlled maintenance windows if large.

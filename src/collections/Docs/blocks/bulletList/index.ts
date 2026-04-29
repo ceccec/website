@@ -6,8 +6,6 @@ export const BulletListBlock: Block = {
     {
       name: 'items',
       type: 'array',
-      required: true,
-      minRows: 1,
       fields: [
         {
           name: 'text',
@@ -25,6 +23,8 @@ export const BulletListBlock: Block = {
           required: true,
         },
       ],
+      minRows: 1,
+      required: true,
     },
   ],
   interfaceName: 'BulletListBlock',

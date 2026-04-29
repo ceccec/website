@@ -1,8 +1,9 @@
 import type { CaseStudy, Page, Post } from '@root/payload-types'
 
+import { isKeyboardActivation } from '@utilities/keyboardActivation'
 import Link from 'next/link'
 import React from 'react'
-// eslint-disable-next-line import/no-cycle
+
 import type { ButtonProps } from '../Button/index'
 
 import { Button } from '../Button/index'
@@ -13,17 +14,17 @@ const relationSlugs = {
 
 type PageReference = {
   relationTo: 'pages'
-  value: Page | string
+  value: number | Page | string
 }
 
 type PostsReference = {
   relationTo: 'posts'
-  value: Post | string
+  value: number | Post | string
 }
 
 type CaseStudyReference = {
   relationTo: (typeof relationSlugs)['case_studies']
-  value: CaseStudy | string
+  value: CaseStudy | number | string
 }
 
 export type LinkType = 'custom' | 'reference' | null
@@ -39,7 +40,7 @@ export type CMSLinkType = {
   label?: null | string
   mobileFullWidth?: boolean
   newTab?: boolean | null
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
   onMouseEnter?: () => void
   onMouseLeave?: () => void
   reference?: null | Reference
@@ -59,7 +60,7 @@ const generateHref = (args: GenerateSlugType): string => {
     return url
   }
 
-  if (type === 'reference' && reference?.value && typeof reference.value !== 'string') {
+  if (type === 'reference' && reference?.value && typeof reference.value === 'object') {
     if (reference.relationTo === 'pages') {
       const value = reference.value as Page
       const breadcrumbs = value?.breadcrumbs
@@ -108,8 +109,20 @@ export const CMSLink: React.FC<CMSLinkType> = ({
         className={className}
         id={customId ?? ''}
         onClick={onClick}
+        onKeyDown={(event) => {
+          if (onClick && isKeyboardActivation(event)) {
+            event.preventDefault()
+            onClick(event as unknown as React.MouseEvent<HTMLElement>)
+          }
+        }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        {...(onClick
+          ? ({
+              role: 'button',
+              tabIndex: 0,
+            } as const)
+          : {})}
       >
         {label}
         {children}

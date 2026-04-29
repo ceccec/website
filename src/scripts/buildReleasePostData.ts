@@ -1,8 +1,8 @@
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import type { Media } from '@root/payload-types'
 import type { BasePayload } from 'payload'
 
 import { convertMarkdownToLexical, editorConfigFactory } from '@payloadcms/richtext-lexical'
-import type { Media } from '@root/payload-types'
 
 import { generateReleaseOgImage } from './generateReleaseOgImage'
 
@@ -47,9 +47,9 @@ export const buildReleasePostData = async ({
       collection: 'media',
       data: { alt: postTitle },
       file: {
+        name: `release-og-${version}.png`,
         data: imageBuffer,
         mimetype: 'image/png',
-        name: `release-og-${version}.png`,
         size: imageBuffer.length,
       },
     })

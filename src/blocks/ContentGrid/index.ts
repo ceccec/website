@@ -17,8 +17,8 @@ export const ContentGrid: Block = {
             {
               name: 'style',
               type: 'select',
-              enumName: 'cgr_style',
               defaultValue: 'gridBelow',
+              enumName: 'cgr_style',
               label: 'Style',
               options: [
                 { label: 'Grid Below', value: 'gridBelow' },

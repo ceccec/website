@@ -1,0 +1,17 @@
+---
+description: plugin-form-builder — forms, submissions, validation
+globs: src/plugins/schema/**/*form*.{ts,tsx},src/components/CMSForm/**/*.{ts,tsx},src/**/form-submissions/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Form builder plugin
+
+- **Docs:** [Form builder](https://payloadcms.com/docs/plugins/form-builder)
+- **This repo:** `@payloadcms/plugin-form-builder` integrated via website plugin / schema; submissions API and **CMSForm** frontend must stay in sync.
+- **Validation:** Server-side validation per Payload; never trust client-only checks for PII.
+- **Spam / rate limit:** Consider edge or server rate limits on public submission routes.
+
+## Checklist
+
+- [ ] New form field type: admin + frontend renderer + types regenerated.
+- [ ] Submission storage and **PII** comply with privacy policy (e.g. `src/providers/Privacy`).

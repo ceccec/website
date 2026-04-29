@@ -18,8 +18,8 @@ export const Statement: Block = {
         {
           name: 'assetType',
           type: 'select',
-          enumName: 'stm_asset',
           defaultValue: 'media',
+          enumName: 'stm_asset',
           label: 'Asset Type',
           options: [
             {
@@ -55,12 +55,12 @@ export const Statement: Block = {
             {
               name: 'mediaWidth',
               type: 'select',
-              enumName: 'stm_mw',
               admin: {
                 condition: (_, siblingData) => siblingData.assetType === 'media',
                 width: '50%',
               },
               defaultValue: 'medium',
+              enumName: 'stm_mw',
               label: 'Media Width',
               options: [
                 {
@@ -84,8 +84,8 @@ export const Statement: Block = {
             {
               name: 'backgroundGlow',
               type: 'select',
-              enumName: 'stm_glow',
               defaultValue: 'none',
+              enumName: 'stm_glow',
               label: 'Background Glow',
               options: [
                 {

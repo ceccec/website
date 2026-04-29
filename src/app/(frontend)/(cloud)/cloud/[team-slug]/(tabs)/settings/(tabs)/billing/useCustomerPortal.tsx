@@ -51,12 +51,12 @@ export const useCustomerPortal = (args: {
           method: 'POST',
         })
 
-        const data = (await req.json()) as { error?: string; url?: string }
+        const data: { error?: string; url?: string } = await req.json()
 
         if (req.ok) {
-          if (data.url) router.push(data.url)
+          if (data.url) {router.push(data.url)}
         } else {
-          throw new Error(data?.error || 'Something went wrong')
+          throw new Error(data.error ?? 'Something went wrong')
         }
       } catch (err: unknown) {
         setError(`Something went wrong: ${err}`)

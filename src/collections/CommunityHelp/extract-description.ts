@@ -3,7 +3,7 @@ export const extractDescription = (string: string): string => {
     return ''
   }
 
-  let cleanedString = string.replace(/<[^>]+(>|$)/g, '')
+  let cleanedString = string.replace(/<[^>]+(?:>|$)/g, '')
 
   cleanedString = cleanedString.replace(/[^a-z0-9 ]/gi, '')
 

@@ -3,7 +3,7 @@ import type { Team, User } from '@root/payload-cloud-types'
 import { useTeamDrawer } from '@cloud/_components/TeamDrawer/index'
 import { LoadingShimmer } from '@components/LoadingShimmer/index'
 import { Select } from '@forms/fields/Select/index'
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import { components } from 'react-select'
 
 import classes from './index.module.scss'
@@ -16,6 +16,24 @@ const SelectMenuButton = (props) => {
       {TeamDrawerToggler}
     </components.MenuList>
   )
+}
+
+function createTeamSelectMenuList(
+  TeamDrawerToggler: React.ComponentType<{ children?: React.ReactNode; className?: string }>,
+  teamDrawerTogglerClassName: string,
+) {
+  return function TeamSelectMenuList(props: React.ComponentProps<typeof SelectMenuButton>) {
+    return (
+      <SelectMenuButton
+        {...props}
+        TeamDrawerToggler={
+          <TeamDrawerToggler className={teamDrawerTogglerClassName}>
+            Create new team
+          </TeamDrawerToggler>
+        }
+      />
+    )
+  }
 }
 
 export const TeamSelector: React.FC<{
@@ -116,22 +134,18 @@ export const TeamSelector: React.FC<{
     })
   }
 
+  const MenuListSlot = useMemo(
+    () => createTeamSelectMenuList(TeamDrawerToggler, classes.teamDrawerToggler),
+    [TeamDrawerToggler],
+  )
+
   return (
     <Fragment>
       <div className={[classes.teamSelector, className].filter(Boolean).join(' ')}>
         <Select
           className={[classes.select, user === null && classes.hidden].filter(Boolean).join(' ')}
           components={{
-            MenuList: (menuListProps) => (
-              <SelectMenuButton
-                {...menuListProps}
-                TeamDrawerToggler={
-                  <TeamDrawerToggler className={classes.teamDrawerToggler}>
-                    Create new team
-                  </TeamDrawerToggler>
-                }
-              />
-            ),
+            MenuList: MenuListSlot,
           }}
           disabled={user === null}
           initialValue={selectedTeam}

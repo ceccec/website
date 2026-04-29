@@ -64,7 +64,7 @@ export const TeamMembersPage: React.FC<{
   }, [roles, team?.members, user?.id, user?.roles])
 
   // Triggers when a user tries to update roles of a team member.
-  const handleUpdateRoles = async (
+  const handleUpdateRoles = (
     index: number,
     newRoles: ('admin' | 'owner' | 'user')[],
     member: Member,

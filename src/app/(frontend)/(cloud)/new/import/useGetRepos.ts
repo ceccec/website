@@ -113,7 +113,7 @@ export const useGetRepos = (props: {
           }
         }
 
-        getRepos()
+        void getRepos()
       }, 0)
     }
 

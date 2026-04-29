@@ -5,9 +5,12 @@ import { fetchInvoices } from '@cloud/_api/fetchInvoices'
 import { fetchMe } from '@cloud/_api/fetchMe'
 import { fetchTeamWithCustomer } from '@cloud/_api/fetchTeam'
 import { Message } from '@components/Message/index'
+import { notFound } from 'next/navigation'
 import React from 'react'
 
 import { TeamInvoicesPage } from './page_client'
+
+const loginRedirectError = 'You must be logged in to visit this page'
 
 export default async ({
   params,
@@ -17,7 +20,10 @@ export default async ({
   }>
 }) => {
   const { 'team-slug': teamSlug } = await params
-  const { user } = await fetchMe()
+  const { user } = await fetchMe({
+    nullUserRedirect: `/login?error=${encodeURIComponent(loginRedirectError)}`,
+  })
+  if (!user) {notFound()}
   const team = await fetchTeamWithCustomer(teamSlug)
   const invoices = await fetchInvoices(team)
 

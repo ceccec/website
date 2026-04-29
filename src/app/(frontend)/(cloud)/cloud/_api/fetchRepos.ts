@@ -1,6 +1,7 @@
 import type { Endpoints } from '@octokit/types'
 
 import type { Install } from './fetchInstalls'
+import type { GraphQLJsonBody } from './graphqlJson'
 
 import { payloadCloudToken } from './token'
 
@@ -10,6 +11,8 @@ type GitHubResponse =
 export type RepoResults = {} & GitHubResponse['data']
 
 export type Repo = GitHubResponse['data']['repositories'][0]
+
+type GitHubProxyBody = GraphQLJsonBody<RepoResults>
 
 export const fetchRepos = async (args: {
   install: Install
@@ -24,7 +27,7 @@ export const fetchRepos = async (args: {
     throw new Error('No token provided')
   }
 
-  const docs: RepoResults = await fetch(
+  const docs = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`,
     {
       body: JSON.stringify({
@@ -49,13 +52,17 @@ export const fetchRepos = async (args: {
       }
       return res.json()
     })
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as GitHubProxyBody
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs')
       }
       return res?.data
     })
 
+  if (!docs) {
+    throw new Error('Error fetching repositories')
+  }
   return docs
 }
 
@@ -89,12 +96,16 @@ export const fetchReposClient = async ({
       }
       return res.json()
     })
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as GitHubProxyBody
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs')
       }
       return res?.data
     })
 
+  if (!docs) {
+    throw new Error('Error fetching repositories')
+  }
   return docs
 }

@@ -1,7 +1,7 @@
 import type { Team } from '@root/payload-cloud-types'
 import type {
   SetupIntentResult,
-  Stripe, // eslint-disable-line import/named
+  Stripe,
   StripeCardElement as StripeCardElementType,
   StripeElements,
 } from '@stripe/stripe-js'

@@ -18,6 +18,7 @@ export const InstallationButton: React.FC<{
       if (searchParams.state === uuid && typeof onInstall === 'function') {
         onInstall(parseInt(searchParams.installation_id, 10))
       }
+      await Promise.resolve()
     },
   })
 

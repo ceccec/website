@@ -12,14 +12,16 @@ import React from 'react'
 import { untitledSans } from './fonts'
 import '../../css/app.scss'
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <PrivacyProvider>
         <head>
           <link href="/images/favicon.svg" rel="icon" />
-          <link href={process.env.NEXT_PUBLIC_CLOUD_CMS_URL} rel="dns-prefetch" />
-          <link href="https://api.github.com/repos/payloadcms/payload" rel="dns-prefetch" />
+          {process.env.NEXT_PUBLIC_CLOUD_CMS_URL ? (
+            <link href={process.env.NEXT_PUBLIC_CLOUD_CMS_URL} rel="dns-prefetch" />
+          ) : null}
+          <link href="https://api.github.com/repos/ceccec/website" rel="dns-prefetch" />
           <link href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" rel="stylesheet" />
           <link href="https://www.googletagmanager.com" rel="preconnect" />
           <link href="https://www.google-analytics.com" rel="preconnect" />

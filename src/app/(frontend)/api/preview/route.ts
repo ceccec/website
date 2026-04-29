@@ -1,10 +1,9 @@
 import type { NextRequest } from 'next/server'
 import type { PayloadRequest } from 'payload'
 
-import configPromise from '@payload-config'
+import { getPayload } from '@root/lib/getPayload'
 import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getPayload } from 'payload'
 
 export async function GET(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url)
@@ -19,7 +18,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     return new Response('Invalid secret', { status: 401 })
   }
 
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload()
 
   let user
 

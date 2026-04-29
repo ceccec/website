@@ -15,7 +15,7 @@ type UsePopulateDocumentOptions<T> = {
   /** Fallback value if fetch fails or is disabled */
   fallback?: T
   /** Document ID to fetch */
-  id?: string
+  id?: number | string
 }
 
 /**
@@ -41,7 +41,7 @@ export function usePopulateDocument<T>({
     const fetchDocument = async () => {
       setLoading(true)
       try {
-        const res = await fetch(`/api/${collection}/${id}?depth=${depth}`, {
+        const res = await fetch(`/api/${collection}/${encodeURIComponent(String(id))}?depth=${depth}`, {
           credentials: 'include',
           method: 'GET',
         })

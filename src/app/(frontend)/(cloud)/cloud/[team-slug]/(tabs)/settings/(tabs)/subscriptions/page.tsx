@@ -6,9 +6,12 @@ import { fetchPlans } from '@cloud/_api/fetchPlans'
 import { fetchSubscriptions } from '@cloud/_api/fetchSubscriptions'
 import { fetchTeamWithCustomer } from '@cloud/_api/fetchTeam'
 import { Message } from '@components/Message/index'
+import { notFound } from 'next/navigation'
 import React, { Fragment } from 'react'
 
 import { TeamSubscriptionsPage } from './page_client'
+
+const loginRedirectError = 'You must be logged in to visit this page'
 
 export default async ({
   params,
@@ -18,7 +21,10 @@ export default async ({
   }>
 }) => {
   const { 'team-slug': teamSlug } = await params
-  const { user } = await fetchMe()
+  const { user } = await fetchMe({
+    nullUserRedirect: `/login?error=${encodeURIComponent(loginRedirectError)}`,
+  })
+  if (!user) {notFound()}
   const team = await fetchTeamWithCustomer(teamSlug)
   const plans = await fetchPlans()
   const subscriptions = await fetchSubscriptions(team)

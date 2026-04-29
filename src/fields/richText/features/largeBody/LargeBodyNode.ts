@@ -79,7 +79,7 @@ export class LargeBodyNode extends ElementNode {
 
     if (element && isHTMLElement(element)) {
       if (this.isEmpty()) {
-        element.append(document.createElement('br'))
+        element.appendChild(document.createElement('br'))
       }
 
       const formatType = this.getFormatType()

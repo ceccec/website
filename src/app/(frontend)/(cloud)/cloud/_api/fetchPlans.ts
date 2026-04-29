@@ -2,6 +2,8 @@ import type { Plan } from '@root/payload-cloud-types'
 
 import { PLANS_QUERY } from '@data/plans'
 
+import type { GraphQLJsonBody } from './graphqlJson'
+
 export const fetchPlans = async (): Promise<Plan[]> => {
   const doc: Plan[] = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
@@ -13,11 +15,12 @@ export const fetchPlans = async (): Promise<Plan[]> => {
     method: 'POST',
   })
     ?.then((res) => res.json())
-    ?.then((res) => {
+    ?.then((json: unknown) => {
+      const res = json as GraphQLJsonBody<{ Plans?: { docs?: Plan[] } }>
       if (res.errors) {
         throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
       }
-      return res?.data?.Plans?.docs
+      return res?.data?.Plans?.docs ?? []
     })
 
   return doc

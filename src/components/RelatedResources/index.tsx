@@ -8,7 +8,8 @@ import Link from 'next/link'
 import classes from './index.module.scss'
 
 type RelatedResourcesProps = {
-  guides?: (Partial<Post> | string)[]
+  /** Relationship fields may be id or populated post */
+  guides?: (number | Partial<Post> | string)[]
   relatedThreads?: (Partial<CommunityHelp> | string)[]
 }
 
@@ -31,10 +32,14 @@ export const RelatedResources: React.FC<RelatedResourcesProps> = ({ guides, rela
               <ul className={classes.list}>
                 {guides.map((guide) => {
                   return (
-                    typeof guide !== 'string' && (
-                      <li className={classes.item} key={guide.slug}>
-                        <Link href={`/posts/guides/${guide.slug}`} prefetch={false}>
-                          {guide.title} <ArrowIcon className={classes.relatedPostsArrow} />
+                    typeof guide === 'object' &&
+                    guide !== null && (
+                      <li className={classes.item} key={String((guide as Post).slug ?? guide)}>
+                        <Link
+                          href={`/posts/guides/${(guide as Post).slug}`}
+                          prefetch={false}
+                        >
+                          {(guide as Post).title} <ArrowIcon className={classes.relatedPostsArrow} />
                         </Link>
                       </li>
                     )

@@ -25,12 +25,12 @@ export const CodeFeature: Block = {
             {
               name: 'alignment',
               type: 'select',
-              enumName: 'cfa_align',
               admin: {
                 description: 'Choose how to align the content for this block.',
                 width: '50%',
               },
               defaultValue: 'contentCode',
+              enumName: 'cfa_align',
               options: [
                 {
                   label: 'Content + Code',
@@ -65,8 +65,8 @@ export const CodeFeature: Block = {
                 {
                   name: 'language',
                   type: 'select',
-                  enumName: 'cta_lang',
                   defaultValue: 'none',
+                  enumName: 'cta_lang',
                   options: [
                     {
                       label: 'None',

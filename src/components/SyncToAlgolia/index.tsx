@@ -1,6 +1,7 @@
 'use client'
 
 import { toast, useConfig } from '@payloadcms/ui'
+import { errorMessageFromJson } from '@root/utilities/errorMessageFromJson'
 import React, { useState } from 'react'
 
 import './index.scss'
@@ -19,13 +20,13 @@ const SyncToAlgolia: React.FC = () => {
     try {
       setIsSyncing(true)
 
-      const res = await fetch(`${api}/sync-algolia`)
+      const res = await fetch(`${api}/sync-algolia`, { credentials: 'include' })
 
       if (!res.ok) {
         let errorMessage = 'Failed to sync Algolia with Community Help'
         try {
-          const data = await res.json()
-          errorMessage += `: ${data?.message || 'Unknown error'}`
+          const data: unknown = await res.json()
+          errorMessage += `: ${errorMessageFromJson(data)}`
         } catch (error) {
           errorMessage += ': Unable to parse error response.'
         }

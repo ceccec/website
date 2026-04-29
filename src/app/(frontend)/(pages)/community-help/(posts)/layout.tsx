@@ -1,4 +1,4 @@
-export default async ({ children }) => {
+export default ({ children }) => {
   return (
     <div
       style={{

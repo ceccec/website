@@ -8,6 +8,7 @@ import { ArrowIcon } from '@root/icons/ArrowIcon/index'
 import { useAuth } from '@root/providers/Auth/index'
 import { useHeaderObserver } from '@root/providers/HeaderIntersectionObserver/index'
 import { useStarCount } from '@root/utilities/use-star-count'
+import { handleActivationKeydown } from '@utilities/keyboardActivation'
 import Link from 'next/link'
 import * as React from 'react'
 
@@ -153,9 +154,15 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ hideBackground, menuCta, 
                           .filter(Boolean)
                           .join(' ')}
                         onClick={resetHoverStyles}
+                        onKeyDown={(event) =>
+                          handleActivationKeydown(event, () => {
+                            resetHoverStyles()
+                          })
+                        }
                         ref={(ref) => {
                           dropdownMenuRefs[tabIndex] = ref
                         }}
+                        role="presentation"
                       >
                         <div className={[classes.description, 'cols-4'].join(' ')}>
                           {tab.description}

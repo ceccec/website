@@ -1,5 +1,9 @@
-import { getPayload } from 'payload'
+/**
+ * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
+ * @see https://payloadcms.com/docs/local-api/overview
+ */
 import config from '@payload-config'
+import { getPayload } from 'payload'
 
 import sanitizeSlug from '../utilities/sanitizeSlug'
 
@@ -10,7 +14,7 @@ const headers = {
 }
 
 type ExistingDiscussion = {
-  docId: string
+  docId: number
   githubID: string
 }
 
@@ -288,14 +292,14 @@ async function fetchGitHub(): Promise<void> {
   const payload = await getPayload({ config })
   const existingDiscussionsResult = await payload.find({
     collection: 'community-help',
+    depth: 0,
+    limit: 0,
+    overrideAccess: true,
     where: {
       communityHelpType: {
         equals: 'github',
       },
     },
-    limit: 0,
-    depth: 0,
-    overrideAccess: true,
   })
 
   const existingDiscussions: ExistingDiscussion[] = existingDiscussionsResult.docs.map((thread) => ({

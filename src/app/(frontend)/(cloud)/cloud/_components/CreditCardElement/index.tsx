@@ -13,7 +13,7 @@ export const CreditCardElement: React.FC<{
   const { theme } = useThemePreference()
   const [style, setStyle] = useState<{ style: Record<string, unknown> }>()
 
-  const handleChange = useCallback(async (event) => {
+  const handleChange = useCallback((event) => {
     // listen for changes in the `CardElement` and display any errors as they occur
     // prevent this from firing when the input is empty so the error does not show when first focusing the input
     setDisableChangeHandler(event.empty)
@@ -81,7 +81,7 @@ export const CreditCardElement: React.FC<{
             handleChange(e)
           }
           if (typeof onChange === 'function') {
-            onChange(e)
+            void onChange(e)
           }
         }}
         options={style}

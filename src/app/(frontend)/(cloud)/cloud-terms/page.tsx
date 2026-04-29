@@ -115,7 +115,7 @@ export default function TermsClientPage() {
                   <b>Service Levels and Support</b>. During the Subscription Term, unless under a
                   seperate signed agremeent, Payload will make the Service available in accordance
                   with and provide the support set forth in the Service Level Agreement located at
-                  <a href="/sla" /> (the “
+                  <a href="/sla">Service Level Agreement</a> (the “
                   <i>
                     <b>SLA</b>
                   </i>

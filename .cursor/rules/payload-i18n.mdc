@@ -1,0 +1,17 @@
+---
+description: Localization — locales in config, localized fields, frontend routing
+globs: src/i18n/**/*.{ts,tsx},src/**/*localization*.{ts,tsx},src/payload.config.ts
+alwaysApply: false
+---
+
+# Localization (i18n)
+
+- **Docs:** [Localization](https://payloadcms.com/docs/configuration/localization)
+- **Config:** `localization` in `payload.config.ts` — **locales**, **defaultLocale**, **fallback**; this repo uses `src/i18n/localization.ts`.
+- **Fields:** Mark fields **localized** where content differs per locale; **nested** localized docs follow Payload rules for **locale** query params / GraphQL.
+- **Frontend:** Next.js routing (`[locale]` or cookie/header) must agree with **locale** passed into Local API **find** / **findGlobal**.
+
+## Checklist
+
+- [ ] New localized field: regenerate types; update frontend locale switcher if needed.
+- [ ] SEO URLs (`plugin-seo`) respect locale slugs if configured.

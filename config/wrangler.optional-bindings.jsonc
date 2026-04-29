@@ -1,0 +1,65 @@
+// =============================================================================
+// OPTIONAL Cloudflare Worker bindings — not loaded by Wrangler as its own config.
+// Merge snippets into the ROOT object of wrangler.jsonc only when you provision
+// the matching resources. Default Payload + OpenNext needs ONLY what is already
+// active in wrangler.jsonc (D1, R2×2, ASSETS, IMAGES, WORKER_SELF_REFERENCE).
+//
+// Docs: https://developers.cloudflare.com/workers/runtime-apis/bindings/
+// Wrangler: https://developers.cloudflare.com/workers/wrangler/configuration/
+// =============================================================================
+
+/*
+--- KV ---
+wrangler kv namespace create CACHE
+Then add to wrangler.jsonc:
+  "kv_namespaces": [
+    { "binding": "KV_CACHE", "id": "<namespace_id>" }
+  ]
+
+--- Queues (producer example) ---
+  "queues": {
+    "producers": [
+      { "binding": "QUEUE_OUT", "queue": "your-queue-name" }
+    ]
+  }
+
+--- Hyperdrive (Postgres acceleration) ---
+Create in dashboard / wrangler hyperdrive create, then:
+  "hyperdrive": [
+    { "binding": "HYPERDRIVE", "id": "<hyperdrive_config_id>" }
+  ]
+
+--- Vectorize ---
+  "vectorize": [
+    { "binding": "VECTORIZE", "index_name": "your-index" }
+  ]
+
+--- Workers AI ---
+  "ai": { "binding": "AI" }
+
+--- Analytics Engine ---
+  "analytics_engine_datasets": [
+    { "binding": "ANALYTICS", "dataset": "your_dataset" }
+  ]
+
+--- Browser Rendering (product-specific; see Cloudflare docs) ---
+  "browser": { "binding": "BROWSER" }
+
+--- Secrets Store (binding name → store secret) ---
+  "secrets_store_secrets": [
+    {
+      "binding": "MY_STORED_SECRET",
+      "store_id": "<secrets_store_id>",
+      "secret_name": "<secret_name>"
+    }
+  ]
+
+--- Cron triggers (scheduled Worker) ---
+  "triggers": { "crons": ["0 * * * *"] }
+
+--- Durable Objects (requires migrations + class export in Worker entry) ---
+OpenNext owns .open-next/worker.js — adding DOs usually means a separate Worker
+or upstream OpenNext support. Prefer Queues/KV/Hyperdrive unless you maintain a
+custom Worker wrapper.
+
+*/

@@ -12,6 +12,7 @@ import { BranchIcon } from '@root/icons/BranchIcon/index'
 import { formatDate } from '@root/utilities/format-date-time'
 import { qs } from '@root/utilities/qs'
 import { useGetProjectDeployments } from '@root/utilities/use-cloud-api'
+import { parseDeploymentsDocsPayload, readJsonUnknown } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 import { toast } from 'sonner'
 
@@ -47,7 +48,7 @@ export const InfraOnline: React.FC<{
       env: environmentSlug,
     })
 
-    fetch(
+    void fetch(
       `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/deploy${
         query ? `?${query}` : ''
       }`,
@@ -78,12 +79,14 @@ export const InfraOnline: React.FC<{
     let interval
     if (reqStatus && reqStatus < 400) {
       interval = setInterval(() => {
-        reloadDeployments()
+        void reloadDeployments()
       }, 10_000)
     }
 
     return () => {
-      interval && clearInterval(interval)
+      if (interval) {
+        clearInterval(interval)
+      }
     }
   }, [reqStatus, reloadDeployments])
 
@@ -123,10 +126,11 @@ export const InfraOnline: React.FC<{
         },
       )
 
-      const json = await req.json()
+      const json = await readJsonUnknown(req)
+      const docs = parseDeploymentsDocsPayload(json)
 
-      if (json.docs?.[0]) {
-        setLiveDeployment(json.docs[0])
+      if (docs[0]) {
+        setLiveDeployment(docs[0])
       }
     }
 
@@ -140,7 +144,7 @@ export const InfraOnline: React.FC<{
       if (liveDeployment) {
         setLiveDeployment(liveDeployment)
       } else {
-        fetchLiveDeployment()
+        void fetchLiveDeployment()
       }
     }
   }, [latestDeployment, deployments, project?.id])

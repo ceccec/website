@@ -1,7 +1,8 @@
 import type { GlobalConfig } from 'payload'
 
 import link from '@root/fields/link'
-import { revalidatePath } from 'next/cache'
+
+import { revalidateRootLayout } from '../utilities/revalidateMarketingRoutes'
 
 export const TopBar: GlobalConfig = {
   slug: 'topBar',
@@ -30,6 +31,6 @@ export const TopBar: GlobalConfig = {
     }),
   ],
   hooks: {
-    afterChange: [() => revalidatePath('/', 'layout')],
+    afterChange: [() => revalidateRootLayout()],
   },
 }

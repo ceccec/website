@@ -1,0 +1,17 @@
+---
+description: Email adapter, nodemailer, transactional email from Payload
+globs: src/email/**/*.{ts,tsx},src/**/*mail*.{ts,tsx},src/payload.config.ts
+alwaysApply: false
+---
+
+# Email
+
+- **Docs:** [Email](https://payloadcms.com/docs/email/overview)
+- **This repo:** `nodemailerAdapter` + SendGrid transport — `src/email/sendgridMailTransport.ts`, `defaultFromAddress` / `defaultFromName` in `payload.config.ts`.
+- **Env:** `SENDGRID_API_KEY` and related vars — document in `.env.example`; never log secrets.
+- **Forgot password / verification:** Rely on Payload auth email hooks and templates where configured on **Users**.
+
+## Checklist
+
+- [ ] Non-prod can disable or sandbox transactional sends.
+- [ ] From domain aligns with SPF/DKIM for production domain.

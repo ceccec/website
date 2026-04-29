@@ -1,9 +1,8 @@
 import type { GlobalConfig } from 'payload'
 
-import { revalidatePath } from 'next/cache'
-
 import { isAdmin } from '../access/isAdmin'
 import linkGroup from '../fields/linkGroup'
+import { revalidatePartnersProgramLayout } from '../utilities/revalidateMarketingRoutes'
 
 export const PartnerProgram: GlobalConfig = {
   slug: 'partner-program',
@@ -63,32 +62,29 @@ export const PartnerProgram: GlobalConfig = {
             afterChange: [
               async ({ previousValue, req, value }) => {
                 if (value !== previousValue) {
-                  const payload = await req.payload
-                  await payload
-                    .update({
-                      collection: 'partners',
-                      data: {
-                        featured: false,
+                  const { payload } = req
+                  await payload.update({
+                    collection: 'partners',
+                    data: {
+                      featured: false,
+                    },
+                    where: {
+                      featured: {
+                        equals: true,
                       },
-                      where: {
-                        featured: {
-                          equals: true,
-                        },
+                    },
+                  })
+                  await payload.update({
+                    collection: 'partners',
+                    data: {
+                      featured: true,
+                    },
+                    where: {
+                      id: {
+                        in: value,
                       },
-                    })
-                    .then(async () => {
-                      await payload.update({
-                        collection: 'partners',
-                        data: {
-                          featured: true,
-                        },
-                        where: {
-                          id: {
-                            in: value,
-                          },
-                        },
-                      })
-                    })
+                    },
+                  })
                 }
               },
             ],
@@ -181,7 +177,7 @@ export const PartnerProgram: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [() => revalidatePath('/parters', 'layout')],
+    afterChange: [() => revalidatePartnersProgramLayout()],
   },
   label: 'Partner Program Directory',
 }

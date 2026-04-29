@@ -61,9 +61,9 @@ const importTopicGroups: (args: {
   topicGroups: TopicGroup[]
   version: string
 }) => Promise<{
-  createdOrUpdatedDocs: string[]
+  createdOrUpdatedDocs: (number | string)[]
 }> = async ({ req, topicGroups, version }) => {
-  const createdOrUpdatedDocs: string[] = []
+  const createdOrUpdatedDocs: (number | string)[] = []
 
   const { docsData } = await topicGroupsToDocsData({ req, topicGroups, version })
 
@@ -121,7 +121,7 @@ export const syncDocs: PayloadHandler = async (req) => {
       const allV3Docs = await fetchDocs({ ref: '3.x', version: 'v3' })
       const allV2Docs = await fetchDocs({ ref: '2.x', version: 'v2' })
 
-      const createdOrUpdatedDocs: string[] = []
+      const createdOrUpdatedDocs: (number | string)[] = []
       createdOrUpdatedDocs.push(
         ...(await importTopicGroups({ req, topicGroups: allV3Docs, version: 'v3' }))
           .createdOrUpdatedDocs,

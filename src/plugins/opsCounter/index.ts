@@ -7,7 +7,7 @@ type Args = {
   warnAt?: number
 }
 
-export const opsCounterPlugin =
+export const opsCounter =
   (args?: Args): Plugin =>
   (config) => {
     const max = args?.max || 50

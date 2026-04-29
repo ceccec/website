@@ -110,13 +110,13 @@ export const BranchSelector: React.FC<{
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true
-      getBranches()
+      void getBranches()
     }
   }, [getBranches])
 
   useEffect(() => {
     if (page > 1) {
-      getBranches()
+      void getBranches()
     }
   }, [page, getBranches])
 

@@ -15,7 +15,8 @@ export const Media = ({
 } & Omit<Props, 'ref'>) => {
   const { className, htmlElement = 'div', resource } = props
 
-  const isVideo = typeof resource !== 'string' && resource?.mimeType?.includes('video')
+  const isVideo =
+    typeof resource === 'object' && resource !== null && resource?.mimeType?.includes('video')
   const Tag = (htmlElement as ElementType) || Fragment
 
   return (

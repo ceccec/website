@@ -35,14 +35,20 @@ export const ResourceBlock: React.FC<{ id: string }> = ({ id }) => {
       return data
     }
     fetchResource()
-      .then((res) =>
+      .then((data) => {
+        const d = data as {
+          category: { slug: string }
+          featuredMedia: 'upload' | 'videoUrl'
+          slug: string
+          title: string
+        }
         setResource({
-          slug: res.slug,
-          category: res.category.slug,
-          featuredMedia: res.featuredMedia,
-          title: res.title,
-        }),
-      )
+          slug: d.slug,
+          category: d.category.slug,
+          featuredMedia: d.featuredMedia,
+          title: d.title,
+        })
+      })
       .catch((err) => {
         console.error('Error fetching resource:', err)
         setResource(undefined)

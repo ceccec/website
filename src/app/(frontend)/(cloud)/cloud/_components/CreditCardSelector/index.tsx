@@ -139,7 +139,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
                 name="card"
                 onChange={(incomingValue: string) => {
                   setShowNewCard(false)
-                  handleChange(incomingValue)
+                  void handleChange(incomingValue)
                 }}
                 value={paymentMethod.id}
               />
@@ -158,7 +158,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
             label={
               <CreditCardElement
                 onChange={() => {
-                  handleChange(newCardID.current)
+                  void handleChange(newCardID.current)
                 }}
               />
             }
@@ -183,7 +183,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
                   label="Add new card"
                   onClick={() => {
                     setShowNewCard(true)
-                    handleChange(newCardID.current)
+                    void handleChange(newCardID.current)
                   }}
                 />
               )}

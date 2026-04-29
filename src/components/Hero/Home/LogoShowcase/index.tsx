@@ -8,7 +8,7 @@ import classes from './index.module.scss'
 
 type LogoItem = {
   id?: null | string
-  logoMedia: MediaType | string
+  logoMedia: MediaType | number | string
 }
 
 type PositionedLogo = {

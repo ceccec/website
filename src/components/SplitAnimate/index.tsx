@@ -38,7 +38,7 @@ const SplitAnimate: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (isInView) {
-      animate(
+      void animate(
         innerWorldSelector,
         { rotate: 0, y: '0%' },
         { delay: stagger(0.075), duration: 1.125, ease: easing },

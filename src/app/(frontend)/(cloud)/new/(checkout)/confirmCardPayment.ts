@@ -1,7 +1,7 @@
 import type {
   PaymentIntent,
   Stripe,
-  StripeCardElement as StripeCardElementType, // eslint-disable-line import/named
+  StripeCardElement as StripeCardElementType,
   StripeElements,
 } from '@stripe/stripe-js'
 

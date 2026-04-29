@@ -108,6 +108,8 @@ export const SimpleLogs: React.FC<Props> = ({ logs }) => {
   )
 }
 
+// Strip ANSI control sequences from log lines
+/* eslint-disable-next-line no-control-regex */
 const microTimestampPattern = /\x1B\[[0-9;]*[a-z]/gi
 export function styleLogLine(logLine: string): LogLine {
   const [service, timestamp, ...rest] = logLine.split(' ')

@@ -2,7 +2,8 @@ import type { Block, Field, GlobalConfig } from 'payload'
 
 import { isAdmin } from '@root/access/isAdmin'
 import linkGroup from '@root/fields/linkGroup'
-import { revalidatePath } from 'next/cache'
+
+import { revalidateGetStartedPage } from '../utilities/revalidateMarketingRoutes'
 
 const tabBlock: (slug: string, fields: Field[]) => Block = (slug, fields) => {
   return {
@@ -78,11 +79,6 @@ export const GetStarted: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [
-      () => {
-        revalidatePath('/get-started')
-        console.log('Revalidated /get-started')
-      },
-    ],
+    afterChange: [() => revalidateGetStartedPage()],
   },
 }

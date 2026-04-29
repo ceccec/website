@@ -15,9 +15,7 @@ export const Secret: React.FC<{
   const projectID = project?.id
 
   const fetchSecret = React.useCallback(async (): Promise<null | string> => {
-    let timer: NodeJS.Timeout
-
-    timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsLoading(true)
     }, 200)
 
@@ -35,10 +33,19 @@ export const Secret: React.FC<{
       clearTimeout(timer)
 
       if (req.status === 200) {
-        const res = await req.json()
+        const data: unknown = await req.json()
         setIsLoading(false)
 
-        return res.PAYLOAD_SECRET
+        if (
+          typeof data === 'object' &&
+          data !== null &&
+          'PAYLOAD_SECRET' in data &&
+          typeof (data as { PAYLOAD_SECRET: unknown }).PAYLOAD_SECRET === 'string'
+        ) {
+          return (data as { PAYLOAD_SECRET: string }).PAYLOAD_SECRET
+        }
+
+        return null
       }
     } catch (e) {
       console.error(e) // eslint-disable-line no-console

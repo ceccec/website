@@ -22,6 +22,6 @@ export const metadata: Metadata = {
   },
 }
 
-export default async ({ children }) => {
+export default ({ children }) => {
   return <div className={classes.layout}>{children}</div>
 }

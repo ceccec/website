@@ -27,6 +27,38 @@ interface DiscordDoc {
   slug: string
 }
 
+/** Payload REST `community-help` row — `communityHelpJSON` shape differs for Discord vs GitHub. */
+type CommunityHelpRestDoc = {
+  communityHelpJSON: {
+    [key: string]: unknown
+    author?: { name?: string }
+    body?: string
+    comments?: GithubThreadComment[]
+    commentTotal?: number
+    createdAt?: string
+    id?: string
+    info?: { createdAt?: string; id?: string; name?: string }
+    intro?: { authorName?: string }
+    messageCount?: number
+    messages?: { authorName?: string; content?: string }[]
+    slug?: string
+    title?: string
+    upvotes?: number
+  }
+  discordID?: string
+  githubID?: string
+  helpful?: boolean
+  threadCreatedAt?: string
+}
+
+type GithubReply = { author?: { name?: string }; body?: string }
+
+type GithubThreadComment = {
+  author?: { name?: string }
+  body?: string
+  replies?: GithubReply[]
+}
+
 interface GithubDoc {
   author: string
   comments: unknown[]
@@ -45,30 +77,34 @@ export const syncToAlgolia = async (): Promise<void> => {
     throw new Error('Algolia environment variables are not set')
   }
 
-  const communityHelpThreads = await fetch(
+  const communityHelpThreads: { docs?: CommunityHelpRestDoc[] } = await fetch(
     `${NEXT_PUBLIC_CMS_URL}/api/community-help?limit=0`,
   ).then((res) => res.json())
 
-  const docs = communityHelpThreads?.docs
+  const docs = communityHelpThreads?.docs ?? []
 
   const discordDocs: DiscordDoc[] = []
   const githubDocs: GithubDoc[] = []
 
-  docs.forEach((doc) => {
+  docs.forEach((doc: CommunityHelpRestDoc) => {
     const { communityHelpJSON, discordID, githubID, helpful, threadCreatedAt } = doc
 
     if (discordID) {
       const { slug, info, intro, messageCount, messages } = communityHelpJSON
-      const formattedDate = new Date(threadCreatedAt || info.createdAt).toISOString()
+      if (!info?.id || !info.name || !intro?.authorName) {
+        return
+      }
+
+      const formattedDate = new Date(threadCreatedAt || info.createdAt || 0).toISOString()
 
       discordDocs.push({
         name: info.name,
-        slug,
+        slug: slug ?? '',
         author: intro.authorName,
         createdAt: formattedDate,
         helpful: helpful ?? false,
-        messageCount,
-        messages: messages.map((message) => {
+        messageCount: messageCount ?? 0,
+        messages: (messages ?? []).map((message) => {
           if (message) {
             return {
               author: message.authorName,
@@ -86,30 +122,30 @@ export const syncToAlgolia = async (): Promise<void> => {
         communityHelpJSON
 
       githubDocs.push({
-        name: title,
-        slug,
-        author: author.name,
-        comments: (comments || []).map((comment) => {
+        name: title ?? '',
+        slug: slug ?? '',
+        author: author?.name ?? '',
+        comments: (comments ?? []).map((comment) => {
           const replies = comment.replies?.map((reply) => {
             return {
-              author: reply.author.name,
-              content: reply.body,
+              author: reply.author?.name ?? '',
+              content: reply.body ?? '',
             }
           })
 
           return {
-            author: comment.author.name,
-            content: comment.body,
-            replies: replies || [],
+            author: comment.author?.name ?? '',
+            content: comment.body ?? '',
+            replies: replies ?? [],
           }
         }),
-        createdAt,
-        description: body,
+        createdAt: createdAt ?? '',
+        description: body ?? '',
         helpful: helpful ?? false,
-        messageCount: commentTotal,
-        objectID: id,
+        messageCount: commentTotal ?? 0,
+        objectID: id ?? '',
         platform: 'Github',
-        upvotes,
+        upvotes: upvotes ?? 0,
       })
     }
   })
@@ -119,4 +155,3 @@ export const syncToAlgolia = async (): Promise<void> => {
   await index.saveObjects(records).wait()
 }
 
-export default syncToAlgolia

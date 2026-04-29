@@ -1,0 +1,22 @@
+---
+description: Official Payload plugins — ordering, env flags, plugin docs
+globs: src/plugins/**/*.{ts,tsx},src/plugins/**/*.mts
+alwaysApply: false
+---
+
+# Payload plugins
+
+- **Docs:** [Plugins overview](https://payloadcms.com/docs/plugins/overview)
+- **Pipeline:** `src/plugins/index.ts` — **schema first**, then optional MCP/multi-tenant/ecommerce, then **website** bundle (`src/plugins/website`), then **opsCounter** / analytics last so counters see all collections.
+- **Installed (examples):** `plugin-seo`, `plugin-redirects`, `plugin-nested-docs`, `plugin-form-builder`, `plugin-multi-tenant`, `plugin-ecommerce`, `plugin-mcp`, storage plugins — each has official docs under **Plugins**.
+- **Env:** Feature flags in `src/plugins/env.ts` (or similar) — enabling a plugin may require **migrate** and **generate:types**.
+- **Ordering matters:** Plugins that add collections/hooks should load before code that depends on them.
+
+## Per-plugin deep links (bookmark)
+
+- [SEO](https://payloadcms.com/docs/plugins/seo) · [Redirects](https://payloadcms.com/docs/plugins/redirects) · [Nested docs](https://payloadcms.com/docs/plugins/nested-docs) · [Form builder](https://payloadcms.com/docs/plugins/form-builder) · [Multi-tenant](https://payloadcms.com/docs/plugins/multi-tenant) · [Ecommerce](https://payloadcms.com/docs/plugins/ecommerce) · [MCP](https://payloadcms.com/docs/plugins/mcp)
+
+## Checklist
+
+- [ ] New plugin: read plugin doc + add env + migrate + types.
+- [ ] Cross-plugin conflicts (same slug, same route): resolved in `getPlugins` order or options.

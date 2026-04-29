@@ -20,7 +20,7 @@ export const DownloadButton: React.FC<{
     setTimeout(() => setClicked(false), 1000)
   }
 
-  if (typeof file !== 'string' && file.url) {
+  if (typeof file === 'object' && file !== null && 'url' in file && file.url) {
     return (
       <Tooltip
         className={classes.button}
@@ -42,7 +42,7 @@ export const CopyButton: React.FC<{
 }> = ({ value }) => {
   const [clicked, setClicked] = useState(false)
   const handleClick = () => {
-    navigator.clipboard.writeText(value)
+    void navigator.clipboard.writeText(value)
     setClicked(true)
     setTimeout(() => setClicked(false), 1000)
   }

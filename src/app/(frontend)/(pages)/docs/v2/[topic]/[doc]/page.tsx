@@ -1,11 +1,15 @@
 import { Banner } from '@components/Banner'
 import { RenderDocs } from '@components/RenderDocs'
-import config from '@payload-config'
-import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { getPayload } from '@root/lib/getPayload'
 import { notFound, redirect } from 'next/navigation'
-import { getPayload } from 'payload'
 import React from 'react'
 
+import {
+  buildDocsMetadata,
+  findDocForMetadata,
+  findDocForPage,
+  findDocsSlugsForStaticParams,
+} from '../../../docQueries'
 import { fetchTopicsForSidebar } from '../../../fetchTopicsForSidebar'
 
 export type TopicsOrder = { topics: string[] }[]
@@ -21,23 +25,9 @@ export default async function DocsPage({ params }: { params: Promise<Params> }) 
     redirect(`/docs/${topicSlug}/${docSlug}`)
   }
 
-  const payload = await getPayload({ config })
+  const payload = await getPayload()
 
-  const curDoc = await payload.find({
-    collection: 'docs',
-    pagination: false,
-    where: {
-      slug: {
-        equals: docSlug,
-      },
-      topic: {
-        equals: topicSlug,
-      },
-      version: {
-        equals: 'v2',
-      },
-    },
-  })
+  const curDoc = await findDocForPage(payload, { docSlug, topicSlug, version: 'v2' })
 
   const topicGroups = await fetchTopicsForSidebar({ payload, version: 'v2' })
 
@@ -68,44 +58,12 @@ export async function generateMetadata({
   params: Promise<{ doc: string; topic: string }>
 }) {
   const { doc: docSlug, topic: topicSlug } = await params
-  const payload = await getPayload({ config })
-  const docs = await payload.find({
-    collection: 'docs',
-    depth: 0,
-    pagination: false,
-    select: {
-      description: true,
-      title: true,
-    },
-    where: {
-      slug: {
-        equals: docSlug,
-      },
-      topic: {
-        equals: topicSlug,
-      },
-      version: {
-        equals: 'v2',
-      },
-    },
-  })
+  const payload = await getPayload()
+  const docs = await findDocForMetadata(payload, { docSlug, topicSlug, version: 'v2' })
 
   const currentDoc = docs?.docs?.[0]
 
-  return {
-    description: currentDoc?.description || `Payload ${topicSlug} Documentation`,
-    openGraph: mergeOpenGraph({
-      images: [
-        {
-          url: `/api/og?topic=${topicSlug}&title=${currentDoc?.title}`,
-        },
-      ],
-      title: `${currentDoc?.title ? `${currentDoc.title} | ` : ''}Documentation | Payload`,
-      url: `/docs/${topicSlug}/${docSlug}`,
-    }),
-    robots: 'noindex, nofollow, noarchive',
-    title: `${currentDoc?.title ? `${currentDoc.title} | ` : ''}Documentation | Payload`,
-  }
+  return buildDocsMetadata({ currentDoc, docSlug, legacy: true, topicSlug })
 }
 
 // We'll prerender only the params from `generateStaticParams` at build time.
@@ -121,31 +79,6 @@ export async function generateStaticParams(): Promise<Params[]> {
     return []
   }
 
-  const payload = await getPayload({ config })
-  const docs = await payload.find({
-    collection: 'docs',
-    depth: 0,
-    limit: 10000,
-    pagination: false,
-    select: {
-      slug: true,
-      topic: true,
-    },
-    where: {
-      version: {
-        equals: 'v2',
-      },
-    },
-  })
-
-  const result: Params[] = []
-
-  for (const doc of docs.docs) {
-    result.push({
-      doc: doc.slug.replace('.mdx', ''),
-      topic: doc.topic.toLowerCase(),
-    })
-  }
-
-  return result
+  const payload = await getPayload()
+  return findDocsSlugsForStaticParams(payload, 'v2')
 }

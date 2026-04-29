@@ -16,7 +16,7 @@ export const useSubscriptions = (args: {
   error: string
   isLoading: 'deleting' | 'loading' | 'updating' | false | null
   loadMoreSubscriptions: () => void
-  refreshSubscriptions: () => void
+  refreshSubscriptions: (successMessage?: string) => Promise<void>
   result: null | SubscriptionsResult
   updateSubscription: (subscriptionID: string, subscription: Subscription) => void
 } => {
@@ -67,22 +67,16 @@ export const useSubscriptions = (args: {
       }
 
       isRequesting.current = false
-
-      return () => {
-        clearTimeout(timer)
-      }
     },
     [delay, team],
   )
 
   useEffect(() => {
-    getSubscriptions()
+    void getSubscriptions()
   }, [getSubscriptions])
 
   const refreshSubscriptions = useCallback(
-    (successMessage?: string) => {
-      getSubscriptions(successMessage)
-    },
+    (successMessage?: string) => getSubscriptions(successMessage),
     [getSubscriptions],
   )
 
@@ -180,7 +174,7 @@ export const useSubscriptions = (args: {
     if (result?.has_more && result?.data?.length) {
       const lastSubscription = result?.data?.[result?.data?.length - 1]
       const lastSubscriptionID = lastSubscription.id
-      getSubscriptions(undefined, lastSubscriptionID)
+      void getSubscriptions(undefined, lastSubscriptionID)
     }
   }, [getSubscriptions, result])
 

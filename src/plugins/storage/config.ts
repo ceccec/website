@@ -6,6 +6,8 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import type { DeploymentTarget } from '../../lib/deploymentTarget'
 
+const mediaCollections = { media: true } as const
+
 export function storage(
   deploymentTarget: DeploymentTarget,
   cloudflare: CloudflareContext | undefined,
@@ -13,11 +15,11 @@ export function storage(
   if (deploymentTarget === 'cloudflare') {
     return r2Storage({
       bucket: cloudflare!.env.R2,
-      collections: { media: true },
+      collections: mediaCollections,
     })
   }
   return vercelBlobStorage({
-    collections: { media: true },
+    collections: mediaCollections,
     token: process.env.BLOB_READ_WRITE_TOKEN,
   })
 }

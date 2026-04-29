@@ -1,0 +1,184 @@
+/**
+ * App + third-party integration for `@payloadcms/plugin-form-builder` (HubSpot, reCAPTCHA, partner email).
+ * Keep **heavy or external I/O** here, not in `config.ts` — `config.ts` only wires the official plugin.
+ *
+ * @see .cursor/rules/payload-form-builder.mdc · payload-hooks.mdc · payload-security-deployment.mdc · payload-performance.mdc
+ */
+
+import type { Field, PayloadRequest } from 'payload'
+
+import type { Form, FormSubmission } from '@types'
+
+export function hubspotBodyContext(body: Record<string, unknown>): Record<string, unknown> {
+  return {
+    ...('hubspotCookie' in body && typeof body.hubspotCookie === 'string'
+      ? { hutk: body.hubspotCookie }
+      : {}),
+    pageName: typeof body.pageName === 'string' ? body.pageName : '',
+    pageUri: typeof body.pageUri === 'string' ? body.pageUri : '',
+  }
+}
+
+/** Sidebar fields merged onto forms via `plugin-form-builder` overrides. */
+export const formBuilderExtraFormFields: Field[] = [
+  {
+    name: 'hubSpotFormID',
+    type: 'text',
+    admin: {
+      position: 'sidebar',
+    },
+    label: 'HubSpot Form ID',
+  },
+  {
+    name: 'customID',
+    type: 'text',
+    admin: {
+      description: 'Attached to submission button to track clicks',
+      position: 'sidebar',
+    },
+    label: 'Custom ID',
+  },
+  {
+    name: 'requireRecaptcha',
+    type: 'checkbox',
+    admin: {
+      position: 'sidebar',
+    },
+    label: 'Require reCAPTCHA',
+  },
+]
+
+export const formBuilderRecaptchaSubmissionField: Field = {
+  name: 'recaptcha',
+  type: 'text',
+  validate: async (value, { req, siblingData }) => {
+    const form = await req.payload.findByID({
+      id: siblingData?.form,
+      collection: 'forms',
+    })
+
+    if (
+      !form ||
+      typeof form !== 'object' ||
+      !('requireRecaptcha' in form) ||
+      !form.requireRecaptcha
+    ) {
+      return true
+    }
+
+    if (!value) {
+      return 'Please complete the reCAPTCHA'
+    }
+
+    const res = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY}&response=${value}`,
+      {
+        method: 'POST',
+      },
+    )
+    const data = (await res.json()) as { success?: boolean }
+    if (!data.success) {
+      return 'Invalid captcha'
+    }
+    return true
+  },
+}
+
+export async function afterFormSubmissionChange({
+  doc,
+  req,
+}: {
+  doc: FormSubmission
+  req: PayloadRequest
+}) {
+  req.payload.logger.info('Form Submission Received')
+  req.payload.logger.info(Object.fromEntries(req?.headers.entries()))
+
+  const formRef = doc.form
+  if (typeof formRef !== 'object' || formRef === null) {
+    return
+  }
+  const form = formRef as Form
+  const hubSpotFormID = form.hubSpotFormID
+  if (!hubSpotFormID) {
+    return
+  }
+
+  const rawBody = req.json ? await req.json() : {}
+  const body: Record<string, unknown> =
+    rawBody && typeof rawBody === 'object' && rawBody !== null && !Array.isArray(rawBody)
+      ? (rawBody as Record<string, unknown>)
+      : {}
+
+  const { submissionData: submissionDataFromDoc } = doc
+  const portalID = process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY
+  if (!portalID) {
+    return
+  }
+
+  const submissionData = (submissionDataFromDoc ?? []).filter((field) => field.field !== 'partnerId')
+
+  const data = {
+    context: hubspotBodyContext(body),
+    fields: submissionData.map((key) => ({
+      name: key.field,
+      value: key.value,
+    })),
+  }
+
+  try {
+    await fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${portalID}/${hubSpotFormID}`,
+      {
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+      },
+    )
+  } catch (err: unknown) {
+    req.payload.logger.error({
+      err,
+      msg: 'Fetch to HubSpot form submissions failed',
+    })
+  }
+}
+
+export async function beforeFormSubmissionChange({
+  data,
+  req,
+}: {
+  data: {
+    submissionData?: { field: string; value: string }[]
+    [key: string]: unknown
+  }
+  req: PayloadRequest
+}) {
+  const partnerIdField = data?.submissionData?.find((field) => field.field === 'partnerId')
+
+  if (partnerIdField?.value) {
+    try {
+      const partner = await req.payload.findByID({
+        id: partnerIdField.value,
+        collection: 'partners',
+        overrideAccess: true,
+      })
+
+      if (partner && typeof partner === 'object' && 'email' in partner && partner.email) {
+        data.submissionData = data.submissionData ?? []
+        data.submissionData.push({
+          field: 'toEmail',
+          value: typeof partner.email === 'string' ? partner.email : String(partner.email),
+        })
+      }
+    } catch (err) {
+      req.payload.logger.error({
+        err,
+        msg: 'Failed to lookup partner email',
+      })
+    }
+  }
+
+  return data
+}

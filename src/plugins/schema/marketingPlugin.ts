@@ -11,18 +11,17 @@ import { TopBar } from '@root/globals/TopBar'
 
 import { marketingContentEnabled } from '../env'
 
+import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
+
 /** Blog-style marketing content + primary nav globals. */
-export const marketingPlugin: Plugin = (config) => {
-  if (!marketingContentEnabled()) {return config}
-  return {
-    ...config,
-    collections: [
-      ...(config.collections ?? []),
-      CaseStudies,
-      CommunityHelp,
-      Posts,
-      Categories,
-    ],
-    globals: [...(config.globals ?? []), Footer, MainMenu, TopBar, GetStarted],
-  }
-}
+export const marketingPlugin: Plugin = conditionalSchemaPlugin(marketingContentEnabled, (config) => ({
+  ...config,
+  collections: [
+    ...(config.collections ?? []),
+    CaseStudies,
+    CommunityHelp,
+    Posts,
+    Categories,
+  ],
+  globals: [...(config.globals ?? []), Footer, MainMenu, TopBar, GetStarted],
+}))

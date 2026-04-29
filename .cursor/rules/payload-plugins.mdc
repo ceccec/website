@@ -6,11 +6,17 @@ alwaysApply: false
 
 # Payload plugins
 
-- **Docs:** [Plugins overview](https://payloadcms.com/docs/plugins/overview)
-- **Pipeline:** `src/plugins/index.ts` — **schema first**, then optional MCP/multi-tenant/ecommerce, then **website** bundle (`src/plugins/website`), then **opsCounter** / analytics last so counters see all collections.
+- **Docs:** [Plugins overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api)
+- **Pipeline (`getPlugins`):** `getSchemaPlugins()` → `getOptionalOfficialPlugins()` (MCP / multi-tenant / ecommerce when env says so) → **website** (`src/plugins/website`) → **opsCounter** → **Google Analytics** last so counters see every collection.
 - **Installed (examples):** `plugin-seo`, `plugin-redirects`, `plugin-nested-docs`, `plugin-form-builder`, `plugin-multi-tenant`, `plugin-ecommerce`, `plugin-mcp`, storage plugins — each has official docs under **Plugins**.
-- **Env:** Feature flags in `src/plugins/env.ts` (or similar) — enabling a plugin may require **migrate** and **generate:types**.
-- **Ordering matters:** Plugins that add collections/hooks should load before code that depends on them.
+- **Env:** Feature flags in `src/plugins/env.ts` — enabling a plugin may require **migrate** and **generate:types**.
+- **Ordering matters:** Plugins that add collections/hooks load before consumers; resolve conflicts in `getPlugins` order or plugin options.
+
+## Layout (strict)
+
+- **Per official package:** one folder under `src/plugins/<name>/` — `config.ts` (or `index.ts`) should **only** call the `@payloadcms/*` `*Plugin({ ... })` factory and pass options. No duplicated “if disabled return config” — use `src/plugins/lib/whenPluginEnabled.ts` for optional first-party installs and `src/plugins/lib/conditionalSchemaPlugin.ts` for gated schema extensions.
+- **Integration / other packages** (Stripe, HubSpot, reCAPTCHA, webhooks, custom fields for a plugin): implement in a **sibling module** in the same folder (e.g. `integration.ts`, `handlers.ts`) or a clearly named `src/plugins/<name>/…` file; **import from `config.ts`** so wiring stays one screen. That code must follow **`payload-hooks.mdc`** (lightweight hooks), **`payload-security-deployment.mdc`** (secrets server-only), **`payload-performance.mdc`** (no long sync work — use jobs when appropriate), and the **topic rule** for that package (e.g. `payload-form-builder.mdc`, `payload-ecommerce.mdc`, `payload-uploads-storage.mdc`).
+- **Cross-plugin DRY only:** `src/plugins/lib/*` — not business domain logic.
 
 ## Per-plugin deep links (bookmark)
 
@@ -18,5 +24,6 @@ alwaysApply: false
 
 ## Checklist
 
-- [ ] New plugin: read plugin doc + add env + migrate + types.
-- [ ] Cross-plugin conflicts (same slug, same route): resolved in `getPlugins` order or options.
+- [ ] New plugin: read official doc + env + migrate + **generate:types**.
+- [ ] Cross-plugin conflicts (slug, route): resolved in `getPlugins` order or options.
+- [ ] Third-party or custom integration: colocated under `src/plugins/<name>/`, follows hooks/security/performance + topic rule.

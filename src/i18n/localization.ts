@@ -9,6 +9,10 @@ const localization = {
   fallback: true,
   locales: [
     {
+      code: 'bg',
+      label: 'Bulgatian (Български)',
+    },
+    {
       code: 'en',
       label: 'English (English)',
     },

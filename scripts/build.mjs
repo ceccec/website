@@ -32,8 +32,8 @@ const skipMigrate =
   process.env.SKIP_DATABASE_MIGRATE === '1' || process.env.SKIP_DATABASE_MIGRATE === 'true'
 
 const vercelPipeline = skipMigrate
-  ? 'pnpm generate:llms && cross-env NODE_OPTIONS=--no-deprecation next build --webpack'
-  : 'pnpm generate:llms && pnpm exec payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack'
+  ? 'pnpm run generate:llms && cross-env NODE_OPTIONS=--no-deprecation next build --webpack'
+  : 'pnpm run generate:llms && payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack'
 
 if (getDeploymentTargetFromEnv() === 'vercel') {
   execSync(vercelPipeline, { stdio: 'inherit', env: process.env })

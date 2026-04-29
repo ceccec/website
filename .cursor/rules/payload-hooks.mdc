@@ -1,6 +1,6 @@
 ---
 description: Payload hooks — root, collection, global, field, context (not React admin hooks)
-globs: src/**/*hooks*/**/*.{ts,tsx},src/**/hooks/**/*.{ts,tsx},src/payload.config.ts,src/collections/**/*.ts,src/plugins/schema/**/*.ts
+globs: src/**/*hooks*/**/*.{ts,tsx},src/**/hooks/**/*.{ts,tsx},src/payload.config.ts,src/collections/**/*.ts,src/plugins/schema/**/*.ts,src/plugins/form-builder/**/*.ts
 alwaysApply: false
 ---
 

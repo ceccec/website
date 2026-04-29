@@ -105,9 +105,11 @@ const nextConfig = withBundleAnalyzer({
     ? {
         /**
          * OpenNext’s nested `next build` uses local Miniflare D1 (SQLite). Parallel SSG → SQLITE_BUSY / locked DB.
-         * Prefer **1** here; raise only if builds are stable and you need faster local OpenNext compiles.
+         * Next’s “Collecting page data using N workers” comes from `experimental.cpus` (see `next/dist/build/index.js`
+         * `getNumberOfWorkers`); `staticGenerationMaxConcurrency` only limits pages **per** worker.
          */
         experimental: {
+          cpus: 1,
           staticGenerationMaxConcurrency: 1,
           staticGenerationRetryCount: 8,
         },

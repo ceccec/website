@@ -11,6 +11,7 @@
  * Escape hatches (use sparingly — see `.cursor/rules/payload-migrations.mdc`):
  * - `SKIP_DATABASE_MIGRATE=1` — skip `payload migrate` (e.g. building without a DB, or migrations applied elsewhere).
  * - `PAYLOAD_MIGRATE_ASSUME_YES=1` — answer “yes” if Payload warns about dev-mode schema drift (data loss risk; CI/ephemeral DB or explicit review only).
+ * - **`CI=true`** (GitHub Actions, etc.) — same non-interactive migrate as `PAYLOAD_MIGRATE_ASSUME_YES` unless `PAYLOAD_MIGRATE_ASSUME_NO=1`.
  */
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
@@ -74,16 +75,33 @@ function runPayloadMigrate() {
     return
   }
 
+  const assumeNo =
+    process.env.PAYLOAD_MIGRATE_ASSUME_NO === '1' ||
+    process.env.PAYLOAD_MIGRATE_ASSUME_NO === 'true'
+
+  const ci =
+    process.env.CI === '1' ||
+    process.env.CI === 'true' ||
+    process.env.CONTINUOUS_INTEGRATION === 'true'
+
   const assumeYes =
-    process.env.PAYLOAD_MIGRATE_ASSUME_YES === '1' ||
-    process.env.PAYLOAD_MIGRATE_ASSUME_YES === 'true'
+    !assumeNo &&
+    (process.env.PAYLOAD_MIGRATE_ASSUME_YES === '1' ||
+      process.env.PAYLOAD_MIGRATE_ASSUME_YES === 'true' ||
+      ci)
+
+  if (assumeYes && ci && !process.env.PAYLOAD_MIGRATE_ASSUME_YES) {
+    console.warn(
+      '[migrate-production] CI detected — running migrate non-interactively (set PAYLOAD_MIGRATE_ASSUME_NO=1 to fail instead of auto-yes).',
+    )
+  }
 
   if (assumeYes) {
-    execSync('printf "y\\n" | pnpm exec payload migrate', { stdio: 'inherit', env, shell: true })
+    execSync('printf "y\\n" | payload migrate', { stdio: 'inherit', env, shell: true })
     return
   }
 
-  execSync('pnpm exec payload migrate', { stdio: 'inherit', env })
+  execSync('payload migrate', { stdio: 'inherit', env })
 }
 
 runPayloadMigrate()

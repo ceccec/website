@@ -33,7 +33,7 @@ export const opsCounter =
       }
     }
 
-    ;(config.collections || []).forEach((collection) => {
+    ;(config.collections ?? []).forEach((collection) => {
       if (!collection.hooks) {
         collection.hooks = {}
       }

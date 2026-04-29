@@ -4,11 +4,10 @@ import { Tenants } from '@root/collections/Tenants'
 
 import { multiTenantEnabled } from '../env'
 
+import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
+
 /** `examples/multi-tenant` — `tenants` collection when env is on. */
-export const tenantsPlugin: Plugin = (config) => {
-  if (!multiTenantEnabled()) {return config}
-  return {
-    ...config,
-    collections: [...(config.collections ?? []), Tenants],
-  }
-}
+export const tenantsPlugin: Plugin = conditionalSchemaPlugin(multiTenantEnabled, (config) => ({
+  ...config,
+  collections: [...(config.collections ?? []), Tenants],
+}))

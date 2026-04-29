@@ -1,4 +1,4 @@
-import type { EcommercePluginConfig, PaymentAdapter  } from '@payloadcms/plugin-ecommerce/types'
+import type { EcommercePluginConfig, PaymentAdapter } from '@payloadcms/plugin-ecommerce/types'
 
 import { Users } from '../../collections/Users'
 import {

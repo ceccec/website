@@ -16,6 +16,8 @@ Start from the **official doc** for each topic; use the **Cursor rule** for this
 
 **This repo (CI / static build):** `next.config.js`, `scripts/build.mjs`, `scripts/lib/deploymentTarget.mjs`. **Default:** `pnpm build` on the Cloudflare path runs `deploy:database` → `payload migrate` first so **D1 matches `src/migrations`** before OpenNext/SSG (see `payload-migrations.mdc`). **Optional:** follow Payload’s **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when you intentionally disconnect or use `SKIP_DATABASE_MIGRATE` for special pipelines.
 
+**LLM exports (`pnpm generate:llms`):** without `GITHUB_ACCESS_TOKEN`, `src/scripts/generateLLMs.ts` keeps committed `public/llms.txt` and `public/llms-full.txt` when present; set the token to refresh from GitHub.
+
 ## Checklist
 
 - [ ] CI either runs migrations against a real DB before SSG **or** deliberately follows **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no `DATABASE_URI` (or equivalent) is present.

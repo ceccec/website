@@ -352,7 +352,7 @@ alwaysApply: false`,
 - **Schema:** Migrations in \`src/migrations\` are the **source of truth** for the DB shape. Run \`payload migrate\` (this repo: \`pnpm deploy:database\`, wired before Workers/OpenNext builds) so **tables/columns exist before** static generation or runtime queries — incomplete schema (“no such table”, etc.) is addressed by **applying migrations**, not by skipping them.
 - **This repo:** \`package.json\` scripts (\`deploy:database\`, \`migrate-lexical-script\`, etc.) — follow deployment docs for **Cloudflare vs Vercel**.
 - **Order:** Ship migrations **before** relying on new columns/tables; coordinate with **generate:types** after schema codegen from migrations when applicable.
-- **Escape hatches only:** \`SKIP_DATABASE_MIGRATE\`, \`PAYLOAD_MIGRATE_ASSUME_YES\` in \`scripts/migrate-production.mjs\` — use for [building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection), externally managed schema, or non-interactive CI **after** you understand the tradeoffs — **not** as a substitute for checked-in migrations on a real database.
+- **Escape hatches only:** \`SKIP_DATABASE_MIGRATE\`, \`PAYLOAD_MIGRATE_ASSUME_YES\`, and **\`CI=true\`** (auto non-interactive migrate like assume-yes; opt out with \`PAYLOAD_MIGRATE_ASSUME_NO=1\`) in \`scripts/migrate-production.mjs\` — use for [building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection), externally managed schema, or non-interactive CI **after** you understand the tradeoffs — **not** as a substitute for checked-in migrations on a real database.
 - **Optional features** (\`src/plugins/env.ts\`): \`PAYLOAD_MULTI_TENANT\`, \`PAYLOAD_ECOMMERCE\`, \`PAYLOAD_MCP\`, etc. change which plugins register collections — schema is **env-conditional**. Ship migrations that cover the tables for features you deploy; this repo adds migrations generated with the relevant flags on (e.g. tenants + ecommerce + variants + MCP). When toggling a **new** optional plugin in production, run \`payload migrate:create\` with those env vars set, review the file, register it in \`src/migrations/index.ts\`, and deploy.
 
 ## Checklist
@@ -406,11 +406,17 @@ globs: src/plugins/**/*.{ts,tsx},src/plugins/**/*.mts
 alwaysApply: false`,
     body: `# Payload plugins
 
-- **Docs:** [Plugins overview](https://payloadcms.com/docs/plugins/overview)
-- **Pipeline:** \`src/plugins/index.ts\` — **schema first**, then optional MCP/multi-tenant/ecommerce, then **website** bundle (\`src/plugins/website\`), then **opsCounter** / analytics last so counters see all collections.
+- **Docs:** [Plugins overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api)
+- **Pipeline (\`getPlugins\`):** \`getSchemaPlugins()\` → \`getOptionalOfficialPlugins()\` (MCP / multi-tenant / ecommerce when env says so) → **website** (\`src/plugins/website\`) → **opsCounter** → **Google Analytics** last so counters see every collection.
 - **Installed (examples):** \`plugin-seo\`, \`plugin-redirects\`, \`plugin-nested-docs\`, \`plugin-form-builder\`, \`plugin-multi-tenant\`, \`plugin-ecommerce\`, \`plugin-mcp\`, storage plugins — each has official docs under **Plugins**.
-- **Env:** Feature flags in \`src/plugins/env.ts\` (or similar) — enabling a plugin may require **migrate** and **generate:types**.
-- **Ordering matters:** Plugins that add collections/hooks should load before code that depends on them.
+- **Env:** Feature flags in \`src/plugins/env.ts\` — enabling a plugin may require **migrate** and **generate:types**.
+- **Ordering matters:** Plugins that add collections/hooks load before consumers; resolve conflicts in \`getPlugins\` order or plugin options.
+
+## Layout (strict)
+
+- **Per official package:** one folder under \`src/plugins/<name>/\` — \`config.ts\` (or \`index.ts\`) should **only** call the \`@payloadcms/*\` \`*Plugin({ ... })\` factory and pass options. No duplicated “if disabled return config” — use \`src/plugins/lib/whenPluginEnabled.ts\` for optional first-party installs and \`src/plugins/lib/conditionalSchemaPlugin.ts\` for gated schema extensions.
+- **Integration / other packages** (Stripe, HubSpot, reCAPTCHA, webhooks, custom fields for a plugin): implement in a **sibling module** in the same folder (e.g. \`integration.ts\`, \`handlers.ts\`) or a clearly named \`src/plugins/<name>/…\` file; **import from \`config.ts\`** so wiring stays one screen. That code must follow **\`payload-hooks.mdc\`** (lightweight hooks), **\`payload-security-deployment.mdc\`** (secrets server-only), **\`payload-performance.mdc\`** (no long sync work — use jobs when appropriate), and the **topic rule** for that package (e.g. \`payload-form-builder.mdc\`, \`payload-ecommerce.mdc\`, \`payload-uploads-storage.mdc\`).
+- **Cross-plugin DRY only:** \`src/plugins/lib/*\` — not business domain logic.
 
 ## Per-plugin deep links (bookmark)
 
@@ -418,8 +424,9 @@ alwaysApply: false`,
 
 ## Checklist
 
-- [ ] New plugin: read plugin doc + add env + migrate + types.
-- [ ] Cross-plugin conflicts (same slug, same route): resolved in \`getPlugins\` order or options.
+- [ ] New plugin: read official doc + env + migrate + **generate:types**.
+- [ ] Cross-plugin conflicts (slug, route): resolved in \`getPlugins\` order or options.
+- [ ] Third-party or custom integration: colocated under \`src/plugins/<name>/\`, follows hooks/security/performance + topic rule.
 `,
   },
   {
@@ -500,12 +507,12 @@ alwaysApply: false`,
   {
     file: 'payload-form-builder.mdc',
     yaml: `description: plugin-form-builder — forms, submissions, validation
-globs: src/plugins/schema/**/*form*.{ts,tsx},src/components/CMSForm/**/*.{ts,tsx},src/**/form-submissions/**/*.{ts,tsx}
+globs: src/plugins/form-builder/**/*.{ts,tsx},src/plugins/schema/**/*form*.{ts,tsx},src/components/CMSForm/**/*.{ts,tsx},src/**/form-submissions/**/*.{ts,tsx}
 alwaysApply: false`,
     body: `# Form builder plugin
 
 - **Docs:** [Form builder](https://payloadcms.com/docs/plugins/form-builder)
-- **This repo:** \`@payloadcms/plugin-form-builder\` integrated via website plugin / schema; submissions API and **CMSForm** frontend must stay in sync.
+- **This repo:** \`@payloadcms/plugin-form-builder\` — **wiring** in \`src/plugins/form-builder/config.ts\` (calls \`formBuilderPlugin({ ... })\` only). **App + third-party logic** (HubSpot, reCAPTCHA, partner \`toEmail\`, extra fields) in \`src/plugins/form-builder/integration.ts\`; follows \`payload-plugins.mdc\` layout, \`payload-hooks.mdc\`, \`payload-security-deployment.mdc\` (\`NEXT_PRIVATE_*\` secrets), \`payload-performance.mdc\`. Submissions API and **CMSForm** must stay in sync.
 - **Validation:** Server-side validation per Payload; never trust client-only checks for PII.
 - **Spam / rate limit:** Consider edge or server rate limits on public submission routes.
 
@@ -513,12 +520,13 @@ alwaysApply: false`,
 
 - [ ] New form field type: admin + frontend renderer + types regenerated.
 - [ ] Submission storage and **PII** comply with privacy policy (e.g. \`src/providers/Privacy\`).
+- [ ] New integration code: add to \`integration.ts\`, not inline in \`config.ts\`.
 `,
   },
   {
     file: 'payload-hooks.mdc',
     yaml: `description: Payload hooks — root, collection, global, field, context (not React admin hooks)
-globs: src/**/*hooks*/**/*.{ts,tsx},src/**/hooks/**/*.{ts,tsx},src/payload.config.ts,src/collections/**/*.ts,src/plugins/schema/**/*.ts
+globs: src/**/*hooks*/**/*.{ts,tsx},src/**/hooks/**/*.{ts,tsx},src/payload.config.ts,src/collections/**/*.ts,src/plugins/schema/**/*.ts,src/plugins/form-builder/**/*.ts
 alwaysApply: false`,
     body: `# Hooks
 
@@ -666,6 +674,8 @@ Start from the **official doc** for each topic; use the **Cursor rule** for this
 ${hubTable3('| Topic | Official doc | Cursor rule |', '|-------|--------------|-------------|', DEPLOYMENT_HUB_ROWS)}
 
 **This repo (CI / static build):** \`next.config.js\`, \`scripts/build.mjs\`, \`scripts/lib/deploymentTarget.mjs\`. **Default:** \`pnpm build\` on the Cloudflare path runs \`deploy:database\` → \`payload migrate\` first so **D1 matches \`src/migrations\`** before OpenNext/SSG (see \`payload-migrations.mdc\`). **Optional:** follow Payload’s **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when you intentionally disconnect or use \`SKIP_DATABASE_MIGRATE\` for special pipelines.
+
+**LLM exports (\`pnpm generate:llms\`):** without \`GITHUB_ACCESS_TOKEN\`, \`src/scripts/generateLLMs.ts\` keeps committed \`public/llms.txt\` and \`public/llms-full.txt\` when present; set the token to refresh from GitHub.
 
 ## Checklist
 

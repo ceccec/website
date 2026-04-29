@@ -6,20 +6,19 @@ import redeployWebsite from '@root/scripts/redeployWebsite'
 
 import { releaseAutomationEnabled } from '../env'
 
+import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
+
 /** Redeploy + release note helpers (toggle without pulling docs). */
-export const automationPlugin: Plugin = (config) => {
-  if (!releaseAutomationEnabled()) {return config}
-  return {
-    ...config,
-    endpoints: [
-      ...(config.endpoints ?? []),
-      { handler: redeployWebsite, method: 'post', path: '/redeploy/website' },
-      { handler: createReleasePost, method: 'post', path: '/create-release-post' },
-      {
-        handler: createReleasePostFromAdmin,
-        method: 'post',
-        path: '/create-release-post-from-admin',
-      },
-    ],
-  }
-}
+export const automationPlugin: Plugin = conditionalSchemaPlugin(releaseAutomationEnabled, (config) => ({
+  ...config,
+  endpoints: [
+    ...(config.endpoints ?? []),
+    { handler: redeployWebsite, method: 'post', path: '/redeploy/website' },
+    { handler: createReleasePost, method: 'post', path: '/create-release-post' },
+    {
+      handler: createReleasePostFromAdmin,
+      method: 'post',
+      path: '/create-release-post-from-admin',
+    },
+  ],
+}))

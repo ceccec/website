@@ -4,10 +4,8 @@ import type { Plugin } from 'payload'
 
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 
-import { ecommerce } from './ecommerce'
 import { googleAnalyticsConfig } from './google-analytics/config'
-import { mcp } from './mcp'
-import { multiTenant } from './multi-tenant'
+import { getOptionalOfficialPlugins } from './optionalOfficialPlugins'
 import { opsCounter } from './opsCounter'
 import { opsCounterConfig } from './opsCounter/config'
 import { getSchemaPlugins } from './schema'
@@ -37,21 +35,11 @@ export type GetPluginsOptions = {
  * @see https://payloadcms.com/docs/hooks/overview
  */
 export function getPlugins(opts: GetPluginsOptions): Plugin[] {
-  const plugins: Plugin[] = [...getSchemaPlugins()]
-
-  const mcpPlugin = mcp()
-  if (mcpPlugin) {plugins.push(mcpPlugin)}
-
-  const multiTenantPlugin = multiTenant()
-  if (multiTenantPlugin) {plugins.push(multiTenantPlugin)}
-
-  const ecommercePlugin = ecommerce()
-  if (ecommercePlugin) {plugins.push(ecommercePlugin)}
-
-  plugins.push(...website(opts))
-
-  plugins.push(opsCounter(opsCounterConfig))
-  plugins.push(googleAnalytics(googleAnalyticsConfig))
-
-  return plugins
+  return [
+    ...getSchemaPlugins(),
+    ...getOptionalOfficialPlugins(),
+    ...website(opts),
+    opsCounter(opsCounterConfig),
+    googleAnalytics(googleAnalyticsConfig),
+  ]
 }

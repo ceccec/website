@@ -1,5 +1,7 @@
 import payloadEsLintConfig from '@payloadcms/eslint-config'
 import payloadPlugin from '@payloadcms/eslint-plugin'
+import nextPlugin from '@next/eslint-plugin-next'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 export const defaultESLintIgnores = [
   '**/.temp',
@@ -23,12 +25,23 @@ export const defaultESLintIgnores = [
 
 /** @typedef {import('eslint').Linter.Config} Config */
 
+/** @see https://nextjs.org/docs/app/api-reference/config/eslint — Next 16 + ESLint 9 flat config */
 export const rootParserOptions = {
   sourceType: 'module',
   ecmaVersion: 'latest',
   projectService: {
     maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 40,
-    allowDefaultProject: ['scripts/*.ts', 'scripts/*.js', '*.js', '*.mjs', '*.spec.ts', '*.d.ts'],
+    allowDefaultProject: [
+      'scripts/**/*.ts',
+      'scripts/**/*.js',
+      'scripts/**/*.mjs',
+      '*.js',
+      '*.mjs',
+      '*.cjs',
+      '*.spec.ts',
+      '*.d.ts',
+      'next-sitemap.config.cjs',
+    ],
   },
 }
 
@@ -49,7 +62,9 @@ export const rootEslintConfig = [
   },
 ]
 
-const config = [
+export default defineConfig([
+  // Next.js 16: no `next lint` — use ESLint CLI + `@next/eslint-plugin-next` (flat `core-web-vitals`) alongside Payload.
+  nextPlugin.configs['core-web-vitals'],
   ...rootEslintConfig,
   {
     languageOptions: {
@@ -73,6 +88,12 @@ const config = [
       'src/payload.config.ts',
     ],
   },
-]
-
-export default config
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    '.open-next/**',
+    '.wrangler/**',
+    'next-env.d.ts',
+  ]),
+])

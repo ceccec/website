@@ -5,7 +5,6 @@ import { Partners } from '@root/collections/Partners'
 import { PartnerProgram } from '@root/globals/PartnerProgram'
 
 import { partnersTemplateEnabled } from '../env'
-
 import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
 
 /** Partner directory + program global. */

@@ -1,6 +1,9 @@
 /**
  * Feature flags aligned with Payload `examples/*` and `templates/*`, plus
  * optional content slices. Set a var to `false` to turn a slice off (default: on).
+ *
+ * Opt-in plugins (`explicitTrue`) stay off by default so optional Payload plugins and
+ * their transitive concerns (e.g. Stripe with ecommerce) are not engaged unless needed.
  */
 
 /** Template slice defaults: unset env → feature **on**; explicit `false` turns off. */

@@ -1,10 +1,12 @@
-import type { CloudflareContext } from '@opennextjs/cloudflare'
+import type * as MongoDBPkg from '@payloadcms/db-mongodb'
+import type * as PostgresPkg from '@payloadcms/db-postgres'
 
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { postgresAdapter } from '@payloadcms/db-postgres'
 
-import type { DeploymentTarget } from './deploymentTarget'
+import type { DeploymentRuntimeOptions } from './deploymentTarget'
+
+import { nodeRequire } from './nodeRequire'
+import { PAYLOAD_SQL_ID_TYPE } from './payloadIdType'
 
 function mongoConnectionString(): string {
   const adapterEnv = process.env.PAYLOAD_DB_ADAPTER?.toLowerCase()
@@ -19,8 +21,8 @@ function mongoConnectionString(): string {
   }
   const direct = process.env.MONGODB_URL?.trim()
   if (direct?.startsWith('mongodb')) {return direct}
-  const db = process.env.DATABASE_URL?.trim()
-  if (db?.startsWith('mongodb')) {return db}
+  const databaseUrl = process.env.DATABASE_URL?.trim()
+  if (databaseUrl?.startsWith('mongodb')) {return databaseUrl}
   return ''
 }
 
@@ -32,15 +34,12 @@ function postgresConnectionString(): string {
 }
 
 /**
- * Resolves the DB adapter for Payload (`templates/*` cover Postgres, D1, MongoDB separately).
+ * Resolves the database adapter for Payload (`templates/*` cover Postgres, D1, MongoDB separately).
  * MongoDB is supported only on Node / Vercel-like targets — never inside Cloudflare Workers.
  *
  * @see https://payloadcms.com/docs/database/overview
  */
-export function resolvePayloadDb(opts: {
-  cloudflare: CloudflareContext | undefined
-  deploymentTarget: DeploymentTarget
-}) {
+export function resolvePayloadDB(opts: DeploymentRuntimeOptions) {
   const { cloudflare, deploymentTarget } = opts
 
   const mongoUrl = mongoConnectionString()
@@ -50,6 +49,7 @@ export function resolvePayloadDb(opts: {
         'MongoDB cannot be used on the Cloudflare Workers + D1 path. Remove MONGODB_URL / mongodb DATABASE_URL or set PAYLOAD_HOSTING=vercel and run on Node.',
       )
     }
+    const { mongooseAdapter } = nodeRequire('@payloadcms/db-mongodb') as typeof MongoDBPkg
     return mongooseAdapter({ url: mongoUrl })
   }
 
@@ -60,7 +60,9 @@ export function resolvePayloadDb(opts: {
         'Postgres requires POSTGRES_URL or DATABASE_URL (postgres://…). For MongoDB, set MONGODB_URL. On Cloudflare, use D1 and omit mongo/postgres URLs.',
       )
     }
+    const { postgresAdapter } = nodeRequire('@payloadcms/db-postgres') as typeof PostgresPkg
     return postgresAdapter({
+      idType: PAYLOAD_SQL_ID_TYPE,
       pool: {
         connectionString,
       },
@@ -73,5 +75,8 @@ export function resolvePayloadDb(opts: {
     )
   }
 
-  return sqliteD1Adapter({ binding: cloudflare.env.D1 })
+  return sqliteD1Adapter({
+    binding: cloudflare.env.D1,
+    idType: PAYLOAD_SQL_ID_TYPE,
+  })
 }

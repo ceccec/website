@@ -11,7 +11,7 @@ import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
  *
  * Doc areas ↔ repo:
  * - Configuration — this file; plugins `src/plugins`; env-driven URL/origins `src/config/trustedOrigins.ts`, `utilities/getURL.ts`
- * - Database — `resolvePayloadDb` (`src/lib/payloadDb.ts`), Cloudflare bindings `assertCloudflarePayloadBindings`
+ * - Database — `resolvePayloadDB` (`src/lib/payloadDB.ts`), Cloudflare bindings `assertCloudflarePayloadBindings`
  * - Admin UI — `admin.*` below; nav/dashboard slots `components/AfterNavActions`, `components/BeforeDashboard`
  * - Live preview — `admin.livePreview`; draft route `app/(frontend)/api/preview/route.ts` (secret cookie — `.env.example`)
  * - Local API — `src/lib/getPayload.ts`, `app/_data`, `utilities/getDocument`, docs pages under `app/(frontend)/(pages)/docs`
@@ -46,8 +46,8 @@ import { getTrustedOrigins } from './config/trustedOrigins'
 import { createSendGridMailTransport } from './email/sendgridMailTransport'
 import localization from './i18n/localization'
 import { assertCloudflarePayloadBindings } from './lib/assertCloudflarePayloadBindings'
-import { getDeploymentTarget } from './lib/deploymentTarget'
-import { resolvePayloadDb } from './lib/payloadDb'
+import { type DeploymentRuntimeOptions, getDeploymentTarget } from './lib/deploymentTarget'
+import { resolvePayloadDB } from './lib/payloadDB'
 import { getPlugins } from './plugins'
 import { getServerSideURL } from './utilities/getURL'
 
@@ -76,8 +76,8 @@ const nodemailerArgs =
           ...(process.env.SMTP_USER?.trim()
             ? {
                 auth: {
-                  user: process.env.SMTP_USER.trim(),
                   pass: process.env.SMTP_PASS?.trim() || '',
+                  user: process.env.SMTP_USER.trim(),
                 },
               }
             : {}),
@@ -105,7 +105,9 @@ const cloudflare: CloudflareContext | undefined =
       : await getCloudflareContext({ async: true })
     : undefined
 
-assertCloudflarePayloadBindings(deploymentTarget, cloudflare)
+const deploymentRuntime: DeploymentRuntimeOptions = { cloudflare, deploymentTarget }
+
+assertCloudflarePayloadBindings(deploymentRuntime)
 
 const trustedOrigins = getTrustedOrigins()
 
@@ -165,7 +167,7 @@ export default buildConfig({
   collections: [],
   cors: trustedOrigins,
   csrf: trustedOrigins,
-  db: resolvePayloadDb({ cloudflare, deploymentTarget }),
+  db: resolvePayloadDB(deploymentRuntime),
   localization,
   serverURL: getServerSideURL(),
   // Cloudflare Workers: JSON line logging (not full PayloadLogger / pino surface).
@@ -187,7 +189,7 @@ export default buildConfig({
     },
     tasks: [],
   },
-  plugins: getPlugins({ cloudflare, deploymentTarget }),
+  plugins: getPlugins(deploymentRuntime),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

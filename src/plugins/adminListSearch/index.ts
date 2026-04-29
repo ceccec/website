@@ -1,0 +1,1 @@
+export { adminListSearchPlugin } from './plugin'

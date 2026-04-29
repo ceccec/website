@@ -1,8 +1,16 @@
+import type { CloudflareContext } from '@opennextjs/cloudflare'
+
 import { getDeploymentTargetFromEnv } from '../../scripts/lib/deploymentTarget.mjs'
 
 /** Keep env-branch parity with `scripts/lib/deploymentTarget.mjs` when changing routing. */
 
 export type DeploymentTarget = 'cloudflare' | 'vercel'
+
+/** Passed through Payload config, plugins, DB, and storage — one shape for deploy/runtime branching. */
+export type DeploymentRuntimeOptions = {
+  cloudflare: CloudflareContext | undefined
+  deploymentTarget: DeploymentTarget
+}
 
 /** True inside Cloudflare Workers (`workerd`), not on plain Node. */
 function isCloudflareWorkersRuntime(): boolean {

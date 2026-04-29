@@ -4,7 +4,6 @@ import { Docs } from '@root/collections/Docs'
 import { refreshMdxToLexical, syncDocs } from '@root/scripts/syncDocs'
 
 import { docsTemplateEnabled } from '../env'
-
 import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
 
 /** Documentation collection + MDX / content sync routes. */

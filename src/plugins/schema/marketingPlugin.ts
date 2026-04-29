@@ -10,7 +10,6 @@ import { MainMenu } from '@root/globals/MainMenu'
 import { TopBar } from '@root/globals/TopBar'
 
 import { marketingContentEnabled } from '../env'
-
 import { conditionalSchemaPlugin } from '../lib/conditionalSchemaPlugin'
 
 /** Blog-style marketing content + primary nav globals. */

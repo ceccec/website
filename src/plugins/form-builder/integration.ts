@@ -5,9 +5,8 @@
  * @see .cursor/rules/payload-form-builder.mdc · payload-hooks.mdc · payload-security-deployment.mdc · payload-performance.mdc
  */
 
-import type { Field, PayloadRequest } from 'payload'
-
 import type { Form, FormSubmission } from '@types'
+import type { Field, PayloadRequest } from 'payload'
 
 import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
 
@@ -85,7 +84,7 @@ export const formBuilderRecaptchaSubmissionField: Field = {
         method: 'POST',
       },
     )
-    const data = (await res.json()) as { success?: boolean }
+    const data = (await res.json())
     if (!data.success) {
       return 'Invalid captcha'
     }
@@ -107,7 +106,7 @@ export async function afterFormSubmissionChange({
   if (typeof formRef !== 'object' || formRef === null) {
     return
   }
-  const form = formRef as Form
+  const form = formRef
   const hubSpotFormID = form.hubSpotFormID
   if (!hubSpotFormID) {
     return
@@ -159,8 +158,8 @@ export async function beforeFormSubmissionChange({
   req,
 }: {
   data: {
-    submissionData?: { field: string; value: string }[]
     [key: string]: unknown
+    submissionData?: { field: string; value: string }[]
   }
   req: PayloadRequest
 }) {

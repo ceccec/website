@@ -1,16 +1,12 @@
-import type { CloudflareContext } from '@opennextjs/cloudflare'
-
-import type { DeploymentTarget } from './deploymentTarget'
+import type { DeploymentRuntimeOptions } from './deploymentTarget'
 
 /**
  * Payload on Cloudflare requires Wrangler bindings declared for this app:
  * `D1` (@payloadcms/db-d1-sqlite) and `R2` (@payloadcms/storage-r2 media).
  * Optional OpenNext bindings (ASSETS, NEXT_INC_CACHE_R2_BUCKET, …) are enforced elsewhere.
  */
-export function assertCloudflarePayloadBindings(
-  deploymentTarget: DeploymentTarget,
-  cloudflare: CloudflareContext | undefined,
-): asserts cloudflare is CloudflareContext {
+export function assertCloudflarePayloadBindings(opts: DeploymentRuntimeOptions): void {
+  const { cloudflare, deploymentTarget } = opts
   if (deploymentTarget !== 'cloudflare') {return}
 
   if (!cloudflare?.env) {

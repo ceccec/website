@@ -1,15 +1,5 @@
-import type { CloudflareContext } from '@opennextjs/cloudflare'
-import type { DeploymentTarget } from '@root/lib/deploymentTarget'
+import type { DeploymentRuntimeOptions } from '@root/lib/deploymentTarget'
 import type { Plugin } from 'payload'
-
-import { googleAnalytics } from '@zubricks/plugin-google-analytics'
-
-import { googleAnalyticsConfig } from './google-analytics/config'
-import { getOptionalOfficialPlugins } from './optionalOfficialPlugins'
-import { opsCounter } from './opsCounter'
-import { opsCounterConfig } from './opsCounter/config'
-import { getSchemaPlugins } from './schema'
-import { website } from './website'
 
 export {
   docsTemplateEnabled,
@@ -22,10 +12,19 @@ export {
   releaseAutomationEnabled,
 } from './env'
 
-export type GetPluginsOptions = {
-  cloudflare: CloudflareContext | undefined
-  deploymentTarget: DeploymentTarget
-}
+import { googleAnalytics } from '@zubricks/plugin-google-analytics'
+
+import { adminListSearchPlugin } from './adminListSearch'
+import { googleAnalyticsConfig } from './google-analytics/config'
+import { opsCounter } from './opsCounter'
+import { opsCounterConfig } from './opsCounter/config'
+import { getOptionalOfficialPlugins } from './optionalOfficialPlugins'
+import { getSchemaPlugins } from './schema'
+import { website } from './website'
+
+export type { DeploymentRuntimeOptions } from '@root/lib/deploymentTarget'
+
+export type GetPluginsOptions = DeploymentRuntimeOptions
 
 /**
  * Plugin pipeline: schema (blocks + collections + globals + REST routes), optional
@@ -45,6 +44,7 @@ export function getPlugins(opts: GetPluginsOptions): Plugin[] {
     ...schema,
     ...optional,
     ...site,
+    adminListSearchPlugin(),
     opsCounter(opsCounterConfig),
     googleAnalytics(googleAnalyticsConfig),
   ]

@@ -31,7 +31,7 @@ At runtime, [`src/payload.config.ts`](src/payload.config.ts) resolves **OpenNext
 
 ### Environment variable catalog (Deploy wizard)
 
-Human-readable names and copy for **Deploy to Cloudflare** live in [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json). Run **`pnpm sync:cloudflare-bindings`** to copy **`bindings`** into [`package.json`](package.json) under **`cloudflare.bindings`** — that is what the Deploy wizard reads (alongside [`.dev.vars.example`](.dev.vars.example)). An optional root-level **`introduction`** string in the JSON file is **docs-only**: it is **not** synced to `package.json`, so the wizard is not bloated; it explains that **only `PAYLOAD_SECRET`** is needed for first deploy and that integrations can be added later under **Workers → Settings**.
+Human-readable names and copy for **Deploy to Cloudflare** live in [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json). Run **`pnpm sync:cloudflare-bindings`** to copy **`bindings`** into [`package.json`](package.json) under **`cloudflare.bindings`** — that is what the Deploy wizard reads (alongside [`.dev.vars.example`](.dev.vars.example)). **`PAYLOAD_SECRET`** is listed first and marked **Required**; everything else is optional reference copy. An optional root-level **`introduction`** in the JSON file is **docs-only** (not synced): it tells operators to leave other wizard fields blank and prefer **Admin → Globals** ([`PublicSiteSettings`](src/globals/PublicSiteSettings.ts), [`IntegrationSecrets`](src/globals/IntegrationSecrets.ts)) for URLs and integrations unless a value must be build-inlined (`NEXT_PUBLIC_*`) or kept outside Admin.
 
 ### Deploy to Cloudflare button + `PAYLOAD_SECRET`
 

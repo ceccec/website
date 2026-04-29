@@ -1,6 +1,9 @@
 {
-  "introduction": "**Workers one-click:** Fill only **`PAYLOAD_SECRET`** (use the same value under **Build variables and secrets** so `payload migrate` runs during build). **Leave other keys empty** — add them later under **Workers → Settings → Variables & Secrets** when you turn on each integration (Algolia, Stripe, analytics, etc.) and redeploy. Editorial content is edited in **Payload Admin** (`/admin`); API keys stay in Worker env, not in Admin.",
+  "introduction": "**Deploy wizard:** Only **`PAYLOAD_SECRET`** is required — use `openssl rand -hex 32` and set the **same** value under Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)) so `payload migrate` runs. **Leave all other fields empty** for the first deploy. **Optional** overrides below are for power users and CI. Prefer **Admin → Globals** — **Public site settings** (URLs, analytics IDs, Algolia app IDs) and **Integration secrets** (HubSpot, Algolia admin key, reCAPTCHA, cron, revalidation) — so editors can change runtime behavior **without** redeploying. Use Worker env only when you need secrets outside Admin or **`NEXT_PUBLIC_*`** values inlined at **build** time (then add under Build env and redeploy).",
   "bindings": {
+    "PAYLOAD_SECRET": {
+      "description": "**Required.** Payload encryption/session secret (`openssl rand -hex 32`). Must appear in Worker **Variables & Secrets** and **Build variables and secrets**. Nothing else in this list is required for one-click deploy."
+    },
     "ANALYZE": {
       "description": "Optional. Set to `true` only when running `pnpm analyze` (Next bundle analyzer)."
     },
@@ -26,7 +29,7 @@
       "description": "Optional. Auth cookie `domain` for Payload Users (`collections/Users.ts`). Often empty locally."
     },
     "DATABASE_URL": {
-      "description": "**Postgres** (`postgres://…`) on Vercel, or **MongoDB** (`mongodb://…` / `mongodb+srv://…`) when using `@payloadcms/db-mongodb`. Empty on pure Cloudflare D1."
+      "description": "**Optional on Workers.** Postgres (`postgres://…`) or Mongo (`mongodb://…`) on Node/Vercel paths only — leave unset for D1 (`deploymentTarget.ts`)."
     },
     "DISABLE_SECURE_COOKIE": {
       "description": "Optional. Set to disable `Secure` / `SameSite=None` on auth cookies even in production (testing only)."
@@ -74,7 +77,7 @@
       "description": "Public. Payload Cloud GraphQL/API base URL for in-app cloud flows."
     },
     "NEXT_PUBLIC_CMS_URL": {
-      "description": "Public. This deployment’s CMS origin for media URLs, RichText `serverURL`, etc."
+      "description": "**Optional at deploy.** CMS origin for media / RichText. Prefer **Globals → Public site settings → CMS public URL**; use Worker/Build env only for build-time inlining."
     },
     "NEXT_PUBLIC_ENABLE_BETA_DOCS": {
       "description": "Public. `true` to surface beta docs routes."
@@ -116,7 +119,7 @@
       "description": "Optional. Alias used in official templates (`getServerSideURL`); this repo prefers `PAYLOAD_PUBLIC_APP_URL` / `NEXT_PUBLIC_SITE_URL` first in `src/utilities/getURL.ts`."
     },
     "NEXT_PUBLIC_SITE_URL": {
-      "description": "Public. Canonical browser URL of this site (metadata, OG, sitemap, redirects)."
+      "description": "**Optional at deploy.** Public canonical URL (metadata, OG). Prefer **Globals → Public site settings → Canonical site URL** after deploy; set here only if you need it **inlined at build** (Workers Builds env + rebuild)."
     },
     "NEXT_PUBLIC_SKIP_BUILD_DOCS": {
       "description": "Public. Skip docs page generation during build when truthy."
@@ -179,13 +182,10 @@
       "description": "Optional. Set `true` to enable `@payloadcms/plugin-multi-tenant` on the `pages` collection + `tenants` (`examples/multi-tenant`). Run `payload migrate` after enabling."
     },
     "PAYLOAD_PUBLIC_APP_URL": {
-      "description": "Server-accessible canonical app URL for Payload serverURL/CORS (often same origin as `NEXT_PUBLIC_SITE_URL`)."
+      "description": "**Optional at deploy.** Server URL for Payload `serverURL`/CORS. Prefer matching **Canonical site URL** in **Globals → Public site settings** when possible."
     },
     "PAYLOAD_RELEASE_SECRET": {
       "description": "Secret. Shared with GitHub Actions for release automation webhooks."
-    },
-    "PAYLOAD_SECRET": {
-      "description": "**Required for one-click.** Payload encryption/session secret — `openssl rand -hex 32`. Same value in Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)). Everything else in this catalog can wait until after deploy."
     },
     "POSTGRES_URL": {
       "description": "Postgres URL — **Vercel relational stack**. Leave unset on Workers+D1 to avoid misrouting migrate (`deploymentTarget.ts`)."

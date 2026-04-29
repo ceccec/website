@@ -1,7 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
-
 import { revalidateTagImmediate } from '../utilities/revalidateTagImmediate'
 
 /**
@@ -10,16 +9,69 @@ import { revalidateTagImmediate } from '../utilities/revalidateTagImmediate'
  */
 export const IntegrationSecrets: GlobalConfig = {
   slug: 'integration-secrets',
-  label: 'Integration secrets',
-  admin: {
-    description:
-      'HubSpot, Algolia admin key, reCAPTCHA secret, ISR revalidation key, cron/JWT helpers. Leave blank to use Worker/env vars. Only users with the **admin** role can view or edit.',
-    group: 'Site',
-  },
   access: {
     read: isAdmin,
     update: isAdmin,
   },
+  admin: {
+    description:
+      'Preferred place for integration secrets after deploy (no redeploy). Overrides Worker **NEXT_PRIVATE_*** / **CRON_SECRET** when set. Use one-click Worker env only for bootstrap or secrets that must stay outside Admin.',
+    group: 'Site',
+  },
+  fields: [
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          fields: [
+            {
+              name: 'hubspotPortalKey',
+              type: 'text',
+              admin: { description: 'Overrides `NEXT_PRIVATE_HUBSPOT_PORTAL_KEY` when set.' },
+              label: 'HubSpot portal ID',
+            },
+            {
+              name: 'recaptchaSecretKey',
+              type: 'text',
+              admin: { description: 'Overrides `NEXT_PRIVATE_RECAPTCHA_SECRET_KEY` when set.' },
+              label: 'reCAPTCHA secret key',
+            },
+          ],
+          label: 'Forms & CRM',
+        },
+        {
+          fields: [
+            {
+              name: 'algoliaAdminApiKey',
+              type: 'text',
+              admin: { description: 'Overrides `NEXT_PRIVATE_ALGOLIA_API_KEY` when set.' },
+              label: 'Algolia admin API key',
+            },
+            {
+              name: 'revalidationKey',
+              type: 'text',
+              admin: { description: 'Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.' },
+              label: 'On-demand revalidation secret',
+            },
+          ],
+          label: 'Search & cache',
+        },
+        {
+          fields: [
+            {
+              name: 'cronSecret',
+              type: 'text',
+              admin: {
+                description: 'Overrides `NEXT_PRIVATE_CRON_KEY` / `CRON_SECRET` when set.',
+              },
+              label: 'Cron / jobs bearer secret',
+            },
+          ],
+          label: 'Jobs & automation',
+        },
+      ],
+    },
+  ],
   hooks: {
     afterChange: [
       () => {
@@ -27,58 +79,5 @@ export const IntegrationSecrets: GlobalConfig = {
       },
     ],
   },
-  fields: [
-    {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Forms & CRM',
-          fields: [
-            {
-              name: 'hubspotPortalKey',
-              type: 'text',
-              label: 'HubSpot portal ID',
-              admin: { description: 'Overrides `NEXT_PRIVATE_HUBSPOT_PORTAL_KEY` when set.' },
-            },
-            {
-              name: 'recaptchaSecretKey',
-              type: 'text',
-              label: 'reCAPTCHA secret key',
-              admin: { description: 'Overrides `NEXT_PRIVATE_RECAPTCHA_SECRET_KEY` when set.' },
-            },
-          ],
-        },
-        {
-          label: 'Search & cache',
-          fields: [
-            {
-              name: 'algoliaAdminApiKey',
-              type: 'text',
-              label: 'Algolia admin API key',
-              admin: { description: 'Overrides `NEXT_PRIVATE_ALGOLIA_API_KEY` when set.' },
-            },
-            {
-              name: 'revalidationKey',
-              type: 'text',
-              label: 'On-demand revalidation secret',
-              admin: { description: 'Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.' },
-            },
-          ],
-        },
-        {
-          label: 'Jobs & automation',
-          fields: [
-            {
-              name: 'cronSecret',
-              type: 'text',
-              label: 'Cron / jobs bearer secret',
-              admin: {
-                description: 'Overrides `NEXT_PRIVATE_CRON_KEY` / `CRON_SECRET` when set.',
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+  label: 'Integration secrets',
 }

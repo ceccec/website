@@ -34,9 +34,9 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 
 Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
-**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI (no `VERCEL`, no `postgres://…` URL) that executes **`pnpm run workers:build`** (migrate → OpenNext). Set **`PAYLOAD_SECRET`** under **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
+**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI that executes **`pnpm run workers:build`** (migrate → OpenNext). **Only `PAYLOAD_SECRET` is required:** set the same value under Worker **Variables & Secrets** and **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
 
-**Do not pre-fill every env var in the wizard.** The catalog in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json) lists optional integrations; the optional **`introduction`** at the top of that file explains the minimal set. After go-live, add Algolia, Stripe, analytics, cron keys, etc. under **Workers → Settings → Variables & Secrets** when you enable each feature (then redeploy). Editorial settings use **Payload Admin** (`/admin`); secrets remain in Worker env.
+**Leave every other wizard field blank** unless you need build-time `NEXT_PUBLIC_*` or a secret outside Admin. Prefer **Payload Admin → Globals** — [**Public site settings**](./src/globals/PublicSiteSettings.ts) (URLs, analytics, Algolia app IDs) and [**Integration secrets**](./src/globals/IntegrationSecrets.ts) — so editors can configure the site **without** redeploying. Optional Worker overrides are documented in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json) (`pnpm sync:cloudflare-bindings` syncs descriptions into [`package.json`](./package.json)); the JSON **`introduction`** is docs-only for the Deploy wizard copy.
 
 ---
 

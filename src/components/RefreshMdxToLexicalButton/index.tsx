@@ -22,8 +22,8 @@ const RefreshMdxToLexicalButton: React.FC = () => {
       toast.success('Documentation refreshed successfully')
       setIsRefreshing(false)
     } else {
-      const data = await res.json()
-      toast.error(`Failed to refresh documentation: ${data.message}`)
+      const data = (await res.json()) as { message?: string }
+      toast.error(`Failed to refresh documentation: ${data.message ?? 'Unknown error'}`)
       setIsRefreshing(false)
     }
   }

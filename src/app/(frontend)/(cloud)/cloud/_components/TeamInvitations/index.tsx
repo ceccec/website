@@ -53,9 +53,9 @@ export const TeamInvitations: React.FC<{
         setLoading(false)
 
         if (res.ok) {
-          const { data, error } = await res.json()
+          const { data, error } = (await res.json()) as { data?: unknown; error?: unknown }
           if (error) {
-            setError(error)
+            setError(typeof error === 'string' ? error : String(error))
           } else {
             setError(null)
             toast.success('Invitation resent.')
@@ -63,8 +63,10 @@ export const TeamInvitations: React.FC<{
         } else {
           throw new Error('Invalid response from server')
         }
-      } catch (e) {
-        setError(`Error sending invitation: ${e.message}`)
+      } catch (e: unknown) {
+        setError(
+          `Error sending invitation: ${e instanceof Error ? e.message : String(e)}`,
+        )
       }
 
       return () => {
@@ -99,7 +101,7 @@ export const TeamInvitations: React.FC<{
               <button
                 className={classes.resendEmail}
                 onClick={() => {
-                  resendEmail(invite?.email)
+                  void resendEmail(invite?.email)
                 }}
                 type="button"
               >

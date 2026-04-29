@@ -70,7 +70,7 @@ export const UniqueDomain: React.FC<{
           clearTimeout(timer)
 
           if (!validityReq.ok) {
-            const responseBody = await validityReq.json()
+            const responseBody = (await validityReq.json()) as { error?: string }
 
             let errorMessage =
               responseBody?.error || `Error validating domain: ${validityReq.statusText}`
@@ -98,7 +98,7 @@ export const UniqueDomain: React.FC<{
         }
       }
 
-      validateDomain()
+      void validateDomain()
     }
 
     isRequesting.current = false

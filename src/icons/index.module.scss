@@ -48,10 +48,8 @@
 }
 
 .bold {
-  &:local() {
-    .stroke {
-      stroke-width: 2px;
-    }
+  .stroke {
+    stroke-width: 2px;
   }
 }
 

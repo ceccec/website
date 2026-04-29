@@ -97,9 +97,9 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
           })
 
           if (!req.ok) {
-            const { errors } = await req.json()
-            for (const error of errors) {
-              toast.error(error.message)
+            const body = (await req.json()) as { errors?: { message?: string }[] }
+            for (const error of body.errors ?? []) {
+              toast.error(error.message ?? 'Request failed')
             }
             setIsLoading(false)
             return
@@ -153,7 +153,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
       {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
       {!hasSubmitted && (
         <React.Fragment>
-          <Form formId={formID} initialState={initialState} onSubmit={onSubmit}>
+          <Form formId={String(formID)} initialState={initialState} onSubmit={onSubmit}>
             <div className={classes.formFieldsWrap}>
               {form.fields?.map((field, index) => {
                 const Field: React.FC<any> = fields?.[field.blockType]
@@ -199,7 +199,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               icon={isLoading ? 'loading' : 'arrow'}
               iconRotation={45}
               iconSize={isLoading ? 'large' : 'medium'}
-              id={customID ?? formID}
+              id={String(customID ?? formID)}
               label={isLoading ? 'Submitting...' : submitButtonLabel}
             />
           </Form>
@@ -210,12 +210,13 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 }
 
 export const CMSForm: React.FC<{
-  form?: FormType | null | string
+  /** Populated form from Payload or numeric id when depth=0 */
+  form?: FormType | null | number | string
   hiddenFields?: string[]
 }> = (props) => {
   const { form, hiddenFields } = props
 
-  if (!form || typeof form === 'string') {
+  if (!form || typeof form === 'string' || typeof form === 'number') {
     return null
   }
 

@@ -59,18 +59,21 @@ export const createDraftProject = async ({
       method: 'POST',
     })
 
-    const { doc: project, errors: projectErrs } = await projectReq.json()
+    const { doc: project, errors: projectErrs } = (await projectReq.json()) as {
+      doc?: unknown
+      errors?: { message?: string }[]
+    }
 
     if (projectReq.ok) {
       await revalidateCache({
         tag: 'projects',
       })
 
-      if (typeof onSubmit === 'function') {
-        await onSubmit(project)
+      if (typeof onSubmit === 'function' && project != null) {
+        await Promise.resolve(onSubmit(project as Project))
       }
     } else {
-      throw new Error(projectErrs[0].message)
+      throw new Error(projectErrs?.[0]?.message ?? 'Failed to create project')
     }
   } catch (err: unknown) {
     console.error(err) // eslint-disable-line no-console

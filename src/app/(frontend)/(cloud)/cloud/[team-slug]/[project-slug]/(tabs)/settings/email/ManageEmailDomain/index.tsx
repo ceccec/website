@@ -10,6 +10,13 @@ import { useModal } from '@faceless-ui/modal'
 import { Secret } from '@forms/fields/Secret/index'
 import { ExternalLinkIcon } from '@root/icons/ExternalLinkIcon/index'
 import { qs } from '@root/utilities/qs'
+import {
+  assertRecordPayload,
+  parseEmailVerificationStatus,
+  parseOptionalMessagePayload,
+  parseOptionalValuePayload,
+  readJsonUnknown,
+} from '@utilities/payloadCloudJson'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -51,7 +58,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
         domainId,
         env: environmentSlug,
       })
-      const { status } = await fetch(
+      const res = await fetch(
         `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/email-verification${
           query ? `?${query}` : ''
         }`,
@@ -61,17 +68,21 @@ export const ManageEmailDomain: React.FC<Props> = ({
             'Content-Type': 'application/json',
           },
         },
-      ).then((res) => res.json())
-      setVerificationStatus(status)
+      )
+      const json = await readJsonUnknown(res)
+      const status = parseEmailVerificationStatus(json)
+      if (status) {
+        setVerificationStatus(status)
+      }
     },
-    [project?.id],
+    [environmentSlug, project?.id],
   )
 
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true
       if (resendDomainID) {
-        getDomainVerificationStatus(resendDomainID)
+        void getDomainVerificationStatus(resendDomainID)
       }
     }
   }, [getDomainVerificationStatus, resendDomainID])
@@ -82,7 +93,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
         domainId,
         env: environmentSlug,
       })
-      const { value } = await fetch(
+      const res = await fetch(
         `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/email-api-key${
           query ? `?${query}` : ''
         }`,
@@ -92,11 +103,11 @@ export const ManageEmailDomain: React.FC<Props> = ({
             'Content-Type': 'application/json',
           },
         },
-      ).then((res) => res.json())
-
-      return value
+      )
+      const body = await readJsonUnknown(res)
+      return parseOptionalValuePayload(body)
     },
-    [project?.id],
+    [environmentSlug, project?.id],
   )
 
   const patchEmailDomains = useCallback(
@@ -120,9 +131,9 @@ export const ManageEmailDomain: React.FC<Props> = ({
         )
 
         if (req.status === 200) {
-          const res = await req.json()
+          const payload = await readJsonUnknown(req)
           router.refresh()
-          return res
+          return assertRecordPayload(payload)
         }
       } catch (e) {
         console.error(e) // eslint-disable-line no-console
@@ -130,7 +141,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
 
       return null
     },
-    [projectID],
+    [environmentSlug, projectID, router],
   )
 
   const verifyEmailDomain = useCallback(
@@ -155,15 +166,15 @@ export const ManageEmailDomain: React.FC<Props> = ({
         )
 
         if (req.status === 200) {
-          const res = await req.json()
+          const res = (await req.json()) as { message?: string }
           router.refresh()
-          toast.success(res.message)
+          toast.success(res.message ?? '')
         }
       } catch (e) {
         console.error(e) // eslint-disable-line no-console
       }
     },
-    [domainURL, projectID],
+    [domainURL, environmentSlug, projectID, router],
   )
 
   const deleteEmailDomain = useCallback(async () => {

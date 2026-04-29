@@ -68,8 +68,8 @@ export const ManageEnv: React.FC<Props> = ({
       )
 
       if (req.status === 200) {
-        const res = await req.json()
-        return res.value
+        const res = (await req.json()) as { value?: string | null }
+        return res.value ?? null
       }
     } catch (e) {
       console.error(e) // eslint-disable-line no-console
@@ -102,10 +102,10 @@ export const ManageEnv: React.FC<Props> = ({
             },
           )
 
-          const res = await req.json()
+          const res = (await req.json()) as { message?: string }
 
           if (!req.ok) {
-            toast.error(res.message)
+            toast.error(res.message ?? 'Request failed.')
             return
           }
 
@@ -117,15 +117,11 @@ export const ManageEnv: React.FC<Props> = ({
             await revalidateCache({
               tag: `project_${projectID}`,
             })
-
-            return res.value
           }
         } catch (e) {
           console.error(e) // eslint-disable-line no-console
         }
       }
-
-      return null
     },
     [id, environmentSlug, projectID],
   )

@@ -29,7 +29,7 @@ export const ProjectEmailPage: React.FC<{
   const supportsCustomEmail = projectPlan !== 'standard'
 
   const loadEmailAPIKey = React.useCallback(async () => {
-    const { value } = await fetch(
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${project?.id}/email-api-key${
         environmentSlug ? `?env=${environmentSlug}` : ''
       }`,
@@ -39,10 +39,10 @@ export const ProjectEmailPage: React.FC<{
           'Content-Type': 'application/json',
         },
       },
-    ).then((res) => res.json())
-
-    return value
-  }, [project?.id])
+    )
+    const body = (await res.json()) as { value?: string }
+    return body.value ?? ''
+  }, [environmentSlug, project?.id])
 
   return (
     <MaxWidth>

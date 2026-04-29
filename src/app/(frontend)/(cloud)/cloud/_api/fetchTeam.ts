@@ -3,6 +3,8 @@ import type { Team } from '@root/payload-cloud-types'
 import { TEAM_QUERY, TEAMS_QUERY } from '@data/team'
 import { notFound } from 'next/navigation'
 
+import type { GraphQLJsonBody } from './graphqlJson'
+
 import { payloadCloudToken } from './token'
 
 export type TeamWithCustomer = {
@@ -46,11 +48,12 @@ export const fetchTeams = async (teamIDs: string[]): Promise<Team[]> => {
     next: { tags: ['teams'] },
   })
     ?.then((r) => r.json())
-    ?.then((data) => {
+    ?.then((json: unknown) => {
+      const data = json as GraphQLJsonBody<{ Teams?: { docs?: Team[] } }>
       if (data.errors) {
         throw new Error(data?.errors?.[0]?.message ?? 'Error fetching doc')
       }
-      return data?.data?.Teams?.docs
+      return data?.data?.Teams?.docs ?? []
     })
 
   return res
@@ -64,7 +67,7 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
   }
 
   try {
-    const doc: Team = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+    const doc = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
       body: JSON.stringify({
         query: TEAM_QUERY,
         variables: {
@@ -78,13 +81,17 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
       method: 'POST',
     })
       ?.then((res) => res.json())
-      ?.then((res) => {
+      ?.then((json: unknown) => {
+        const res = json as GraphQLJsonBody<{ Teams?: { docs?: Team[] } }>
         if (res.errors) {
           throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
         }
         return res?.data?.Teams?.docs?.[0]
       })
 
+    if (!doc) {
+      notFound()
+    }
     return doc
   } catch (error) {
     console.error(error)
@@ -93,7 +100,7 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
 }
 
 export const fetchTeamClient = async (slug: string): Promise<Team> => {
-  const { data } = await fetch(
+  const json = (await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql?teams=${slug}`,
     {
       body: JSON.stringify({
@@ -108,11 +115,13 @@ export const fetchTeamClient = async (slug: string): Promise<Team> => {
       },
       method: 'POST',
     },
-  ).then((res) => {
-    return res.json()
-  })
+  ).then((res) => res.json())) as GraphQLJsonBody<{ Teams?: { docs: Team[] } }>
 
-  return data?.Teams?.docs[0]
+  const doc = json?.data?.Teams?.docs?.[0]
+  if (!doc) {
+    notFound()
+  }
+  return doc
 }
 
 export const fetchTeamWithCustomer = async (slug?: string): Promise<TeamWithCustomer> => {
@@ -144,14 +153,15 @@ export const fetchTeamWithCustomer = async (slug?: string): Promise<TeamWithCust
         }
         return res.json()
       })
-      ?.then((res) => {
+      ?.then((json: unknown) => {
+        const res = json as { errors?: { message?: string }[] } & TeamWithCustomer
         if (res.errors) {
           throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs')
         }
         return res
       })
 
-    return data
+    return data as TeamWithCustomer
   } catch (error) {
     console.error(error)
     notFound()

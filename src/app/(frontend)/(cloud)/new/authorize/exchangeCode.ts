@@ -9,12 +9,12 @@ export const exchangeCode = async (code: string): Promise<boolean> => {
         },
       )
 
-      const body = await res.json()
+      const body = (await res.json()) as { message?: string }
 
       if (res.ok) {
         return true
       } else {
-        throw new Error(body.message)
+        throw new Error(body.message ?? 'Exchange failed')
       }
     } catch (err: unknown) {
       const message = `Unable to authorize GitHub: ${err}`

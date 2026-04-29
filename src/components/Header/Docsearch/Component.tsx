@@ -1,6 +1,7 @@
 'use client'
 
 import { DocSearch } from '@docsearch/react'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -27,8 +28,10 @@ function Hit({ children, hit, path }: { children: React.ReactNode; hit: { url?: 
 function Component() {
   const path = usePathname()
   const site = useSitePublicConfigOptional()
-  const docsearchKey =
-    site.algoliaDocsearchKey || process.env.NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY || ''
+  const docsearchKey = resolveGlobalField(
+    site.algoliaDocsearchKey,
+    process.env.NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY,
+  )
 
   if (!docsearchKey.trim()) {
     return (

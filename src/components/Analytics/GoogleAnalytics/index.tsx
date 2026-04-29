@@ -1,5 +1,6 @@
 'use client'
 
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { usePrivacy } from '@root/providers/Privacy/index'
 import { analyticsEvent } from '@root/utilities/analytics'
 import { usePathname } from 'next/navigation'
@@ -19,11 +20,10 @@ export const GoogleAnalytics: React.FC<Props> = ({
 
   const { cookieConsent } = usePrivacy()
 
-  const gaMeasurementID =
-    gaProp?.trim() || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''
+  const gaMeasurementId = resolveGlobalField(gaProp, process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID)
 
   React.useEffect(() => {
-    if (!gaMeasurementID || !window?.location?.href) {
+    if (!gaMeasurementId || !window?.location?.href) {
       return
     }
 
@@ -35,25 +35,25 @@ export const GoogleAnalytics: React.FC<Props> = ({
         page_title: document.title,
       },
       {
-        facebookPixelId: fbProp?.trim() || process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || '',
-        gaMeasurementId: gaMeasurementID,
+        facebookPixelId: resolveGlobalField(fbProp, process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID),
+        gaMeasurementId,
       },
     )
-  }, [pathname, gaMeasurementID, fbProp])
+  }, [pathname, gaMeasurementId, fbProp])
 
-  if (!cookieConsent || !gaMeasurementID) {
+  if (!cookieConsent || !gaMeasurementId) {
     return null
   }
 
   return (
     <React.Fragment>
-      <Script defer src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementID}`} />
+      <Script defer src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
       <Script
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', '${gaMeasurementID}', { send_page_view: false });`,
+  gtag('config', '${gaMeasurementId}', { send_page_view: false });`,
         }}
         defer
         id="google-analytics"

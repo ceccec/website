@@ -9,7 +9,7 @@ export const exchangeCode = async (code: string): Promise<boolean> => {
         },
       )
 
-      const body = (await res.json()) as { message?: string }
+      const body = (await res.json())
 
       if (res.ok) {
         return true

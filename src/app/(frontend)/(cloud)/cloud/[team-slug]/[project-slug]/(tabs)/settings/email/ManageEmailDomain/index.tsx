@@ -53,9 +53,9 @@ export const ManageEmailDomain: React.FC<Props> = ({
   const router = useRouter()
 
   const getDomainVerificationStatus = useCallback(
-    async (domainId: string) => {
+    async (domainID: string) => {
       const query = qs.stringify({
-        domainId,
+        domainId: domainID,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -88,9 +88,9 @@ export const ManageEmailDomain: React.FC<Props> = ({
   }, [getDomainVerificationStatus, resendDomainID])
 
   const loadCustomDomainEmailAPIKey = useCallback(
-    async (domainId: string) => {
+    async (domainID: string) => {
       const query = qs.stringify({
-        domainId,
+        domainId: domainID,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -145,10 +145,10 @@ export const ManageEmailDomain: React.FC<Props> = ({
   )
 
   const verifyEmailDomain = useCallback(
-    async (domainId: string) => {
+    async (domainID: string) => {
       try {
         const query = qs.stringify({
-          domainId,
+          domainId: domainID,
           env: environmentSlug,
         })
         const req = await fetch(
@@ -166,7 +166,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
         )
 
         if (req.status === 200) {
-          const res = (await req.json()) as { message?: string }
+          const res = (await req.json())
           router.refresh()
           toast.success(res.message ?? '')
         }

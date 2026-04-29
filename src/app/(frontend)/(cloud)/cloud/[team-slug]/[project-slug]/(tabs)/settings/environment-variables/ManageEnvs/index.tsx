@@ -68,7 +68,7 @@ export const ManageEnv: React.FC<Props> = ({
       )
 
       if (req.status === 200) {
-        const res = (await req.json()) as { value?: string | null }
+        const res = (await req.json())
         return res.value ?? null
       }
     } catch (e) {
@@ -102,7 +102,7 @@ export const ManageEnv: React.FC<Props> = ({
             },
           )
 
-          const res = (await req.json()) as { message?: string }
+          const res = (await req.json())
 
           if (!req.ok) {
             toast.error(res.message ?? 'Request failed.')

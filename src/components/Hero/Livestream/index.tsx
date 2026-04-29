@@ -7,6 +7,7 @@ import { Button } from '@components/Button/index'
 import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
 import { Video } from '@components/RichText/Video/index'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { formatDate } from '@utilities/format-date-time'
 import * as React from 'react'
@@ -25,7 +26,7 @@ export const LivestreamHero: React.FC<{
   } = props
 
   const site = useSitePublicConfigOptional()
-  const cmsBase = site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || ''
+  const cmsBase = resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL)
 
   const today = new Date()
   const liveDate = new Date(date)

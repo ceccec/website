@@ -20,7 +20,7 @@ export const CloudFooter = () => {
   const { user } = useAuth()
 
   const selectRef = React.useRef<HTMLSelectElement>(null)
-  const themeId = useId()
+  const themeID = useId()
   const { setTheme } = useThemePreference()
   const { setHeaderTheme } = useHeaderObserver()
 
@@ -48,7 +48,7 @@ export const CloudFooter = () => {
           {user ? <Link href={'/logout'}>Logout</Link> : <Link href={'/login'}>Login</Link>}
         </nav>
         <div className={[classes.selectContainer, 'cols-4 cols-m-2'].join(' ')}>
-          <label className="visually-hidden" htmlFor={themeId}>
+          <label className="visually-hidden" htmlFor={themeID}>
             Switch themes
           </label>
           {selectRef?.current && (
@@ -60,7 +60,7 @@ export const CloudFooter = () => {
           )}
 
           <select
-            id={themeId}
+            id={themeID}
             onChange={(e) => onThemeChange(e.target.value as 'auto' & Theme)}
             ref={selectRef}
           >

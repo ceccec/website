@@ -25,7 +25,7 @@ const RedeployButton: React.FC = () => {
       toast.success('Redeploy triggered successfully!', { duration: 3000 })
       setIsLoading(false)
     } else {
-      const data = (await res.json()) as { message?: string }
+      const data = (await res.json())
       toast.error(data.message ?? 'Redeploy failed', { duration: 3000 })
       setIsLoading(false)
     }

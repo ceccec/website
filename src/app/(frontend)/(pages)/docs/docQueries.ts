@@ -1,6 +1,5 @@
-import type { Payload } from 'payload'
-
 import type { Doc } from '@types'
+import type { Payload } from 'payload'
 
 import { docsTemplateEnabled } from '@root/plugins/env'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'

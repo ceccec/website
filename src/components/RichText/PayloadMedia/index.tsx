@@ -25,7 +25,7 @@ export const PayloadMediaBlock: React.FC<PayloadMediaBlockType> = (fields) => {
           ? (media?.darkModeFallback?.url ?? undefined)
           : undefined
       }
-      srcDarkId={typeof media?.darkModeFallback !== 'object' ? media?.darkModeFallback : undefined}
+      srcDarkID={typeof media?.darkModeFallback !== 'object' ? media?.darkModeFallback : undefined}
       srcLight={media?.url ?? undefined}
     />
   )

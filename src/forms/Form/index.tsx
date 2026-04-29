@@ -27,7 +27,7 @@ export type FormProps = {
     field: string
     message: string
   }[]
-  formId?: string
+  formID?: string
   initialState?: InitialState
   method?: 'GET' | 'POST'
   onSubmit?: OnSubmit
@@ -39,7 +39,7 @@ const Form = ({ ref, ...props }: { ref?: React.RefObject<HTMLFormElement | null>
     children,
     className,
     errors: errorsFromProps,
-    formId,
+    formID,
     initialState = defaultInitialState,
     method,
     onSubmit,
@@ -138,7 +138,7 @@ const Form = ({ ref, ...props }: { ref?: React.RefObject<HTMLFormElement | null>
     <form
       action={action}
       className={className}
-      id={formId}
+      id={formID}
       method={method}
       noValidate
       onSubmit={contextRef.current.handleSubmit}

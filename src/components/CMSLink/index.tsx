@@ -2,6 +2,7 @@
 
 import type { CaseStudy, Page, Post } from '@root/payload-types'
 
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { isKeyboardActivation } from '@utilities/keyboardActivation'
 import Link from 'next/link'
@@ -38,7 +39,7 @@ export type CMSLinkType = {
   buttonProps?: ButtonProps
   children?: React.ReactNode
   className?: string
-  customId?: null | string
+  customID?: null | string
   fullWidth?: boolean
   label?: null | string
   mobileFullWidth?: boolean
@@ -93,7 +94,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   buttonProps: buttonPropsFromProps,
   children,
   className,
-  customId,
+  customID,
   fullWidth = false,
   label,
   mobileFullWidth = false,
@@ -105,7 +106,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   url,
 }) => {
   const site = useSitePublicConfigOptional()
-  const siteUrl = site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL || ''
+  const siteUrl = resolveGlobalField(site.siteUrl, process.env.NEXT_PUBLIC_SITE_URL)
 
   let href = generateHref({ type, reference, url })
 
@@ -113,7 +114,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     return (
       <span
         className={className}
-        id={customId ?? ''}
+        id={customID ?? ''}
         onClick={onClick}
         onKeyDown={(event) => {
           if (onClick && isKeyboardActivation(event)) {
@@ -160,7 +161,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
           href={href}
           {...newTabProps}
           className={className}
-          id={customId ?? ''}
+          id={customID ?? ''}
           onClick={onClick}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
@@ -177,7 +178,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
         href={href}
         {...newTabProps}
         className={className}
-        id={customId ?? ''}
+        id={customID ?? ''}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -205,5 +206,5 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     buttonProps.icon = 'arrow'
   }
 
-  return <Button {...buttonProps} className={className} el="link" id={customId ?? ''} />
+  return <Button {...buttonProps} className={className} el="link" id={customID ?? ''} />
 }

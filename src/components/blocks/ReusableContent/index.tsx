@@ -6,10 +6,10 @@ import React from 'react'
 export type Props = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
 export const ReusableContentBlock: React.FC<Props> = ({ reusableContentBlockFields }) => {
-  const { customId, reusableContent } = reusableContentBlockFields
+  const { customID, reusableContent } = reusableContentBlockFields
 
   if (typeof reusableContent === 'object' && reusableContent !== null) {
-    return <RenderBlocks blocks={reusableContent.layout} customId={customId} disableGutter />
+    return <RenderBlocks blocks={reusableContent.layout} customID={customID} disableGutter />
   }
 
   return null

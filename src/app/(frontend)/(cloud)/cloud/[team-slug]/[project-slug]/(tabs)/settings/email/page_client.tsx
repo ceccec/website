@@ -40,7 +40,7 @@ export const ProjectEmailPage: React.FC<{
         },
       },
     )
-    const body = (await res.json()) as { value?: string }
+    const body = (await res.json())
     return body.value ?? ''
   }, [environmentSlug, project?.id])
 

@@ -3,8 +3,9 @@ import type { Metadata } from 'next'
 import { GoogleAnalytics } from '@components/Analytics/GoogleAnalytics/index'
 import { GoogleTagManager } from '@components/Analytics/GoogleTagManager/index'
 import { PrivacyBanner } from '@components/PrivacyBanner/index'
-import { getMergedPublicSiteSettings } from '@root/lib/getMergedPublicSiteSettings'
 import { Providers } from '@providers/index'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
+import { resolvePublicSiteSetting } from '@root/lib/resolvePublicSiteSetting'
 import { PrivacyProvider } from '@root/providers/Privacy/index'
 import { SitePublicConfigProvider } from '@root/providers/SitePublicConfig'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
@@ -15,7 +16,7 @@ import { untitledSans } from './fonts'
 import '../../css/app.scss'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const sitePublic = await getMergedPublicSiteSettings()
+  const sitePublic = await resolvePublicSiteSetting()
 
   return (
     <html lang="en">
@@ -49,9 +50,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { siteUrl } = await getMergedPublicSiteSettings()
+  const { siteUrl } = await resolvePublicSiteSetting()
   return {
-    metadataBase: new URL(siteUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://payloadcms.com'),
+    metadataBase: new URL(
+      resolveGlobalField(siteUrl, process.env.NEXT_PUBLIC_SITE_URL) || 'https://payloadcms.com',
+    ),
     openGraph: mergeOpenGraph(),
     twitter: {
       card: 'summary_large_image',

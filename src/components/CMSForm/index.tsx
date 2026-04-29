@@ -5,6 +5,7 @@ import type { Form as FormType } from '@root/payload-types'
 import { RichText } from '@components/RichText/index'
 import Form from '@forms/Form/index'
 import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getCookie } from '@root/utilities/get-cookie'
 import { usePathname, useRouter } from 'next/navigation'
@@ -80,7 +81,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 
         try {
           const hubspotCookie = getCookie('hubspotutk')
-          const pageUri = `${site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
+          const pageUri = `${resolveGlobalField(site.siteUrl, process.env.NEXT_PUBLIC_SITE_URL)}${pathname}`
           const slugParts = pathname?.split('/')
           const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
           const req = await fetch('/api/form-submissions', {
@@ -100,7 +101,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
           })
 
           if (!req.ok) {
-            const body = (await req.json()) as { errors?: { message?: string }[] }
+            const body = (await req.json())
             for (const error of body.errors ?? []) {
               toast.error(error.message ?? 'Request failed')
             }
@@ -119,7 +120,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               return
             }
 
-            const baseUrl = site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL || ''
+            const baseUrl = resolveGlobalField(site.siteUrl, process.env.NEXT_PUBLIC_SITE_URL)
             const redirectUrl = new URL(url, baseUrl)
 
             try {
@@ -157,7 +158,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
       {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
       {!hasSubmitted && (
         <React.Fragment>
-          <Form formId={String(formID)} initialState={initialState} onSubmit={onSubmit}>
+          <Form formID={String(formID)} initialState={initialState} onSubmit={onSubmit}>
             <div className={classes.formFieldsWrap}>
               {form.fields?.map((field, index) => {
                 const Field: React.FC<any> = fields?.[field.blockType]
@@ -193,9 +194,10 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               <ReCAPTCHA
                 className={classes.captcha}
                 ref={recaptcha}
-                sitekey={
-                  site.recaptchaSiteKey || process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
-                }
+                sitekey={resolveGlobalField(
+                  site.recaptchaSiteKey,
+                  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+                )}
                 theme="dark"
               />
             </div>

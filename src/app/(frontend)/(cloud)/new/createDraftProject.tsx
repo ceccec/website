@@ -59,10 +59,7 @@ export const createDraftProject = async ({
       method: 'POST',
     })
 
-    const { doc: project, errors: projectErrs } = (await projectReq.json()) as {
-      doc?: unknown
-      errors?: { message?: string }[]
-    }
+    const { doc: project, errors: projectErrs } = (await projectReq.json())
 
     if (projectReq.ok) {
       await revalidateCache({

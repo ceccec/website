@@ -5,6 +5,7 @@ import FormComponent from '@forms/Form/index'
 import { validateEmail } from '@forms/validations'
 import { ArrowIcon } from '@root/icons/ArrowIcon'
 import { ErrorIcon } from '@root/icons/ErrorIcon'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getCookie } from '@root/utilities/get-cookie'
 import { usePathname, useRouter } from 'next/navigation'
@@ -29,7 +30,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
 
   const submitButtonRef = React.useRef<HTMLButtonElement>(null)
 
-  const newsletterId = useId()
+  const newsletterFieldID = useId()
   const pathname = usePathname()
   const router = useRouter()
 
@@ -61,14 +62,16 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       setError(undefined)
 
       try {
-        const formID =
-          site.newsletterFormId || process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ID
+        const formID = resolveGlobalField(
+          site.newsletterFormId,
+          process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ID,
+        )
         const hubspotCookie = getCookie('hubspotutk')
-        const pageUri = `${site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
+        const pageUri = `${resolveGlobalField(site.siteUrl, process.env.NEXT_PUBLIC_SITE_URL)}${pathname}`
         const slugParts = pathname?.split('/')
         const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
         toast.promise(
-          fetch(`${site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
+          fetch(`${resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL)}/api/form-submissions`, {
             body: JSON.stringify({
               form: formID,
               hubspotCookie,
@@ -103,14 +106,14 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       {error && <div className={classes.errorWrap}>{`${error.message || ''}`}</div>}
       <FormComponent onSubmit={onSubmit}>
         <div className={classes.inputWrap}>
-          <label className="visually-hidden" htmlFor={newsletterId}>
+          <label className="visually-hidden" htmlFor={newsletterFieldID}>
             Subscribe to our newsletter
           </label>
           <Text
             className={classes.emailInput}
             customOnChange={handleChange}
             name="email"
-            path={newsletterId}
+            path={newsletterFieldID}
             placeholder={placeholder}
             required
             type="text"

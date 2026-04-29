@@ -5,6 +5,7 @@ import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
 import { useMouseInfo } from '@faceless-ui/mouse-info'
 import { PayloadIcon } from '@graphics/PayloadIcon/index'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -82,7 +83,7 @@ export const CaseStudiesHighlightBlock: React.FC<Props> = ({
                           <Image
                             alt={alt}
                             fill
-                            src={`${site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL}${url}`}
+                            src={`${resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL)}${url}`}
                           />
                         </Link>
                       </li>

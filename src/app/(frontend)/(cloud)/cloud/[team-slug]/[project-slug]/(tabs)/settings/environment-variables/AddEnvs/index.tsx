@@ -62,7 +62,7 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
             },
           )
 
-          const res = (await req.json()) as { message?: string }
+          const res = (await req.json())
 
           if (!req.ok) {
             toast.error(res.message ?? 'Request failed.')

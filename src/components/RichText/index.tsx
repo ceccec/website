@@ -38,18 +38,19 @@ import RichTextUpload from '@components/RichText/Upload'
 import { Video } from '@components/RichText/Video'
 import SpotlightAnimation from '@components/SpotlightAnimation'
 import { TemplateCards } from '@components/TemplateCardsBlock'
-import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import YouTube from '@components/YouTube/index'
+import { useLivePreview } from '@payloadcms/live-preview-react'
 
 import './index.scss'
 
-import { useLivePreview } from '@payloadcms/live-preview-react'
 import {
   type JSXConverters,
   type JSXConvertersFunction,
   RichText as SerializedRichText,
 } from '@payloadcms/richtext-lexical/react'
 import { Download } from '@root/components/blocks/Download'
+import { resolveGlobalField } from '@root/lib/resolveGlobalField'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getVideo } from '@root/utilities/get-video'
 import React, { useCallback, useMemo, useState } from 'react'
 
@@ -254,7 +255,7 @@ export const RichTextWithTOC: React.FC<Props> = ({ className, content: _content 
   } = useLivePreview<Doc>({
     depth: 2,
     initialData,
-    serverURL: (site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL) as string,
+    serverURL: resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL),
   })
 
   const addHeading: AddHeading = useCallback(

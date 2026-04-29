@@ -112,7 +112,7 @@ export const fetchProjectClient = async ({
       'Content-Type': 'application/json',
     },
     method: 'POST',
-  }).then((res) => res.json())) as GraphQLJsonBody<{ Projects?: ProjectsRes }>
+  }).then((res) => res.json()))
   const { data } = json
 
   const project = data?.Projects?.docs?.[0]

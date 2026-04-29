@@ -115,7 +115,7 @@ export const fetchTeamClient = async (slug: string): Promise<Team> => {
       },
       method: 'POST',
     },
-  ).then((res) => res.json())) as GraphQLJsonBody<{ Teams?: { docs: Team[] } }>
+  ).then((res) => res.json()))
 
   const doc = json?.data?.Teams?.docs?.[0]
   if (!doc) {

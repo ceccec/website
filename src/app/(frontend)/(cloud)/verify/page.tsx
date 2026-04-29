@@ -54,7 +54,7 @@ export default async ({ searchParams }) => {
       })
 
       if (res.ok) {
-        const { errors } = (await res.json()) as { errors?: { message?: string }[] }
+        const { errors } = (await res.json())
         if (errors?.length) {
           throw new Error(errors[0]?.message ?? 'Verification failed')
         }

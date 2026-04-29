@@ -53,7 +53,7 @@ export const TeamInvitations: React.FC<{
         setLoading(false)
 
         if (res.ok) {
-          const { data, error } = (await res.json()) as { data?: unknown; error?: unknown }
+          const { data, error } = (await res.json())
           if (error) {
             setError(typeof error === 'string' ? error : String(error))
           } else {

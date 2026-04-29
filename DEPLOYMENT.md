@@ -1,6 +1,6 @@
 # Deployment (Cloudflare Workers)
 
-See **[README.md — Deployment](README.md#deployment)** for buttons and Workers Builds.
+See **[What is delivered when deployed](README.md#what-is-delivered-when-deployed)** (product surfaces), **[Deploy](README.md#deploy)** (buttons), **[Copy-paste deploy manual](README.md#copy-paste-deploy-manual)** (CLI), and **[Runtime & environment](README.md#runtime--environment)** (stack matrix + scripts).
 
 ## Wrangler & D1
 
@@ -22,4 +22,4 @@ This repo’s Wrangler config is [`wrangler.jsonc`](wrangler.jsonc).
 
 ## Vercel / Postgres + Blob
 
-When **`POSTGRES_URL`** / **`DATABASE_URL`** is Postgres (or **`PAYLOAD_HOSTING=vercel`** with that URL), Payload uses Postgres + Vercel Blob — **`pnpm build`**, **`pnpm exec payload migrate`**. Override with **`PAYLOAD_HOSTING=cloudflare`** if needed ([`src/lib/deploymentTarget.ts`](src/lib/deploymentTarget.ts)).
+When **`VERCEL=1`** or **`postgres://…`** URLs are set (or **`PAYLOAD_HOSTING=vercel`**), Payload uses Postgres + Vercel Blob — **`pnpm build`**, **`pnpm exec payload migrate`**. To force D1 on Workers CI, set **`PAYLOAD_HOSTING=cloudflare`** ([`src/lib/deploymentTarget.ts`](src/lib/deploymentTarget.ts)).

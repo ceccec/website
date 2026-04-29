@@ -144,7 +144,7 @@ const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
 
 if (deploymentTarget === 'vercel' && !postgresUrl.trim()) {
   throw new Error(
-    'Vercel / Postgres hosting requires POSTGRES_URL or DATABASE_URL (postgres://…). Remove PAYLOAD_HOSTING=vercel to use Cloudflare D1.',
+    'Vercel / Postgres requires POSTGRES_URL or DATABASE_URL (postgres://…). On Cloudflare D1, unset those and set PAYLOAD_HOSTING=cloudflare or deploy without VERCEL=1.',
   )
 }
 

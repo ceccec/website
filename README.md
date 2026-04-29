@@ -1,153 +1,182 @@
-# Payload Website
+# Payload website
 
-This is the repository for [Payload's official website](https://payloadcms.com/). It was built completely in public using Payload itself, [more on that here](#⭐-the-cms).
+A full **Next.js + Payload** app: one deployable unit that serves the public **payloadcms.com** experience (this repo: [ceccec/website](https://github.com/ceccec/website) · upstream [payloadcms/website](https://github.com/payloadcms/website)).
 
-<img src="https://payloadcms.com/images/og-image.jpg" alt="Payload headless CMS website" />
+**Jump:** [What is delivered](#what-is-delivered-when-deployed) · [Deploy](#deploy) · [Manual](#copy-paste-deploy-manual) · [Vercel path](#vercel-postgres-and-blob) · [Cloudflare path](#cloudflare-workers-d1-and-r2) · [Runtime](#runtime--environment) · [Local](#local-development)
 
-This site showcases lots of cool stuff like how to use Next.js 15 + Payload's local API to its fullest extent, how to build a super dynamic light / dark mode into a Next site without any first-load flickering, how to render remotely stored docs from MDX to Next.js pages using just Payload (no external libraries), how to use Stripe to build a custom SaaS integration, and much more.
+---
 
-## ✨ Tech stack
+## What is delivered when deployed
 
-- [Payload](https://github.com/payloadcms/payload) (obviously)
-- TypeScript
-- Next.js 15 and its new App Router
-- SCSS Modules
-- MDX for docs, using the [Lexical MDX Converter](https://payloadcms.com/docs/rich-text/converting-markdown#converting-mdx)
-- GraphQL for Payload Cloud
-- Stripe for Payload Cloud
+When you run this app in production, you get a **single site** with the following **live surfaces** (actual routes and feature flags depend on your env and data).
 
-## Deployment
+| Delivered | What the visitor or operator gets |
+|-----------|-------------------------------------|
+| **Marketing site** | Public pages (home, product, partners, case studies, pricing, etc.), dynamic routing, search integrations where configured, sitemap and OG metadata when env is set. |
+| **Documentation app** | Docs UI backed by Payload content; sources can be synced from the [payload repo](https://github.com/payloadcms/payload), loaded by branch (`/docs/dynamic/...`), or from a local checkout (`/docs/local/...` + `DOCS_DIR_V3`). |
+| **Payload Admin** | CMS at **`/admin`** — collections, globals, uploads, redirects, form builder, SEO fields, and admin UX included in this codebase. |
+| **APIs** | Payload **REST** and **GraphQL** as enabled in config; **Local API** for server components and routes. |
+| **Payload Cloud (product UI)** | In-app flows to manage **Payload Cloud** projects (GitHub connect, deployments, billing) when Cloud-related env and integrations are configured — **Stripe** and **GraphQL** for Cloud in this repo. |
+| **Media & cache** | Uploads on **Vercel Blob** or **Cloudflare R2** depending on stack; Workers builds also use **R2** for OpenNext incremental cache per [`wrangler.jsonc`](./wrangler.jsonc). |
+| **Persistence** | Content in **Postgres** or **Cloudflare D1** (SQLite), selected automatically from env — see [Runtime](#runtime--environment). Same product shape; **not** interchangeable DB files between the two engines. |
 
-The app chooses **database + file storage** from environment variables (see [`src/lib/deploymentTarget.ts`](./src/lib/deploymentTarget.ts) and [`payload.config.ts`](./src/payload.config.ts)):
+Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payloadcms.com/docs/rich-text/lexical) / MDX flows for docs, light/dark UI without first-paint flicker on the marketing surfaces.
 
-| Platform | When it activates | Payload DB | Uploads |
-|----------|-------------------|------------|---------|
-| **Cloudflare Workers** (default) | No `POSTGRES_URL` / `DATABASE_URL` for Postgres, or `PAYLOAD_HOSTING=cloudflare` | [**D1**](https://developers.cloudflare.com/d1/) | [**R2**](https://developers.cloudflare.com/r2/) |
-| **Vercel / Node + Postgres** | `POSTGRES_URL` or `DATABASE_URL` (`postgres://…`), or `PAYLOAD_HOSTING=vercel` | [**Postgres**](https://github.com/payloadcms/payload/tree/main/packages/db-postgres) | [**Vercel Blob**](https://vercel.com/docs/storage/vercel-blob) (`BLOB_READ_WRITE_TOKEN`) |
+![Payload headless CMS website](https://payloadcms.com/images/og-image.jpg)
 
-Use **one production database per deployment**: SQLite (D1) and Postgres schemas are not interchangeable—run **`pnpm exec payload migrate`** (and backups) against each provider you use. Compare [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1) vs [**with-vercel-website**](https://github.com/payloadcms/payload/tree/main/templates/with-vercel-website).
+---
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fwebsite)
+## Deploy
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/payloadcms/website)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fceccec%2Fwebsite)
 
-If you deploy from a **fork**, replace `payloadcms/website` in both URLs with your `owner/repo`.
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ceccec/website)
 
-### Deploy to Vercel (Postgres + Blob)
+Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
-Connect [**Neon**](https://neon.tech/) or another Postgres and [**Vercel Blob**](https://vercel.com/docs/storage/vercel-blob) (see [with-vercel-website README](https://github.com/payloadcms/payload/blob/main/templates/with-vercel-website/README.md)). Set **`POSTGRES_URL`** (or **`DATABASE_URL`**) and **`BLOB_READ_WRITE_TOKEN`**, **`PAYLOAD_SECRET`**, and the rest of [`.env.example`](./.env.example). **Build:** `pnpm build`. **`deploy:database`** runs **`payload migrate`** only (no Wrangler) when Postgres is configured.
+---
 
-More detail: [DEPLOYMENT.md](./DEPLOYMENT.md). Environment variables: [`.env.example`](./.env.example). Local Wrangler secrets template: [`.dev.vars.example`](./.dev.vars.example).
+## Copy-paste deploy manual
 
-### Cloudflare Workers (native bindings)
+Same **deliverables** as above once install and env match your host. Use **`ceccec/website`** below or change `ORIGIN` once.
 
-Click **Deploy to Cloudflare** to fork into your account, provision resources from [`wrangler.jsonc`](./wrangler.jsonc), and deploy with [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/). The [Deploy to Cloudflare](https://developers.cloudflare.com/workers/platform/deploy-buttons/) flow reads Wrangler config and can create or bind **D1**, **R2**, and related resources automatically. The repository must be **public** for others to use the button ([limitations](https://developers.cloudflare.com/workers/platform/deploy-buttons/#limitations)).
+### Requirements
 
-Payload uses these **native Worker bindings** (see [`wrangler.jsonc`](./wrangler.jsonc)):
+From [`package.json`](./package.json) `engines`:
 
-- **D1** (`D1`) — SQLite database for Payload
-- **R2** (`R2`) — media uploads
-- **R2** (`NEXT_INC_CACHE_R2_BUCKET`) — OpenNext incremental cache
-- **ASSETS** — static assets from `.open-next/assets`
-- **IMAGES** — Cloudflare Images
-- **WORKER_SELF_REFERENCE** — service binding for the same Worker
+```bash
+node -v   # expect >= 20.9.0
+pnpm -v   # expect >= 10.33.2
+```
 
-Set **`PAYLOAD_SECRET`** (and other secrets you use in production) when prompted; [`package.json`](./package.json) `cloudflare.bindings` lists descriptions for the deploy UI. After first provisioning, ensure **`database_id`** in [`wrangler.jsonc`](./wrangler.jsonc) matches your D1 database if it was still a placeholder.
+Install dependencies once:
 
-As in [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md): **bundle size** may require a **paid Workers plan** ([limits](https://developers.cloudflare.com/workers/platform/limits/#worker-size)). **GraphQL** may be limited on Workers ([upstream context](https://github.com/cloudflare/workerd/issues/5175)). **`pnpm run opennext:build`** runs **`generate:llms`**; set **`GITHUB_ACCESS_TOKEN`** in CI or Workers env if you want full doc-linked output during build.
+```bash
+export ORIGIN=https://github.com/ceccec/website.git   # or upstream: https://github.com/payloadcms/website.git
+git clone "$ORIGIN" website && cd website
+corepack enable pnpm   # optional; ensures pnpm matches packageManager
+pnpm i
+```
 
-In Workers Builds, either:
+---
 
-1. **Split build and deploy (recommended):** **Build** — `pnpm run workers:build`, **Deploy** — `pnpm run workers:deploy`. If the UI pre-fills **Build** with `pnpm run build`, switch it—plain `build` targets Next.js only; Workers needs the OpenNext pipeline in `workers:build`.
-2. **Single deploy step:** **Deploy** — `pnpm run deploy`, **Build** empty if your project allows install-only before deploy.
+### Vercel Postgres and Blob
 
-**Dry checks (no publish):** `pnpm run deploy:dry` runs `deploy:vercel:dry` then `deploy:cloudflare:dry` ([`package.json`](./package.json)); CI runs `deploy:vercel:dry` only.
+Stack selection is automatic when Postgres URLs are set — see [Runtime](#runtime--environment).
 
-Wrangler/D1 local workflow: [DEPLOYMENT.md](./DEPLOYMENT.md).
+```bash
+cp .env.example .env
+```
 
-## ⭐ The CMS
+Edit `.env` (minimum for relational deploy — full list in [`.env.example`](./.env.example)):
 
-[Payload](https://github.com/payloadcms/payload) is leveraged for everything that this site does, outside of its documentation which is all stored as Markdown in the Payload repo on GitHub. Both the CMS and the website frontend are found within the same app folder.
+```bash
+# Paste into .env (replace placeholders)
+POSTGRES_URL="postgresql://USER:PASS@HOST/DB?sslmode=require"
+DATABASE_URL="$POSTGRES_URL"
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+PAYLOAD_SECRET="$(openssl rand -hex 32)"
+PAYLOAD_HOSTING=vercel
+```
 
-## ☁️ Payload Cloud
+Deploy build (matches typical Vercel **Build Command**):
 
-This repo contains the source code for [Payload Cloud](https://payloadcms.com/cloud-pricing). This is a one-click integration to deploy production-ready instances of your Payload apps directly from your GitHub repo, [read the blog post](https://payloadcms.com/blog/launch-week-day-1-payload-cloud-is-here) to get all the details. The entire frontend of Payload Cloud has been built in public and is included within this repo 😱.
+```bash
+pnpm build
+```
 
-## 🚀 Running the project locally
+Or configure Vercel **Install Command** `pnpm i`, **Build Command** `pnpm build`, add env vars in the dashboard. Guide: [with-vercel-website](https://github.com/payloadcms/payload/blob/main/templates/with-vercel-website/README.md).
 
-To get started with this repo locally, follow the steps below:
+---
 
-- Clone the repo
-- `pnpm i`
-- Run `cp .env.example .env` to create an `.env` file
-- Fill out the values within your new `.env`, corresponding to your own environment
-- Run `pnpm dev`
-- Bam
+### Cloudflare Workers D1 and R2
 
-### Hosts file
+For D1, avoid stray `postgres://…` in env (else Vercel stack wins), or set **`PAYLOAD_HOSTING=cloudflare`**. See [Runtime](#runtime--environment).
 
-The locally running app must run on `local.payloadcms.com:3000` because of http-only cookie policies and how the GitHub App redirects the user back to the site after authenticating. To do this, you'll need to add the following to your hosts file:
+```bash
+cp .env.example .env
+cp .dev.vars.example .dev.vars
+```
 
-```env
+Edit `.env` / `.dev.vars` — at least `PAYLOAD_SECRET`. Put production secrets in [Workers dashboard](https://developers.cloudflare.com/workers/configuration/secrets/) or Wrangler as needed.
+
+Create D1 and wire `database_id` ([docs](https://developers.cloudflare.com/d1/get-started/)):
+
+```bash
+pnpm exec wrangler d1 create website-db
+```
+
+Copy the printed **`database_id`** into [`wrangler.jsonc`](./wrangler.jsonc) under `d1_databases[0].database_id`.
+
+Full Cloudflare deploy (migrate + OpenNext + deploy Worker):
+
+```bash
+pnpm run deploy
+```
+
+Split CI / local pipeline:
+
+```bash
+pnpm run workers:build    # deploy:database + opennext:build
+pnpm run workers:deploy   # wrangler deploy via opennext
+```
+
+Dry-run config without publishing:
+
+```bash
+pnpm run deploy:dry
+```
+
+References: [DEPLOYMENT.md](./DEPLOYMENT.md), [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md).
+
+---
+
+## Runtime & environment
+
+Resolved in [`src/lib/deploymentTarget.ts`](./src/lib/deploymentTarget.ts) (see [`src/payload.config.ts`](./src/payload.config.ts)): **Wrangler / Workers runtime → Cloudflare**; **else Vercel** when `VERCEL=1` or `postgres://…` is set; overrides via `PAYLOAD_HOSTING`.
+
+| Stack | Typical triggers | DB | Files |
+|-------|------------------|-----|--------|
+| **Cloudflare** | Worker runtime (`navigator.userAgent` includes `Cloudflare-Workers`), **or** no `VERCEL` / no Postgres URL (Node migrate toward D1), **or** `PAYLOAD_HOSTING=cloudflare` | [D1](https://developers.cloudflare.com/d1/) | [R2](https://developers.cloudflare.com/r2/) + OpenNext cache |
+| **Vercel** | `VERCEL=1`, **or** `POSTGRES_URL` / `DATABASE_URL` is `postgres://…`, **or** `PAYLOAD_HOSTING=vercel` (+ Postgres URL per config) | [Postgres](https://github.com/payloadcms/payload/tree/main/packages/db-postgres) | [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) |
+
+- **`pnpm exec payload migrate`** per production DB ([migrations](https://payloadcms.com/docs/database/migrations); [`src/migrations/index.ts`](./src/migrations/index.ts)). D1 and Postgres are separate schemas.
+- **Workers CI:** if Postgres vars leak in, set **`PAYLOAD_HOSTING=cloudflare`** so migrate targets D1.
+
+Templates: [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1) · [**with-vercel-website**](https://github.com/payloadcms/payload/tree/main/templates/with-vercel-website)
+
+**Scripts (copy one line)**
+
+```bash
+pnpm build                  # generate:llms + migrate + next build — default Vercel-style
+pnpm run deploy:database    # migrate (+ remote D1 PRAGMA optimize on Cloudflare path)
+pnpm run workers:build      # deploy:database + opennext build — use for Workers, not plain build
+pnpm run workers:deploy     # deploy Worker after workers:build
+pnpm run deploy             # deploy:database + full Worker pipeline
+pnpm run deploy:dry         # dry-run Vercel + Cloudflare configs
+```
+
+---
+
+## Local development
+
+Run the same app locally (deliverables depend on `.env`):
+
+```bash
+pnpm i
+cp .env.example .env
+pnpm dev
+```
+
+Cloud UI expects **`https://local.payloadcms.com:3000`**:
+
+```text
+# /etc/hosts (or Windows equivalent)
 127.0.0.1 local.payloadcms.com
 ```
 
-> On Mac you can find the hosts file at `/etc/hosts`. On Windows, it's at `C:\Windows\System32\drivers\etc\hosts`:
+---
 
-### Documentation
+## License
 
-The documentation for this site is stored in the [Payload repo](https://github.com/payloadcms/payload) as Markdown files. These are fetched when you press the "Sync Docs" button in the CMS. Pressing that button does the following:
-
-1. Docs are pulled from the Payload repo on GitHub.
-2. The docs are converted from MDX to Lexical and stored in the CMS.
-3. The frontend docs pages are revalidated.
-4. Visiting the docs pages will pull the latest docs from the CMS, and render those lexical nodes to JSX.
-
-#### Working on the docs locally - GitHub
-
-By default, the docs are pulled from the `main` branch of the Payload repo on GitHub. You can **load the docs** for a different branch by opening the /docs/dynamic/ route on the website. This will dynamically load them every time you visit the page, without needing to sync them in the CMS.
-
-Example:
-
-- This pulls from the main branch: https://payloadcms.com/docs/getting-started/concepts
-- This pulls from the feat/myfeature branch: https://payloadcms.com/docs/dynamic/getting-started/concepts?branch=feat/myfeature
-
-In order to edit docs for that branch without touching markdown files, you can use the branch selector in the CMS to select the branch you want to work on. After making changes and saving the document, the lexical docs will be converted to MDX and pushed to the selected branch on GitHub.
-
-You will need to set the following environment variables to work with the GitHub sync:
-
-```env
-// .env
-# For reading from GitHub
-GITHUB_ACCESS_TOKEN=ghp_
-GITHUB_CLIENT_SECRET=
-# For writing to GitHub - you can run the https://github.com/payloadcms/gh-commit repo locally
-COMMIT_DOCS_API_URL=
-COMMIT_DOCS_API_KEY=
-```
-
-#### Working on docs locally - local markdown files
-
-If you have the docs stored locally as markdown files and would like to preview them in the website, you can use the /docs/local/ route in the website. First, you need to set the `DOCS_DIR_V3` environment variable to point to your local `docs` directory.
-
-```env
-// .env
-DOCS_DIR_V3=/documents/github/payload/docs
-```
-
-Then, just open the `/docs/local/` route: http://localhost:3000/docs/local/getting-started/concepts.
-
-Every time you make a change to the markdown files, just reload the page to see the changes reflected. The local MDX files are read, automatically converted to lexical on-the-fly, and rendered in the website. This process will not make any changes to the database.
-
-#### Beta and Legacy environment flags
-
-You can also specify a `beta` version and `legacy` version to render different versions of the docs:
-
-- Set the environment variable `NEXT_PUBLIC_ENABLE_BETA_DOCS` to `true` to enable the beta docs.
-- Specify a branch, commit, or tag with `NEXT_PUBLIC_BETA_DOCS_REF`. The default for the beta docs is `beta`.
-- Set the environment variable `NEXT_PUBLIC_ENABLE_LEGACY_DOCS` to `true` to enable the legacy docs.
-- Specify a branch, commit, or tag with `NEXT_PUBLIC_LEGACY_DOCS_REF`. The default for the legacy docs is `null`, and will fallback to the `main` branch.
-
-### License
-
-The Payload website is available as open source under the terms of the [MIT license](https://github.com/payloadcms/website/blob/main/LICENSE).
+[MIT](https://github.com/ceccec/website/blob/main/LICENSE).

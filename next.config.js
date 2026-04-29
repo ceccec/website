@@ -5,8 +5,14 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 import { redirects } from './redirects.js'
+import { OPENNEXT_CLOUDFLARE_IGNORED_OPTIONAL_PAYLOAD_PACKAGES } from './scripts/lib/opennextCloudflareIgnoredPayloadPackages.mjs'
+import { getDeploymentTargetFromEnv } from './scripts/lib/deploymentTarget.mjs'
 
 import bundleAnalyzer from '@next/bundle-analyzer'
+
+function resourceRegExpForExactPackageName(pkg) {
+  return new RegExp(`^${pkg.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')}$`)
+}
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -117,6 +123,13 @@ const nextConfig = withBundleAnalyzer({
     : {}),
   reactStrictMode: true,
   images: {
+    // Default: built-in Next.js loader (no CF /cdn-cgi/image/). Opt-in paid zone transforms via env.
+    ...(process.env.NEXT_PUBLIC_CF_IMAGE_RESIZING === 'true'
+      ? {
+          loader: 'custom',
+          loaderFile: './src/lib/cloudflareImageLoader.ts',
+        }
+      : {}),
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year,
     localPatterns: [
       {
@@ -154,8 +167,19 @@ const nextConfig = withBundleAnalyzer({
   turbopack: {
     resolveAlias: turbopackAliases,
   },
-  webpack: (config) => {
+  webpack: (config, { webpack }) => {
     const configCopy = { ...config }
+    configCopy.plugins = [...(config.plugins ?? [])]
+    if (
+      process.env.OPEN_NEXT_INNER_BUILD === '1' &&
+      getDeploymentTargetFromEnv(process.env) === 'cloudflare'
+    ) {
+      for (const pkg of OPENNEXT_CLOUDFLARE_IGNORED_OPTIONAL_PAYLOAD_PACKAGES) {
+        configCopy.plugins.push(
+          new webpack.IgnorePlugin({ resourceRegExp: resourceRegExpForExactPackageName(pkg) }),
+        )
+      }
+    }
     configCopy.resolve = {
       ...config.resolve,
       extensions: ['.ts', '.tsx', '.js', '.jsx'],

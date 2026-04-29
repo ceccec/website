@@ -1,8 +1,13 @@
 import type { Payload } from 'payload'
 
+import type { Doc } from '@types'
+
+import { docsTemplateEnabled } from '@root/plugins/env'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 
 export type DocsPageVersion = 'v2' | 'v3'
+
+type DocsMetaDoc = Pick<Doc, 'description' | 'title'>
 
 function docsWhere(topicSlug: string, docSlug: string, version: DocsPageVersion) {
   return {
@@ -15,7 +20,11 @@ function docsWhere(topicSlug: string, docSlug: string, version: DocsPageVersion)
 export async function findDocForPage(
   payload: Payload,
   args: { docSlug: string; topicSlug: string; version: DocsPageVersion },
-) {
+): Promise<{ docs: Doc[] }> {
+  if (!docsTemplateEnabled()) {
+    return { docs: [] }
+  }
+
   const { docSlug, topicSlug, version } = args
   return payload.find({
     collection: 'docs',
@@ -27,7 +36,11 @@ export async function findDocForPage(
 export async function findDocForMetadata(
   payload: Payload,
   args: { docSlug: string; topicSlug: string; version: DocsPageVersion },
-) {
+): Promise<{ docs: DocsMetaDoc[] }> {
+  if (!docsTemplateEnabled()) {
+    return { docs: [] }
+  }
+
   const { docSlug, topicSlug, version } = args
   return payload.find({
     collection: 'docs',
@@ -42,6 +55,10 @@ export async function findDocForMetadata(
 }
 
 export async function findDocsSlugsForStaticParams(payload: Payload, version: DocsPageVersion) {
+  if (!docsTemplateEnabled()) {
+    return []
+  }
+
   const result = await payload.find({
     collection: 'docs',
     depth: 0,

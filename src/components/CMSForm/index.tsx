@@ -5,6 +5,7 @@ import type { Form as FormType } from '@root/payload-types'
 import { RichText } from '@components/RichText/index'
 import Form from '@forms/Form/index'
 import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getCookie } from '@root/utilities/get-cookie'
 import { usePathname, useRouter } from 'next/navigation'
 import * as React from 'react'
@@ -31,6 +32,8 @@ const buildInitialState = (fields) => {
 }
 
 const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: string[] }) => {
+  const site = useSitePublicConfigOptional()
+
   const {
     id: formID,
     confirmationMessage,
@@ -77,7 +80,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 
         try {
           const hubspotCookie = getCookie('hubspotutk')
-          const pageUri = `${process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
+          const pageUri = `${site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
           const slugParts = pathname?.split('/')
           const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
           const req = await fetch('/api/form-submissions', {
@@ -116,10 +119,11 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               return
             }
 
-            const redirectUrl = new URL(url, process.env.NEXT_PUBLIC_SITE_URL)
+            const baseUrl = site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL || ''
+            const redirectUrl = new URL(url, baseUrl)
 
             try {
-              if (url.startsWith('/') || redirectUrl.origin === process.env.NEXT_PUBLIC_SITE_URL) {
+              if (url.startsWith('/') || redirectUrl.origin === baseUrl) {
                 router.push(redirectUrl.href)
               } else {
                 window.location.assign(url)
@@ -138,7 +142,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 
       void submitForm()
     },
-    [router, formID, formRedirect, confirmationType, pathname],
+    [router, formID, formRedirect, confirmationType, pathname, site.siteUrl, site.recaptchaSiteKey],
   )
 
   if (!form?.id) {
@@ -189,7 +193,9 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               <ReCAPTCHA
                 className={classes.captcha}
                 ref={recaptcha}
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                sitekey={
+                  site.recaptchaSiteKey || process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
+                }
                 theme="dark"
               />
             </div>

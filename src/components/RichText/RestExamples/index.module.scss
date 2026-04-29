@@ -57,11 +57,8 @@
     padding: 0.75rem;
   }
 
-  :global {
-    #heading-example,
-    .cell-example {
-      display: none;
-    }
+  @include global-selectors(('#heading-example', '.cell-example')) {
+    display: none;
   }
 }
 

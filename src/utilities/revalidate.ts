@@ -4,6 +4,8 @@
 
 import type { Payload } from 'payload'
 
+import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
+
 export const revalidate = async (args: {
   collection: string
   payload: Payload
@@ -11,9 +13,18 @@ export const revalidate = async (args: {
 }): Promise<void> => {
   const { slug, collection, payload } = args
 
+  const { revalidationKey } = await resolveIntegrationSecrets(payload)
+  const baseUrl = process.env.PAYLOAD_PUBLIC_APP_URL || ''
+  if (!revalidationKey || !baseUrl) {
+    payload.logger.warn(
+      `Skipping revalidate for '${slug}': missing PAYLOAD_PUBLIC_APP_URL or revalidation key (env or Admin → Integration secrets).`,
+    )
+    return
+  }
+
   try {
     const res = await fetch(
-      `${process.env.PAYLOAD_PUBLIC_APP_URL}/api/revalidate?secret=${process.env.NEXT_PRIVATE_REVALIDATION_KEY}&collection=${collection}&slug=${slug}`,
+      `${baseUrl}/api/revalidate?secret=${revalidationKey}&collection=${collection}&slug=${slug}`,
     )
 
     if (res.ok) {

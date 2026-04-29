@@ -68,7 +68,7 @@ export const fetchProjectAndRedirect = async (args: {
     const project = await fetchProjectWithSubscription({ environmentSlug, projectSlug, teamSlug })
 
     if (!project) {
-      notFound()
+      return notFound()
     }
 
     if (project?.status === 'draft') {
@@ -81,7 +81,7 @@ export const fetchProjectAndRedirect = async (args: {
     }
   } catch (error) {
     console.error(error)
-    notFound()
+    return notFound()
   }
 }
 

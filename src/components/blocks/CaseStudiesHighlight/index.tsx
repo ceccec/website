@@ -5,6 +5,7 @@ import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
 import { useMouseInfo } from '@faceless-ui/mouse-info'
 import { PayloadIcon } from '@graphics/PayloadIcon/index'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -16,6 +17,7 @@ type Props = Extract<ReusableContent['layout'][0], { blockType: 'caseStudiesHigh
 export const CaseStudiesHighlightBlock: React.FC<Props> = ({
   caseStudiesHighlightFields: { caseStudies: allCaseStudies, richText },
 }) => {
+  const site = useSitePublicConfigOptional()
   const { xPercentage } = useMouseInfo()
 
   const [caseStudyRows] = useState(() => {
@@ -77,7 +79,11 @@ export const CaseStudiesHighlightBlock: React.FC<Props> = ({
                           href={`/case-studies/${slug}`}
                           prefetch={false}
                         >
-                          <Image alt={alt} fill src={`${process.env.NEXT_PUBLIC_CMS_URL}${url}`} />
+                          <Image
+                            alt={alt}
+                            fill
+                            src={`${site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL}${url}`}
+                          />
                         </Link>
                       </li>
                     )

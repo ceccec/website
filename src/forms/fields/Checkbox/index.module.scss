@@ -30,10 +30,8 @@
   }
 
   &:hover {
-    :local() {
-      .icon {
-        opacity: 0.2;
-      }
+    .icon {
+      opacity: 0.2;
     }
   }
 }
@@ -70,10 +68,8 @@
 }
 
 .checked {
-  :local() {
-    .icon {
-      opacity: 1 !important;
-    }
+  .icon {
+    opacity: 1 !important;
   }
 }
 
@@ -85,7 +81,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .input {
     background: var(--theme-elevation-50);
   }

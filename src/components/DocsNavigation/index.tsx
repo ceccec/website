@@ -7,6 +7,7 @@ import * as Portal from '@radix-ui/react-portal'
 import { VersionSelector } from '@root/components/VersionSelector/index'
 import { ChevronIcon } from '@root/icons/ChevronIcon/index'
 import { CloseIcon } from '@root/icons/CloseIcon/index'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import Link from 'next/link'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 
@@ -33,6 +34,7 @@ export const DocsNavigation = ({
   topics: TopicGroupForNav[]
   version?: DocsVersion
 }) => {
+  const site = useSitePublicConfigOptional()
   const [currentTopicIsOpen, setCurrentTopicIsOpen] = useState(true)
   const [openTopicPreferences, setOpenTopicPreferences] = useState<string[]>()
   const [init, setInit] = useState(false)
@@ -45,9 +47,7 @@ export const DocsNavigation = ({
 
   const topicRefs = useRef<Record<string, HTMLButtonElement | HTMLLIElement | null>>({})
 
-  const hideVersionSelector =
-    process.env.NEXT_PUBLIC_ENABLE_BETA_DOCS !== 'true' &&
-    process.env.NEXT_PUBLIC_ENABLE_LEGACY_DOCS !== 'true'
+  const hideVersionSelector = !site.enableBetaDocs && !site.enableLegacyDocs
 
   useEffect(() => {
     setNavOpen(false)

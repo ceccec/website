@@ -2,6 +2,7 @@
 import type { DocsVersion } from '@components/RenderDocs'
 
 import { ChevronUpDownIcon } from '@root/icons/ChevronUpDownIcon/index'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
@@ -11,6 +12,9 @@ export const VersionSelector: React.FC<{
   initialVersion: DocsVersion
 }> = ({ initialVersion }) => {
   const router = useRouter()
+  const site = useSitePublicConfigOptional()
+  const showBeta = site.enableBetaDocs
+  const showLegacy = site.enableLegacyDocs
 
   return (
     <div className={classes.wrapper}>
@@ -31,10 +35,10 @@ export const VersionSelector: React.FC<{
           label="Version 3"
           value="latest"
         />
-        {process.env.NEXT_PUBLIC_ENABLE_BETA_DOCS === 'true' && (
+        {showBeta && (
           <option className={classes.option} label="Beta" value="beta" />
         )}
-        {process.env.NEXT_PUBLIC_ENABLE_LEGACY_DOCS === 'true' && (
+        {showLegacy && (
           <option
             className={[classes.option, classes.legacy].join(' ')}
             label="Version 2"

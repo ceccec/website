@@ -2,6 +2,7 @@ import type { ParsedDocForNav, TopicForNav, TopicGroupForNav } from '@root/colle
 import type { Payload } from 'payload'
 
 import { topicOrder } from '@root/collections/Docs/topicOrder'
+import { docsTemplateEnabled } from '@root/plugins/env'
 
 export const fetchTopicsForSidebar = async ({
   payload,
@@ -10,6 +11,10 @@ export const fetchTopicsForSidebar = async ({
   payload: Payload
   version: 'v2' | 'v3'
 }): Promise<TopicGroupForNav[]> => {
+  if (!docsTemplateEnabled()) {
+    return []
+  }
+
   const result = await payload.find({
     collection: 'docs',
     depth: 0,

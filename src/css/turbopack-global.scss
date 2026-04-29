@@ -1,0 +1,44 @@
+@use 'sass:string';
+
+/// Re-exported via `@scss/common` (`common.scss` forwards this file).
+///
+/// Turbopack CSS modules: nested `:global { .foo }` becomes ambiguous `:global .foo`.
+/// Use explicit `:global(selector)` instead (see Next turbopack + CSS modules notes).
+///
+/// @param $selector  Full selector inside `:global(...)`, e.g. `'.rs__control'`, `'div.rs__control'`,
+///                  `'input[type=\'radio\']'`, `'#id'`.
+@mixin g($selector) {
+  :global(#{string.unquote($selector)}) {
+    @content;
+  }
+}
+
+/// Comma-separated group with identical declarations: `:global(a), :global(b) { @content }`
+@mixin global-selectors($selectors) {
+  $combined: null;
+  @each $s in $selectors {
+    $part: ':global(#{string.unquote($s)})';
+    $combined: if($combined == null, $part, '#{$combined}, #{$part}');
+  }
+  #{$combined} {
+    @content;
+  }
+}
+
+/// Matches `data-theme-selector('light')` in `vars.scss` — dual selectors for nested theme islands.
+@mixin data-theme-light {
+  @include global-selectors(
+    ("[data-theme='light']", "[data-theme='light']:not(:has([data-theme='dark']))")
+  ) {
+    @content;
+  }
+}
+
+/// Matches `data-theme-selector('dark')` in `vars.scss`.
+@mixin data-theme-dark {
+  @include global-selectors(
+    ("[data-theme='dark']", "[data-theme='dark']:not(:has([data-theme='light']))")
+  ) {
+    @content;
+  }
+}

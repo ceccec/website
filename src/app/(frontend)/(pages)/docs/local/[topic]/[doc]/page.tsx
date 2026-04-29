@@ -45,13 +45,13 @@ export default async function DocsPage(args: {
   }
 
   if (!curTopic) {
-    notFound()
+    return notFound()
   }
 
   const curParsedDoc = curTopic.docs.find((doc) => doc.slug === docSlug)
 
   if (!curParsedDoc) {
-    notFound()
+    return notFound()
   }
 
   const mdx = curParsedDoc.content
@@ -84,7 +84,7 @@ export default async function DocsPage(args: {
   }
 
   if (!curDoc) {
-    notFound()
+    return notFound()
   }
 
   return (

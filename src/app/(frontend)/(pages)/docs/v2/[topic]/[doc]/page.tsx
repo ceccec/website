@@ -32,7 +32,7 @@ export default async function DocsPage({ params }: { params: Promise<Params> }) 
   const topicGroups = await fetchTopicsForSidebar({ payload, version: 'v2' })
 
   if (!curDoc?.docs?.length) {
-    notFound()
+    return notFound()
   }
 
   const doc = curDoc.docs[0]

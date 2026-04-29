@@ -22,27 +22,25 @@
   line-height: inherit;
 
   &[aria-expanded='true'] {
-    &:local() {
-      .icon-eye {
-        svg [data-show] {
-          display: none;
-        }
-
-        svg [data-hidden] {
-          display: initial;
-        }
+    .icon-eye {
+      svg [data-show] {
+        display: none;
       }
 
-      .icon--chevron {
-        svg {
-          transform: rotate(-90deg);
-        }
+      svg [data-hidden] {
+        display: initial;
+      }
+    }
+
+    .icon--chevron {
+      svg {
+        transform: rotate(-90deg);
       }
     }
   }
 }
 
-:global([data-theme='dark']) {
+@include data-theme-dark {
   .toggler {
     background-color: var(--theme-elevation-100);
 

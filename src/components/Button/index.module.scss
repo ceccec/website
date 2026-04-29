@@ -63,16 +63,6 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 }
 
-:global([data-theme='light']) {
-  .appearance {
-    &--primary {
-      &:focus-visible {
-        border-color: var(--theme-elevation-950);
-      }
-    }
-  }
-}
-
 .appearance {
   &--default {
     --animation-speed: 450ms;
@@ -204,6 +194,12 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
     color: var(--theme-bg);
     background-color: var(--theme-elevation-950);
 
+    @include data-theme-selector('light') {
+      &:focus-visible {
+        border-color: var(--theme-elevation-950);
+      }
+    }
+
     &:focus-visible,
     &:hover {
       color: var(--theme-bg);
@@ -304,13 +300,11 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .isHovered {
-  &:local() {
-    .icon--arrow {
-      transform: translate3d(2px, -2px, 0);
+  .icon--arrow {
+    transform: translate3d(2px, -2px, 0);
 
-      @include mid-break {
-        transform: translate3d(0, 0, 0);
-      }
+    @include mid-break {
+      transform: translate3d(0, 0, 0);
     }
   }
 }

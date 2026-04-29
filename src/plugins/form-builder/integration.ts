@@ -9,6 +9,10 @@ import type { Field, PayloadRequest } from 'payload'
 
 import type { Form, FormSubmission } from '@types'
 
+import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
+
+import { partnersTemplateEnabled } from '../env'
+
 export function hubspotBodyContext(body: Record<string, unknown>): Record<string, unknown> {
   return {
     ...('hubspotCookie' in body && typeof body.hubspotCookie === 'string'
@@ -70,8 +74,13 @@ export const formBuilderRecaptchaSubmissionField: Field = {
       return 'Please complete the reCAPTCHA'
     }
 
+    const { recaptchaSecretKey } = await resolveIntegrationSecrets(req.payload)
+    if (!recaptchaSecretKey) {
+      return 'reCAPTCHA is not configured (Admin → Integration secrets or env).'
+    }
+
     const res = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY}&response=${value}`,
+      `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${value}`,
       {
         method: 'POST',
       },
@@ -111,7 +120,7 @@ export async function afterFormSubmissionChange({
       : {}
 
   const { submissionData: submissionDataFromDoc } = doc
-  const portalID = process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY
+  const { hubspotPortalKey: portalID } = await resolveIntegrationSecrets(req.payload)
   if (!portalID) {
     return
   }
@@ -157,7 +166,7 @@ export async function beforeFormSubmissionChange({
 }) {
   const partnerIdField = data?.submissionData?.find((field) => field.field === 'partnerId')
 
-  if (partnerIdField?.value) {
+  if (partnersTemplateEnabled() && partnerIdField?.value) {
     try {
       const partner = await req.payload.findByID({
         id: partnerIdField.value,

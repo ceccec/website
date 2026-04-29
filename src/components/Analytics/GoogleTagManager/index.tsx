@@ -4,10 +4,15 @@ import { usePrivacy } from '@root/providers/Privacy/index'
 import Script from 'next/script'
 import React, { Fragment } from 'react'
 
-const gtmMeasurementID = process.env.NEXT_PUBLIC_GTM_MEASUREMENT_ID
+type Props = {
+  gtmContainerId?: string
+}
 
-export const GoogleTagManager: React.FC = () => {
+export const GoogleTagManager: React.FC<Props> = ({ gtmContainerId: gtmProp }) => {
   const { cookieConsent } = usePrivacy()
+
+  const gtmMeasurementID =
+    gtmProp?.trim() || process.env.NEXT_PUBLIC_GTM_MEASUREMENT_ID || ''
 
   if (!cookieConsent || !gtmMeasurementID) {
     return null

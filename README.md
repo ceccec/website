@@ -2,7 +2,7 @@
 
 A full **Next.js + Payload** app: one deployable unit that serves the public **payloadcms.com** experience (this repo: [ceccec/website](https://github.com/ceccec/website) · upstream [payloadcms/website](https://github.com/payloadcms/website)).
 
-**Jump:** [What is delivered](#what-is-delivered-when-deployed) · [Deploy](#deploy) · [Manual](#copy-paste-deploy-manual) · [Vercel path](#vercel-postgres-and-blob) · [Cloudflare path](#cloudflare-workers-d1-and-r2) · [Runtime](#runtime--environment) · [Local](#local-development)
+**Jump:** [What is delivered](#what-is-delivered-when-deployed) · [Deploy](#deploy) · [Manual](#copy-paste-deploy-manual) · [Vercel path](#vercel-postgres-and-blob) · [Cloudflare path](#cloudflare-workers-d1-and-r2) · [Runtime](#runtime--environment) · [Docker](#docker-compose-node-mongodb--nginx) · [Local](#local-development)
 
 ---
 
@@ -35,6 +35,8 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
 **Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI (no `VERCEL`, no `postgres://…` URL) that executes **`pnpm run workers:build`** (migrate → OpenNext). Set **`PAYLOAD_SECRET`** under **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
+
+**Do not pre-fill every env var in the wizard.** The catalog in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json) lists optional integrations; the optional **`introduction`** at the top of that file explains the minimal set. After go-live, add Algolia, Stripe, analytics, cron keys, etc. under **Workers → Settings → Variables & Secrets** when you enable each feature (then redeploy). Editorial settings use **Payload Admin** (`/admin`); secrets remain in Worker env.
 
 ---
 
@@ -129,7 +131,7 @@ Dry-run config without publishing:
 pnpm run deploy:dry
 ```
 
-References: [DEPLOYMENT.md](./DEPLOYMENT.md), [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md).
+References: [DEPLOYMENT.md](./DEPLOYMENT.md), [DOCKER.md](./DOCKER.md), [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md).
 
 **Minimal vs full Cloudflare stack:** Default [`wrangler.jsonc`](./wrangler.jsonc) is enough to ship. Extra products (KV, Queues, Hyperdrive, Workers AI, Vectorize, …) are **optional** — merge snippets from [`config/wrangler.optional-bindings.jsonc`](./config/wrangler.optional-bindings.jsonc) only after you provision them ([DEPLOYMENT.md](./DEPLOYMENT.md#minimal-cloudflare-vs-optional-platform-bindings-choose-what-you-use)).
 
@@ -163,6 +165,12 @@ pnpm run deploy             # deploy:database + full Worker pipeline
 pnpm run deploy:dry         # dry-run Vercel + Cloudflare configs
 pnpm sync:cloudflare-bindings  # config/cloudflare.bindings.json → package.json `cloudflare`
 ```
+
+---
+
+## Docker Compose (Node + MongoDB + Nginx)
+
+For a **containerized** Node stack — MongoDB, MinIO (S3), Mailpit (SMTP), Next + Payload on a **Unix socket**, and **Nginx** as the HTTP edge — see **[DOCKER.md](./DOCKER.md)** and **[docker/CONVENTIONS.md](./docker/CONVENTIONS.md)** (infrastructure = standard Docker images; no Vercel Blob / SendGrid required for core behavior). This path uses **`PAYLOAD_HOSTING=vercel`**; it does **not** replace **Cloudflare Workers + D1** ([Runtime](#runtime--environment)).
 
 ---
 

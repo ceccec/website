@@ -132,7 +132,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .isAnswer {
     background: transparent;
     color: var(--color-success-850);
@@ -175,7 +175,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .teamLink {
     & strong {
       color: var(--color-blue-600);

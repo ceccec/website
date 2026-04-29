@@ -85,7 +85,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .radioCard {
     background-color: var(--theme-elevation-50);
   }

@@ -1,15 +1,31 @@
 import algoliasearch from 'algoliasearch'
+import type { Payload } from 'payload'
 
-const appID = process.env.NEXT_PUBLIC_ALGOLIA_CH_ID || ''
-const apiKey = process.env.NEXT_PRIVATE_ALGOLIA_API_KEY || ''
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME || ''
+import { getMergedPublicSiteSettings } from '@root/lib/getMergedPublicSiteSettings'
+import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
 
-const client = algoliasearch(appID, apiKey)
+/** Keeps helpful flags in sync with Algolia (keys from Admin globals or env). */
+export const updateAlgolia = async (
+  payload: Payload,
+  id: string,
+  helpful: boolean,
+): Promise<void> => {
+  const [publicCfg, secrets] = await Promise.all([
+    getMergedPublicSiteSettings(),
+    resolveIntegrationSecrets(payload),
+  ])
 
-const index = client.initIndex(indexName)
+  const appID = publicCfg.algoliaApplicationId
+  const apiKey = secrets.algoliaAdminApiKey
+  const indexName = publicCfg.algoliaCommunityIndexName
 
-// Keeps helpful flags in sync with Algolia
-export const updateAlgolia = async (id: string, helpful: boolean): Promise<void> => {
+  if (!appID || !apiKey || !indexName) {
+    return
+  }
+
+  const client = algoliasearch(appID, apiKey)
+  const index = client.initIndex(indexName)
+
   await index
     .partialUpdateObject(
       {

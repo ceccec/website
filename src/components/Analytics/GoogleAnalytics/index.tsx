@@ -6,24 +6,40 @@ import { usePathname } from 'next/navigation'
 import Script from 'next/script'
 import * as React from 'react'
 
-const gaMeasurementID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+type Props = {
+  facebookPixelId?: string
+  gaMeasurementId?: string
+}
 
-export const GoogleAnalytics: React.FC = () => {
+export const GoogleAnalytics: React.FC<Props> = ({
+  facebookPixelId: fbProp,
+  gaMeasurementId: gaProp,
+}) => {
   const pathname = usePathname()
 
   const { cookieConsent } = usePrivacy()
+
+  const gaMeasurementID =
+    gaProp?.trim() || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''
 
   React.useEffect(() => {
     if (!gaMeasurementID || !window?.location?.href) {
       return
     }
 
-    analyticsEvent('page_view', {
-      page_location: window.location.href,
-      page_path: pathname,
-      page_title: document.title,
-    })
-  }, [pathname])
+    analyticsEvent(
+      'page_view',
+      {
+        page_location: window.location.href,
+        page_path: pathname,
+        page_title: document.title,
+      },
+      {
+        facebookPixelId: fbProp?.trim() || process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || '',
+        gaMeasurementId: gaMeasurementID,
+      },
+    )
+  }, [pathname, gaMeasurementID, fbProp])
 
   if (!cookieConsent || !gaMeasurementID) {
     return null

@@ -1,4 +1,5 @@
 {
+  "introduction": "**Workers one-click:** Fill only **`PAYLOAD_SECRET`** (use the same value under **Build variables and secrets** so `payload migrate` runs during build). **Leave other keys empty** — add them later under **Workers → Settings → Variables & Secrets** when you turn on each integration (Algolia, Stripe, analytics, etc.) and redeploy. Editorial content is edited in **Payload Admin** (`/admin`); API keys stay in Worker env, not in Admin.",
   "bindings": {
     "ANALYZE": {
       "description": "Optional. Set to `true` only when running `pnpm analyze` (Next bundle analyzer)."
@@ -184,7 +185,7 @@
       "description": "Secret. Shared with GitHub Actions for release automation webhooks."
     },
     "PAYLOAD_SECRET": {
-      "description": "Required. Payload encryption/session secret — generate `openssl rand -hex 32`. Must appear in Worker **Variables & Secrets** and **Build variables and secrets** for migrate — [Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)."
+      "description": "**Required for one-click.** Payload encryption/session secret — `openssl rand -hex 32`. Same value in Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)). Everything else in this catalog can wait until after deploy."
     },
     "POSTGRES_URL": {
       "description": "Postgres URL — **Vercel relational stack**. Leave unset on Workers+D1 to avoid misrouting migrate (`deploymentTarget.ts`)."

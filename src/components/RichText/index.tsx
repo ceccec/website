@@ -38,6 +38,7 @@ import RichTextUpload from '@components/RichText/Upload'
 import { Video } from '@components/RichText/Video'
 import SpotlightAnimation from '@components/SpotlightAnimation'
 import { TemplateCards } from '@components/TemplateCardsBlock'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import YouTube from '@components/YouTube/index'
 
 import './index.scss'
@@ -243,6 +244,7 @@ export const jsxConverters: (args: { toc?: boolean }) => JSXConvertersFunction<N
   }
 
 export const RichTextWithTOC: React.FC<Props> = ({ className, content: _content }) => {
+  const site = useSitePublicConfigOptional()
   const [toc, setTOC] = useState<Map<string, Heading>>(new Map())
 
   const initialData = useMemo(() => ({ content: _content }) as Doc, [_content])
@@ -252,7 +254,7 @@ export const RichTextWithTOC: React.FC<Props> = ({ className, content: _content 
   } = useLivePreview<Doc>({
     depth: 2,
     initialData,
-    serverURL: process.env.NEXT_PUBLIC_CMS_URL as string,
+    serverURL: (site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL) as string,
   })
 
   const addHeading: AddHeading = useCallback(

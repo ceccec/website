@@ -44,7 +44,7 @@
   animation: 7s rotateColor infinite linear;
 }
 
-:global([data-theme='dark']) {
+@include data-theme-dark {
   .borderHighlight {
     background: conic-gradient(var(--theme-success-450), transparent, transparent);
   }

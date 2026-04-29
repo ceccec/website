@@ -22,6 +22,7 @@
     "analyze": "ANALYZE=true next build --webpack",
     "caddy": "caddy run --config Caddyfile",
     "start": "next start",
+    "start:unix": "node scripts/next-start-unix.mjs",
     "typegen": "next typegen",
     "lint": "eslint . --fix",
     "prettier:fix": "prettier --write .",
@@ -68,6 +69,7 @@
     "@payloadcms/plugin-seo": "3.84.1",
     "@payloadcms/richtext-lexical": "3.84.1",
     "@payloadcms/storage-r2": "3.84.1",
+    "@payloadcms/storage-s3": "3.84.1",
     "@payloadcms/storage-vercel-blob": "3.84.1",
     "@payloadcms/ui": "3.84.1",
     "@radix-ui/react-accordion": "^1.2.1",
@@ -330,7 +332,7 @@
         "description": "Optional. `info` | `debug` | `warn` | `error` — Payload logger."
       },
       "PAYLOAD_MCP": {
-        "description": "Optional. Set `true` to enable `@payloadcms/plugin-mcp` ([docs](https://payloadcms.com/docs/plugins/mcp)). Config: `src/plugins/mcp/config.ts`."
+        "description": "Optional. Set `true` to enable `@payloadcms/plugin-mcp` ([docs](https://payloadcms.com/docs/plugins/mcp)) — see `src/plugins/mcp/config.ts`."
       },
       "PAYLOAD_MULTI_TENANT": {
         "description": "Optional. Set `true` to enable `@payloadcms/plugin-multi-tenant` on the `pages` collection + `tenants` (`examples/multi-tenant`). Run `payload migrate` after enabling."
@@ -342,7 +344,7 @@
         "description": "Secret. Shared with GitHub Actions for release automation webhooks."
       },
       "PAYLOAD_SECRET": {
-        "description": "Required. Payload encryption/session secret — generate `openssl rand -hex 32`. Must appear in Worker **Variables & Secrets** and **Build variables and secrets** for migrate — [Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)."
+        "description": "**Required for one-click.** Payload encryption/session secret — `openssl rand -hex 32`. Same value in Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)). Everything else in this catalog can wait until after deploy."
       },
       "POSTGRES_URL": {
         "description": "Postgres URL — **Vercel relational stack**. Leave unset on Workers+D1 to avoid misrouting migrate (`deploymentTarget.ts`)."

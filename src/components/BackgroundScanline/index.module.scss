@@ -36,6 +36,12 @@
     bottom: -0.5rem;
     right: -0.5rem;
   }
+
+  @include data-theme-selector('light') {
+    .crosshair {
+      color: var(--theme-elevation-400);
+    }
+  }
 }
 
 .backgroundScanline {
@@ -70,11 +76,5 @@
 
   @include data-theme-selector('light') {
     border-color: var(--grid-line-light);
-  }
-}
-
-:global([data-theme='light']) {
-  .crosshair {
-    color: var(--theme-elevation-400);
   }
 }

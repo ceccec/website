@@ -7,6 +7,7 @@ import { Button } from '@components/Button/index'
 import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
 import { Video } from '@components/RichText/Video/index'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { formatDate } from '@utilities/format-date-time'
 import * as React from 'react'
 
@@ -22,6 +23,9 @@ export const LivestreamHero: React.FC<{
     links,
     livestream: { id: youtubeID = '', date, guests, hideBreadcrumbs, richText },
   } = props
+
+  const site = useSitePublicConfigOptional()
+  const cmsBase = site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || ''
 
   const today = new Date()
   const liveDate = new Date(date)
@@ -63,7 +67,7 @@ export const LivestreamHero: React.FC<{
                       {image && typeof image === 'object' && image !== null && 'url' in image && (
                         <img
                           alt={name ? `Photo of ${name}` : ''}
-                          src={`${process.env.NEXT_PUBLIC_CMS_URL}${image.url}`}
+                          src={`${cmsBase}${image.url}`}
                         />
                       )}
                       {name && name}

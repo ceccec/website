@@ -67,7 +67,7 @@
   margin-top: 2rem;
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .controlsBG {
     background-color: var(--theme-elevation-50);
   }

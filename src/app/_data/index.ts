@@ -1,4 +1,5 @@
 import { getPayload } from '@root/lib/getPayload'
+import { marketingContentEnabled, partnersTemplateEnabled } from '@root/plugins/env'
 import { draftMode } from 'next/headers'
 
 import type {
@@ -20,6 +21,8 @@ import type {
   TopBar,
 } from '../../payload-types'
 
+import { emptyGetStartedGlobal, emptyMarketingLayoutGlobals } from './payloadTemplateStubs'
+
 /** Shared `where.and` fragment: published docs only when not in draft preview. */
 function publishedUnlessDraft(draft: boolean): { _status: { equals: 'published' } }[] {
   return draft ? [] : [{ _status: { equals: 'published' } }]
@@ -30,6 +33,10 @@ export const fetchGlobals = async (): Promise<{
   mainMenu: MainMenu
   topBar: TopBar
 }> => {
+  if (!marketingContentEnabled()) {
+    return emptyMarketingLayoutGlobals()
+  }
+
   const payload = await getPayload()
   const mainMenu = await payload.findGlobal({
     slug: 'main-menu',
@@ -121,6 +128,10 @@ export const fetchPages = async (): Promise<Partial<Page>[]> => {
 }
 
 export const fetchPosts = async (): Promise<Partial<Post>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
   const data = await payload.find({
     collection: 'posts',
@@ -136,6 +147,10 @@ export const fetchPosts = async (): Promise<Partial<Post>[]> => {
 }
 
 export const fetchBlogPosts = async (): Promise<Partial<Post>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const currentDate = new Date()
   const payload = await getPayload()
 
@@ -161,7 +176,14 @@ export const fetchBlogPosts = async (): Promise<Partial<Post>[]> => {
   return data.docs
 }
 
-export const fetchArchive = async (slug: string, draft?: boolean): Promise<Partial<Category>> => {
+export const fetchArchive = async (
+  slug: string,
+  draft?: boolean,
+): Promise<Partial<Category> | undefined> => {
+  if (!marketingContentEnabled()) {
+    return undefined
+  }
+
   const payload = await getPayload()
   const currentDate = new Date()
 
@@ -196,6 +218,10 @@ export const fetchArchive = async (slug: string, draft?: boolean): Promise<Parti
 }
 
 export const fetchArchives = async (slug?: string): Promise<Partial<Category>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
 
   const data = await payload.find({
@@ -218,7 +244,14 @@ export const fetchArchives = async (slug?: string): Promise<Partial<Category>[]>
   return data.docs
 }
 
-export const fetchBlogPost = async (slug: string, category): Promise<Partial<Post>> => {
+export const fetchBlogPost = async (
+  slug: string,
+  category,
+): Promise<Partial<Post> | undefined> => {
+  if (!marketingContentEnabled()) {
+    return undefined
+  }
+
   const { isEnabled: draft } = await draftMode()
   const payload = await getPayload()
 
@@ -257,6 +290,10 @@ export const fetchBlogPost = async (slug: string, category): Promise<Partial<Pos
 }
 
 export const fetchCaseStudies = async (): Promise<Partial<CaseStudy>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
   const data = await payload.find({
     collection: 'case-studies',
@@ -270,7 +307,11 @@ export const fetchCaseStudies = async (): Promise<Partial<CaseStudy>[]> => {
   return data.docs
 }
 
-export const fetchCaseStudy = async (slug: string): Promise<CaseStudy> => {
+export const fetchCaseStudy = async (slug: string): Promise<CaseStudy | undefined> => {
+  if (!marketingContentEnabled()) {
+    return undefined
+  }
+
   const { isEnabled: draft } = await draftMode()
   const payload = await getPayload()
 
@@ -293,6 +334,10 @@ export const fetchCaseStudy = async (slug: string): Promise<CaseStudy> => {
 export const fetchCommunityHelps = async (
   communityHelpType: CommunityHelp['communityHelpType'],
 ): Promise<Pick<CommunityHelp, 'slug'>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
 
   const data = await payload.find({
@@ -308,7 +353,11 @@ export const fetchCommunityHelps = async (
   return data.docs
 }
 
-export const fetchCommunityHelp = async (slug: string): Promise<CommunityHelp> => {
+export const fetchCommunityHelp = async (slug: string): Promise<CommunityHelp | undefined> => {
+  if (!marketingContentEnabled()) {
+    return undefined
+  }
+
   const payload = await getPayload()
 
   const data = await payload.find({
@@ -321,6 +370,10 @@ export const fetchCommunityHelp = async (slug: string): Promise<CommunityHelp> =
 }
 
 export const fetchRelatedThreads = async (path: string): Promise<Partial<CommunityHelp>[]> => {
+  if (!marketingContentEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
 
   const data = await payload.find({
@@ -339,6 +392,10 @@ export const fetchRelatedThreads = async (path: string): Promise<Partial<Communi
 }
 
 export const fetchPartners = async (): Promise<Partner[]> => {
+  if (!partnersTemplateEnabled()) {
+    return []
+  }
+
   const payload = await getPayload()
 
   const data = await payload.find({
@@ -355,7 +412,11 @@ export const fetchPartners = async (): Promise<Partner[]> => {
   return data.docs
 }
 
-export const fetchPartner = async (slug: string): Promise<Partial<Partner>> => {
+export const fetchPartner = async (slug: string): Promise<Partial<Partner> | undefined> => {
+  if (!partnersTemplateEnabled()) {
+    return undefined
+  }
+
   const { isEnabled: draft } = await draftMode()
   const payload = await getPayload()
 
@@ -403,7 +464,11 @@ export const fetchPartner = async (slug: string): Promise<Partial<Partner>> => {
   return data.docs[0]
 }
 
-export const fetchPartnerProgram = async (): Promise<Partial<PartnerProgram>> => {
+export const fetchPartnerProgram = async (): Promise<Partial<PartnerProgram> | undefined> => {
+  if (!partnersTemplateEnabled()) {
+    return undefined
+  }
+
   const payload = await getPayload()
   const data = await payload.findGlobal({
     slug: 'partner-program',
@@ -419,6 +484,10 @@ export const fetchFilters = async (): Promise<{
   regions: Region[]
   specialties: Specialty[]
 }> => {
+  if (!partnersTemplateEnabled()) {
+    return { budgets: [], industries: [], regions: [], specialties: [] }
+  }
+
   const payload = await getPayload()
 
   const industries = await payload.find({
@@ -450,6 +519,10 @@ export const fetchFilters = async (): Promise<{
 }
 
 export const fetchGetStarted = async (): Promise<GetStarted> => {
+  if (!marketingContentEnabled()) {
+    return emptyGetStartedGlobal()
+  }
+
   const payload = await getPayload()
   const data = await payload.findGlobal({
     slug: 'get-started',

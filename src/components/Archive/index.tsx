@@ -12,6 +12,7 @@ import { ARCHIVES_CACHE_TAG } from '@root/utilities/revalidateMarketingRoutes'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 import classes from './index.module.scss'
 import { MobileNav } from './MobileNav'
@@ -58,6 +59,10 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
 
   const archive = await getArchive(category)
   const archives = await getArchives()
+
+  if (!archive) {
+    return notFound()
+  }
 
   const { description, headline } = archive
   const posts = archive.posts?.docs || []

@@ -1,8 +1,11 @@
+'use client'
+
 import { Text } from '@forms/fields/Text/index'
 import FormComponent from '@forms/Form/index'
 import { validateEmail } from '@forms/validations'
 import { ArrowIcon } from '@root/icons/ArrowIcon'
 import { ErrorIcon } from '@root/icons/ErrorIcon'
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getCookie } from '@root/utilities/get-cookie'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useId } from 'react'
@@ -18,6 +21,7 @@ interface NewsletterSignUpProps {
 
 export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
   const { className, description = false, placeholder = 'Enter your email' } = props
+  const site = useSitePublicConfigOptional()
 
   const [buttonClicked, setButtonClicked] = React.useState(false)
   const [formData, setFormData] = React.useState({ email: '' })
@@ -57,13 +61,14 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       setError(undefined)
 
       try {
-        const formID = process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ID
+        const formID =
+          site.newsletterFormId || process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ID
         const hubspotCookie = getCookie('hubspotutk')
-        const pageUri = `${process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
+        const pageUri = `${site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
         const slugParts = pathname?.split('/')
         const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
         toast.promise(
-          fetch(`${process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
+          fetch(`${site.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
             body: JSON.stringify({
               form: formID,
               hubspotCookie,
@@ -91,7 +96,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       }
     }
     void submitForm()
-  }, [pathname, formData, router])
+  }, [pathname, formData, router, site])
 
   return (
     <div className={[className, classes.newsletterSignUp].filter(Boolean).join(' ')}>

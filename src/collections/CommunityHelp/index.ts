@@ -98,14 +98,14 @@ export const CommunityHelp: CollectionConfig = {
       },
       hooks: {
         afterChange: [
-          async ({ previousValue, siblingData, value }) => {
+          async ({ previousValue, req, siblingData, value }) => {
             if (previousValue !== value) {
               const docID =
                 siblingData.communityHelpType === 'discord'
                   ? siblingData.discordID
                   : siblingData.githubID
               if (docID) {
-                await updateAlgolia(docID, value)
+                await updateAlgolia(req.payload, docID, value)
               }
             }
           },

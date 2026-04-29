@@ -21,7 +21,7 @@ export default async ({
   const posts = archive?.posts?.docs
 
   if (!archive || !posts) {
-    notFound()
+    return notFound()
   }
 
   return <Archive category={category} />

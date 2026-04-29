@@ -183,6 +183,8 @@ export interface Config {
     | ('bg' | 'en' | 'es' | 'de' | 'ja' | 'ar')[];
   globals: {
     'admin-settings': AdminSetting;
+    'public-site-settings': PublicSiteSetting;
+    'integration-secrets': IntegrationSecret;
     footer: Footer;
     'main-menu': MainMenu;
     topBar: TopBar;
@@ -191,6 +193,8 @@ export interface Config {
   };
   globalsSelect: {
     'admin-settings': AdminSettingsSelect<false> | AdminSettingsSelect<true>;
+    'public-site-settings': PublicSiteSettingsSelect<false> | PublicSiteSettingsSelect<true>;
+    'integration-secrets': IntegrationSecretsSelect<false> | IntegrationSecretsSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'main-menu': MainMenuSelect<false> | MainMenuSelect<true>;
     topBar: TopBarSelect<false> | TopBarSelect<true>;
@@ -4223,6 +4227,100 @@ export interface AdminSetting {
   createdAt?: string | null;
 }
 /**
+ * URLs, analytics IDs, and Algolia search-app settings. Leave blank to use environment variables. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-site-settings".
+ */
+export interface PublicSiteSetting {
+  id: number;
+  /**
+   * Overrides `NEXT_PUBLIC_SITE_URL` / metadata base when set.
+   */
+  siteUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_CMS_URL` for media and API links when set.
+   */
+  cmsUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_CLOUD_CMS_URL` for Cloud onboarding when set.
+   */
+  cloudCmsUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_GA_MEASUREMENT_ID` when set.
+   */
+  gaMeasurementId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_GTM_MEASUREMENT_ID` when set.
+   */
+  gtmContainerId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_FACEBOOK_PIXEL_ID` when set.
+   */
+  facebookPixelId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ENABLE_BETA_DOCS` when checked.
+   */
+  enableBetaDocs?: boolean | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ENABLE_LEGACY_DOCS` when checked.
+   */
+  enableLegacyDocs?: boolean | null;
+  /**
+   * Overrides `NEXT_PUBLIC_NEWSLETTER_FORM_ID` when set.
+   */
+  newsletterFormId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` when set.
+   */
+  recaptchaSiteKey?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_ID` when set.
+   */
+  algoliaApplicationId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME` when set.
+   */
+  algoliaCommunityIndexName?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY` for the header doc search.
+   */
+  algoliaDocsearchKey?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * HubSpot, Algolia admin key, reCAPTCHA secret, ISR revalidation key, cron/JWT helpers. Leave blank to use Worker/env vars. Only users with the **admin** role can view or edit.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integration-secrets".
+ */
+export interface IntegrationSecret {
+  id: number;
+  /**
+   * Overrides `NEXT_PRIVATE_HUBSPOT_PORTAL_KEY` when set.
+   */
+  hubspotPortalKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_RECAPTCHA_SECRET_KEY` when set.
+   */
+  recaptchaSecretKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_ALGOLIA_API_KEY` when set.
+   */
+  algoliaAdminApiKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.
+   */
+  revalidationKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_CRON_KEY` / `CRON_SECRET` when set.
+   */
+  cronSecret?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
@@ -4705,6 +4803,42 @@ export interface PartnerProgram {
 export interface AdminSettingsSelect<T extends boolean = true> {
   showDashboardNotice?: T;
   dashboardNotice?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-site-settings_select".
+ */
+export interface PublicSiteSettingsSelect<T extends boolean = true> {
+  siteUrl?: T;
+  cmsUrl?: T;
+  cloudCmsUrl?: T;
+  gaMeasurementId?: T;
+  gtmContainerId?: T;
+  facebookPixelId?: T;
+  enableBetaDocs?: T;
+  enableLegacyDocs?: T;
+  newsletterFormId?: T;
+  recaptchaSiteKey?: T;
+  algoliaApplicationId?: T;
+  algoliaCommunityIndexName?: T;
+  algoliaDocsearchKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integration-secrets_select".
+ */
+export interface IntegrationSecretsSelect<T extends boolean = true> {
+  hubspotPortalKey?: T;
+  recaptchaSecretKey?: T;
+  algoliaAdminApiKey?: T;
+  revalidationKey?: T;
+  cronSecret?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -13,7 +13,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .input {
     background: var(--theme-elevation-50);
   }

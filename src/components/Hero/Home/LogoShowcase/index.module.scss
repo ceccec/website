@@ -157,7 +157,7 @@
   bottom: calc(33.333% - 0.55rem);
 }
 
-:global([data-theme='dark']) {
+@include data-theme-dark {
   .logoShowcase {
     .horizontalLine,
     .verticalLine,
@@ -167,7 +167,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .logoShowcase {
     .horizontalLine,
     .verticalLine,

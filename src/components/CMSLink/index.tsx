@@ -1,5 +1,8 @@
+'use client'
+
 import type { CaseStudy, Page, Post } from '@root/payload-types'
 
+import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { isKeyboardActivation } from '@utilities/keyboardActivation'
 import Link from 'next/link'
 import React from 'react'
@@ -101,6 +104,9 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   reference,
   url,
 }) => {
+  const site = useSitePublicConfigOptional()
+  const siteUrl = site.siteUrl || process.env.NEXT_PUBLIC_SITE_URL || ''
+
   let href = generateHref({ type, reference, url })
 
   if (!href) {
@@ -136,8 +142,8 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     if (!hrefIsLocal && href !== '#') {
       try {
         const objectURL = new URL(href)
-        if (objectURL.origin === process.env.NEXT_PUBLIC_SITE_URL) {
-          href = objectURL.href.replace(process.env.NEXT_PUBLIC_SITE_URL, '')
+        if (siteUrl && objectURL.origin === siteUrl) {
+          href = objectURL.href.replace(siteUrl, '')
         }
       } catch (e) {
         // Do not throw error if URL is invalid

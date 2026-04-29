@@ -13,6 +13,7 @@ import { RichTextWithTOC } from '@components/RichText'
 import { TableOfContents } from '@components/TableOfContents/index'
 import { VersionSelector } from '@components/VersionSelector/index'
 import { fetchRelatedThreads } from '@data'
+import { getMergedPublicSiteSettings } from '@root/lib/getMergedPublicSiteSettings'
 import { ArrowIcon } from '@icons/ArrowIcon/index'
 import { unstable_cache } from 'next/cache'
 import Link from 'next/link'
@@ -75,9 +76,8 @@ export const RenderDocs = async ({
 
   const path = `${topicSlug.toLowerCase()}/${currentDoc.slug}`
 
-  const hideVersionSelector =
-    process.env.NEXT_PUBLIC_ENABLE_BETA_DOCS !== 'true' &&
-    process.env.NEXT_PUBLIC_ENABLE_LEGACY_DOCS !== 'true'
+  const sitePublic = await getMergedPublicSiteSettings()
+  const hideVersionSelector = !sitePublic.enableBetaDocs && !sitePublic.enableLegacyDocs
 
   const getRelatedThreads = (path) => unstable_cache(fetchRelatedThreads, ['relatedThreads'])(path)
   const relatedThreads = await getRelatedThreads(path)

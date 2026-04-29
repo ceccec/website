@@ -41,10 +41,8 @@
     border-color: var(--theme-success-500);
   }
 
-  &:local() {
-    .checkmark {
-      border-color: var(--theme-success-500);
-    }
+  .checkmark {
+    border-color: var(--theme-success-500);
   }
 }
 
@@ -111,7 +109,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .largeRadio {
     border-color: var(--theme-elevation-200);
 
@@ -123,10 +121,8 @@
   .checked {
     border-color: var(--theme-success-600);
 
-    &:local() {
-      .checkmark {
-        border-color: var(--theme-success-700);
-      }
+    .checkmark {
+      border-color: var(--theme-success-700);
     }
   }
 

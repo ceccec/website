@@ -3,38 +3,49 @@
  * optional content slices. Set a var to `false` to turn a slice off (default: on).
  */
 
+/** Template slice defaults: unset env → feature **on**; explicit `false` turns off. */
+function templateSliceEnabled(key: string): boolean {
+  const v = process.env[key]
+  return v !== 'false'
+}
+
+/** Opt-in plugins: unset → **off**; must be `'true'` to enable. */
+function explicitTrue(key: string): boolean {
+  return process.env[key] === 'true'
+}
+
 export function multiTenantEnabled(): boolean {
-  return process.env.PAYLOAD_MULTI_TENANT === 'true'
+  return explicitTrue('PAYLOAD_MULTI_TENANT')
 }
 
 export function ecommerceEnabled(): boolean {
-  return process.env.PAYLOAD_ECOMMERCE === 'true'
+  return explicitTrue('PAYLOAD_ECOMMERCE')
 }
 
 export function ecommerceVariantsEnabled(): boolean {
-  return ecommerceEnabled() && process.env.PAYLOAD_ECOMMERCE_VARIANTS === 'true'
+  return ecommerceEnabled() && explicitTrue('PAYLOAD_ECOMMERCE_VARIANTS')
 }
 
 export function mcpEnabled(): boolean {
-  return process.env.PAYLOAD_MCP === 'true'
+  return explicitTrue('PAYLOAD_MCP')
 }
 
 /** `templates/website` marketing collections: posts, case studies, community, categories. */
 export function marketingContentEnabled(): boolean {
-  return process.env.PAYLOAD_TEMPLATE_MARKETING !== 'false'
+  return templateSliceEnabled('PAYLOAD_TEMPLATE_MARKETING')
 }
 
 /** Docs collection, doc blocks, MDX / sync endpoints (docs site template). */
 export function docsTemplateEnabled(): boolean {
-  return process.env.PAYLOAD_TEMPLATE_DOCS !== 'false'
+  return templateSliceEnabled('PAYLOAD_TEMPLATE_DOCS')
 }
 
 /** Partners, program global, filter collections. */
 export function partnersTemplateEnabled(): boolean {
-  return process.env.PAYLOAD_TEMPLATE_PARTNERS !== 'false'
+  return templateSliceEnabled('PAYLOAD_TEMPLATE_PARTNERS')
 }
 
 /** Redeploy + release-post admin/CI endpoints (not documentation sync). */
 export function releaseAutomationEnabled(): boolean {
-  return process.env.PAYLOAD_TEMPLATE_RELEASE_AUTOMATION !== 'false'
+  return templateSliceEnabled('PAYLOAD_TEMPLATE_RELEASE_AUTOMATION')
 }

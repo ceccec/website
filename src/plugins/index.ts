@@ -32,13 +32,19 @@ export type GetPluginsOptions = {
  * `@payloadcms/*` integrations, website bundle (`seo`, nested docs, forms, storage),
  * then hooks/analytics last so `opsCounter` sees every collection.
  *
+ * Called once when Payload builds config — keep factories cheap; heavy work belongs in
+ * hooks/tasks (`payload-hooks.mdc`, `payload-performance.mdc`).
+ *
  * @see https://payloadcms.com/docs/hooks/overview
  */
 export function getPlugins(opts: GetPluginsOptions): Plugin[] {
+  const schema = getSchemaPlugins()
+  const optional = getOptionalOfficialPlugins()
+  const site = website(opts)
   return [
-    ...getSchemaPlugins(),
-    ...getOptionalOfficialPlugins(),
-    ...website(opts),
+    ...schema,
+    ...optional,
+    ...site,
     opsCounter(opsCounterConfig),
     googleAnalytics(googleAnalyticsConfig),
   ]

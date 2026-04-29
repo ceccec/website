@@ -23,7 +23,9 @@ export default async ({
   const { user } = await fetchMe({
     nullUserRedirect: `/login?error=${encodeURIComponent(loginRedirectError)}`,
   })
-  if (!user) {notFound()}
+  if (!user) {
+    return notFound()
+  }
   const team = await fetchTeamWithCustomer(teamSlug)
   const invoices = await fetchInvoices(team)
 

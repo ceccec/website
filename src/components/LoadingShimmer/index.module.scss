@@ -28,7 +28,7 @@
   animation: shimmer 1s infinite;
 }
 
-:global([data-theme='dark']) {
+@include data-theme-dark {
   .shimmer {
     background-color: var(--theme-elevation-150);
   }

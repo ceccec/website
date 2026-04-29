@@ -31,7 +31,7 @@ At runtime, [`src/payload.config.ts`](src/payload.config.ts) resolves **OpenNext
 
 ### Environment variable catalog (Deploy wizard)
 
-Human-readable names and copy for **Deploy to Cloudflare** live in [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json). Run **`pnpm sync:cloudflare-bindings`** to copy them into [`package.json`](package.json) under **`cloudflare`** (what the wizard reads alongside [`.dev.vars.example`](.dev.vars.example)). Source of truth for edits is the JSON file.
+Human-readable names and copy for **Deploy to Cloudflare** live in [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json). Run **`pnpm sync:cloudflare-bindings`** to copy **`bindings`** into [`package.json`](package.json) under **`cloudflare.bindings`** — that is what the Deploy wizard reads (alongside [`.dev.vars.example`](.dev.vars.example)). An optional root-level **`introduction`** string in the JSON file is **docs-only**: it is **not** synced to `package.json`, so the wizard is not bloated; it explains that **only `PAYLOAD_SECRET`** is needed for first deploy and that integrations can be added later under **Workers → Settings**.
 
 ### Deploy to Cloudflare button + `PAYLOAD_SECRET`
 
@@ -49,6 +49,8 @@ Per [Deploy to Cloudflare — Worker secrets](https://developers.cloudflare.com/
 ## Vercel / Postgres + Blob
 
 When **`VERCEL=1`** or **`postgres://…`** URLs are set (or **`PAYLOAD_HOSTING=vercel`**), [`scripts/build.mjs`](scripts/build.mjs) runs **`pnpm payload migrate`** then **`next build`** (plus **`postbuild`** / sitemap). Postgres + Vercel Blob — set **`PAYLOAD_SECRET`** in Vercel env. To force D1 on Workers CI, set **`PAYLOAD_HOSTING=cloudflare`** ([`src/lib/deploymentTarget.ts`](src/lib/deploymentTarget.ts)).
+
+**Self-hosted Docker (Mongo + MinIO + Mailpit + Nginx):** optional Compose stack — **[DOCKER.md](./DOCKER.md)** · conventions & image choices **[docker/CONVENTIONS.md](./docker/CONVENTIONS.md)**.
 
 ### Deployment target parity (`deploymentTarget`)
 

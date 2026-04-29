@@ -90,12 +90,12 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
       })
 
     if (!doc) {
-      notFound()
+      return notFound()
     }
     return doc
   } catch (error) {
     console.error(error)
-    notFound()
+    return notFound()
   }
 }
 
@@ -119,7 +119,7 @@ export const fetchTeamClient = async (slug: string): Promise<Team> => {
 
   const doc = json?.data?.Teams?.docs?.[0]
   if (!doc) {
-    notFound()
+    return notFound()
   }
   return doc
 }
@@ -164,6 +164,6 @@ export const fetchTeamWithCustomer = async (slug?: string): Promise<TeamWithCust
     return data as TeamWithCustomer
   } catch (error) {
     console.error(error)
-    notFound()
+    return notFound()
   }
 }

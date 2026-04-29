@@ -41,7 +41,7 @@
   height: 1rem;
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .searchIcon {
     & path {
       stroke: var(--color-base-300);

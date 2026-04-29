@@ -1,5 +1,33 @@
 @use '@scss/common' as *;
 
+@mixin sticky-scroll-animations($enter-y, $exit-active-y) {
+  @include g('.animate-enter') {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, $enter-y, 0);
+  }
+
+  @include global-selectors(('.animate-enter-active', '.animate-enter-done')) {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    visibility: visible;
+    transition: all 750ms;
+  }
+
+  @include g('.animate-exit') {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include g('.animate-exit-active') {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, $exit-active-y, 0);
+    transition: all 750ms;
+  }
+}
+
 .stickyHighlight {
   position: relative;
 
@@ -14,65 +42,11 @@
 }
 
 .scroll-direction--down {
-  :global {
-    .animate-enter {
-      opacity: 0;
-      visibility: hidden;
-      transform: translate3d(0, 4rem, 0);
-    }
-
-    .animate-enter-active,
-    .animate-enter-done {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-      visibility: visible;
-      transition: all 750ms;
-    }
-
-    .animate-exit {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .animate-exit-active {
-      opacity: 0;
-      visibility: hidden;
-      transform: translate3d(0, -4rem, 0);
-      transition: all 750ms;
-    }
-  }
+  @include sticky-scroll-animations(4rem, -4rem);
 }
 
 .scroll-direction--up {
-  :global {
-    .animate-enter {
-      opacity: 0;
-      visibility: hidden;
-      transform: translate3d(0, -4rem, 0);
-    }
-
-    .animate-enter-active,
-    .animate-enter-done {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-      visibility: visible;
-      transition: all 750ms;
-    }
-
-    .animate-exit {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .animate-exit-active {
-      opacity: 0;
-      visibility: hidden;
-      transform: translate3d(0, 4rem, 0);
-      transition: all 750ms;
-    }
-  }
+  @include sticky-scroll-animations(-4rem, 4rem);
 }
 
 .minHeight {

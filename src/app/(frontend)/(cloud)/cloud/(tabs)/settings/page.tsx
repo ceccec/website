@@ -12,7 +12,9 @@ export default async () => {
       'You must be logged in to visit this page',
     )}`,
   })
-  if (!user) {notFound()}
+  if (!user) {
+    return notFound()
+  }
   return <SettingsPage user={user} />
 }
 

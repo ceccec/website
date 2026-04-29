@@ -81,7 +81,7 @@
   }
 }
 
-:global([data-theme='light']) {
+@include data-theme-light {
   .attachment {
     background-color: var(--theme-elevation-200);
 

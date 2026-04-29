@@ -62,6 +62,35 @@ const sendgridConfig = {
   transportOptions: createSendGridMailTransport({ apiKey: sendGridAPIKey }),
 }
 
+/** SMTP (e.g. Mailpit / Docker) overrides SendGrid when `SMTP_HOST` is set. */
+const nodemailerArgs =
+  process.env.SMTP_HOST?.trim()
+    ? {
+        defaultFromAddress: process.env.SMTP_FROM_EMAIL?.trim() || 'noreply@localhost',
+        defaultFromName: process.env.SMTP_FROM_NAME?.trim() || 'Payload',
+        skipVerify: true,
+        transportOptions: {
+          host: process.env.SMTP_HOST.trim(),
+          port: Number(process.env.SMTP_PORT || '1025'),
+          secure: process.env.SMTP_SECURE === 'true',
+          ...(process.env.SMTP_USER?.trim()
+            ? {
+                auth: {
+                  user: process.env.SMTP_USER.trim(),
+                  pass: process.env.SMTP_PASS?.trim() || '',
+                },
+              }
+            : {}),
+        },
+      }
+    : {
+        defaultFromAddress: 'info@payloadcms.com',
+        defaultFromName: 'Payload',
+        ...sendgridConfig,
+      }
+
+const emailAdapter = await nodemailerAdapter(nodemailerArgs)
+
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
 const isCLI = process.argv.some((value) => realpath(value)?.endsWith(path.join('payload', 'bin.js')))
@@ -146,11 +175,7 @@ export default buildConfig({
   ...(deploymentTarget === 'vercel' ? { sharp } : {}),
   defaultDepth: 1,
   editor: payloadLexicalEditor,
-  email: nodemailerAdapter({
-    defaultFromAddress: 'info@payloadcms.com',
-    defaultFromName: 'Payload',
-    ...sendgridConfig,
-  }),
+  email: emailAdapter,
   endpoints: [],
   globals: [],
   graphQL: {

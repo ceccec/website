@@ -8,8 +8,10 @@ alwaysApply: false
 
 - **Docs:** [Database migrations](https://payloadcms.com/docs/database/migrations)
 - **CLI:** `payload migrate`, `payload migrate:create`, etc. — adapter-specific (Postgres, MongoDB, SQLite/D1).
+- **Schema:** Migrations in `src/migrations` are the **source of truth** for the DB shape. Run `payload migrate` (this repo: `pnpm deploy:database`, wired before Workers/OpenNext builds) so **tables/columns exist before** static generation or runtime queries — incomplete schema (“no such table”, etc.) is addressed by **applying migrations**, not by skipping them.
 - **This repo:** `package.json` scripts (`deploy:database`, `migrate-lexical-script`, etc.) — follow deployment docs for **Cloudflare vs Vercel**.
 - **Order:** Ship migrations **before** relying on new columns/tables; coordinate with **generate:types** after schema codegen from migrations when applicable.
+- **Escape hatches only:** `SKIP_DATABASE_MIGRATE`, `PAYLOAD_MIGRATE_ASSUME_YES` in `scripts/migrate-production.mjs` — use for [building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection), externally managed schema, or non-interactive CI **after** you understand the tradeoffs — **not** as a substitute for checked-in migrations on a real database.
 
 ## Checklist
 

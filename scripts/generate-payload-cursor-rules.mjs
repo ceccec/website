@@ -349,8 +349,10 @@ alwaysApply: false`,
 
 - **Docs:** [Database migrations](https://payloadcms.com/docs/database/migrations)
 - **CLI:** \`payload migrate\`, \`payload migrate:create\`, etc. — adapter-specific (Postgres, MongoDB, SQLite/D1).
+- **Schema:** Migrations in \`src/migrations\` are the **source of truth** for the DB shape. Run \`payload migrate\` (this repo: \`pnpm deploy:database\`, wired before Workers/OpenNext builds) so **tables/columns exist before** static generation or runtime queries — incomplete schema (“no such table”, etc.) is addressed by **applying migrations**, not by skipping them.
 - **This repo:** \`package.json\` scripts (\`deploy:database\`, \`migrate-lexical-script\`, etc.) — follow deployment docs for **Cloudflare vs Vercel**.
 - **Order:** Ship migrations **before** relying on new columns/tables; coordinate with **generate:types** after schema codegen from migrations when applicable.
+- **Escape hatches only:** \`SKIP_DATABASE_MIGRATE\`, \`PAYLOAD_MIGRATE_ASSUME_YES\` in \`scripts/migrate-production.mjs\` — use for [building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection), externally managed schema, or non-interactive CI **after** you understand the tradeoffs — **not** as a substitute for checked-in migrations on a real database.
 
 ## Checklist
 
@@ -661,11 +663,11 @@ Start from the **official doc** for each topic; use the **Cursor rule** for this
 
 ${hubTable3('| Topic | Official doc | Cursor rule |', '|-------|--------------|-------------|', DEPLOYMENT_HUB_ROWS)}
 
-**This repo (CI / static build):** \`next.config.js\`, \`scripts/build.mjs\`, \`scripts/lib/deploymentTarget.mjs\` — follow Payload’s guidance so **build** and **SSG** do not require a live database unless you intentionally connect; use draft/fake config or exclude DB-dependent generation per docs.
+**This repo (CI / static build):** \`next.config.js\`, \`scripts/build.mjs\`, \`scripts/lib/deploymentTarget.mjs\`. **Default:** \`pnpm build\` on the Cloudflare path runs \`deploy:database\` → \`payload migrate\` first so **D1 matches \`src/migrations\`** before OpenNext/SSG (see \`payload-migrations.mdc\`). **Optional:** follow Payload’s **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when you intentionally disconnect or use \`SKIP_DATABASE_MIGRATE\` for special pipelines.
 
 ## Checklist
 
-- [ ] CI matches **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no \`DATABASE_URI\` (or equivalent) is present.
+- [ ] CI either runs migrations against a real DB before SSG **or** deliberately follows **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no \`DATABASE_URI\` (or equivalent) is present.
 - [ ] **[Deployment](https://payloadcms.com/docs/production/deployment)** and **[preventing abuse](https://payloadcms.com/docs/production/preventing-abuse)** reflected in \`payload-security-deployment.mdc\` (origins, secrets, API exposure).
 - [ ] Runtime **[performance](https://payloadcms.com/docs/performance/overview)** via \`payload-performance.mdc\` (\`depth\`, \`select\`, indexes).
 

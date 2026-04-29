@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 /**
- * After `payload migrate`, optionally runs `wrangler d1 execute … PRAGMA optimize`:
+ * Runs `payload migrate` so the database matches `src/migrations` (Payload docs: database migrations).
+ * That is the normal way to get a complete schema for local D1 / SSG and avoid missing-table errors.
+ *
+ * After migrate, optionally runs `wrangler d1 execute … PRAGMA optimize`:
  * - `--remote` when `wrangler.jsonc` has a real D1 UUID (unless `SKIP_D1_REMOTE_OPTIMIZE`);
  * - `--local` otherwise so local builds can use Wrangler’s local D1 without Cloudflare API.
  * Skip both with `SKIP_D1_PRAGMA=1` or `SKIP_D1_OPTIMIZE=1`.
  *
- * Non-interactive builds:
- * - `SKIP_DATABASE_MIGRATE=1` — skip `payload migrate` entirely (use when DB is managed elsewhere).
- * - `PAYLOAD_MIGRATE_ASSUME_YES=1` — answer “yes” if Payload warns about dev-mode schema drift (can cause data loss; use only in CI/ephemeral DBs or after review).
+ * Escape hatches (use sparingly — see `.cursor/rules/payload-migrations.mdc`):
+ * - `SKIP_DATABASE_MIGRATE=1` — skip `payload migrate` (e.g. building without a DB, or migrations applied elsewhere).
+ * - `PAYLOAD_MIGRATE_ASSUME_YES=1` — answer “yes” if Payload warns about dev-mode schema drift (data loss risk; CI/ephemeral DB or explicit review only).
  */
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
@@ -65,7 +68,9 @@ const env = {
 
 function runPayloadMigrate() {
   if (process.env.SKIP_DATABASE_MIGRATE === '1' || process.env.SKIP_DATABASE_MIGRATE === 'true') {
-    console.warn('[migrate-production] SKIP_DATABASE_MIGRATE set — skipping payload migrate.')
+    console.warn(
+      '[migrate-production] SKIP_DATABASE_MIGRATE set — skipping payload migrate. Prefer running migrations so schema matches src/migrations.',
+    )
     return
   }
 

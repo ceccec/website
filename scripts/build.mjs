@@ -7,6 +7,10 @@
  * **`next build --webpack`** — Next 16 defaults to Turbopack; this repo’s CSS modules use patterns
  * Turbopack still rejects (`:local()`, ambiguous `:global`). Webpack matches prior behavior.
  *
+ * **Cloudflare path:** `workers:build` runs `deploy:database` first (`payload migrate`) so D1 schema
+ * matches migrations before OpenNext — see `payload-migrations.mdc`. `SKIP_DATABASE_MIGRATE` is only
+ * for exceptional pipelines.
+ *
  * OpenNext runs `pnpm run build` internally to compile Next.js. Without this guard that
  * invocation would recurse into `workers:build` forever (`build` → workers → opennext → build → …).
  */

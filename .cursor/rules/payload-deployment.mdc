@@ -14,11 +14,11 @@ Start from the **official doc** for each topic; use the **Cursor rule** for this
 | **Preventing abuse** | [Preventing abuse](https://payloadcms.com/docs/production/preventing-abuse) | `payload-security-deployment.mdc` |
 | **Performance** | [Performance overview](https://payloadcms.com/docs/performance/overview) | `payload-performance.mdc` |
 
-**This repo (CI / static build):** `next.config.js`, `scripts/build.mjs`, `scripts/lib/deploymentTarget.mjs` — follow Payload’s guidance so **build** and **SSG** do not require a live database unless you intentionally connect; use draft/fake config or exclude DB-dependent generation per docs.
+**This repo (CI / static build):** `next.config.js`, `scripts/build.mjs`, `scripts/lib/deploymentTarget.mjs`. **Default:** `pnpm build` on the Cloudflare path runs `deploy:database` → `payload migrate` first so **D1 matches `src/migrations`** before OpenNext/SSG (see `payload-migrations.mdc`). **Optional:** follow Payload’s **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when you intentionally disconnect or use `SKIP_DATABASE_MIGRATE` for special pipelines.
 
 ## Checklist
 
-- [ ] CI matches **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no `DATABASE_URI` (or equivalent) is present.
+- [ ] CI either runs migrations against a real DB before SSG **or** deliberately follows **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when no `DATABASE_URI` (or equivalent) is present.
 - [ ] **[Deployment](https://payloadcms.com/docs/production/deployment)** and **[preventing abuse](https://payloadcms.com/docs/production/preventing-abuse)** reflected in `payload-security-deployment.mdc` (origins, secrets, API exposure).
 - [ ] Runtime **[performance](https://payloadcms.com/docs/performance/overview)** via `payload-performance.mdc` (`depth`, `select`, indexes).
 

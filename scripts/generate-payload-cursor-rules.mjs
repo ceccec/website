@@ -353,11 +353,13 @@ alwaysApply: false`,
 - **This repo:** \`package.json\` scripts (\`deploy:database\`, \`migrate-lexical-script\`, etc.) — follow deployment docs for **Cloudflare vs Vercel**.
 - **Order:** Ship migrations **before** relying on new columns/tables; coordinate with **generate:types** after schema codegen from migrations when applicable.
 - **Escape hatches only:** \`SKIP_DATABASE_MIGRATE\`, \`PAYLOAD_MIGRATE_ASSUME_YES\` in \`scripts/migrate-production.mjs\` — use for [building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection), externally managed schema, or non-interactive CI **after** you understand the tradeoffs — **not** as a substitute for checked-in migrations on a real database.
+- **Optional features** (\`src/plugins/env.ts\`): \`PAYLOAD_MULTI_TENANT\`, \`PAYLOAD_ECOMMERCE\`, \`PAYLOAD_MCP\`, etc. change which plugins register collections — schema is **env-conditional**. Ship migrations that cover the tables for features you deploy; this repo adds migrations generated with the relevant flags on (e.g. tenants + ecommerce + variants + MCP). When toggling a **new** optional plugin in production, run \`payload migrate:create\` with those env vars set, review the file, register it in \`src/migrations/index.ts\`, and deploy.
 
 ## Checklist
 
 - [ ] Migration tested against clean DB and existing data snapshot when risky.
 - [ ] Lexical / plugins: dedicated migrations (\`migrateSlateToLexical\` etc.) run in controlled maintenance windows if large.
+- [ ] Optional plugins you enable in prod have corresponding migration coverage (or accept empty DB until migrate runs).
 `,
   },
   {

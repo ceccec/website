@@ -166,9 +166,9 @@ export const ManageEmailDomain: React.FC<Props> = ({
         )
 
         if (req.status === 200) {
-          const res = (await req.json())
+          const res = await req.json()
           router.refresh()
-          toast.success(res.message ?? '')
+          toast.success(parseOptionalMessagePayload(res) ?? '')
         }
       } catch (e) {
         console.error(e) // eslint-disable-line no-console

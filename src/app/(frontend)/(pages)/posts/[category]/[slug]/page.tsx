@@ -4,7 +4,7 @@ import BreadcrumbsBar from '@components/Hero/BreadcrumbsBar/index'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { Post } from '@components/Post/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
-import { fetchBlogPost, fetchPosts } from '@data'
+import { CACHE_DEPTH, fetchBlogPost, fetchPosts } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -13,7 +13,12 @@ import React from 'react'
 const getPost = async (slug, category, draft?) =>
   draft
     ? await fetchBlogPost(slug, category)
-    : await unstable_cache(fetchBlogPost, ['blogPost', `post-${slug}`])(slug, category)
+    : await unstable_cache(fetchBlogPost, [
+        'blogPost',
+        String(CACHE_DEPTH.blogPost),
+        category,
+        slug,
+      ])(slug, category)
 
 const PostPage = async ({
   params,
@@ -47,7 +52,7 @@ const PostPage = async ({
 export default PostPage
 
 export async function generateStaticParams() {
-  const getPosts = unstable_cache(fetchPosts, ['allPosts'])
+  const getPosts = unstable_cache(fetchPosts, ['allPosts', String(CACHE_DEPTH.postsList)])
   const posts = await getPosts()
 
   return posts

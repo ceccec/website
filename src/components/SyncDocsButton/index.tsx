@@ -3,6 +3,8 @@
 import { toast, useConfig } from '@payloadcms/ui'
 import React, { useState } from 'react'
 
+import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
+
 import './index.scss'
 
 const baseClass = 'sync-docs-button'
@@ -22,8 +24,10 @@ const SyncDocsButton: React.FC = () => {
       toast.success('Documentation synced successfully')
       setIsSyncing(false)
     } else {
-      const data = (await res.json())
-      toast.error(`Failed to sync documentation: ${data.message ?? 'Unknown error'}`)
+      const data = await res.json()
+      toast.error(
+        `Failed to sync documentation: ${parseOptionalMessagePayload(data) || 'Unknown error'}`,
+      )
       setIsSyncing(false)
     }
   }

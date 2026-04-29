@@ -9,7 +9,7 @@ import { Pill } from '@components/Pill'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { RichText } from '@components/RichText'
 import { SocialIcon } from '@components/SocialIcon'
-import { fetchPartner, fetchPartnerProgram } from '@data'
+import { CACHE_DEPTH, fetchPartner, fetchPartnerProgram } from '@data'
 import { ArrowIcon } from '@root/icons/ArrowIcon'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -20,7 +20,9 @@ import React from 'react'
 import classes from './index.module.scss'
 
 const getPartner = (slug, draft) =>
-  draft ? fetchPartner(slug) : unstable_cache(fetchPartner, [`partner-${slug}`])(slug)
+  draft
+    ? fetchPartner(slug)
+    : unstable_cache(fetchPartner, ['partner', String(CACHE_DEPTH.partner), slug])(slug)
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { isEnabled: draft } = await draftMode()
@@ -41,7 +43,10 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
   const { isEnabled: draft } = await draftMode()
   const { slug } = await params
   const partner = await getPartner(slug, draft)
-  const getPartnerProgram = unstable_cache(fetchPartnerProgram, ['partnerProgram'])
+  const getPartnerProgram = unstable_cache(fetchPartnerProgram, [
+    'partnerProgram',
+    String(CACHE_DEPTH.partnerProgram),
+  ])
   const partnerProgram = await getPartnerProgram()
 
   if (!partner) {

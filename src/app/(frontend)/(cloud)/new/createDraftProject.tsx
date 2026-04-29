@@ -2,6 +2,7 @@ import type { Repo } from '@cloud/_api/fetchRepos'
 import type { Project, User } from '@root/payload-cloud-types'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
+import { assertRecordPayload, isRecord } from '@utilities/payloadCloudJson'
 
 export const createDraftProject = async ({
   installID,
@@ -59,7 +60,9 @@ export const createDraftProject = async ({
       method: 'POST',
     })
 
-    const { doc: project, errors: projectErrs } = (await projectReq.json())
+    const body = assertRecordPayload(await projectReq.json())
+    const project = body.doc as Project | undefined
+    const projectErrs = Array.isArray(body.errors) ? body.errors : undefined
 
     if (projectReq.ok) {
       await revalidateCache({
@@ -67,10 +70,14 @@ export const createDraftProject = async ({
       })
 
       if (typeof onSubmit === 'function' && project != null) {
-        await Promise.resolve(onSubmit(project as Project))
+        await Promise.resolve(onSubmit(project))
       }
     } else {
-      throw new Error(projectErrs?.[0]?.message ?? 'Failed to create project')
+      const firstErr =
+        projectErrs?.[0] && isRecord(projectErrs[0]) && typeof projectErrs[0].message === 'string'
+          ? projectErrs[0].message
+          : undefined
+      throw new Error(firstErr ?? 'Failed to create project')
     }
   } catch (err: unknown) {
     console.error(err) // eslint-disable-line no-console

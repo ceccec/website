@@ -11,6 +11,7 @@ import { MaxWidth } from '@components/MaxWidth/index'
 import { CollapsibleGroup } from '@faceless-ui/collapsibles'
 import { Secret } from '@forms/fields/Secret/index'
 import { Text } from '@forms/fields/Text/index'
+import { parseOptionalValuePayload } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 
 import { NoData } from '../_layoutComponents/NoData/index'
@@ -40,8 +41,8 @@ export const ProjectEmailPage: React.FC<{
         },
       },
     )
-    const body = (await res.json())
-    return body.value ?? ''
+    const body = await res.json()
+    return parseOptionalValuePayload(body)
   }, [environmentSlug, project?.id])
 
   return (

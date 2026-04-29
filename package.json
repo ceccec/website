@@ -42,7 +42,8 @@
     "deploy:vercel:dry": "node scripts/vercel-config-dry.mjs",
     "deploy:cloudflare:dry": "pnpm run opennext:build && pnpm exec wrangler deploy --dry-run",
     "deploy:dry": "pnpm run deploy:vercel:dry && pnpm run deploy:cloudflare:dry",
-    "sync:cloudflare-bindings": "node scripts/sync-cloudflare-bindings.mjs"
+    "sync:cloudflare-bindings": "node scripts/sync-cloudflare-bindings.mjs",
+    "verify:wiring": "node scripts/verify-payload-wiring.mjs"
   },
   "dependencies": {
     "@docsearch/react": "^3.9.0",

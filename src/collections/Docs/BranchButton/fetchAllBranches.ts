@@ -25,7 +25,10 @@ export async function fetchAllBranches(): Promise<
       throw new Error(`Failed to fetch branches: ${response.statusText}`)
     }
 
-    const data = (await response.json())
+    const data: unknown = await response.json()
+    if (!Array.isArray(data)) {
+      throw new Error('GitHub branches response must be a JSON array')
+    }
     branches.push(...data)
 
     // Check if there is a next page

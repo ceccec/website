@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { Banner } from '@root/blocks/Banner'
-import { getReusableContentLayoutBlockReferences } from '@root/site-builder/blockReferences'
+import { getReusableContentLayoutBlockReferences } from '@root/plugins/schema/layoutBlockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 

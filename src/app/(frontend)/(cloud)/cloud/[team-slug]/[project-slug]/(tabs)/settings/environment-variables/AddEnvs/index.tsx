@@ -10,6 +10,7 @@ import { Text } from '@forms/fields/Text/index'
 import Form from '@forms/Form/index'
 import Submit from '@forms/Submit/index'
 import { qs } from '@root/utilities/qs'
+import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 import { toast } from 'sonner'
 
@@ -62,10 +63,10 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
             },
           )
 
-          const res = (await req.json())
+          const res = await req.json()
 
           if (!req.ok) {
-            toast.error(res.message ?? 'Request failed.')
+            toast.error(parseOptionalMessagePayload(res) || 'Request failed.')
             return
           }
 

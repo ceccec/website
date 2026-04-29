@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { getSafeRedirect } from '@root/utilities/getSafeRedirect'
+import { parsePayloadGraphQLBody } from '@utilities/payloadCloudJson'
 import { redirect } from 'next/navigation'
 
 // force this component to use dynamic search params, see https://github.com/vercel/next.js/issues/43077
@@ -54,7 +55,8 @@ export default async ({ searchParams }) => {
       })
 
       if (res.ok) {
-        const { errors } = (await res.json())
+        const envelope = parsePayloadGraphQLBody(await res.json())
+        const errors = envelope.errors
         if (errors?.length) {
           throw new Error(errors[0]?.message ?? 'Verification failed')
         }

@@ -13,9 +13,19 @@ Use **[official docs](https://payloadcms.com/docs/)** as source of truth (mirror
 
 **Deployment hub:** `payload-deployment.mdc` maps [building without a database connection](https://payloadcms.com/docs/production/building-without-a-db-connection), [deployment](https://payloadcms.com/docs/production/deployment), [preventing abuse](https://payloadcms.com/docs/production/preventing-abuse), and [performance overview](https://payloadcms.com/docs/performance/overview) to `payload-deployment` (build/CI entry), `payload-security-deployment`, and `payload-performance`.
 
+**Rules discipline:** hubs above **link** to one topic rule each—do not paste duplicate doc tables or long prose into multiple `.mdc` files. TS naming + generated-type workflow → **`payload-typescript.mdc`** only.
+
+**Reading discipline:** follow **`agent-read-rules.mdc`** — route via this file, read **only** applicable topic rules **in full**, batched in parallel when possible.
+
+## Payload vs Next.js (boundary)
+
+**→ Next.js when Payload is not enough:** Payload covers **schema, access, hooks, Local API, admin UI, versions/uploads/plugins**. What fits poorly there — **Middleware**, **Route Handlers** (`src/app/api/**`), **`draftMode` / `headers()` / `cookies()`**, **App Router caching** (`unstable_cache`, `revalidateTag`, ISR), **streaming**, **redirects** outside the redirects plugin, **image/font optimization**, **edge-only** behavior — belongs in **Next.js** (`src/app`, `middleware.ts`). Still **read/write CMS data via `getPayload`** from RSC and handlers; Next owns **request lifecycle and delivery**, not a duplicate editorial source.
+
+**→ Payload when Next.js is not enough:** Do not treat Next as the CMS. **Authorable content**, **structured fields**, **relationships**, **uploads**, **drafts/versions**, **role-based access**, **validation on save**, **admin workflows**, and anything that should **migrate with the DB** belong in **Payload** (collections/globals/blocks/plugins). Avoid hard-coding copy or page structure in React when editors should own it; avoid ad hoc JSON files or env-only “content” for what should be queryable and permissioned like other documents.
+
 ## When changing behavior
 
-1. **Collections / globals / fields / plugins** — edit schema under `src/plugins/schema`, `src/collections`, `src/fields`, `src/blocks`; adjust `access` and `hooks` there per docs.
+1. **Collections / globals / fields / plugins** — prefer **`src/plugins/schema`** (and `getSchemaPlugins` order in `src/plugins/index.ts`) when wiring is **shared or template-scoped**; otherwise edit **`src/collections`**, **`src/globals`**, **`src/fields`**, **`src/blocks`**; adjust `access` and `hooks` per docs (`payload-plugins.mdc`).
 2. **Regenerate** — `pnpm generate:types` (and `pnpm generate:importmap` if admin imports/custom components changed).
 3. **Database** — adapter/migrations follow [Database overview](https://payloadcms.com/docs/database/overview); prod deploy uses project scripts (see `package.json`).
 4. **Consumers** — Next server: `@root/lib/getPayload`; scripts/CLI: `getPayload({ config })` + `@payload-config`. `src/migrate.ts` (Slate → Lexical) also uses `@root/lib/getPayload`. Match **`depth`** to what the UI needs; cache keys must include **`depth`** when using `unstable_cache` around `find` (see `utilities/getDocument.ts`).

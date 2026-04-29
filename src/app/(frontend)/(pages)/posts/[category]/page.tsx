@@ -1,5 +1,5 @@
 import { Archive } from '@components/Archive'
-import { fetchArchive, fetchArchives } from '@data'
+import { CACHE_DEPTH, fetchArchive, fetchArchives } from '@data'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -16,7 +16,11 @@ export default async ({
   const { isEnabled: draft } = await draftMode()
   const archive = draft
     ? await fetchArchive(category, draft)
-    : await unstable_cache(fetchArchive, [`${category}-archive`])(category, draft)
+    : await unstable_cache(fetchArchive, [
+        'archive',
+        String(CACHE_DEPTH.archive),
+        category,
+      ])(category, draft)
 
   const posts = archive?.posts?.docs
 

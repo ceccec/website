@@ -12,7 +12,7 @@ import { RelatedResources } from '@components/RelatedResources'
 import { RichTextWithTOC } from '@components/RichText'
 import { TableOfContents } from '@components/TableOfContents/index'
 import { VersionSelector } from '@components/VersionSelector/index'
-import { fetchRelatedThreads } from '@data'
+import { CACHE_DEPTH, fetchRelatedThreads } from '@data'
 import { ArrowIcon } from '@icons/ArrowIcon/index'
 import { resolvePublicSiteSetting } from '@root/lib/resolvePublicSiteSetting'
 import { unstable_cache } from 'next/cache'
@@ -79,7 +79,12 @@ export const RenderDocs = async ({
   const sitePublic = await resolvePublicSiteSetting()
   const hideVersionSelector = !sitePublic.enableBetaDocs && !sitePublic.enableLegacyDocs
 
-  const getRelatedThreads = (path) => unstable_cache(fetchRelatedThreads, ['relatedThreads'])(path)
+  const getRelatedThreads = (path) =>
+    unstable_cache(fetchRelatedThreads, [
+      'relatedThreads',
+      String(CACHE_DEPTH.relatedThreads),
+      path,
+    ])(path)
   const relatedThreads = await getRelatedThreads(path)
 
   const hasRelatedThreads =

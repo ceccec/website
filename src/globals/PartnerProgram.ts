@@ -1,6 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
-import { PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS } from '@root/site-builder/blockReferences'
+import { PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS } from '@root/plugins/schema/layoutBlockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 import linkGroup from '../fields/linkGroup'

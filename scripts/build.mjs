@@ -18,12 +18,34 @@ import { execSync } from 'node:child_process'
 
 import { getDeploymentTargetFromEnv } from './lib/deploymentTarget.mjs'
 
+/**
+ * `pnpm build` runs `payload migrate` (via deploy:database or Vercel pipeline). Payload may prompt
+ * about dev-mode drift — that blocks CI and local builds. Default to non-interactive yes unless
+ * the operator set `PAYLOAD_MIGRATE_ASSUME_NO` or an explicit `PAYLOAD_MIGRATE_ASSUME_YES` value.
+ *
+ * @see scripts/migrate-production.mjs
+ */
+function buildChildEnv() {
+  const e = { ...process.env }
+  if (e.PAYLOAD_MIGRATE_ASSUME_NO === '1' || e.PAYLOAD_MIGRATE_ASSUME_NO === 'true') {
+    return e
+  }
+  const explicit =
+    e.PAYLOAD_MIGRATE_ASSUME_YES != null && String(e.PAYLOAD_MIGRATE_ASSUME_YES).trim() !== ''
+  if (!explicit) {
+    e.PAYLOAD_MIGRATE_ASSUME_YES = '1'
+  }
+  return e
+}
+
+const childEnv = buildChildEnv()
+
 if (process.env.OPEN_NEXT_INNER_BUILD === '1') {
   // Use `pnpm exec` so devDependencies (cross-env) resolve like other scripts; plain `cross-env`
   // is not always on PATH when OpenNext spawns `pnpm run build`.
   execSync('pnpm exec cross-env NODE_OPTIONS=--no-deprecation next build --webpack', {
     stdio: 'inherit',
-    env: process.env,
+    env: childEnv,
   })
   process.exit(0)
 }
@@ -36,7 +58,7 @@ const vercelPipeline = skipMigrate
   : 'pnpm run generate:llms && payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack'
 
 if (getDeploymentTargetFromEnv() === 'vercel') {
-  execSync(vercelPipeline, { stdio: 'inherit', env: process.env })
+  execSync(vercelPipeline, { stdio: 'inherit', env: childEnv })
 } else {
-  execSync('pnpm run workers:build', { stdio: 'inherit', env: process.env })
+  execSync('pnpm run workers:build', { stdio: 'inherit', env: childEnv })
 }

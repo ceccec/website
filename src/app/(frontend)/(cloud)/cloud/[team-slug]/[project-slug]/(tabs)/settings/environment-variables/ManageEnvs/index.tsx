@@ -14,6 +14,10 @@ import { Textarea } from '@forms/fields/Textarea/index'
 import Form from '@forms/Form/index'
 import Submit from '@forms/Submit/index'
 import { qs } from '@root/utilities/qs'
+import {
+  assertRecordPayload,
+  parseOptionalMessagePayload,
+} from '@utilities/payloadCloudJson'
 import * as React from 'react'
 import { toast } from 'sonner'
 
@@ -68,8 +72,9 @@ export const ManageEnv: React.FC<Props> = ({
       )
 
       if (req.status === 200) {
-        const res = (await req.json())
-        return res.value ?? null
+        const res = assertRecordPayload(await req.json())
+        const v = res.value
+        return typeof v === 'string' ? v : null
       }
     } catch (e) {
       console.error(e) // eslint-disable-line no-console
@@ -102,10 +107,10 @@ export const ManageEnv: React.FC<Props> = ({
             },
           )
 
-          const res = (await req.json())
+          const res = await req.json()
 
           if (!req.ok) {
-            toast.error(res.message ?? 'Request failed.')
+            toast.error(parseOptionalMessagePayload(res) || 'Request failed.')
             return
           }
 

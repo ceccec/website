@@ -5,14 +5,20 @@ import { Hero } from '@components/Hero/index'
 import { PayloadRedirects } from '@components/PayloadRedirects'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave'
 import { RenderBlocks } from '@components/RenderBlocks/index'
-import { fetchPage, fetchPages } from '@data'
+import { CACHE_DEPTH, fetchPage, fetchPages } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import React from 'react'
 
 const getPage = async (slug, draft?) =>
-  draft ? fetchPage(slug) : unstable_cache(fetchPage, [`page-${slug}`])(slug)
+  draft
+    ? fetchPage(slug)
+    : unstable_cache(fetchPage, [
+        'page',
+        String(CACHE_DEPTH.page),
+        Array.isArray(slug) ? slug.join('/') : String(slug),
+      ])(slug)
 
 const Page = async ({
   params,
@@ -44,7 +50,7 @@ const Page = async ({
 export default Page
 
 export async function generateStaticParams() {
-  const getPages = unstable_cache(fetchPages, ['pages'])
+  const getPages = unstable_cache(fetchPages, ['pages', String(CACHE_DEPTH.pagesList)])
   const pages = await getPages()
 
   return pages.map(({ breadcrumbs }) => ({

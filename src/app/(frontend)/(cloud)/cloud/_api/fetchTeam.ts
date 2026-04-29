@@ -1,6 +1,7 @@
 import type { Team } from '@root/payload-cloud-types'
 
 import { TEAM_QUERY, TEAMS_QUERY } from '@data/team'
+import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
 import { notFound } from 'next/navigation'
 
 import type { GraphQLJsonBody } from './graphqlJson'
@@ -117,7 +118,9 @@ export const fetchTeamClient = async (slug: string): Promise<Team> => {
     },
   ).then((res) => res.json()))
 
-  const doc = json?.data?.Teams?.docs?.[0]
+  const envelope = parsePayloadGraphQLBody(json)
+  const data = envelope.data as { Teams?: { docs?: Team[] } } | undefined
+  const doc = data?.Teams?.docs?.[0]
   if (!doc) {
     return notFound()
   }

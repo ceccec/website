@@ -1,6 +1,7 @@
 import type { Project } from '@root/payload-cloud-types'
 
 import { PROJECT_QUERY, PROJECTS_QUERY } from '@data/project'
+import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
 import { mergeProjectEnvironment } from '@root/utilities/merge-project-environment'
 
 import type { GraphQLJsonBody } from './graphqlJson'
@@ -113,7 +114,8 @@ export const fetchProjectClient = async ({
     },
     method: 'POST',
   }).then((res) => res.json()))
-  const { data } = json
+  const envelope = parsePayloadGraphQLBody(json)
+  const data = envelope.data as { Projects?: { docs?: Project[] } } | undefined
 
   const project = data?.Projects?.docs?.[0]
 

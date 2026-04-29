@@ -9,4 +9,4 @@
  *
  * @see https://payloadcms.com/docs/database/overview
  */
-export const PAYLOAD_SQL_ID_TYPE = 'uuidv7' as const
+export const PAYLOAD_SQL_ID_TYPE = 'uuidv7'

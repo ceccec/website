@@ -1,13 +1,7 @@
-/**
- * Single source for `blockReferences` allowlists on collections/globals that use {@link RenderBlocks}.
- * Keeps CMS allowlists aligned with `layoutBlockRegistry` / generated `payload-types` — add a slug
- * here and in `layoutBlocks` / registry together, then `pnpm generate:types`.
- */
-
 import type { Block } from 'payload'
 
-/** `pages.layout` — marketing pages (no blog banner/code-only strip). */
-export const PAGE_LAYOUT_BLOCK_SLUGS = [
+/** Shared kernel: marketing layout blocks before / after the page-only `comparisonTable` slot. */
+const LAYOUT_SLUGS_BEFORE_COMPARISON = [
   'callout',
   'cta',
   'cardGrid',
@@ -17,7 +11,9 @@ export const PAGE_LAYOUT_BLOCK_SLUGS = [
   'codeFeature',
   'content',
   'contentGrid',
-  'comparisonTable',
+] as const
+
+const LAYOUT_SLUGS_AFTER_COMPARISON = [
   'form',
   'hoverCards',
   'hoverHighlights',
@@ -35,38 +31,23 @@ export const PAGE_LAYOUT_BLOCK_SLUGS = [
   'exampleTabs',
 ] as const
 
-/** `case-studies.layout` */
+/** `pages.layout` — marketing pages (includes `comparisonTable`). */
+export const PAGE_LAYOUT_BLOCK_SLUGS = [
+  ...LAYOUT_SLUGS_BEFORE_COMPARISON,
+  'comparisonTable',
+  ...LAYOUT_SLUGS_AFTER_COMPARISON,
+] as const
+
+/** `case-studies.layout` — same as pages minus `comparisonTable`. */
 export const CASE_STUDY_LAYOUT_BLOCK_SLUGS = [
-  'callout',
-  'cta',
-  'cardGrid',
-  'caseStudyCards',
-  'caseStudiesHighlight',
-  'caseStudyParallax',
-  'codeFeature',
-  'content',
-  'contentGrid',
-  'form',
-  'hoverCards',
-  'hoverHighlights',
-  'linkGrid',
-  'logoGrid',
-  'mediaBlock',
-  'mediaContent',
-  'mediaContentAccordion',
-  'pricing',
-  'reusableContentBlock',
-  'slider',
-  'statement',
-  'steps',
-  'stickyHighlights',
-  'exampleTabs',
+  ...LAYOUT_SLUGS_BEFORE_COMPARISON,
+  ...LAYOUT_SLUGS_AFTER_COMPARISON,
 ] as const
 
 /** `partner-program.contentBlocks.{beforeDirectory,afterDirectory}` — same allowlist as case studies. */
 export const PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS = CASE_STUDY_LAYOUT_BLOCK_SLUGS
 
-/** String slugs for `reusable-content.layout` (prepend shared Banner block in {@link getReusableContentLayoutBlockReferences}). */
+/** String slugs for `reusable-content.layout` (prepend shared Banner block in {@link getReusableContentLayoutBlockReferences}). Order matches admin block picker UX (not the same as {@link PAGE_LAYOUT_BLOCK_SLUGS}). */
 export const REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS = [
   'blogContent',
   'blogMarkdown',
@@ -106,10 +87,13 @@ export const POST_CONTENT_BLOCK_SLUGS = [
   'reusableContentBlock',
 ] as const
 
-export function getReusableContentLayoutBlockReferences(bannerBlock: Block): (Block | string)[] {
+type ReusableLayoutRef = (typeof REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS)[number] | Block
+type PostContentRef = (typeof POST_CONTENT_BLOCK_SLUGS)[number] | Block
+
+export function getReusableContentLayoutBlockReferences(bannerBlock: Block): ReusableLayoutRef[] {
   return [bannerBlock, ...REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS]
 }
 
-export function getPostContentBlockReferences(bannerBlock: Block): (Block | string)[] {
+export function getPostContentBlockReferences(bannerBlock: Block): PostContentRef[] {
   return [bannerBlock, ...POST_CONTENT_BLOCK_SLUGS]
 }

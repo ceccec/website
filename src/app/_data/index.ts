@@ -2,6 +2,8 @@ import { getPayload } from '@root/lib/getPayload'
 import { marketingContentEnabled, partnersTemplateEnabled } from '@root/plugins/env'
 import { draftMode } from 'next/headers'
 
+import { CACHE_DEPTH } from './cacheDepths'
+
 import type {
   Budget,
   CaseStudy,
@@ -40,15 +42,15 @@ export const fetchGlobals = async (): Promise<{
   const payload = await getPayload()
   const mainMenu = await payload.findGlobal({
     slug: 'main-menu',
-    depth: 1,
+    depth: CACHE_DEPTH.globalsShell,
   })
   const footer = await payload.findGlobal({
     slug: 'footer',
-    depth: 1,
+    depth: CACHE_DEPTH.globalsShell,
   })
   const topBar = await payload.findGlobal({
     slug: 'topBar',
-    depth: 1,
+    depth: CACHE_DEPTH.globalsShell,
   })
 
   return {
@@ -67,7 +69,7 @@ export const fetchPage = async (incomingSlugSegments: string[]): Promise<null | 
 
   const data = await payload.find({
     collection: 'pages',
-    depth: 2,
+    depth: CACHE_DEPTH.page,
     draft,
     limit: 1,
     where: {
@@ -103,7 +105,7 @@ export const fetchPages = async (): Promise<Partial<Page>[]> => {
   const payload = await getPayload()
   const data = await payload.find({
     collection: 'pages',
-    depth: 0,
+    depth: CACHE_DEPTH.pagesList,
     limit: 300,
     select: {
       breadcrumbs: true,
@@ -135,7 +137,7 @@ export const fetchPosts = async (): Promise<Partial<Post>[]> => {
   const payload = await getPayload()
   const data = await payload.find({
     collection: 'posts',
-    depth: 1,
+    depth: CACHE_DEPTH.postsList,
     limit: 300,
     select: {
       slug: true,
@@ -156,7 +158,7 @@ export const fetchBlogPosts = async (): Promise<Partial<Post>[]> => {
 
   const data = await payload.find({
     collection: 'posts',
-    depth: 1,
+    depth: CACHE_DEPTH.postsList,
     limit: 300,
     select: {
       slug: true,
@@ -189,7 +191,7 @@ export const fetchArchive = async (
 
   const data = await payload.find({
     collection: 'categories',
-    depth: 2,
+    depth: CACHE_DEPTH.archive,
     draft,
     joins: {
       posts: {
@@ -226,7 +228,7 @@ export const fetchArchives = async (slug?: string): Promise<Partial<Category>[]>
 
   const data = await payload.find({
     collection: 'categories',
-    depth: 0,
+    depth: CACHE_DEPTH.archivesList,
     select: {
       name: true,
       slug: true,
@@ -257,7 +259,7 @@ export const fetchBlogPost = async (
 
   const data = await payload.find({
     collection: 'posts',
-    depth: 2,
+    depth: CACHE_DEPTH.blogPost,
     draft,
     limit: 1,
     overrideAccess: draft,
@@ -297,7 +299,7 @@ export const fetchCaseStudies = async (): Promise<Partial<CaseStudy>[]> => {
   const payload = await getPayload()
   const data = await payload.find({
     collection: 'case-studies',
-    depth: 0,
+    depth: CACHE_DEPTH.caseStudiesList,
     limit: 300,
     select: {
       slug: true,
@@ -317,7 +319,7 @@ export const fetchCaseStudy = async (slug: string): Promise<CaseStudy | undefine
 
   const data = await payload.find({
     collection: 'case-studies',
-    depth: 1,
+    depth: CACHE_DEPTH.caseStudy,
     draft,
     limit: 1,
     where: {
@@ -342,7 +344,7 @@ export const fetchCommunityHelps = async (
 
   const data = await payload.find({
     collection: 'community-help',
-    depth: 0,
+    depth: CACHE_DEPTH.communityHelpsList,
     limit: 0,
     select: { slug: true },
     where: {
@@ -362,6 +364,7 @@ export const fetchCommunityHelp = async (slug: string): Promise<CommunityHelp | 
 
   const data = await payload.find({
     collection: 'community-help',
+    depth: CACHE_DEPTH.communityHelp,
     limit: 1,
     where: { slug: { equals: slug } },
   })
@@ -378,7 +381,7 @@ export const fetchRelatedThreads = async (path: string): Promise<Partial<Communi
 
   const data = await payload.find({
     collection: 'community-help',
-    depth: 0,
+    depth: CACHE_DEPTH.relatedThreads,
     limit: 3,
     select: {
       slug: true,
@@ -400,7 +403,7 @@ export const fetchPartners = async (): Promise<Partner[]> => {
 
   const data = await payload.find({
     collection: 'partners',
-    depth: 2,
+    depth: CACHE_DEPTH.partnersList,
     limit: 300,
     overrideAccess: false, // Respect field-level access control (excludes email and hubspotID)
     sort: 'slug',
@@ -422,7 +425,7 @@ export const fetchPartner = async (slug: string): Promise<Partial<Partner> | und
 
   const data = await payload.find({
     collection: 'partners',
-    depth: 2,
+    depth: CACHE_DEPTH.partner,
     draft,
     limit: 1,
     populate: {
@@ -472,7 +475,7 @@ export const fetchPartnerProgram = async (): Promise<Partial<PartnerProgram> | u
   const payload = await getPayload()
   const data = await payload.findGlobal({
     slug: 'partner-program',
-    depth: 2,
+    depth: CACHE_DEPTH.partnerProgram,
   })
 
   return data
@@ -492,21 +495,25 @@ export const fetchFilters = async (): Promise<{
 
   const industries = await payload.find({
     collection: 'industries',
+    depth: CACHE_DEPTH.filters,
     limit: 100,
   })
 
   const specialties = await payload.find({
     collection: 'specialties',
+    depth: CACHE_DEPTH.filters,
     limit: 100,
   })
 
   const regions = await payload.find({
     collection: 'regions',
+    depth: CACHE_DEPTH.filters,
     limit: 100,
   })
 
   const budgets = await payload.find({
     collection: 'budgets',
+    depth: CACHE_DEPTH.filters,
     limit: 100,
   })
 
@@ -526,7 +533,7 @@ export const fetchGetStarted = async (): Promise<GetStarted> => {
   const payload = await getPayload()
   const data = await payload.findGlobal({
     slug: 'get-started',
-    depth: 1,
+    depth: CACHE_DEPTH.getStarted,
   })
 
   return data
@@ -537,7 +544,7 @@ export const fetchForm = async (name: string): Promise<Form> => {
 
   const data = await payload.find({
     collection: 'forms',
-    depth: 1,
+    depth: CACHE_DEPTH.form,
     limit: 1,
     where: {
       title: {
@@ -548,3 +555,5 @@ export const fetchForm = async (name: string): Promise<Form> => {
 
   return data.docs[0]
 }
+
+export { CACHE_DEPTH } from './cacheDepths'

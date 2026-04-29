@@ -1,6 +1,6 @@
 ---
 description: Official Payload guides & examples — docs-first workflow + monorepo examples
-globs: scripts/**/*.{mjs,ts,js},src/site-builder/**/*.{ts,tsx},src/plugins/**/*.{ts,tsx},src/collections/**/*.{ts,tsx},src/blocks/**/*.{ts,tsx},src/config/**/*.{ts,tsx}
+globs: scripts/**/*.{mjs,ts,js},src/components/RenderBlocks/**/*.{ts,tsx},src/plugins/**/*.{ts,tsx},src/collections/**/*.{ts,tsx},src/blocks/**/*.{ts,tsx},src/config/**/*.{ts,tsx}
 alwaysApply: false
 ---
 
@@ -20,7 +20,7 @@ Follow **[official documentation](https://payloadcms.com/docs/)** first (same co
 | Topic | Official guide | This repo |
 |-------|----------------|-----------|
 | Schema & types | [Collections](https://payloadcms.com/docs/configuration/collections) · [TypeScript](https://payloadcms.com/docs/typescript/overview) | `src/collections`, `src/plugins/schema` → `pnpm generate:types` |
-| Blocks (page builder) | [Blocks field](https://payloadcms.com/docs/fields/blocks) | Shared block defs + `blockReferences`; frontend: `src/site-builder/layoutBlockRegistry.tsx`, `RenderBlocks` |
+| Blocks (page builder) | [Blocks field](https://payloadcms.com/docs/fields/blocks) | Allowlists: `src/plugins/schema/layoutBlockReferences.ts`; UI map: `src/components/RenderBlocks/registry.tsx` + `RenderBlocks` |
 | Rich text | [Rich text overview](https://payloadcms.com/docs/rich-text/overview) · [Rich text blocks](https://payloadcms.com/docs/rich-text/blocks) | `src/config/payloadLexicalEditor.ts`, Docs editor in `collections/Docs`, render: `components/RichText` |
 | Admin UI | [Custom components](https://payloadcms.com/docs/custom-components/overview) | `admin.components` / field `admin.components` → `pnpm generate:importmap` |
 | Plugins | [Plugins overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api) | `src/plugins/index.ts`, `src/plugins/*/` factories |

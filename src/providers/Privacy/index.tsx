@@ -1,5 +1,6 @@
 'use client'
 
+import { assertRecordPayload } from '@utilities/payloadCloudJson'
 import canUseDom from '@root/utilities/can-use-dom'
 import React, { createContext, use, useCallback, useEffect, useState } from 'react'
 
@@ -56,14 +57,16 @@ const PrivacyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
         setCookieConsent(consent.accepted || false)
         return
       }
-      const gdpr = (await fetch('/api/locate').then((res) => res.json()))
+      const gdpr = assertRecordPayload(await fetch('/api/locate').then((res) => res.json()))
+      const country = typeof gdpr.country === 'string' ? gdpr.country : ''
+      const isGDPR = gdpr.isGDPR === true
 
-      setCountry(gdpr.country || '')
-      if (!gdpr.isGDPR) {
+      setCountry(country)
+      if (!isGDPR) {
         setCookieConsent(true)
         updateCookieConsent(true)
       }
-      setShowConsent(gdpr.isGDPR || false)
+      setShowConsent(isGDPR)
     })().catch(console.error)
   }, [updateCookieConsent])
 

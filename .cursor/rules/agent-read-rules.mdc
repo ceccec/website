@@ -1,0 +1,33 @@
+---
+description: Efficient rule reads — triage, only applicable topic .mdc files, parallel Read; hubs when routing unclear
+alwaysApply: true
+---
+
+# Read project rules (agent-efficient)
+
+**Goal:** Correct behavior with **few tool calls** — read **only** rules that apply to **this** task, **once**, ideally in **parallel**.
+
+## 1. Triage (no files yet)
+
+Decide what you will touch: schema/config, hooks, admin UI, migrations/DB, plugins/commerce, deploy/CI, Docker, Lexical, etc. If the scope is **narrow** (one bug in one component with no Payload/schema change), you may skip topic rules **unless** the fix touches conventions documented in a topic file.
+
+## 2. Route without redundancy
+
+- **`payload-basics.mdc`** (always on) already maps areas → `payload-*.mdc` names. Use it to **name** 1–3 topic files—do **not** open every hub just to open every topic.
+- Open a **hub** (`payload-features-overview`, `payload-ecosystem`, `payload-deployment`) **only when** routing from basics is unclear or you need the official-doc ↔ rule table for an unfamiliar area.
+
+## 3. Read batch
+
+- **Parallel:** `Read` every **selected** topic file in **one** message with multiple tool calls (hub + topics together only if you opened a hub).
+- **Depth:** Read applicable topic rule(s) **in full**. Do **not** read unrelated `payload-*.mdc` files “just in case.”
+- **Scoped:** Add **`docker-stack.mdc`** only when editing Docker/deploy paths it describes.
+
+## 4. When scope expands
+
+If mid-task you touch another area, **read that topic rule next** (same batch efficiency)—then continue.
+
+## 5. Anti-patterns
+
+- Reading all hubs or all `payload-*.mdc` files up front.
+- Implementing Payload/schema/deploy behavior from memory when a **single** topic rule would settle it.
+- Serializing `Read` calls when batching is possible.

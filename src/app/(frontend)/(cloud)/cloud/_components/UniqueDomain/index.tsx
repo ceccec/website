@@ -4,6 +4,7 @@ import { Spinner } from '@components/Spinner/index'
 import { Text } from '@forms/fields/Text/index'
 import { CheckIcon } from '@root/icons/CheckIcon/index'
 import { CloseIcon } from '@root/icons/CloseIcon/index'
+import { assertRecordPayload } from '@utilities/payloadCloudJson'
 import useDebounce from '@root/utilities/use-debounce'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -70,10 +71,11 @@ export const UniqueDomain: React.FC<{
           clearTimeout(timer)
 
           if (!validityReq.ok) {
-            const responseBody = (await validityReq.json())
+            const responseBody = assertRecordPayload(await validityReq.json())
 
             let errorMessage =
-              responseBody?.error || `Error validating domain: ${validityReq.statusText}`
+              (typeof responseBody.error === 'string' ? responseBody.error : undefined) ||
+              `Error validating domain: ${validityReq.statusText}`
 
             if (responseBody.error === 'No subdomain provided.') {
               errorMessage = 'Please input a subdomain.'

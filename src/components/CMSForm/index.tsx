@@ -8,6 +8,7 @@ import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
 import { resolveGlobalField } from '@root/lib/resolveGlobalField'
 import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getCookie } from '@root/utilities/get-cookie'
+import { isRecord } from '@utilities/payloadCloudJson'
 import { usePathname, useRouter } from 'next/navigation'
 import * as React from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
@@ -101,9 +102,15 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
           })
 
           if (!req.ok) {
-            const body = (await req.json())
-            for (const error of body.errors ?? []) {
-              toast.error(error.message ?? 'Request failed')
+            const body = await req.json()
+            const errors =
+              isRecord(body) && Array.isArray(body.errors) ? body.errors : []
+            for (const err of errors) {
+              const msg =
+                isRecord(err) && typeof err.message === 'string'
+                  ? err.message
+                  : 'Request failed'
+              toast.error(msg)
             }
             setIsLoading(false)
             return

@@ -1,9 +1,10 @@
+import type { Media } from '@types'
 import type {
   CollectionBeforeChangeHook,
   CollectionBeforeOperationHook,
   PayloadRequest,
+  Where,
 } from 'payload'
-import type { File } from 'payload/uploads/types'
 
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
@@ -11,7 +12,7 @@ import { APIError } from 'payload'
 
 export const MEDIA_CONTENT_SHA256_CONTEXT_KEY = 'mediaContentSha256'
 
-async function bufferFromUploadFile(file: File): Promise<Buffer> {
+async function bufferFromUploadFile(file: NonNullable<PayloadRequest['file']>): Promise<Buffer> {
   if (file.data && file.data.length > 0) {
     return file.data
   }
@@ -46,7 +47,7 @@ export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> 
 
   const currentID = operation === 'updateByID' ? String(input.args.id) : undefined
 
-  const where =
+  const where: Where =
     currentID !== undefined
       ? {
           and: [
@@ -84,7 +85,7 @@ export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> 
 }
 
 /** Persists the hash computed in `mediaDedupeBeforeOperation` onto the document. */
-export const mediaContentSha256BeforeChange: CollectionBeforeChangeHook<'media'> = ({
+export const mediaContentSha256BeforeChange: CollectionBeforeChangeHook<Media> = ({
   context,
   data,
 }) => {
@@ -95,5 +96,5 @@ export const mediaContentSha256BeforeChange: CollectionBeforeChangeHook<'media'>
   if (!data || typeof data !== 'object') {
     return data
   }
-  return { ...data, contentSha256: hash }
+  return Object.assign({}, data, { contentSha256: hash })
 }

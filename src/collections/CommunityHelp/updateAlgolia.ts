@@ -1,7 +1,7 @@
 import type { Payload } from 'payload'
 
-import { resolvePublicSiteSetting } from '@root/lib/resolvePublicSiteSetting'
 import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
+import { resolvePublicSiteSetting } from '@root/lib/resolvePublicSiteSetting'
 import algoliasearch from 'algoliasearch'
 
 /** Keeps helpful flags in sync with Algolia (keys from Admin globals or env). */

@@ -12,6 +12,7 @@
  * - `SKIP_DATABASE_MIGRATE=1` — skip `payload migrate` (e.g. building without a DB, or migrations applied elsewhere).
  * - `PAYLOAD_MIGRATE_ASSUME_YES=1` — answer “yes” if Payload warns about dev-mode schema drift (data loss risk; CI/ephemeral DB or explicit review only).
  * - **`CI=true`** (GitHub Actions, etc.) — same non-interactive migrate as `PAYLOAD_MIGRATE_ASSUME_YES` unless `PAYLOAD_MIGRATE_ASSUME_NO=1`.
+ * - **`scripts/build.mjs`** defaults **`PAYLOAD_MIGRATE_ASSUME_YES=1`** for spawned pipelines unless `PAYLOAD_MIGRATE_ASSUME_YES` or **`PAYLOAD_MIGRATE_ASSUME_NO`** is already set — avoids blocking **`pnpm build`** on prompts.
  */
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'

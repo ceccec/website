@@ -1,3 +1,5 @@
+import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
+
 export const exchangeCode = async (code: string): Promise<boolean> => {
   if (code) {
     try {
@@ -9,12 +11,12 @@ export const exchangeCode = async (code: string): Promise<boolean> => {
         },
       )
 
-      const body = (await res.json())
+      const body = await res.json()
 
       if (res.ok) {
         return true
       } else {
-        throw new Error(body.message ?? 'Exchange failed')
+        throw new Error(parseOptionalMessagePayload(body) || 'Exchange failed')
       }
     } catch (err: unknown) {
       const message = `Unable to authorize GitHub: ${err}`

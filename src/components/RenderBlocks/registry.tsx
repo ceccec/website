@@ -1,27 +1,24 @@
 /**
- * Site builder — layout block registry
+ * Layout block registry for {@link RenderBlocks} — maps Payload `blockType` slugs to React components.
  *
- * The product grows through **editor-driven surfaces**, not only static routes: Payload’s **blocks**
- * fields (layout/content), **Lexical** features and embedded blocks, admin **custom components**
- * (`importMap`), **plugins**, live preview, etc. Stored documents reference block slugs and rich text;
- * the frontend must resolve those to React.
+ * **Allowlists:** `src/plugins/schema/layoutBlockReferences.ts` — keep in sync.
  *
- * **Allowlists:** collection `blockReferences` live in **`blockReferences.ts`** next to this file — keep in sync when adding slugs.
+ * **Guides:** [Blocks field](https://payloadcms.com/docs/fields/blocks) · [Examples overview](https://payloadcms.com/docs/examples/overview) · `payload-examples.mdc`.
  *
- * **Guides:** [Blocks field](https://payloadcms.com/docs/fields/blocks) · [Examples overview](https://payloadcms.com/docs/examples/overview) · follow `payload-examples.mdc` when adding features.
+ * Add a block: schema (`layoutBlocks`) → `pnpm generate:types` → `layoutBlockReferences.ts` + this registry.
  *
- * This file wires **page-builder style blocks** (`blockType` on layout/content arrays): collections
- * declare availability (`blockReferences`, shared `layoutBlocks`), generated types define slugs, and
- * `layoutBlockComponents` maps each slug to a component for {@link RenderBlocks}. Add a block in
- * schema → `generate:types` → register here; `satisfies Record<LayoutBlockSlug, …>` catches gaps.
- *
- * **Rich text** is a second extension path: [Rich text blocks](https://payloadcms.com/docs/rich-text/blocks),
- * configured on the editor (`payloadLexicalEditor`, docs `contentLexicalEditorFeatures`); rendering is
- * `components/RichText` `jsxConverters` — not this registry.
+ * **Rich text** blocks render via `components/RichText` `jsxConverters`, not this map.
  */
 
-import type { CaseStudy, Page, Post, ReusableContent } from '@root/payload-types'
+import type { CaseStudy, Page, PartnerProgram, Post, ReusableContent } from '@root/payload-types'
 import type { ComponentType } from 'react'
+
+import {
+  CASE_STUDY_LAYOUT_BLOCK_SLUGS,
+  PAGE_LAYOUT_BLOCK_SLUGS,
+  POST_CONTENT_BLOCK_SLUGS,
+  REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS,
+} from '@root/plugins/schema/layoutBlockReferences'
 
 import { BannerBlock } from '@blocks/Banner/index'
 import { BlogContent } from '@blocks/BlogContent/index'
@@ -66,6 +63,8 @@ export type LayoutBlockSlug =
   /** Appended in {@link Post} only — not a Payload block document. */
   | 'relatedPosts'
   | BlockSlugFromBlocks<NonNullable<CaseStudy['layout']>>
+  | BlockSlugFromBlocks<NonNullable<PartnerProgram['contentBlocks']>['afterDirectory']>
+  | BlockSlugFromBlocks<NonNullable<PartnerProgram['contentBlocks']>['beforeDirectory']>
   | BlockSlugFromBlocks<Page['layout']>
   | BlockSlugFromBlocks<Post['content']>
   | BlockSlugFromBlocks<ReusableContent['layout']>
@@ -109,3 +108,20 @@ export const layoutBlockComponents = {
   steps: Steps,
   stickyHighlights: StickyHighlights,
 } satisfies Record<LayoutBlockSlug, LayoutBlockComponent>
+
+const registryKeys = new Set(Object.keys(layoutBlockComponents))
+
+function assertAllowlistInRegistry(slugs: readonly string[], label: string): void {
+  for (const slug of slugs) {
+    if (!registryKeys.has(slug)) {
+      throw new Error(
+        `RenderBlocks registry missing "${slug}" — add the component to layoutBlockComponents() or remove it from ${label} in src/plugins/schema/layoutBlockReferences.ts.`,
+      )
+    }
+  }
+}
+
+assertAllowlistInRegistry(PAGE_LAYOUT_BLOCK_SLUGS, 'PAGE_LAYOUT_BLOCK_SLUGS')
+assertAllowlistInRegistry(CASE_STUDY_LAYOUT_BLOCK_SLUGS, 'CASE_STUDY_LAYOUT_BLOCK_SLUGS')
+assertAllowlistInRegistry(REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS, 'REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS')
+assertAllowlistInRegistry(POST_CONTENT_BLOCK_SLUGS, 'POST_CONTENT_BLOCK_SLUGS')

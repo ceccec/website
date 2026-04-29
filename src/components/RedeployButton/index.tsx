@@ -4,6 +4,8 @@ import { useConfig } from '@payloadcms/ui'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 
+import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
+
 import './index.scss'
 
 const baseClass = 'redeploy-button'
@@ -25,8 +27,8 @@ const RedeployButton: React.FC = () => {
       toast.success('Redeploy triggered successfully!', { duration: 3000 })
       setIsLoading(false)
     } else {
-      const data = (await res.json())
-      toast.error(data.message ?? 'Redeploy failed', { duration: 3000 })
+      const data = await res.json()
+      toast.error(parseOptionalMessagePayload(data) || 'Redeploy failed', { duration: 3000 })
       setIsLoading(false)
     }
   }

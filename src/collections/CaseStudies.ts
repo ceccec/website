@@ -1,7 +1,7 @@
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import type { CollectionConfig } from 'payload'
 
-import { CASE_STUDY_LAYOUT_BLOCK_SLUGS } from '@root/site-builder/blockReferences'
+import { CASE_STUDY_LAYOUT_BLOCK_SLUGS } from '@root/plugins/schema/layoutBlockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'

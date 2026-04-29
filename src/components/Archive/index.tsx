@@ -6,7 +6,7 @@ import { BlockWrapper } from '@components/BlockWrapper'
 import { ContentMediaCard } from '@components/cards/ContentMediaCard'
 import { FeaturedBlogPost } from '@components/FeaturedBlogPost'
 import { Gutter } from '@components/Gutter'
-import { fetchArchive, fetchArchives } from '@data'
+import { CACHE_DEPTH, fetchArchive, fetchArchives } from '@data'
 import { ArrowIcon } from '@icons/ArrowIcon'
 import { ARCHIVES_CACHE_TAG } from '@root/utilities/revalidateMarketingRoutes'
 import { unstable_cache } from 'next/cache'
@@ -50,10 +50,12 @@ const Navigation = ({
 
 export const Archive: React.FC<{ category: Category['slug'] }> = async ({ category }) => {
   const { isEnabled: draft } = await draftMode()
-  const getArchive = draft ? fetchArchive : unstable_cache(fetchArchive, [`${category}-archive`])
+  const getArchive = draft
+    ? fetchArchive
+    : unstable_cache(fetchArchive, ['archive', String(CACHE_DEPTH.archive), category])
   const getArchives = draft
     ? fetchArchives
-    : unstable_cache(fetchArchives, [`archives`], {
+    : unstable_cache(fetchArchives, ['archives', String(CACHE_DEPTH.archivesList)], {
         tags: [ARCHIVES_CACHE_TAG],
       })
 

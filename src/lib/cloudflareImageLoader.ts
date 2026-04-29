@@ -9,7 +9,7 @@ import type { ImageLoaderProps } from 'next/image'
  *
  * Resolves relative `/api/media/...` URLs against `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_CMS_URL`.
  */
-export default function cloudflareImageLoader({ src, width, quality }: ImageLoaderProps): string {
+export default function cloudflareImageLoader({ quality, src, width }: ImageLoaderProps): string {
   const q = quality ?? 75
   const base =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||

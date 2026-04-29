@@ -3,6 +3,8 @@
 import { toast, useConfig } from '@payloadcms/ui'
 import React, { useState } from 'react'
 
+import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
+
 import './index.scss'
 
 const baseClass = 'refresh-docs-button'
@@ -22,8 +24,10 @@ const RefreshMdxToLexicalButton: React.FC = () => {
       toast.success('Documentation refreshed successfully')
       setIsRefreshing(false)
     } else {
-      const data = (await res.json())
-      toast.error(`Failed to refresh documentation: ${data.message ?? 'Unknown error'}`)
+      const data = await res.json()
+      toast.error(
+        `Failed to refresh documentation: ${parseOptionalMessagePayload(data) || 'Unknown error'}`,
+      )
       setIsRefreshing(false)
     }
   }

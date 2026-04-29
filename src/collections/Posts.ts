@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { getPostContentBlockReferences } from '@root/plugins/schema/layoutBlockReferences'
 import { addToDocs } from '@root/fields/addToDocs'
-import { getPostContentBlockReferences } from '@root/site-builder/blockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'

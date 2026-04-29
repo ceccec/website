@@ -7,7 +7,7 @@ import BreadcrumbsBar from '@components/Hero/BreadcrumbsBar'
 import { PartnerDirectory } from '@components/PartnerDirectory'
 import { PartnerGrid } from '@components/PartnerGrid'
 import { RenderBlocks } from '@components/RenderBlocks'
-import { fetchFilters, fetchPartnerProgram, fetchPartners } from '@data'
+import { CACHE_DEPTH, fetchFilters, fetchPartnerProgram, fetchPartners } from '@data'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -25,7 +25,7 @@ export default async function Partners() {
 
   const getPartnerProgram = draft
     ? fetchPartnerProgram
-    : unstable_cache(fetchPartnerProgram, ['partnerProgram'])
+    : unstable_cache(fetchPartnerProgram, ['partnerProgram', String(CACHE_DEPTH.partnerProgram)])
   const partnerProgram = await getPartnerProgram()
 
   if (!partnerProgram) {
@@ -33,7 +33,9 @@ export default async function Partners() {
   }
   const { contentBlocks, featuredPartners } = partnerProgram
 
-  const getPartners = draft ? fetchPartners : unstable_cache(fetchPartners, ['partners'])
+  const getPartners = draft
+    ? fetchPartners
+    : unstable_cache(fetchPartners, ['partners', String(CACHE_DEPTH.partnersList)])
   const partners = await getPartners()
   const partnerList = partners?.map((partner) => {
     return {
@@ -65,7 +67,9 @@ export default async function Partners() {
     }
   })
 
-  const getFilters = draft ? fetchFilters : unstable_cache(fetchFilters, ['filters'])
+  const getFilters = draft
+    ? fetchFilters
+    : unstable_cache(fetchFilters, ['filters', String(CACHE_DEPTH.filters)])
   const filters = await getFilters()
 
   const filterOptions = {

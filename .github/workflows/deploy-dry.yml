@@ -29,5 +29,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify Payload wiring
+        run: pnpm run verify:wiring
+
       - name: Validate vercel.json
         run: pnpm run deploy:vercel:dry

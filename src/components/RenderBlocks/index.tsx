@@ -7,9 +7,10 @@ import type { Theme } from '@root/providers/Theme/types'
 
 import { getFieldsKeyFromBlock } from '@components/RenderBlocks/utilities'
 import { useThemePreference } from '@root/providers/Theme/index'
-import { layoutBlockComponents } from '@root/site-builder/layoutBlockRegistry'
 import { toKebabCase } from '@utilities/to-kebab-case'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+
+import { layoutBlockComponents } from './registry'
 
 type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
@@ -172,6 +173,30 @@ export const RenderBlocks: React.FC<Props> = (props) => {
                   />
                 )
               }
+            } else if (blockType && process.env.NODE_ENV === 'development') {
+              // eslint-disable-next-line no-console -- dev-only surface for allowlist / registry drift
+              console.warn(
+                `[RenderBlocks] Unregistered blockType "${String(blockType)}". Add a component in registry.tsx and allowlist in src/plugins/schema/layoutBlockReferences.ts, or remove the block from the document.`,
+              )
+            }
+            if (
+              blockType &&
+              process.env.NEXT_PUBLIC_PAYLOAD_DEBUG_BLOCKS === '1' &&
+              !(blockType in layoutBlockComponents)
+            ) {
+              return (
+                <div
+                  key={`missing-${index}-${String(blockType)}`}
+                  role="note"
+                  style={{
+                    border: '2px dashed var(--theme-error-500, #c00)',
+                    margin: '1rem 0',
+                    padding: '0.75rem',
+                  }}
+                >
+                  Missing RenderBlocks mapping for <code>{String(blockType)}</code>
+                </div>
+              )
             }
             return null
           })}

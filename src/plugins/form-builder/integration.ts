@@ -9,6 +9,7 @@ import type { Form, FormSubmission } from '@types'
 import type { Field, PayloadRequest } from 'payload'
 
 import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
+import { isRecord } from '@root/utilities/payloadCloudJson'
 
 import { partnersTemplateEnabled } from '../env'
 
@@ -84,8 +85,8 @@ export const formBuilderRecaptchaSubmissionField: Field = {
         method: 'POST',
       },
     )
-    const data = (await res.json())
-    if (!data.success) {
+    const data = await res.json()
+    if (!isRecord(data) || data.success !== true) {
       return 'Invalid captcha'
     }
     return true

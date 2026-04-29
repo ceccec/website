@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { fetchCommunityHelp, fetchCommunityHelps } from '@data/index'
+import { CACHE_DEPTH, fetchCommunityHelp, fetchCommunityHelps } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { slugToText } from '@root/utilities/slug-to-text'
 import { unstable_cache } from 'next/cache'
@@ -52,7 +52,11 @@ const isDiscussionData = (
 const getDiscussion = (slug, draft) =>
   draft
     ? fetchCommunityHelp(slug)
-    : unstable_cache(fetchCommunityHelp, [`github-discussion-${slug}`])(slug)
+    : unstable_cache(fetchCommunityHelp, [
+        'github-discussion',
+        String(CACHE_DEPTH.communityHelp),
+        slug,
+      ])(slug)
 
 const Discussion = async ({ params }) => {
   const { isEnabled: draft } = await draftMode()
@@ -78,7 +82,10 @@ export async function generateStaticParams() {
   }
 
   try {
-    const getGithubDiscussions = unstable_cache(fetchCommunityHelps, ['github-discussions'])
+    const getGithubDiscussions = unstable_cache(fetchCommunityHelps, [
+      'github-discussions',
+      String(CACHE_DEPTH.communityHelpsList),
+    ])
     const discussions = await getGithubDiscussions('github')
     return discussions?.map(({ slug }) => ({ slug: slug || '404' })) ?? []
   } catch (error) {

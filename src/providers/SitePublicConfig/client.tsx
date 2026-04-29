@@ -3,7 +3,7 @@
 import {
   type ResolvedPublicSiteSetting,
   resolvePublicSiteSettingFromEnvOnly,
-} from '@root/lib/resolvePublicSiteSetting'
+} from '@root/lib/resolvePublicSiteSetting.shared'
 import React, { createContext, use } from 'react'
 
 const SitePublicConfigContext = createContext<null | ResolvedPublicSiteSetting>(null)

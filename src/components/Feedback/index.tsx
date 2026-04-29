@@ -1,6 +1,6 @@
 import { CMSForm } from '@components/CMSForm'
 import { Drawer, DrawerToggler } from '@components/Drawer'
-import { fetchForm } from '@data'
+import { CACHE_DEPTH, fetchForm } from '@data'
 import { ArrowIcon } from '@icons/ArrowIcon'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -18,7 +18,7 @@ export const Feedback: React.FC<{ path: string; ref?: string }> = async ({
 
   const getFeedbackForm = draft
     ? fetchForm(formName)
-    : unstable_cache(fetchForm, [`form-${formName}`], {
+    : unstable_cache(fetchForm, ['form', String(CACHE_DEPTH.form), formName], {
         tags: [`form-${formName}`],
       })(formName)
 

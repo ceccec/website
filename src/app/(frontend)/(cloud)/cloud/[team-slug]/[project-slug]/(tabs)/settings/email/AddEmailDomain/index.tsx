@@ -7,6 +7,7 @@ import { Text } from '@forms/fields/Text/index'
 import Form from '@forms/Form/index'
 import Submit from '@forms/Submit/index'
 import { validateDomain } from '@forms/validations'
+import { parseRestMessagePayload } from '@utilities/payloadCloudJson'
 import * as React from 'react'
 import { toast } from 'sonner'
 
@@ -64,8 +65,8 @@ export const AddEmailDomain: React.FC<{
             setFieldKey(generateUUID())
             toast.success('Domain added successfully.')
           } else {
-            const body = (await req.json())
-            toast.error(body.errors?.[0]?.message ?? 'Something went wrong.')
+            const body = await req.json()
+            toast.error(parseRestMessagePayload(body))
           }
 
           return

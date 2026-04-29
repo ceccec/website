@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
-import { fetchCaseStudies, fetchCaseStudy } from '@data'
+import { CACHE_DEPTH, fetchCaseStudies, fetchCaseStudy } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -12,7 +12,9 @@ import React from 'react'
 import { CaseStudy } from './client_page'
 
 const getCaseStudy = (slug, draft) =>
-  draft ? fetchCaseStudy(slug) : unstable_cache(fetchCaseStudy, [`case-study-${slug}`])(slug)
+  draft
+    ? fetchCaseStudy(slug)
+    : unstable_cache(fetchCaseStudy, ['case-study', String(CACHE_DEPTH.caseStudy), slug])(slug)
 
 const CaseStudyBySlug = async ({ params }) => {
   const { isEnabled: draft } = await draftMode()
@@ -38,7 +40,10 @@ const CaseStudyBySlug = async ({ params }) => {
 export default CaseStudyBySlug
 
 export async function generateStaticParams() {
-  const getCaseStudies = unstable_cache(fetchCaseStudies, ['caseStudies'])
+  const getCaseStudies = unstable_cache(fetchCaseStudies, [
+    'caseStudies',
+    String(CACHE_DEPTH.caseStudiesList),
+  ])
   const caseStudies = await getCaseStudies()
 
   return caseStudies.map(({ slug }) => ({

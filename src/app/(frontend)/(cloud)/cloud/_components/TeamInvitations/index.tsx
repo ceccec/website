@@ -2,6 +2,7 @@ import type { Team } from '@root/payload-cloud-types'
 
 import { Heading } from '@components/Heading/index'
 import { formatDate } from '@root/utilities/format-date-time'
+import { isRecord } from '@utilities/payloadCloudJson'
 import React, { Fragment } from 'react'
 import { toast } from 'sonner'
 
@@ -53,7 +54,11 @@ export const TeamInvitations: React.FC<{
         setLoading(false)
 
         if (res.ok) {
-          const { data, error } = (await res.json())
+          const json = await res.json()
+          if (!isRecord(json)) {
+            throw new Error('Invalid response from server')
+          }
+          const { error } = json
           if (error) {
             setError(typeof error === 'string' ? error : String(error))
           } else {

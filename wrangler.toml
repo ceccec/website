@@ -1,0 +1,55 @@
+name = "payload-website"
+main = "dist/worker.js"
+compatibility_date = "2024-01-01"
+
+# If you are deploying to Cloudflare Pages instead of Workers,
+# comment out the above and use `wrangler pages deploy` per DEPLOYMENT.md.
+
+# Environment variables (public runtime values)
+[vars]
+NEXT_PUBLIC_CLOUD_CMS_URL = "http://localhost:8001"
+NEXT_PUBLIC_SITE_URL = "http://localhost:3000"
+NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY = ""
+NEXT_PUBLIC_GA_MEASUREMENT_ID = ""
+NEXT_PUBLIC_FACEBOOK_PIXEL_ID = ""
+NEXT_PUBLIC_IS_LIVE = ""
+NEXT_PUBLIC_GITHUB_REDIRECT_URI = "http://local.payloadcms.com:3000/gh"
+NEXT_PUBLIC_GITHUB_CLIENT_ID = ""
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = ""
+NEXT_PUBLIC_ALGOLIA_CH_ID = ""
+NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY = ""
+NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME = ""
+SITEMAP_URL = ""
+NEXT_PUBLIC_NEWSLETTER_FORM_ID = ""
+NEXT_PUBLIC_SKIP_BUILD_DOCS = ""
+NEXT_PUBLIC_SKIP_BUILD_HELPS = ""
+NEXT_PUBLIC_ENABLE_BETA_DOCS = ""
+NEXT_PUBLIC_ENABLE_LEGACY_DOCS = ""
+NEXT_PUBLIC_OMIT_CLOUD_ERRORS = "false"
+
+# Note: Secrets should be set via `wrangler secret put` and are not stored here.
+# Required secrets to set:
+# - PAYLOAD_SECRET
+# - NEXT_PRIVATE_DRAFT_SECRET
+# - NEXT_PRIVATE_REVALIDATION_KEY
+# - GITHUB_ACCESS_TOKEN
+# - STRIPE_SECRET_KEY
+# - DISCORD_TOKEN (if used)
+# - NEXT_PRIVATE_ALGOLIA_API_KEY (if used)
+# - COMMIT_DOCS_API_KEY (if used)
+# - NEXT_PRIVATE_CRON_KEY (if used)
+# - VERCEL_REDEPLOY_URL (if used)
+# - PAYLOAD_RELEASE_SECRET (if used)
+# - NEXT_PRIVATE_RECAPTCHA_SECRET_KEY (if used)
+# - DATABASE_URI (if your runtime needs direct DB access)
+
+[build]
+# Adjust to your actual build command; this is a placeholder.
+command = "npm run build"
+
+[build.upload]
+# Ensure your build outputs the Worker bundle to dist/worker.js
+format = "modules"
+main = "dist/worker.js"
+
+# If you use Durable Objects, KV, R2, etc., declare them here later.

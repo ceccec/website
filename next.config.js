@@ -165,3 +165,5 @@ const nextConfig = withBundleAnalyzer({
 })
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
+
+import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

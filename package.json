@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:llms": "payload run src/scripts/generateLLMs.ts",
-    "build": "pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
     "build:skipDocs": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config ./next-sitemap.config.cjs",
     "analyze": "ANALYZE=true next build",
@@ -16,7 +16,11 @@
     "start": "next start",
     "lint": "next lint",
     "prettier:fix": "prettier --write .",
-    "migrate-lexical-script": "payload run ./src/migrate.ts"
+    "migrate-lexical-script": "payload run ./src/migrate.ts",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@docsearch/react": "^3.9.0",
@@ -27,6 +31,7 @@
     "@faceless-ui/scroll-info": "2.0.0",
     "@faceless-ui/slider": "2.0.0-beta.0",
     "@faceless-ui/window-info": "3.0.1",
+    "@opennextjs/cloudflare": "^1.19.4",
     "@payloadcms/db-mongodb": "3.72.0",
     "@payloadcms/email-nodemailer": "3.72.0",
     "@payloadcms/live-preview-react": "3.72.0",
@@ -92,7 +97,8 @@
     "dotenv": "^16.4.7",
     "eslint": "9.22.0",
     "prettier": "3.4.2",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "wrangler": "^4.86.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

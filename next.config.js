@@ -37,6 +37,36 @@ const localhost = process.env.NEXT_PUBLIC_IS_LIVE
       },
     ]
 
+/**
+ * Mirrors `tsconfig.json` `paths`. Webpack uses absolute targets; Turbopack needs **project-relative**
+ * `./src/...` strings — absolute `path.resolve` values break resolution (`./Users/...` server-import errors).
+ */
+const aliasPairs = [
+  ['@blocks', 'src/components/blocks'],
+  ['@cloud', 'src/app/(frontend)/(cloud)/cloud'],
+  ['@components', 'src/components'],
+  ['@data', 'src/app/_data'],
+  ['@docs', 'src/docs'],
+  ['@forms', 'src/forms'],
+  ['@graphics', 'src/graphics'],
+  ['@hooks', 'src/hooks'],
+  ['@icons', 'src/icons'],
+  ['@payload-config', 'src/payload.config.ts'],
+  ['@providers', 'src/providers'],
+  ['@root', 'src'],
+  ['@scss', 'src/css'],
+  ['@types', 'src/payload-types.ts'],
+  ['@utilities', 'src/utilities'],
+]
+
+const webpackAliases = Object.fromEntries(
+  aliasPairs.map(([key, rel]) => [key, path.resolve(dirname, rel)]),
+)
+
+const turbopackAliases = Object.fromEntries(
+  aliasPairs.map(([key, rel]) => [key, `./${rel}`]),
+)
+
 function imageRemotePatternsFromEnv() {
   const patterns = []
   for (const key of ['NEXT_PUBLIC_SITE_URL', 'NEXT_PUBLIC_CLOUD_CMS_URL']) {
@@ -71,9 +101,18 @@ function imageRemotePatternsFromEnv() {
 const nextConfig = withBundleAnalyzer({
   /** Prefer this app’s lockfile when a parent directory has another (e.g. npm + pnpm). */
   outputFileTracingRoot: dirname,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  ...(process.env.OPEN_NEXT_INNER_BUILD === '1'
+    ? {
+        /**
+         * OpenNext’s nested `next build` uses local Miniflare D1 (SQLite). Parallel SSG → SQLITE_BUSY / locked DB.
+         * Prefer **1** here; raise only if builds are stable and you need faster local OpenNext compiles.
+         */
+        experimental: {
+          staticGenerationMaxConcurrency: 1,
+          staticGenerationRetryCount: 8,
+        },
+      }
+    : {}),
   reactStrictMode: true,
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year,
@@ -111,19 +150,7 @@ const nextConfig = withBundleAnalyzer({
     silenceDeprecations: ['legacy-js-api', 'import'], // https://github.com/vercel/next.js/issues/71638
   },
   turbopack: {
-    resolveAlias: {
-      '@scss': path.resolve(dirname, './src/css/'),
-      '@components': path.resolve(dirname, './src/components.js'),
-      '@cloud': path.resolve(dirname, './src/app/cloud'),
-      '@forms': path.resolve(dirname, './src/forms'),
-      '@blocks': path.resolve(dirname, './src/blocks'),
-      '@providers': path.resolve(dirname, './src/providers'),
-      '@icons': path.resolve(dirname, './src/icons'),
-      '@utilities': path.resolve(dirname, './src/utilities'),
-      '@types': path.resolve(dirname, './payload-types.ts'),
-      '@graphics': path.resolve(dirname, './src/graphics'),
-      '@graphql': path.resolve(dirname, './src/graphql'),
-    },
+    resolveAlias: turbopackAliases,
   },
   webpack: (config) => {
     const configCopy = { ...config }
@@ -136,17 +163,7 @@ const nextConfig = withBundleAnalyzer({
       },
       alias: {
         ...config.resolve.alias,
-        '@scss': path.resolve(dirname, './src/css/'),
-        '@components': path.resolve(dirname, './src/components.js'),
-        '@cloud': path.resolve(dirname, './src/app/cloud'),
-        '@forms': path.resolve(dirname, './src/forms'),
-        '@blocks': path.resolve(dirname, './src/blocks'),
-        '@providers': path.resolve(dirname, './src/providers'),
-        '@icons': path.resolve(dirname, './src/icons'),
-        '@utilities': path.resolve(dirname, './src/utilities'),
-        '@types': path.resolve(dirname, './payload-types.ts'),
-        '@graphics': path.resolve(dirname, './src/graphics'),
-        '@graphql': path.resolve(dirname, './src/graphql'),
+        ...webpackAliases,
       },
     }
     return configCopy
@@ -189,7 +206,7 @@ export default withPayload(nextConfig, { devBundleServerPackages: false })
 if (process.env.PAYLOAD_HOSTING !== 'vercel' && process.env.VERCEL !== '1') {
   import('@opennextjs/cloudflare').then((m) =>
     m.initOpenNextCloudflareForDev({
-      remoteBindings: false,
+      remoteBindings: process.env.CLOUDFLARE_REMOTE_BINDINGS === 'true',
       envFiles: [],
     }),
   )

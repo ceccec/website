@@ -15,7 +15,7 @@ export const ReusableContent: Block = {
           required: true,
         },
         {
-          name: 'customId',
+          name: 'customID',
           type: 'text',
           admin: {
             description: () =>

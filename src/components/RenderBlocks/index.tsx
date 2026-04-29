@@ -5,79 +5,19 @@ import type { PaddingProps, Settings } from '@components/BlockWrapper/index'
 import type { Page, ReusableContent } from '@root/payload-types'
 import type { Theme } from '@root/providers/Theme/types'
 
-import { BannerBlock } from '@blocks/Banner/index'
-import { BlogContent } from '@blocks/BlogContent/index'
-import { BlogMarkdown } from '@blocks/BlogMarkdown/index'
-import { Callout } from '@blocks/Callout/index'
-import { CallToAction } from '@blocks/CallToAction/index'
-import { CardGrid } from '@blocks/CardGrid/index'
-import { CaseStudiesHighlightBlock } from '@blocks/CaseStudiesHighlight/index'
-import { CaseStudyCards } from '@blocks/CaseStudyCards/index'
-import { CaseStudyParallax } from '@blocks/CaseStudyParallax/index'
-import { CodeBlock } from '@blocks/CodeBlock/index'
-import { CodeFeature } from '@blocks/CodeFeature/index'
-import { ComparisonTable } from '@blocks/ComparisonTable'
-import { ContentBlock } from '@blocks/Content/index'
-import { ContentGrid } from '@blocks/ContentGrid/index'
-import { FormBlock } from '@blocks/FormBlock/index'
-import { HoverCards } from '@blocks/HoverCards/index'
-import { HoverHighlights } from '@blocks/HoverHighlights/index'
-import { LinkGrid } from '@blocks/LinkGrid/index'
-import { LogoGrid } from '@blocks/LogoGrid/index'
-import { MediaBlock } from '@blocks/MediaBlock/index'
-import { MediaContent } from '@blocks/MediaContent/index'
-import { MediaContentAccordion } from '@blocks/MediaContentAccordion/index'
-import { Pricing } from '@blocks/Pricing/index'
-import { RelatedPosts } from '@blocks/RelatedPosts/index'
-import { ReusableContentBlock } from '@blocks/ReusableContent/index'
-import { Slider } from '@blocks/Slider/index'
-import { Statement } from '@blocks/Statement/index'
-import { Steps } from '@blocks/Steps/index'
-import { StickyHighlights } from '@blocks/StickyHighlights/index'
 import { getFieldsKeyFromBlock } from '@components/RenderBlocks/utilities'
 import { useThemePreference } from '@root/providers/Theme/index'
+import { layoutBlockComponents } from '@root/site-builder/layoutBlockRegistry'
 import { toKebabCase } from '@utilities/to-kebab-case'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 
 type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
-const blockComponents = {
-  banner: BannerBlock,
-  blogContent: BlogContent,
-  blogMarkdown: BlogMarkdown,
-  callout: Callout,
-  cardGrid: CardGrid,
-  caseStudiesHighlight: CaseStudiesHighlightBlock,
-  caseStudyCards: CaseStudyCards,
-  caseStudyParallax: CaseStudyParallax,
-  code: CodeBlock,
-  codeFeature: CodeFeature,
-  comparisonTable: ComparisonTable,
-  content: ContentBlock,
-  contentGrid: ContentGrid,
-  cta: CallToAction,
-  form: FormBlock,
-  hoverCards: HoverCards,
-  hoverHighlights: HoverHighlights,
-  linkGrid: LinkGrid,
-  logoGrid: LogoGrid,
-  mediaBlock: MediaBlock,
-  mediaContent: MediaContent,
-  mediaContentAccordion: MediaContentAccordion,
-  pricing: Pricing,
-  relatedPosts: RelatedPosts,
-  reusableContentBlock: ReusableContentBlock,
-  slider: Slider,
-  statement: Statement,
-  steps: Steps,
-  stickyHighlights: StickyHighlights,
-}
-
 export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | ReusableContentBlockType
 
 type Props = {
   blocks: BlocksProp[]
-  customId?: null | string
+  customID?: null | string
   disableGrid?: boolean
   disableGutter?: boolean
   disableOuterSpacing?: true
@@ -87,7 +27,7 @@ type Props = {
 }
 
 export const RenderBlocks: React.FC<Props> = (props) => {
-  const { blocks, customId, disableGrid, disableGutter, disableOuterSpacing, hero, layout } = props
+  const { blocks, customID, disableGrid, disableGutter, hero, layout } = props
   const heroTheme = hero?.type === 'home' ? 'dark' : hero?.theme
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
   const { theme: themeFromContext } = useThemePreference()
@@ -208,12 +148,12 @@ export const RenderBlocks: React.FC<Props> = (props) => {
   if (hasBlocks) {
     return (
       <Fragment>
-        <div id={customId ?? undefined} ref={docRef}>
+        <div id={customID ?? undefined} ref={docRef}>
           {blocks.map((block, index) => {
             const { blockName, blockType } = block
 
-            if (blockType && blockType in blockComponents) {
-              const Block = blockComponents[blockType]
+            if (blockType && blockType in layoutBlockComponents) {
+              const Block = layoutBlockComponents[blockType]
 
               if (Block) {
                 return (

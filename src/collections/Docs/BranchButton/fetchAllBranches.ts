@@ -25,11 +25,7 @@ export async function fetchAllBranches(): Promise<
       throw new Error(`Failed to fetch branches: ${response.statusText}`)
     }
 
-    const data = (await response.json()) as {
-      commit: { sha: string; url: string }
-      name: string
-      protected: boolean
-    }[]
+    const data = (await response.json())
     branches.push(...data)
 
     // Check if there is a next page

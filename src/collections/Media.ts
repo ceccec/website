@@ -1,6 +1,10 @@
 import type { CollectionConfig } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
+import {
+  mediaContentSha256BeforeChange,
+  mediaDedupeBeforeOperation,
+} from './hooks/mediaContentSha256Dedupe'
 
 export const Media: CollectionConfig<'media'> = {
   slug: 'media',
@@ -21,6 +25,18 @@ export const Media: CollectionConfig<'media'> = {
   },
   fields: [
     {
+      name: 'contentSha256',
+      type: 'text',
+      admin: {
+        description:
+          'SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfID).',
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true,
+      label: 'Content SHA-256',
+    },
+    {
       name: 'alt',
       type: 'text',
       required: true,
@@ -34,5 +50,9 @@ export const Media: CollectionConfig<'media'> = {
       relationTo: 'media',
     },
   ],
+  hooks: {
+    beforeChange: [mediaContentSha256BeforeChange],
+    beforeOperation: [mediaDedupeBeforeOperation],
+  },
   upload: true,
 }

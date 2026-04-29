@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { Banner } from '@root/blocks/Banner'
+import { getReusableContentLayoutBlockReferences } from '@root/site-builder/blockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 
@@ -25,36 +26,7 @@ export const ReusableContent: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: [
-        Banner,
-        'blogContent',
-        'blogMarkdown',
-        'callout',
-        'cta',
-        'cardGrid',
-        'caseStudyCards',
-        'caseStudiesHighlight',
-        'caseStudyParallax',
-        'code',
-        'codeFeature',
-        'comparisonTable',
-        'content',
-        'contentGrid',
-        'exampleTabs',
-        'form',
-        'hoverCards',
-        'hoverHighlights',
-        'linkGrid',
-        'logoGrid',
-        'mediaBlock',
-        'mediaContent',
-        'mediaContentAccordion',
-        'pricing',
-        'slider',
-        'statement',
-        'steps',
-        'stickyHighlights',
-      ],
+      blockReferences: getReusableContentLayoutBlockReferences(Banner),
       blocks: [],
       required: true,
     },

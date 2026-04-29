@@ -6,17 +6,19 @@ export function emptyMarketingLayoutGlobals(): {
   mainMenu: MainMenu
   topBar: TopBar
 } {
+  const stubID = '00000000-0000-0000-0000-000000000000'
+
   return {
-    footer: { id: 0, columns: [] },
+    footer: { id: stubID, columns: [] },
     mainMenu: {
-      id: 0,
+      id: stubID,
       menuCta: { label: '' },
       tabs: [],
     },
-    topBar: { id: 0, enableTopBar: false },
+    topBar: { id: stubID, enableTopBar: false },
   }
 }
 
 export function emptyGetStartedGlobal(): GetStarted {
-  return { id: 0 }
+  return { id: '00000000-0000-0000-0000-000000000000' }
 }

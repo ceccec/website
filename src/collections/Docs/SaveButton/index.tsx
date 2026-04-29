@@ -2,7 +2,6 @@
 
 import type { SaveButtonClientProps } from 'payload'
 
-import { useFormField } from '@forms/useFormField'
 import {
   FormSubmit,
   SaveButton as PayloadSaveButton,
@@ -10,6 +9,7 @@ import {
   useDocumentInfo,
   useEditDepth,
   useForm,
+  useFormFields,
   useFormModified,
   useHotkey,
   useLocale,
@@ -25,7 +25,7 @@ import './index.scss'
 export const SaveButtonClient: React.FC<SaveButtonClientProps> = (props) => {
   const { submit } = useForm()
   const modified = useFormModified()
-  const versionField = useFormField(([fields]) => fields.version)
+  const versionField = useFormFields(([fields]) => fields.version)
 
   const { id, collectionSlug } = useDocumentInfo()
   const ref = useRef<HTMLButtonElement>(null)

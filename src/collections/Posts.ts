@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { addToDocs } from '@root/fields/addToDocs'
+import { getPostContentBlockReferences } from '@root/site-builder/blockReferences'
 
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
@@ -8,7 +9,7 @@ import { Banner } from '../blocks/Banner'
 import richText from '../fields/richText'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
-import { revalidateDocumentIdCache } from '../utilities/revalidateDocumentIdCache'
+import { revalidateDocumentIDCache } from '../utilities/revalidateDocumentIDCache'
 import {
   revalidateBlogCategory,
   revalidateBlogPost,
@@ -28,11 +29,11 @@ export const Posts: CollectionConfig = {
     livePreview: {
       url: async ({ data, req }) => {
         let categorySlug: string | undefined
-        const categoryId = typeof data?.category === 'string' ? data.category : undefined
-        if (categoryId) {
+        const categoryID = typeof data?.category === 'string' ? data.category : undefined
+        if (categoryID) {
           try {
             const cat = await req.payload.findByID({
-              id: categoryId,
+              id: categoryID,
               collection: 'categories',
               depth: 0,
               overrideAccess: true,
@@ -48,11 +49,11 @@ export const Posts: CollectionConfig = {
     },
     preview: async (doc, { req }) => {
       let categorySlug: string | undefined
-      const categoryId = typeof doc?.category === 'string' ? doc.category : undefined
-      if (categoryId) {
+      const categoryID = typeof doc?.category === 'string' ? doc.category : undefined
+      if (categoryID) {
         try {
           const cat = await req.payload.findByID({
-            id: categoryId,
+            id: categoryID,
             collection: 'categories',
             depth: 0,
             overrideAccess: true,
@@ -203,14 +204,7 @@ export const Posts: CollectionConfig = {
     {
       name: 'content',
       type: 'blocks',
-      blockReferences: [
-        Banner,
-        'blogContent',
-        'code',
-        'blogMarkdown',
-        'mediaBlock',
-        'reusableContentBlock',
-      ],
+      blockReferences: getPostContentBlockReferences(Banner),
       blocks: [],
       required: true,
     },
@@ -353,7 +347,7 @@ export const Posts: CollectionConfig = {
     afterChange: [
       async ({ doc, previousDoc, req }) => {
         try {
-          revalidateDocumentIdCache('posts', doc.id)
+          revalidateDocumentIDCache('posts', doc.id)
           const category = await req.payload.findByID({
             id: doc.category,
             collection: 'categories',
@@ -393,7 +387,7 @@ export const Posts: CollectionConfig = {
     afterDelete: [
       async ({ doc, req }) => {
         try {
-          revalidateDocumentIdCache('posts', doc.id)
+          revalidateDocumentIDCache('posts', doc.id)
           const category = await req.payload.findByID({
             id: doc.category,
             collection: 'categories',

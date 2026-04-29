@@ -1,8 +1,8 @@
-import algoliasearch from 'algoliasearch'
 import type { Payload } from 'payload'
 
-import { getMergedPublicSiteSettings } from '@root/lib/getMergedPublicSiteSettings'
+import { resolvePublicSiteSetting } from '@root/lib/resolvePublicSiteSetting'
 import { resolveIntegrationSecrets } from '@root/lib/resolveIntegrationSecrets'
+import algoliasearch from 'algoliasearch'
 
 /** Keeps helpful flags in sync with Algolia (keys from Admin globals or env). */
 export const updateAlgolia = async (
@@ -11,7 +11,7 @@ export const updateAlgolia = async (
   helpful: boolean,
 ): Promise<void> => {
   const [publicCfg, secrets] = await Promise.all([
-    getMergedPublicSiteSettings(),
+    resolvePublicSiteSetting(),
     resolveIntegrationSecrets(payload),
   ])
 

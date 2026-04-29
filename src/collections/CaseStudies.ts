@@ -1,6 +1,8 @@
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import type { CollectionConfig } from 'payload'
 
+import { CASE_STUDY_LAYOUT_BLOCK_SLUGS } from '@root/site-builder/blockReferences'
+
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
 import richText from '../fields/richText'
@@ -69,32 +71,7 @@ export const CaseStudies: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: [
-        'callout',
-        'cta',
-        'cardGrid',
-        'caseStudyCards',
-        'caseStudiesHighlight',
-        'caseStudyParallax',
-        'codeFeature',
-        'content',
-        'contentGrid',
-        'form',
-        'hoverCards',
-        'hoverHighlights',
-        'linkGrid',
-        'logoGrid',
-        'mediaBlock',
-        'mediaContent',
-        'mediaContentAccordion',
-        'pricing',
-        'reusableContentBlock',
-        'slider',
-        'statement',
-        'steps',
-        'stickyHighlights',
-        'exampleTabs',
-      ],
+      blockReferences: [...CASE_STUDY_LAYOUT_BLOCK_SLUGS],
       blocks: [],
     },
     slugField(),

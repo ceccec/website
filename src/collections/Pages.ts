@@ -1,12 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
+import { PAGE_LAYOUT_BLOCK_SLUGS } from '@root/site-builder/blockReferences'
+
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
 import { fullTitle } from '../fields/fullTitle'
 import { hero } from '../fields/hero'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
-import { revalidateDocumentIdCache } from '../utilities/revalidateDocumentIdCache'
+import { revalidateDocumentIDCache } from '../utilities/revalidateDocumentIDCache'
 import { revalidatePagePublicUrls } from '../utilities/revalidatePageRoutes'
 
 export const Pages: CollectionConfig = {
@@ -58,33 +60,7 @@ export const Pages: CollectionConfig = {
             {
               name: 'layout',
               type: 'blocks',
-              blockReferences: [
-                'callout',
-                'cta',
-                'cardGrid',
-                'caseStudyCards',
-                'caseStudiesHighlight',
-                'caseStudyParallax',
-                'codeFeature',
-                'content',
-                'contentGrid',
-                'comparisonTable',
-                'form',
-                'hoverCards',
-                'hoverHighlights',
-                'linkGrid',
-                'logoGrid',
-                'mediaBlock',
-                'mediaContent',
-                'mediaContentAccordion',
-                'pricing',
-                'reusableContentBlock',
-                'slider',
-                'statement',
-                'steps',
-                'stickyHighlights',
-                'exampleTabs',
-              ],
+              blockReferences: [...PAGE_LAYOUT_BLOCK_SLUGS],
               blocks: [],
               required: true,
             },
@@ -99,14 +75,14 @@ export const Pages: CollectionConfig = {
     afterChange: [
       ({ doc, previousDoc }) => {
         if (doc._status === 'published' || doc._status !== previousDoc?._status) {
-          revalidateDocumentIdCache('pages', doc.id)
+          revalidateDocumentIDCache('pages', doc.id)
           revalidatePagePublicUrls(doc)
         }
       },
     ],
     afterDelete: [
       ({ doc }) => {
-        revalidateDocumentIdCache('pages', doc.id)
+        revalidateDocumentIDCache('pages', doc.id)
         revalidatePagePublicUrls(doc)
       },
     ],

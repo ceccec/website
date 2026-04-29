@@ -1,11 +1,11 @@
 import type { Redirect } from '@types'
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 
-import { revalidateDocumentIdCache } from '@root/utilities/revalidateDocumentIdCache'
+import { revalidateDocumentIDCache } from '@root/utilities/revalidateDocumentIDCache'
 import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
 
 /**
- * When a redirect targets a document by ID, `getCachedDocumentById` may cache that row
+ * When a redirect targets a document by ID, `getCachedDocumentByID` may cache that row
  * (`payload-performance` / `getDocument` tag shape).
  */
 function revalidateRedirectReferenceTargets(redirect: null | Redirect | undefined): void {
@@ -15,7 +15,7 @@ function revalidateRedirectReferenceTargets(redirect: null | Redirect | undefine
   }
   const { relationTo, value } = reference
   if (typeof value === 'number') {
-    revalidateDocumentIdCache(relationTo, value)
+    revalidateDocumentIDCache(relationTo, value)
   }
 }
 

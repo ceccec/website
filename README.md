@@ -34,6 +34,8 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 
 Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
+**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI (no `VERCEL`, no `postgres://…` URL) that executes **`pnpm run workers:build`** (migrate → OpenNext). Set **`PAYLOAD_SECRET`** for [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/#environment-variables) so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
+
 ---
 
 ## Copy-paste deploy manual
@@ -98,7 +100,7 @@ cp .env.example .env
 cp .dev.vars.example .dev.vars
 ```
 
-Edit `.env` / `.dev.vars` — at least `PAYLOAD_SECRET`. Put production secrets in [Workers dashboard](https://developers.cloudflare.com/workers/configuration/secrets/) or Wrangler as needed.
+Edit `.env` / `.dev.vars` — at least `PAYLOAD_SECRET` (**required** for **`pnpm build`** / `payload migrate` in CI too — add the same value under Workers **build** env vars).
 
 Create D1 and wire `database_id` ([docs](https://developers.cloudflare.com/d1/get-started/)):
 
@@ -114,7 +116,7 @@ Full Cloudflare deploy (migrate + OpenNext + deploy Worker):
 pnpm run deploy
 ```
 
-Split CI / local pipeline:
+Explicit Workers pipeline (same as Cloudflare branch of `pnpm build`):
 
 ```bash
 pnpm run workers:build    # deploy:database + opennext:build
@@ -148,9 +150,10 @@ Templates: [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/m
 **Scripts (copy one line)**
 
 ```bash
-pnpm build                  # generate:llms + migrate + next build — default Vercel-style
+pnpm build                  # routes via scripts/build.mjs → Vercel: next build | Workers CI: workers:build (OpenNext)
+pnpm run build:vercel       # explicit Postgres / next build path (same as Vercel branch inside `pnpm build`)
 pnpm run deploy:database    # migrate (+ remote D1 PRAGMA optimize on Cloudflare path)
-pnpm run workers:build      # deploy:database + opennext build — use for Workers, not plain build
+pnpm run workers:build      # deploy:database + opennext:build (also invoked by `pnpm build` on Workers CI)
 pnpm run workers:deploy     # deploy Worker after workers:build
 pnpm run deploy             # deploy:database + full Worker pipeline
 pnpm run deploy:dry         # dry-run Vercel + Cloudflare configs

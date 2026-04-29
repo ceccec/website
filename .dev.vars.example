@@ -1,4 +1,6 @@
 # Copy to .dev.vars for `wrangler dev` / local Worker runtime (not committed).
+# Deploy-to-Cloudflare reads this file as a secrets template — see package.json `cloudflare.bindings`.
+# Build runs `payload migrate`; add PAYLOAD_SECRET to Workers Builds env too if migrate fails in CI.
 # See https://developers.cloudflare.com/workers/wrangler/configuration/#secrets
 #
 # For all app variables, also see .env.example (Next.js + Payload in dev).

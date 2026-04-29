@@ -8,7 +8,8 @@
     "pnpm": ">=10.33.2"
   },
   "scripts": {
-    "build": "pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
+    "build": "node scripts/build.mjs",
+    "build:vercel": "pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "pnpm run generate:types:cloudflare && pnpm run generate:types:payload",
@@ -147,7 +148,7 @@
   "cloudflare": {
     "bindings": {
       "PAYLOAD_SECRET": {
-        "description": "Required. Generate with `openssl rand -hex 32`"
+        "description": "Required at **build** (`payload migrate`) and at runtime. Generate with `openssl rand -hex 32`. If the wizard only attaches secrets to the Worker, also add this name under [Workers Builds → Environment variables](https://developers.cloudflare.com/workers/ci-cd/builds/#environment-variables)."
       },
       "PAYLOAD_LOG_LEVEL": {
         "description": "Optional. `info` | `debug` | `warn` | `error` — JSON logs in Workers (see with-cloudflare-d1 template)"

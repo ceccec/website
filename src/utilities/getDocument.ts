@@ -1,17 +1,25 @@
 import type { Config } from '@types'
 
-import configPromise from '@payload-config'
+import localization from '@root/i18n/localization'
+import { getPayload } from '@root/lib/getPayload'
+import type { TypedLocale } from 'payload'
 import { unstable_cache } from 'next/cache'
-import { getPayload } from 'payload'
 
 type Collection = keyof Config['collections']
 
-async function getDocument(collection: Collection, slug: string, depth = 0) {
-  const payload = await getPayload({ config: configPromise })
+const defaultLocale = localization.defaultLocale as TypedLocale
+
+/**
+ * Local API `find` by slug. **`depth`** controls relation population (IDs vs nested docs);
+ * **`locale`** must match the request when localized fields are used—see [Localization](https://payloadcms.com/docs/configuration/localization).
+ */
+async function getDocument(collection: Collection, slug: string, depth = 0, locale: TypedLocale = defaultLocale) {
+  const payload = await getPayload()
 
   const page = await payload.find({
     collection,
     depth,
+    locale,
     where: {
       slug: {
         equals: slug,
@@ -22,10 +30,25 @@ async function getDocument(collection: Collection, slug: string, depth = 0) {
   return page.docs[0]
 }
 
+async function getDocumentById(collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) {
+  const payload = await getPayload()
+  return payload.findByID({ id, collection, depth, locale })
+}
+
 /**
- * Returns a unstable_cache function mapped with the cache tag for the slug
+ * `unstable_cache` keys include **depth** and **locale** (payload-performance) so different
+ * population levels and locales never share the same cached row.
  */
-export const getCachedDocument = (collection: Collection, slug: string) =>
-  unstable_cache(async () => getDocument(collection, slug), [collection, slug], {
+export const getCachedDocument = (collection: Collection, slug: string, depth = 0, locale: TypedLocale = defaultLocale) =>
+  unstable_cache(async () => getDocument(collection, slug, depth, locale), [collection, slug, String(depth), locale], {
     tags: [`${collection}_${slug}`],
   })
+
+export const getCachedDocumentById = (collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) =>
+  unstable_cache(
+    async () => getDocumentById(collection, id, depth, locale),
+    [collection, 'byId', String(id), String(depth), locale],
+    {
+      tags: [`${collection}_id_${String(id)}`],
+    },
+  )

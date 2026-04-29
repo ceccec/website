@@ -1,0 +1,20 @@
+---
+description: TypeScript / React naming + Payload resolve conventions
+globs: "src/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript naming
+
+- **camelCase** for variables, functions, and methods; **PascalCase** for types, components, enums.
+- **Suffix `ID`**, not `Id`, for hand-written identifier names that denote an identifier (`docID`, `teamID`, `projectID`, `formID`, `userID`, `categoryID`, `mediaID`, `stubID`). Same pattern as Payload schema fields like **`customID`**, **`hubSpotFormID`**.
+- **Payload templates / hooks:** prefer **`doc`** / **`previousDoc`** for whole documents; use **`doc.id`** or **`findByID({ id })`**. When you only store the key, name it **`docID`** (or **`…ID`** scoped to the entity).
+- **Generated types (`payload-types.ts`, `payload-cloud-types.ts`):** use property names **exactly** as generated. If a field is still spelled `…Id` historically, keep accessing it as-is until you rename the field in config and regenerate; you may assign **`const fooID = doc.fooId`** as a bridge.
+- **Wire formats:** REST/GraphQL JSON keys, Algolia **`objectID`**, external SDK params — unchanged (whatever the remote API requires).
+- **Exceptions — do not rename:** React **`useId`**, DOM **`getElementById`**, npm **`nodemailer`** `messageId`, words that merely contain “id” (**`validityReq`**, **`individualRole`**).
+
+**Payload globals & env:** **`resolve*`** / **`Resolved*`** — see `src/lib/resolveGlobalField.ts`. **Global slugs:** `src/globals/globalSlugs.ts`.
+
+See **`payload-typescript.mdc`**, **`payload-plugins.mdc`**.
+
+Regenerate hub rules only when editing `scripts/generate-payload-cursor-rules.mjs`.

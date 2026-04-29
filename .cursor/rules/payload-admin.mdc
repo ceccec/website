@@ -38,7 +38,7 @@ At **top level** of `buildConfig`: **`routes.admin`**, **`routes.api`**, **`rout
 ## Related Cursor rules
 
 - **Custom components (Payload docs):** [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) · rule `payload-custom-components.mdc`
-- **Metadata / CSS / draft preview in admin:** `payload-admin-ui-surfaces.mdc`
+- **Metadata, CSS, React hooks map (admin client):** `payload-admin-ui-surfaces.mdc` — [React hooks](https://payloadcms.com/docs/admin/react-hooks)
 - **Live preview + Next `/api/preview`:** `payload-preview-drafts.mdc`
 - **Collection field admin:** [Collection admin options](https://payloadcms.com/docs/collections/admin)
 

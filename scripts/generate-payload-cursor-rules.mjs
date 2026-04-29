@@ -40,6 +40,11 @@ const FEATURE_HUB_ROWS = [
   ['**Trash**', '[Trash](https://payloadcms.com/docs/trash/overview)', ruleMdc('payload-folders-trash-presets.mdc')],
   ['**Troubleshooting**', '[Troubleshooting](https://payloadcms.com/docs/troubleshooting/troubleshooting)', ruleMdc('payload-docs-support.mdc')],
   ['**TypeScript**', '[TypeScript](https://payloadcms.com/docs/typescript/overview)', ruleMdc('payload-typescript.mdc')],
+  [
+    '**Admin React hooks** (`@payloadcms/ui`)',
+    '[React hooks](https://payloadcms.com/docs/admin/react-hooks)',
+    ruleMdc('payload-admin-ui-surfaces.mdc'),
+  ],
 ]
 
 const DEPLOYMENT_HUB_ROWS = [
@@ -183,7 +188,7 @@ At **top level** of \`buildConfig\`: **\`routes.admin\`**, **\`routes.api\`**, *
 ## Related Cursor rules
 
 - **Custom components (Payload docs):** [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) · rule \`payload-custom-components.mdc\`
-- **Metadata / CSS / draft preview in admin:** \`payload-admin-ui-surfaces.mdc\`
+- **Metadata, CSS, React hooks map (admin client):** \`payload-admin-ui-surfaces.mdc\` — [React hooks](https://payloadcms.com/docs/admin/react-hooks)
 - **Live preview + Next \`/api/preview\`:** \`payload-preview-drafts.mdc\`
 - **Collection field admin:** [Collection admin options](https://payloadcms.com/docs/collections/admin)
 
@@ -197,7 +202,7 @@ At **top level** of \`buildConfig\`: **\`routes.admin\`**, **\`routes.api\`**, *
   {
     file: 'payload-admin-ui-surfaces.mdc',
     yaml: `description: Admin UI surfaces — metadata, preview, CSS, location, React hooks, locked docs, preferences
-globs: src/payload.config.ts,src/app/(payload)/**/*.{ts,tsx},src/**/*.scss,src/components/AfterNavActions/**/*.{ts,tsx},src/components/BeforeDashboard/**/*.{ts,tsx}
+globs: src/payload.config.ts,src/app/(payload)/**/*.{ts,tsx},src/**/*.scss,src/components/AfterNavActions/**/*.{ts,tsx},src/components/BeforeDashboard/**/*.{ts,tsx},src/collections/Docs/**/*.{ts,tsx},src/globals/**/*.tsx,src/fields/**/*.tsx,src/blocks/**/Field/**/*.tsx,src/components/TableCheckboxField/**/*.tsx,src/components/Sync*.tsx,src/components/RedeployButton/**/*.tsx,src/components/RefreshMdxToLexicalButton/**/*.tsx
 alwaysApply: false`,
     body: `# Admin UI surfaces (first-party docs)
 
@@ -216,6 +221,34 @@ Read these **before** swapping views, metadata, or admin styling.
 | **User preferences** (stored per user) | [Preferences](https://payloadcms.com/docs/admin/preferences) |
 | **Replacing admin UI (React)** | [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) |
 
+## Admin React hooks vs config hooks
+
+- **Docs:** [React hooks](https://payloadcms.com/docs/admin/react-hooks) — use inside **\`'use client'\`** custom admin components (\`admin.components\`, field \`admin.components\`). Import from **\`@payloadcms/ui\`**.
+- **Not** [config hooks](https://payloadcms.com/docs/hooks/overview) (\`beforeChange\`, \`afterRead\`, … on collections/globals/fields) — those are **\`payload-hooks.mdc\`**.
+
+### Lexical rich text + \`useField\`
+
+Programmatic updates often need **\`initialValue\` as well as \`value\`** (or \`dispatchFields\` with \`UPDATE\`) or the Lexical UI will not re-render until refresh. See **“Updating Lexical Rich Text Fields”** in the official React hooks doc.
+
+### This repo — \`@payloadcms/ui\` usage
+
+| Hook | Role | Where |
+|------|------|--------|
+| \`useField\` | Custom field ↔ form state | \`src/components/TableCheckboxField/index.tsx\`, \`src/fields/addToDocs/Label.tsx\` |
+| \`useFormFields\` | Selector over document fields | \`src/collections/Docs/blocks/code/CodeFields.tsx\`, \`src/collections/Docs/SaveButton/index.tsx\` (version field) |
+| \`useRowLabel\` | Array row labels | \`src/globals/CustomRowLabelTabs.tsx\`, \`src/globals/CustomRowLabelNavItems.tsx\` |
+| \`useConfig\` | \`api\` route, \`serverURL\`, branding | \`src/components/BeforeDashboard/index.tsx\`, \`SyncDocsButton\`, \`SyncCommunityHelp\`, \`SyncToAlgolia\`, \`RedeployButton\`, \`RefreshMdxToLexicalButton\` |
+| \`toast\` | Admin notifications | Same + \`BeforeDashboard\` |
+| \`useForm\`, \`useFormModified\` | Submit / dirty state | \`src/collections/Docs/SaveButton/index.tsx\` |
+| \`useDocumentInfo\` | \`id\`, \`collectionSlug\`, … | \`SaveButton\` |
+| \`useEditDepth\`, \`useOperation\`, \`useLocale\`, \`useHotkey\` | Drawer depth, create vs update, locale, shortcuts | \`SaveButton\` |
+
+**Do not** import **\`useFormField\` / \`useField\` / \`dispatchFields\`** from \`@forms/*\` or \`src/forms/*\` inside Payload admin components — that is the **marketing-site form** context. Use **\`useFormFields\`**, **\`useField\`**, **\`useAllFormFields\`**, etc. from **\`@payloadcms/ui\`** per the doc.
+
+### Not yet used here (see full hook list in doc)
+
+Examples to reach for when building admin UI: \`useAllFormFields\`, \`usePreferences\`, \`useTranslation\`, admin \`useAuth\`, \`usePreviewURL\`, \`useRouteTransition\`, … — confirm names against current **\`@payloadcms/ui\`** exports and the official page.
+
 ## How this differs from other rules
 
 - **\`payload-preview-drafts.mdc\`:** Next.js **\`/api/preview\`**, \`draftMode\`, \`NEXT_PRIVATE_DRAFT_SECRET\`, and **\`@payloadcms/live-preview-react\`** on the **marketing site**.
@@ -227,6 +260,7 @@ Read these **before** swapping views, metadata, or admin styling.
 - [ ] Root \`admin.meta\` (title suffix, icons, OG, robots) matches branding; env-driven favicon if used (\`PAYLOAD_ADMIN_FAVICON_URL\` pattern).
 - [ ] Collection/global \`admin.meta\` used when a section needs its own titles/descriptions.
 - [ ] Styling: prefer \`@layer payload\` / variables from [@payloadcms/ui scss](https://github.com/payloadcms/payload/tree/3.x/packages/ui/src/scss) over brittle deep selectors.
+- [ ] New admin client component: **\`'use client'\`**, hooks from **\`@payloadcms/ui\`**, then \`pnpm generate:importmap\` if registered via config paths.
 `,
   },
   {
@@ -250,21 +284,70 @@ alwaysApply: false`,
   },
   {
     file: 'payload-uploads-storage.mdc',
-    yaml: `description: Upload fields, media collections, storage adapters (S3/R2/Vercel Blob)
-globs: src/**/*media*/**/*.{ts,tsx},src/**/*upload*/**/*.{ts,tsx},src/plugins/**/*storage*.{ts,tsx},src/**/*storage*.{ts,tsx}
+    yaml: `description: Uploads, storage adapters, path/hook pipeline, editor paste & folder drop
+globs: src/**/*media*/**/*.{ts,tsx},src/**/*upload*/**/*.{ts,tsx},src/plugins/**/*storage*.{ts,tsx},src/**/*storage*.{ts,tsx},src/collections/Media.ts,src/config/payloadLexicalEditor.ts,src/fields/richText/**/*.{ts,tsx}
 alwaysApply: false`,
-    body: `# Uploads & storage
+    body: `# Uploads, storage & editor asset pipeline
 
-- **Docs:** [Upload field](https://payloadcms.com/docs/fields/upload) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters)
-- **Collections:** \`media\` (and any upload-enabled collection) — **relationType**, **filterOptions**, and **storage plugin** must agree with deployment target (Cloudflare vs Vercel vs Node).
-- **Plugins:** This repo may use \`@payloadcms/storage-r2\`, \`@payloadcms/storage-vercel-blob\`, etc. — configure under **plugins** in \`payload.config.ts\` via \`src/plugins\`.
-- **Lexical:** \`UploadFeature\` in \`payloadLexicalEditor.ts\` references upload collections and optional extra fields (\`enableLink\`, etc.).
-- **URLs:** Prefer Payload-generated URLs or your CDN domain from env; do not hard-code bucket hosts in components.
+**“Hooks” here are not only [admin React hooks](https://payloadcms.com/docs/admin/react-hooks)** (\`@payloadcms/ui\`). Upload flows combine **HTTP + storage + collection hooks + Lexical/editor UI**.
+
+## Docs
+
+- [Upload field](https://payloadcms.com/docs/fields/upload) · [Upload overview](https://payloadcms.com/docs/upload/overview) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters)
+- **Collection/global/field hooks:** \`payload-hooks.mdc\` — \`beforeValidate\`, \`beforeChange\`, \`afterChange\` on \`media\` (and upload-enabled collections) run on **every** create/update from API, Local API, or admin UI.
+
+## This repo
+
+- **Storage plugin:** \`src/plugins/storage/config.ts\` — R2 (Cloudflare), S3-compatible (\`S3_*\`), or Vercel Blob; targets **\`media\`**.
+- **Collection:** \`src/collections/Media.ts\` — \`upload: true\`; **defaultPopulate** shapes frontend/API responses.
+- **SHA-256 dedupe:** \`src/collections/hooks/mediaContentSha256Dedupe.ts\` — \`beforeOperation\` hashes incoming bytes, queries **\`contentSha256\`**; on duplicate throws **409** \`APIError\` with \`duplicateOfID\` / \`duplicateAlt\` / \`duplicateFilename\` (no second blob). \`beforeChange\` persists **\`contentSha256\`** on new/changed files.
+- **Lexical:** \`src/config/payloadLexicalEditor.ts\` — \`UploadFeature({ collections: { media: { fields: … } } })\` embeds upload nodes in rich text; see \`payload-richtext-lexical.mdc\`.
+
+## Three layers (virtual “drive”)
+
+| Layer | What it is | “Path” or identity |
+|-------|------------|-------------------|
+| **Object store** | R2 / S3 / Blob key | Physical key (often \`prefix\` + unique filename) — set by the **storage adapter**; see adapter options. |
+| **Payload \`media\` doc** | DB row + metadata | \`filename\`, \`url\`, dimensions, **\`alt\`**, custom fields you add (e.g. \`sourcePath\`, \`importFolder\`). |
+| **Admin folders (optional)** | [Folders](https://payloadcms.com/docs/folders/overview) — **beta** | Logical tree in Admin; enable \`folders: true\` on \`media\` + root \`folders\` config — **\`payload-folders-trash-presets.mdc\`**. |
+
+Treat **semantic path** (folder/archive dropped from disk, or path inferenced from paste) as **data**: derive in **hooks** or a **small custom endpoint**, then store on \`media\` fields — do not assume the raw **bucket key** equals your editorial path unless you customize the adapter.
+
+## Server hooks (actions on ingest)
+
+Use **\`media\` collection hooks** to centralize behavior for **all** ingress paths (drag-drop, picker, REST, paste-upload):
+
+- **\`beforeValidate\` / \`beforeChange\`:** Normalize filename; set **\`alt\`** from filename / EXIF / sibling metadata; strip unsafe segments; map **relative path** (\`folder/asset.png\`) from bulk upload payload into a custom field.
+- **\`afterChange\`:** Enqueue **jobs** (\`payload-jobs.mdc\`) for heavy work (thumbnails, vision API for alt, virus scan).
+- **Field hooks** on \`alt\` or custom path fields for field-specific rules.
+
+**Local API** from a custom route: \`payload.create({ collection: 'media', file, data: { alt, … } })\` — same hooks run.
+
+## Editor & browser: paste, drag, folder drop
+
+| Source | Browser surface | Typical integration |
+|--------|-----------------|---------------------|
+| **Paste** (image/file in clipboard) | \`clipboardData.files\`, or extract \`<img src>\` and **fetch** | Custom **Lexical** command / plugin: intercept paste → **create** \`media\` via \`fetch('/api/media', FormData)\` (or Local API in a server action) → insert **upload** node (same shape as \`UploadFeature\`). |
+| **Drag file** onto field or editor | \`drop\` + \`DataTransfer.files\` | Admin upload field and Lexical drop target already upload; extend to set **\`data\`** (alt, path) in the same request. |
+| **Folder / tree drop** | \`webkitGetAsEntry\` / **File System Access** — walk \`File\` + \`webkitRelativePath\` | Client walks tree → **batch** creates (N API calls or one multipart custom route) — pass **path** in \`data\` for hooks to persist. |
+
+For **paste-from-HTML** (Word/Docs with embedded images): parse HTML → list asset URLs → download (respect CORS) or **dedupe** by hash → upload each → replace refs with \`media\` IDs in Lexical state.
+
+## Jobs & limits
+
+- Large folder imports: **queue** per file or per batch (\`payload-jobs.mdc\`) so hooks stay fast.
+- **Abuse:** rate-limit custom upload routes (\`payload-security-deployment.mdc\`).
+
+## Related rules
+
+- **React-only admin UI:** \`payload-admin-ui-surfaces.mdc\` — orthogonal to server upload hooks.
+- **Lexical nodes / converters:** \`payload-richtext-lexical.mdc\`.
 
 ## Checklist
 
 - [ ] New env for bucket/credentials documented in \`.env.example\`.
 - [ ] Preview URLs work for both admin and frontend if using signed URLs.
+- [ ] Bulk/paste features: **hooks** on \`media\` + optional **custom fields** for path/provenance; avoid duplicating logic only in the editor.
 `,
   },
   {
@@ -541,6 +624,10 @@ Official docs are the source of truth for execution order and arguments.
 
 - **Admin React hooks** ([react-hooks](https://payloadcms.com/docs/admin/react-hooks)) — UI/client helpers, unrelated to config \`hooks\`.
 
+## Upload / media ingest
+
+- **\`media\` collection hooks** (\`beforeValidate\`, \`beforeChange\`, …) run for REST multipart uploads, Local API \`create\` with \`file\`, and admin picker — use them for **alt**, path metadata, dedupe, and offloading heavy work to **jobs**. See **\`payload-uploads-storage.mdc\`** (editor paste vs server hooks).
+
 ## Checklist
 
 - [ ] Hook needs \`overrideAccess\` / \`req\` usage matches Local API docs.
@@ -690,18 +777,40 @@ ${REGEN_FOOTER_SHORT}
   },
   {
     file: 'payload-examples.mdc',
-    yaml: `description: Official examples & templates — examples/overview (reference apps)
-globs: scripts/**/*.{mjs,ts,js}
+    yaml: `description: Official Payload guides & examples — docs-first workflow + monorepo examples
+globs: scripts/**/*.{mjs,ts,js},src/site-builder/**/*.{ts,tsx},src/plugins/**/*.{ts,tsx},src/collections/**/*.{ts,tsx},src/blocks/**/*.{ts,tsx},src/config/**/*.{ts,tsx}
 alwaysApply: false`,
-    body: `# Payload examples (official)
+    body: `# Payload guides & examples (workflow)
 
-- **Docs:** [Examples overview](https://payloadcms.com/docs/examples/overview) — official templates, starters, and reference applications.
-- **This repo:** When adding a feature, compare with the **closest** official example; copy patterns, not file-for-file (this codebase has its own layout).
-- **Upgrades:** Example repos may track latest Payload; align version in \`package.json\` before diffing.
+Follow **[official documentation](https://payloadcms.com/docs/)** first (same content as [\`payloadcms/payload\` docs](https://github.com/payloadcms/payload/tree/main/docs)), then align implementation with the closest **example** or template—not ad hoc patterns.
+
+## Read order (Payload-recommended shape)
+
+1. **Concepts & config** — [Getting started](https://payloadcms.com/docs/getting-started/what-is-payload) · [Concepts](https://payloadcms.com/docs/getting-started/concepts) · [Configuration overview](https://payloadcms.com/docs/configuration/overview).
+2. **Examples hub** — [Examples overview](https://payloadcms.com/docs/examples/overview) (templates / reference apps listed there).
+3. **Source examples** — Monorepo [\`examples/\`](https://github.com/payloadcms/payload/tree/main/examples) alongside the docs (useful when the overview links to a specific app).
+4. **Topic docs** — Use \`payload-features-overview.mdc\`, \`payload-ecosystem.mdc\`, and \`payload-basics.mdc\` for the URL ↔ rule map; open the **overview** link for the feature you touch.
+
+## Patterns aligned with guides
+
+| Topic | Official guide | This repo |
+|-------|----------------|-----------|
+| Schema & types | [Collections](https://payloadcms.com/docs/configuration/collections) · [TypeScript](https://payloadcms.com/docs/typescript/overview) | \`src/collections\`, \`src/plugins/schema\` → \`pnpm generate:types\` |
+| Blocks (page builder) | [Blocks field](https://payloadcms.com/docs/fields/blocks) | Shared block defs + \`blockReferences\`; frontend: \`src/site-builder/layoutBlockRegistry.tsx\`, \`RenderBlocks\` |
+| Rich text | [Rich text overview](https://payloadcms.com/docs/rich-text/overview) · [Rich text blocks](https://payloadcms.com/docs/rich-text/blocks) | \`src/config/payloadLexicalEditor.ts\`, Docs editor in \`collections/Docs\`, render: \`components/RichText\` |
+| Admin UI | [Custom components](https://payloadcms.com/docs/custom-components/overview) | \`admin.components\` / field \`admin.components\` → \`pnpm generate:importmap\` |
+| Plugins | [Plugins overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api) | \`src/plugins/index.ts\`, \`src/plugins/*/\` factories |
+
+## Copy from examples, adapt paths
+
+- Prefer **patterns** from official examples (hooks shape, access, plugin merge order), not file-for-file copies—this repo uses its own **plugin pipeline** and **schema** layout (\`payload-plugins.mdc\`, \`payload-basics.mdc\`).
+- Before diffing an external template, **align \`payload\` / \`@payloadcms/*\` versions** in \`package.json\`.
 
 ## Checklist
 
-- [ ] Skim the relevant example in the overview before a large feature (auth, multi-tenant, ecommerce, etc.).
+- [ ] Skim the relevant **overview** doc + **Examples overview** entry before a large feature (auth, multi-tenant, ecommerce, forms, etc.).
+- [ ] Cross-check monorepo \`examples/\` when the docs reference a specific app.
+- [ ] After schema or admin component changes: \`pnpm generate:types\` and, if needed, \`pnpm generate:importmap\` (\`payload-typescript.mdc\`, \`payload-custom-components.mdc\`).
 `,
   },
   {

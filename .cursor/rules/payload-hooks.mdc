@@ -17,6 +17,10 @@ Official docs are the source of truth for execution order and arguments.
 
 - **Admin React hooks** ([react-hooks](https://payloadcms.com/docs/admin/react-hooks)) — UI/client helpers, unrelated to config `hooks`.
 
+## Upload / media ingest
+
+- **`media` collection hooks** (`beforeValidate`, `beforeChange`, …) run for REST multipart uploads, Local API `create` with `file`, and admin picker — use them for **alt**, path metadata, dedupe, and offloading heavy work to **jobs**. See **`payload-uploads-storage.mdc`** (editor paste vs server hooks).
+
 ## Checklist
 
 - [ ] Hook needs `overrideAccess` / `req` usage matches Local API docs.

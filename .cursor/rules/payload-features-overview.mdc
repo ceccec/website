@@ -22,6 +22,7 @@ Start from the **official overview** for each feature; use the **Cursor rule** f
 | **Trash** | [Trash](https://payloadcms.com/docs/trash/overview) | `payload-folders-trash-presets.mdc` |
 | **Troubleshooting** | [Troubleshooting](https://payloadcms.com/docs/troubleshooting/troubleshooting) | `payload-docs-support.mdc` |
 | **TypeScript** | [TypeScript](https://payloadcms.com/docs/typescript/overview) | `payload-typescript.mdc` |
+| **Admin React hooks** (`@payloadcms/ui`) | [React hooks](https://payloadcms.com/docs/admin/react-hooks) | `payload-admin-ui-surfaces.mdc` |
 
 **More:** Deployment → `payload-deployment.mdc` · Ecosystem → `payload-ecosystem.mdc` · Admin shell → `payload-admin.mdc` · APIs → `payload-apis.mdc` · Hooks → `payload-hooks.mdc` · Plugins → `payload-plugins.mdc` · Security → `payload-security-deployment.mdc` · Performance → `payload-performance.mdc` · Basics → `payload-basics.mdc` (always-on)
 

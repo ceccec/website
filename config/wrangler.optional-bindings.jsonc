@@ -1,8 +1,12 @@
 // =============================================================================
 // OPTIONAL Cloudflare Worker bindings — not loaded by Wrangler as its own config.
 // Merge snippets into the ROOT object of wrangler.jsonc only when you provision
-// the matching resources. Default Payload + OpenNext needs ONLY what is already
+// the matching resources — add as few bindings as the feature requires (each product
+// bills or meters separately). Default Payload + OpenNext needs ONLY what is already
 // active in wrangler.jsonc (D1, R2×2, ASSETS, IMAGES, WORKER_SELF_REFERENCE).
+//
+// Full platform coverage (paid/free products, what’s wired in app code):
+//   config/cloudflare-platform-coverage.md
 //
 // Docs: https://developers.cloudflare.com/workers/runtime-apis/bindings/
 // Wrangler: https://developers.cloudflare.com/workers/wrangler/configuration/

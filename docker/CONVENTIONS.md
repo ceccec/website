@@ -15,7 +15,7 @@ This repo’s **default** [`docker-compose.yml`](../docker-compose.yml) is built
 
 Payload wiring:
 
-- **DB:** [`mongooseAdapter`](https://payloadcms.com/docs/database/mongodb) via `MONGODB_URL` — [`src/lib/payloadDb.ts`](../src/lib/payloadDb.ts).
+- **DB:** [`mongooseAdapter`](https://payloadcms.com/docs/database/mongodb) via `MONGODB_URL` — [`src/lib/payloadDB.ts`](../src/lib/payloadDB.ts).
 - **Media:** [`@payloadcms/storage-s3`](https://payloadcms.com/docs/upload/storage-adapters) when `S3_*` env vars are set — [`src/plugins/storage/config.ts`](../src/plugins/storage/config.ts); compose sets MinIO.
 - **Email:** [`@payloadcms/email-nodemailer`](https://payloadcms.com/docs/email/overview) with **`SMTP_HOST`** — [`src/payload.config.ts`](../src/payload.config.ts); compose targets Mailpit.
 
@@ -45,6 +45,6 @@ The Docker Compose stack is **`PAYLOAD_HOSTING=vercel`** + Mongo/S3/SMTP — it 
 
 - **`getDeploymentTarget()` === `cloudflare`** → `src/app/(frontend)/api/docs-local-search/route.ts` never runs **`rg`** (Workers cannot spawn subprocesses).
 - **`Dockerfile`** defaults **`NEXT_PUBLIC_LOCAL_DOC_SEARCH=0`** so production **Vercel** / **Workers** client bundles do not advertise local search unless you pass a build arg. Compose overrides to **`1`** for self-hosted images.
-- Storage/email/db routing in Payload stays env-driven ([`payloadDb.ts`](../src/lib/payloadDb.ts), [`storage/config.ts`](../src/plugins/storage/config.ts), [`payload.config.ts`](../src/payload.config.ts)) — no Docker-only imports on those paths.
+- Storage/email/db routing in Payload stays env-driven ([`payloadDB.ts`](../src/lib/payloadDB.ts), [`storage/config.ts`](../src/plugins/storage/config.ts), [`payload.config.ts`](../src/payload.config.ts)) — no Docker-only imports on those paths.
 
 For full details and env tables, see **[DOCKER.md](../DOCKER.md)**.

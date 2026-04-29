@@ -1,5 +1,5 @@
 {
-  "introduction": "**Deploy wizard:** Only **`PAYLOAD_SECRET`** is required — use `openssl rand -hex 32` and set the **same** value under Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)) so `payload migrate` runs. **Leave all other fields empty** for the first deploy. **Optional** overrides below are for power users and CI. Prefer **Admin → Globals** — **Public site settings** (URLs, analytics IDs, Algolia app IDs) and **Integration secrets** (HubSpot, Algolia admin key, reCAPTCHA, cron, revalidation) — so editors can change runtime behavior **without** redeploying. Use Worker env only when you need secrets outside Admin or **`NEXT_PUBLIC_*`** values inlined at **build** time (then add under Build env and redeploy).",
+  "introduction": "**Deploy wizard:** Only **`PAYLOAD_SECRET`** is required — use `openssl rand -hex 32` and set the **same** value under Worker **Variables & Secrets** and **Build variables and secrets** ([Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)) so `payload migrate` runs. **Leave all other fields empty** for the first deploy. **Optional** overrides below are for power users and CI. Prefer **Admin → Globals** — **Public site settings** (URLs, analytics IDs, Algolia app IDs) and **Integration secrets** (HubSpot, Algolia admin key, reCAPTCHA, cron, revalidation) — so editors can change runtime behavior **without** redeploying. Use Worker env only when you need secrets outside Admin or **`NEXT_PUBLIC_*`** values inlined at **build** time (then add under Build env and redeploy). **Cloudflare platform matrix** (bindings, optional paid products, implementation status): [`config/cloudflare-platform-coverage.md`](./cloudflare-platform-coverage.md).",
   "bindings": {
     "PAYLOAD_SECRET": {
       "description": "**Required.** Payload encryption/session secret (`openssl rand -hex 32`). Must appear in Worker **Variables & Secrets** and **Build variables and secrets**. Nothing else in this list is required for one-click deploy."
@@ -72,6 +72,9 @@
     },
     "NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY": {
       "description": "Public. Algolia search client key for community help UI."
+    },
+    "NEXT_PUBLIC_CF_IMAGE_RESIZING": {
+      "description": "Public. **Default:** omit or leave unset — standard Next.js `next/image` (no Cloudflare `/cdn-cgi/image/` transforms). Set `true` only on a zone that has **Image transformations** enabled if you want that paid/opt-in path; uses `src/lib/cloudflareImageLoader.ts`. Requires `NEXT_PUBLIC_SITE_URL` (or CMS URL) origin to match the zone hostname."
     },
     "NEXT_PUBLIC_CLOUD_CMS_URL": {
       "description": "Public. Payload Cloud GraphQL/API base URL for in-app cloud flows."

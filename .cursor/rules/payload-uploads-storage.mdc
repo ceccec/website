@@ -1,18 +1,67 @@
 ---
-description: Upload fields, media collections, storage adapters (S3/R2/Vercel Blob)
-globs: src/**/*media*/**/*.{ts,tsx},src/**/*upload*/**/*.{ts,tsx},src/plugins/**/*storage*.{ts,tsx},src/**/*storage*.{ts,tsx}
+description: Uploads, storage adapters, path/hook pipeline, editor paste & folder drop
+globs: src/**/*media*/**/*.{ts,tsx},src/**/*upload*/**/*.{ts,tsx},src/plugins/**/*storage*.{ts,tsx},src/**/*storage*.{ts,tsx},src/collections/Media.ts,src/config/payloadLexicalEditor.ts,src/fields/richText/**/*.{ts,tsx}
 alwaysApply: false
 ---
 
-# Uploads & storage
+# Uploads, storage & editor asset pipeline
 
-- **Docs:** [Upload field](https://payloadcms.com/docs/fields/upload) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters)
-- **Collections:** `media` (and any upload-enabled collection) — **relationType**, **filterOptions**, and **storage plugin** must agree with deployment target (Cloudflare vs Vercel vs Node).
-- **Plugins:** This repo may use `@payloadcms/storage-r2`, `@payloadcms/storage-vercel-blob`, etc. — configure under **plugins** in `payload.config.ts` via `src/plugins`.
-- **Lexical:** `UploadFeature` in `payloadLexicalEditor.ts` references upload collections and optional extra fields (`enableLink`, etc.).
-- **URLs:** Prefer Payload-generated URLs or your CDN domain from env; do not hard-code bucket hosts in components.
+**“Hooks” here are not only [admin React hooks](https://payloadcms.com/docs/admin/react-hooks)** (`@payloadcms/ui`). Upload flows combine **HTTP + storage + collection hooks + Lexical/editor UI**.
+
+## Docs
+
+- [Upload field](https://payloadcms.com/docs/fields/upload) · [Upload overview](https://payloadcms.com/docs/upload/overview) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters)
+- **Collection/global/field hooks:** `payload-hooks.mdc` — `beforeValidate`, `beforeChange`, `afterChange` on `media` (and upload-enabled collections) run on **every** create/update from API, Local API, or admin UI.
+
+## This repo
+
+- **Storage plugin:** `src/plugins/storage/config.ts` — R2 (Cloudflare), S3-compatible (`S3_*`), or Vercel Blob; targets **`media`**.
+- **Collection:** `src/collections/Media.ts` — `upload: true`; **defaultPopulate** shapes frontend/API responses.
+- **SHA-256 dedupe:** `src/collections/hooks/mediaContentSha256Dedupe.ts` — `beforeOperation` hashes incoming bytes, queries **`contentSha256`**; on duplicate throws **409** `APIError` with `duplicateOfID` / `duplicateAlt` / `duplicateFilename` (no second blob). `beforeChange` persists **`contentSha256`** on new/changed files.
+- **Lexical:** `src/config/payloadLexicalEditor.ts` — `UploadFeature({ collections: { media: { fields: … } } })` embeds upload nodes in rich text; see `payload-richtext-lexical.mdc`.
+
+## Three layers (virtual “drive”)
+
+| Layer | What it is | “Path” or identity |
+|-------|------------|-------------------|
+| **Object store** | R2 / S3 / Blob key | Physical key (often `prefix` + unique filename) — set by the **storage adapter**; see adapter options. |
+| **Payload `media` doc** | DB row + metadata | `filename`, `url`, dimensions, **`alt`**, custom fields you add (e.g. `sourcePath`, `importFolder`). |
+| **Admin folders (optional)** | [Folders](https://payloadcms.com/docs/folders/overview) — **beta** | Logical tree in Admin; enable `folders: true` on `media` + root `folders` config — **`payload-folders-trash-presets.mdc`**. |
+
+Treat **semantic path** (folder/archive dropped from disk, or path inferenced from paste) as **data**: derive in **hooks** or a **small custom endpoint**, then store on `media` fields — do not assume the raw **bucket key** equals your editorial path unless you customize the adapter.
+
+## Server hooks (actions on ingest)
+
+Use **`media` collection hooks** to centralize behavior for **all** ingress paths (drag-drop, picker, REST, paste-upload):
+
+- **`beforeValidate` / `beforeChange`:** Normalize filename; set **`alt`** from filename / EXIF / sibling metadata; strip unsafe segments; map **relative path** (`folder/asset.png`) from bulk upload payload into a custom field.
+- **`afterChange`:** Enqueue **jobs** (`payload-jobs.mdc`) for heavy work (thumbnails, vision API for alt, virus scan).
+- **Field hooks** on `alt` or custom path fields for field-specific rules.
+
+**Local API** from a custom route: `payload.create({ collection: 'media', file, data: { alt, … } })` — same hooks run.
+
+## Editor & browser: paste, drag, folder drop
+
+| Source | Browser surface | Typical integration |
+|--------|-----------------|---------------------|
+| **Paste** (image/file in clipboard) | `clipboardData.files`, or extract `<img src>` and **fetch** | Custom **Lexical** command / plugin: intercept paste → **create** `media` via `fetch('/api/media', FormData)` (or Local API in a server action) → insert **upload** node (same shape as `UploadFeature`). |
+| **Drag file** onto field or editor | `drop` + `DataTransfer.files` | Admin upload field and Lexical drop target already upload; extend to set **`data`** (alt, path) in the same request. |
+| **Folder / tree drop** | `webkitGetAsEntry` / **File System Access** — walk `File` + `webkitRelativePath` | Client walks tree → **batch** creates (N API calls or one multipart custom route) — pass **path** in `data` for hooks to persist. |
+
+For **paste-from-HTML** (Word/Docs with embedded images): parse HTML → list asset URLs → download (respect CORS) or **dedupe** by hash → upload each → replace refs with `media` IDs in Lexical state.
+
+## Jobs & limits
+
+- Large folder imports: **queue** per file or per batch (`payload-jobs.mdc`) so hooks stay fast.
+- **Abuse:** rate-limit custom upload routes (`payload-security-deployment.mdc`).
+
+## Related rules
+
+- **React-only admin UI:** `payload-admin-ui-surfaces.mdc` — orthogonal to server upload hooks.
+- **Lexical nodes / converters:** `payload-richtext-lexical.mdc`.
 
 ## Checklist
 
 - [ ] New env for bucket/credentials documented in `.env.example`.
 - [ ] Preview URLs work for both admin and frontend if using signed URLs.
+- [ ] Bulk/paste features: **hooks** on `media` + optional **custom fields** for path/provenance; avoid duplicating logic only in the editor.

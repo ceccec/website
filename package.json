@@ -66,6 +66,7 @@
     "@payloadcms/plugin-multi-tenant": "3.84.1",
     "@payloadcms/plugin-nested-docs": "3.84.1",
     "@payloadcms/plugin-redirects": "3.84.1",
+    "@payloadcms/plugin-search": "3.84.1",
     "@payloadcms/plugin-seo": "3.84.1",
     "@payloadcms/richtext-lexical": "3.84.1",
     "@payloadcms/storage-r2": "3.84.1",
@@ -231,6 +232,9 @@
       },
       "NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY": {
         "description": "Public. Algolia search client key for community help UI."
+      },
+      "NEXT_PUBLIC_CF_IMAGE_RESIZING": {
+        "description": "Public. **Default:** omit or leave unset — standard Next.js `next/image` (no Cloudflare `/cdn-cgi/image/` transforms). Set `true` only on a zone that has **Image transformations** enabled if you want that paid/opt-in path; uses `src/lib/cloudflareImageLoader.ts`. Requires `NEXT_PUBLIC_SITE_URL` (or CMS URL) origin to match the zone hostname."
       },
       "NEXT_PUBLIC_CLOUD_CMS_URL": {
         "description": "Public. Payload Cloud GraphQL/API base URL for in-app cloud flows."

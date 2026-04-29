@@ -6,7 +6,7 @@ Self-hosted **Next.js + Payload** using **only conventional Docker images** for 
 
 | Service | Image | Role |
 |---------|-------|------|
-| **`mongo`** | `mongo:7` | Payload [`mongooseAdapter`](https://payloadcms.com/docs/database/mongodb) — [`src/lib/payloadDb.ts`](src/lib/payloadDb.ts). |
+| **`mongo`** | `mongo:7` | Payload [`mongooseAdapter`](https://payloadcms.com/docs/database/mongodb) — [`src/lib/payloadDB.ts`](src/lib/payloadDB.ts). |
 | **`minio`** | `minio/minio` | S3-compatible API; [`@payloadcms/storage-s3`](https://payloadcms.com/docs/upload/storage-adapters) — [`src/plugins/storage/config.ts`](src/plugins/storage/config.ts). **Replaces** Vercel Blob / R2 for uploads. |
 | **`minio-init`** | `minio/mc` | Creates bucket `payload-media`, anonymous download — [`docker/minio/init-bucket.sh`](docker/minio/init-bucket.sh). |
 | **`mailpit`** | `axllent/mailpit` | SMTP `:1025`, web UI `:8025`. **Replaces** SendGrid for outbound mail testing/capture — [`src/payload.config.ts`](src/payload.config.ts) when `SMTP_HOST` is set. |

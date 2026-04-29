@@ -50,7 +50,7 @@ Use **[official docs](https://payloadcms.com/docs/)** as source of truth (mirror
 | **Folders / Trash / Presets** | [Folders](https://payloadcms.com/docs/folders/overview) · [Trash](https://payloadcms.com/docs/trash/overview) · [Query presets](https://payloadcms.com/docs/query-presets/overview) |
 | **Migration & support** | [Migration guide](https://payloadcms.com/docs/migration-guide/overview) · [Troubleshooting](https://payloadcms.com/docs/troubleshooting/troubleshooting) · [Integrations](https://payloadcms.com/docs/integrations/vercel-content-link) |
 
-**Repo map:** `src/payload.config.ts` · `src/lib/payloadDb.ts` · `src/plugins/index.ts` · `src/plugins/schema`, `src/collections` · `src/fields` · `src/lib/getPayload.ts` · `src/app/_data`, `src/utilities/getDocument.ts`, `src/utilities/getRedirects.ts`
+**Repo map:** `src/payload.config.ts` · `src/lib/payloadDB.ts` · `src/plugins/index.ts` · `src/plugins/schema`, `src/collections` · `src/fields` · `src/lib/getPayload.ts` · `src/app/_data`, `src/utilities/getDocument.ts`, `src/utilities/getRedirects.ts`
 
 ## Invariants
 

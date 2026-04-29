@@ -1,7 +1,7 @@
 const payload = require('payload')
 const path = require('path')
 
-// eslint-disable-next-line
+ 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../.env'),
 })

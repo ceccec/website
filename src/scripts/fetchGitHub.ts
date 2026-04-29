@@ -14,7 +14,7 @@ const headers = {
 }
 
 type ExistingDiscussion = {
-  docId: number
+  docID: string
   githubID: string
 }
 
@@ -303,7 +303,7 @@ async function fetchGitHub(): Promise<void> {
   })
 
   const existingDiscussions: ExistingDiscussion[] = existingDiscussionsResult.docs.map((thread) => ({
-    docId: thread.id,
+    docID: thread.id,
     githubID: thread.githubID as string,
   }))
 
@@ -341,7 +341,7 @@ async function fetchGitHub(): Promise<void> {
       if (existingDiscussion) {
         // Update existing discussion
         await payload.update({
-          id: existingDiscussion.docId,
+          id: existingDiscussion.docID,
           collection: 'community-help',
           data,
           overrideAccess: true,

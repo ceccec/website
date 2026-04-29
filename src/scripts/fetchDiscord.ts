@@ -46,7 +46,7 @@ type Message = {
 
 type ExistingThread = {
   discordID: string
-  docId: number
+  docID: string
   messageCount: number
 }
 
@@ -263,7 +263,7 @@ async function fetchDiscord() {
 
   const existingThreadIDs: ExistingThread[] = existingThreadsResult.docs.map((thread) => ({
     discordID: thread.discordID as string,
-    docId: thread.id,
+    docID: thread.id,
     messageCount: (thread.communityHelpJSON as any)?.messageCount || 0,
   }))
 
@@ -340,7 +340,7 @@ async function fetchDiscord() {
         if (existingThread) {
           // Update existing thread
           await payload.update({
-            id: existingThread.docId,
+            id: existingThread.docID,
             collection: 'community-help',
             data,
             overrideAccess: true,

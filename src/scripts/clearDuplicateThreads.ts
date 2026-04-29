@@ -23,9 +23,9 @@ async function clearDuplicateThreads() {
 
   const threadGroups = existingThreads.reduce(
     (acc, thread) => {
-      const groupId = thread.id
-      acc[groupId] = acc[groupId] || []
-      acc[groupId].push(thread)
+      const groupID = thread.id
+      acc[groupID] = acc[groupID] || []
+      acc[groupID].push(thread)
       return acc
     },
     {} as Record<string, typeof existingThreads>,

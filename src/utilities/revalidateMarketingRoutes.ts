@@ -4,7 +4,7 @@ import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
  */
 import { revalidatePath } from 'next/cache'
 
-import { revalidateDocumentIdCache } from './revalidateDocumentIdCache'
+import { revalidateDocumentIDCache } from './revalidateDocumentIDCache'
 
 /** Tag used with `fetchArchive` / category archives (`Categories` collection hooks). */
 export const ARCHIVES_CACHE_TAG = 'archives'
@@ -35,7 +35,7 @@ export function revalidateMarketingDocument(
   id: number | string,
   revalidateUrls: () => void,
 ): void {
-  revalidateDocumentIdCache(collection, id)
+  revalidateDocumentIDCache(collection, id)
   revalidateUrls()
 }
 

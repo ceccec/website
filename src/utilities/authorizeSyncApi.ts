@@ -2,10 +2,11 @@ import type { NextRequest } from 'next/server'
 import type { PayloadRequest } from 'payload'
 
 import { getPayload } from '@root/lib/getPayload'
+import { resolveFirstEnvValue } from '@root/lib/resolveGlobalField'
 import { NextResponse } from 'next/server'
 
-function syncSecret(): string | undefined {
-  return process.env.CRON_SECRET?.trim() || process.env.NEXT_PRIVATE_CRON_KEY?.trim()
+function syncSecret(): string {
+  return resolveFirstEnvValue(process.env.CRON_SECRET, process.env.NEXT_PRIVATE_CRON_KEY)
 }
 
 function authorizeSecret(req: NextRequest): boolean {

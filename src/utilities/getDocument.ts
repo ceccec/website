@@ -1,8 +1,8 @@
 import type { Config } from '@types'
+import type { TypedLocale } from 'payload'
 
 import localization from '@root/i18n/localization'
 import { getPayload } from '@root/lib/getPayload'
-import type { TypedLocale } from 'payload'
 import { unstable_cache } from 'next/cache'
 
 type Collection = keyof Config['collections']
@@ -30,7 +30,7 @@ async function getDocument(collection: Collection, slug: string, depth = 0, loca
   return page.docs[0]
 }
 
-async function getDocumentById(collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) {
+async function getDocumentByID(collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) {
   const payload = await getPayload()
   return payload.findByID({ id, collection, depth, locale })
 }
@@ -44,10 +44,10 @@ export const getCachedDocument = (collection: Collection, slug: string, depth = 
     tags: [`${collection}_${slug}`],
   })
 
-export const getCachedDocumentById = (collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) =>
+export const getCachedDocumentByID = (collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) =>
   unstable_cache(
-    async () => getDocumentById(collection, id, depth, locale),
-    [collection, 'byId', String(id), String(depth), locale],
+    async () => getDocumentByID(collection, id, depth, locale),
+    [collection, 'byID', String(id), String(depth), locale],
     {
       tags: [`${collection}_id_${String(id)}`],
     },

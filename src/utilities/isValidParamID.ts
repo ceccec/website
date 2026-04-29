@@ -1,5 +1,5 @@
 /**
- * Check if the input is a valid ID for a URL parameter.
+ * Check whether the value is a safe slug-style segment for URL params (alphanumeric).
  */
 export function isValidParamID(id: null | string): boolean {
   return Boolean(id && /^[a-z\d]+$/.test(id))

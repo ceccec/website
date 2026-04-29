@@ -2,14 +2,15 @@ import type { GlobalConfig } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
 import { revalidateTagImmediate } from '../utilities/revalidateTagImmediate'
+import { PUBLIC_SITE_SETTINGS_SLUG } from './globalSlugs'
 
 /**
  * Non-secret site configuration editable in Admin without redeploying.
- * `access.read` is open so server components can merge these with env (env wins when empty).
+ * `access.read` is open so server components can merge these with env (globals win when non-empty).
  * Do not store secrets here — use `integration-secrets`.
  */
 export const PublicSiteSettings: GlobalConfig = {
-  slug: 'public-site-settings',
+  slug: PUBLIC_SITE_SETTINGS_SLUG,
   access: {
     read: () => true,
     update: isAdmin,

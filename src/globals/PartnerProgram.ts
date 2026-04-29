@@ -1,5 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
+import { PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS } from '@root/site-builder/blockReferences'
+
 import { isAdmin } from '../access/isAdmin'
 import linkGroup from '../fields/linkGroup'
 import { revalidatePartnersProgramLayout } from '../utilities/revalidateMarketingRoutes'
@@ -103,32 +105,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'beforeDirectory',
           type: 'blocks',
-          blockReferences: [
-            'callout',
-            'cta',
-            'cardGrid',
-            'caseStudyCards',
-            'caseStudiesHighlight',
-            'caseStudyParallax',
-            'codeFeature',
-            'content',
-            'contentGrid',
-            'form',
-            'hoverCards',
-            'hoverHighlights',
-            'linkGrid',
-            'logoGrid',
-            'mediaBlock',
-            'mediaContent',
-            'mediaContentAccordion',
-            'pricing',
-            'reusableContentBlock',
-            'slider',
-            'statement',
-            'steps',
-            'stickyHighlights',
-            'exampleTabs',
-          ],
+          blockReferences: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
           blocks: [],
           label: 'Before Directory Blocks',
           labels: {
@@ -139,32 +116,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'afterDirectory',
           type: 'blocks',
-          blockReferences: [
-            'callout',
-            'cta',
-            'cardGrid',
-            'caseStudyCards',
-            'caseStudiesHighlight',
-            'caseStudyParallax',
-            'codeFeature',
-            'content',
-            'contentGrid',
-            'form',
-            'hoverCards',
-            'hoverHighlights',
-            'linkGrid',
-            'logoGrid',
-            'mediaBlock',
-            'mediaContent',
-            'mediaContentAccordion',
-            'pricing',
-            'reusableContentBlock',
-            'slider',
-            'statement',
-            'steps',
-            'stickyHighlights',
-            'exampleTabs',
-          ],
+          blockReferences: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
           blocks: [],
           label: 'After Directory Blocks',
           labels: {

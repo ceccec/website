@@ -2,13 +2,14 @@ import type { GlobalConfig } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
 import { revalidateTagImmediate } from '../utilities/revalidateTagImmediate'
+import { INTEGRATION_SECRETS_SLUG } from './globalSlugs'
 
 /**
  * Third-party API keys and internal secrets — admin-only read/write.
  * Resolved at runtime with `overrideAccess` in server hooks (never sent to anonymous clients).
  */
 export const IntegrationSecrets: GlobalConfig = {
-  slug: 'integration-secrets',
+  slug: INTEGRATION_SECRETS_SLUG,
   access: {
     read: isAdmin,
     update: isAdmin,

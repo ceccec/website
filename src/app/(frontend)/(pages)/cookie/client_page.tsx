@@ -5,6 +5,7 @@ import { Cell, Grid } from '@faceless-ui/css-grid'
 import RadioGroup from '@forms/fields/RadioGroup/index'
 import FormComponent from '@forms/Form/index'
 import { usePrivacy } from '@root/providers/Privacy/index'
+import Link from 'next/link'
 import React from 'react'
 
 import classes from './index.module.scss'
@@ -358,7 +359,7 @@ export const CookieClientPage: React.FC = () => {
             </p>
             <p>
               For more information about how we collect, use and share your information, see our
-              <a href="/privacy">Privacy Policy</a>.
+              <Link href="/privacy">Privacy Policy</Link>.
             </p>
             <h4>Changes</h4>
             <p>

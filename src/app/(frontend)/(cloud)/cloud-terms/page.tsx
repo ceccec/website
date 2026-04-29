@@ -3,6 +3,7 @@
 import { CreditCardList } from '@cloud/_components/CreditCardList'
 import { Gutter } from '@components/Gutter/index'
 import { Heading } from '@components/Heading/index'
+import Link from 'next/link'
 import React from 'react'
 
 export default function TermsClientPage() {
@@ -115,7 +116,7 @@ export default function TermsClientPage() {
                   <b>Service Levels and Support</b>. During the Subscription Term, unless under a
                   seperate signed agremeent, Payload will make the Service available in accordance
                   with and provide the support set forth in the Service Level Agreement located at
-                  <a href="/sla">Service Level Agreement</a> (the “
+                  <Link href="/sla">Service Level Agreement</Link> (the “
                   <i>
                     <b>SLA</b>
                   </i>
@@ -186,7 +187,7 @@ export default function TermsClientPage() {
                     <b>Account Information</b>
                   </i>
                   ”) in accordance with Payload’s privacy notices and privacy policy located at
-                  <a href="/privacy">payloadcms.com/privacy</a> as may be updated by Payload from
+                  <Link href="/privacy">payloadcms.com/privacy</Link> as may be updated by Payload from
                   time to time in its sole discretion (“
                   <i>
                     <b>Privacy Policy</b>
@@ -217,7 +218,8 @@ export default function TermsClientPage() {
                     <b>Fees</b>
                   </i>
                   ”). For a description of Payload’s current standard rates and pricing, please
-                  visit <a href="/cloud-pricing">https://payloadcms.com/cloud-pricing</a>. Payload
+                  visit{' '}
+                  <Link href="/cloud-pricing">https://payloadcms.com/cloud-pricing</Link>. Payload
                   offers the Service on a subscription basis with different service tiers to choose.
                   Customer will pay for any excess usage beyond any usage limitations or metrics on
                   which Fees are based at the rates set forth in the Order, or, if no such rates are

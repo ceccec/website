@@ -31,15 +31,17 @@ export const rootParserOptions = {
   ecmaVersion: 'latest',
   projectService: {
     maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 40,
+    // No `**` in globs — typescript-eslint disallowDefaultProjectWideGlob (performance).
+    // Do not list root `*.js` / `*.d.ts` / etc. here: they are already in `tsconfig.json` and
+    // duplicate entries cause "included by allowDefaultProject but also in project service".
     allowDefaultProject: [
-      'scripts/**/*.ts',
-      'scripts/**/*.js',
-      'scripts/**/*.mjs',
-      '*.js',
-      '*.mjs',
-      '*.cjs',
-      '*.spec.ts',
-      '*.d.ts',
+      'scripts/build.mjs',
+      'scripts/custom-server.example.mjs',
+      'scripts/generate-payload-cursor-rules.mjs',
+      'scripts/migrate-production.mjs',
+      'scripts/next-start-unix.mjs',
+      'scripts/sync-cloudflare-bindings.mjs',
+      'scripts/vercel-config-dry.mjs',
       'next-sitemap.config.cjs',
     ],
   },
@@ -70,7 +72,6 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         ...rootParserOptions,
-        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },

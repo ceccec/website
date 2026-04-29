@@ -7,6 +7,7 @@ import richText from '../../fields/richText'
 
 export const StickyHighlights: Block = {
   slug: 'stickyHighlights',
+  dbName: 'shl',
   fields: [
     blockFields({
       name: 'stickyHighlightsFields',
@@ -14,6 +15,7 @@ export const StickyHighlights: Block = {
         {
           name: 'highlights',
           type: 'array',
+          dbName: 'rows',
           fields: [
             richText(),
             {
@@ -31,6 +33,7 @@ export const StickyHighlights: Block = {
             {
               name: 'type',
               type: 'radio',
+              enumName: 'shl_row_type',
               options: [
                 {
                   label: 'Code',

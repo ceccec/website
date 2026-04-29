@@ -4,6 +4,7 @@ import { blockFields } from '../../fields/blockFields'
 
 export const CaseStudyParallax: Block = {
   slug: 'caseStudyParallax',
+  dbName: 'csp',
   fields: [
     blockFields({
       name: 'caseStudyParallaxFields',

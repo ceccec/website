@@ -11,6 +11,7 @@ interface Args {
 export const themeField: (width?: number) => Field = (width) => ({
   name: 'theme',
   type: 'select',
+  enumName: 'layout_theme',
   admin: {
     description: 'Leave blank for system default',
     width: width ? `${width}%` : '50%',
@@ -30,6 +31,7 @@ export const themeField: (width?: number) => Field = (width) => ({
 export const backgroundField: Field = {
   name: 'background',
   type: 'select',
+  enumName: 'layout_background',
   admin: {
     width: '50%',
   },
@@ -58,6 +60,7 @@ export const blockFields = ({ name, fields, overrides }: Args): Field =>
     {
       name,
       type: 'group',
+      dbName: 'main',
       admin: {
         hideGutter: true,
         style: {

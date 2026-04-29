@@ -6,6 +6,7 @@ import richText from '../../fields/richText'
 
 export const MediaContent: Block = {
   slug: 'mediaContent',
+  dbName: 'mcnt',
   fields: [
     blockFields({
       name: 'mediaContentFields',
@@ -16,6 +17,7 @@ export const MediaContent: Block = {
             {
               name: 'alignment',
               type: 'select',
+              enumName: 'mc_align',
               admin: {
                 description: 'Choose how to align the content for this block.',
                 width: '50%',
@@ -35,6 +37,7 @@ export const MediaContent: Block = {
             {
               name: 'mediaWidth',
               type: 'select',
+              enumName: 'mc_width',
               admin: {
                 description: 'Choose how wide the media should be.',
                 width: '50%',

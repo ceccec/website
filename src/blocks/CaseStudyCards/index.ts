@@ -5,6 +5,7 @@ import richText from '../../fields/richText'
 
 export const CaseStudyCards: Block = {
   slug: 'caseStudyCards',
+  dbName: 'csc',
   fields: [
     blockFields({
       name: 'caseStudyCardFields',

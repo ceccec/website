@@ -1,5 +1,7 @@
+import fs from 'fs'
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
@@ -12,13 +14,15 @@ import {
   LinkFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
+import { r2Storage } from '@payloadcms/storage-r2'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { type CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
+import type { GetPlatformProxyOptions } from 'wrangler'
 import link from '@root/fields/link'
 import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
-import nodemailerSendgrid from 'nodemailer-sendgrid'
 import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
@@ -86,16 +90,62 @@ import createReleasePost from './scripts/createReleasePost'
 import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
 import redeployWebsite from './scripts/redeployWebsite'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
+import { createSendGridMailTransport } from './email/sendgridMailTransport'
+import { commaSeparatedEnv } from './lib/commaEnv'
+import { getDeploymentTarget } from './lib/deploymentTarget'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 const sendGridAPIKey = process.env.SENDGRID_API_KEY
 
+/** Web API (HTTPS), same as legacy nodemailer-sendgrid; works when SMTP :587 is blocked. */
 const sendgridConfig = {
-  transportOptions: nodemailerSendgrid({
-    apiKey: sendGridAPIKey,
-  }),
+  skipVerify: true,
+  transportOptions: createSendGridMailTransport({ apiKey: sendGridAPIKey }),
+}
+
+const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
+
+const isCLI = process.argv.some((value) => realpath(value)?.endsWith(path.join('payload', 'bin.js')))
+const isProduction = process.env.NODE_ENV === 'production'
+
+const createLog =
+  (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
+    if (typeof objOrMsg === 'string') {
+      fn(JSON.stringify({ level, msg: objOrMsg }))
+    } else {
+      fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
+    }
+  }
+
+const cloudflareLogger = {
+  level: process.env.PAYLOAD_LOG_LEVEL || 'info',
+  trace: createLog('trace', console.debug),
+  debug: createLog('debug', console.debug),
+  info: createLog('info', console.log),
+  warn: createLog('warn', console.warn),
+  error: createLog('error', console.error),
+  fatal: createLog('fatal', console.error),
+  silent: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} as any
+
+const deploymentTarget = getDeploymentTarget()
+
+const cloudflare: CloudflareContext | undefined =
+  deploymentTarget === 'cloudflare'
+    ? isCLI || !isProduction
+      ? await getCloudflareContextFromWrangler()
+      : await getCloudflareContext({ async: true })
+    : undefined
+
+const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+
+if (deploymentTarget === 'vercel' && !postgresUrl.trim()) {
+  throw new Error(
+    'Vercel / Postgres hosting requires POSTGRES_URL or DATABASE_URL (postgres://…). Remove PAYLOAD_HOSTING=vercel to use Cloudflare D1.',
+  )
 }
 
 export default buildConfig({
@@ -302,13 +352,24 @@ export default buildConfig({
     Budgets,
   ],
   cors: [
-    process.env.PAYLOAD_PUBLIC_APP_URL || '',
-    'https://payloadcms.com',
-    'https://discord.com/api',
-  ].filter(Boolean),
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
-  }),
+    ...new Set(
+      [
+        ...commaSeparatedEnv(process.env.PAYLOAD_CORS_ORIGINS),
+        process.env.PAYLOAD_PUBLIC_APP_URL || '',
+        'https://payloadcms.com',
+        'https://discord.com/api',
+      ].filter(Boolean),
+    ),
+  ],
+  db:
+    deploymentTarget === 'vercel'
+      ? postgresAdapter({
+          pool: {
+            connectionString: postgresUrl,
+          },
+        })
+      : sqliteD1Adapter({ binding: cloudflare!.env.D1 }),
+  logger: isProduction && deploymentTarget === 'cloudflare' ? cloudflareLogger : undefined,
   defaultDepth: 1,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -593,19 +654,33 @@ export default buildConfig({
         },
       },
     }),
-    vercelBlobStorage({
-      cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
-      collections: {
-        media: {
-          generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
-        },
-      },
-      enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    ...(deploymentTarget === 'cloudflare'
+      ? [
+          r2Storage({
+            bucket: cloudflare!.env.R2,
+            collections: { media: true },
+          }),
+        ]
+      : [
+          vercelBlobStorage({
+            collections: { media: true },
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+          }),
+        ]),
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 })
+
+function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
+    ({ getPlatformProxy }) =>
+      getPlatformProxy({
+        envFiles: [],
+        environment: process.env.CLOUDFLARE_ENV,
+        remoteBindings: false,
+      } satisfies GetPlatformProxyOptions),
+  )
+}

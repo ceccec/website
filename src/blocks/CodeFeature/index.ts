@@ -7,6 +7,7 @@ import richText from '../../fields/richText'
 
 export const CodeFeature: Block = {
   slug: 'codeFeature',
+  dbName: 'cdf',
   fields: [
     blockFields({
       name: 'codeFeatureFields',
@@ -24,6 +25,7 @@ export const CodeFeature: Block = {
             {
               name: 'alignment',
               type: 'select',
+              enumName: 'cfa_align',
               admin: {
                 description: 'Choose how to align the content for this block.',
                 width: '50%',
@@ -63,6 +65,7 @@ export const CodeFeature: Block = {
                 {
                   name: 'language',
                   type: 'select',
+                  enumName: 'cta_lang',
                   defaultValue: 'none',
                   options: [
                     {

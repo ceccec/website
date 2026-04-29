@@ -5,6 +5,7 @@ import link from '../../fields/link'
 
 export const Pricing: Block = {
   slug: 'pricing',
+  dbName: 'prc',
   fields: [
     blockFields({
       name: 'pricingFields',
@@ -12,6 +13,7 @@ export const Pricing: Block = {
         {
           name: 'plans',
           type: 'array',
+          dbName: 'tiers',
           fields: [
             {
               name: 'name',
@@ -63,10 +65,12 @@ export const Pricing: Block = {
             {
               name: 'features',
               type: 'array',
+              dbName: 'feats',
               fields: [
                 {
                   name: 'icon',
                   type: 'radio',
+                  enumName: 'pf_icon',
                   options: [
                     {
                       label: 'Check',

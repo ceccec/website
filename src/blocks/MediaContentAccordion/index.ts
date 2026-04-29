@@ -5,6 +5,7 @@ import link from '../../fields/link'
 
 export const MediaContentAccordion: Block = {
   slug: 'mediaContentAccordion',
+  dbName: 'mca',
   fields: [
     blockFields({
       name: 'mediaContentAccordionFields',
@@ -12,6 +13,7 @@ export const MediaContentAccordion: Block = {
         {
           name: 'alignment',
           type: 'select',
+          enumName: 'mc_align',
           admin: {
             description: 'Choose how to align the content for this block.',
           },
@@ -56,6 +58,7 @@ export const MediaContentAccordion: Block = {
                 {
                   name: 'position',
                   type: 'select',
+                  enumName: 'mca_tab_pos',
                   admin: {
                     description: 'Choose how to position the media itself.',
                     width: '50%',
@@ -79,6 +82,7 @@ export const MediaContentAccordion: Block = {
                 {
                   name: 'background',
                   type: 'select',
+                  enumName: 'mca_tab_bg',
                   admin: {
                     description: 'Select the background you want to sit behind the media.',
                     width: '50%',

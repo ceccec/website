@@ -1,15 +1,26 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
+  // Account targeting (optional): top-level "account_id" OR env CLOUDFLARE_ACCOUNT_ID — https://developers.cloudflare.com/workers/wrangler/configuration/#inheritable-keys
+  // Find account ID: https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/
+  // Auth: `wrangler login` locally; CI use CLOUDFLARE_API_TOKEN — https://developers.cloudflare.com/workers/wrangler/ci-cd/
   "name": "payload-website",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-04-29",
   "compatibility_flags": [
-    "nodejs_compat"
+    "nodejs_compat",
+    "global_fetch_strictly_public"
   ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "REPLACE_AFTER_wrangler_d1_create",
+      "database_name": "payload-website"
+    }
+  ],
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
@@ -17,6 +28,10 @@
     }
   ],
   "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "payload-website-media"
+    },
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "payload-website-opennext-cache"

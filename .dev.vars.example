@@ -1,0 +1,9 @@
+# Copy to .dev.vars for `wrangler dev` / local Worker runtime (not committed).
+# See https://developers.cloudflare.com/workers/wrangler/configuration/#secrets
+#
+# For all app variables, also see .env.example (Next.js + Payload in dev).
+
+PAYLOAD_SECRET=replace-with-openssl-rand-hex-32
+
+# Optional: match PAYLOAD_LOG_LEVEL in production Workers (info, debug, warn, error)
+# PAYLOAD_LOG_LEVEL=info

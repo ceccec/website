@@ -4,6 +4,7 @@ import { blockFields } from '../../fields/blockFields'
 
 export const MediaBlock: Block = {
   slug: 'mediaBlock',
+  dbName: 'mb',
   fields: [
     blockFields({
       name: 'mediaBlockFields',
@@ -11,6 +12,7 @@ export const MediaBlock: Block = {
         {
           name: 'position',
           type: 'select',
+          enumName: 'mb_pos',
           defaultValue: 'default',
           options: [
             {

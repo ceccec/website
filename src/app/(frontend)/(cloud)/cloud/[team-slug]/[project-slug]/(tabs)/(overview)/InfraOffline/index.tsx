@@ -286,9 +286,11 @@ export const InfraOffline: React.FC<{
 
                         <h6>Required ENV variables</h6>
                         <p className={classes.helpText}>
-                          Your Payload config must use <code>MONGODB_URI/DATABASE_URI</code> and{' '}
-                          <code>PAYLOAD_SECRET</code> variables. Payload Cloud provides these for
-                          you. Ensure your spelling is correct.
+                          Match your host: Cloudflare Workers uses <code>D1</code>, <code>R2</code>,
+                          and <code>PAYLOAD_SECRET</code>. Postgres + Vercel Blob uses{' '}
+                          <code>POSTGRES_URL</code>, <code>BLOB_READ_WRITE_TOKEN</code>, and{' '}
+                          <code>PAYLOAD_SECRET</code>. Payload Cloud can provision bindings for you —
+                          check spelling.
                         </p>
 
                         <h6>Are you specifying a port correctly?</h6>

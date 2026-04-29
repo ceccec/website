@@ -5,6 +5,8 @@ import richText from '../../fields/richText'
 
 export const Callout: Block = {
   slug: 'callout',
+  /** D1/SQLite table prefix only; API uses `blockType: 'callout'`. */
+  dbName: 'co',
   fields: [
     blockFields({
       name: 'calloutFields',

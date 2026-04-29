@@ -6,6 +6,7 @@ import richText from '../../fields/richText'
 
 export const Statement: Block = {
   slug: 'statement',
+  dbName: 'stm',
   fields: [
     blockFields({
       name: 'statementFields',
@@ -17,6 +18,7 @@ export const Statement: Block = {
         {
           name: 'assetType',
           type: 'select',
+          enumName: 'stm_asset',
           defaultValue: 'media',
           label: 'Asset Type',
           options: [
@@ -53,6 +55,7 @@ export const Statement: Block = {
             {
               name: 'mediaWidth',
               type: 'select',
+              enumName: 'stm_mw',
               admin: {
                 condition: (_, siblingData) => siblingData.assetType === 'media',
                 width: '50%',
@@ -81,6 +84,7 @@ export const Statement: Block = {
             {
               name: 'backgroundGlow',
               type: 'select',
+              enumName: 'stm_glow',
               defaultValue: 'none',
               label: 'Background Glow',
               options: [

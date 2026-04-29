@@ -3,11 +3,17 @@
   "version": "1.0.4",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=10.33.2"
+  },
   "scripts": {
     "build": "pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "generate:types": "pnpm run generate:types:cloudflare && pnpm run generate:types:payload",
+    "generate:types:cloudflare": "pnpm exec wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "generate:types:payload": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:llms": "payload run src/scripts/generateLLMs.ts",
     "build:skipDocs": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config ./next-sitemap.config.cjs",
@@ -17,35 +23,49 @@
     "lint": "next lint",
     "prettier:fix": "prettier --write .",
     "migrate-lexical-script": "payload run ./src/migrate.ts",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf:build": "pnpm exec opennextjs-cloudflare build",
+    "cf:populate": "pnpm exec opennextjs-cloudflare populateCache remote",
+    "cf:deploy": "pnpm exec opennextjs-cloudflare deploy",
+    "preview": "pnpm run cf:build && pnpm exec opennextjs-cloudflare preview",
+    "deploy": "pnpm run deploy:database && pnpm run deploy:app",
+    "opennext:build": "pnpm generate:llms && cross-env NODE_OPTIONS=--no-deprecation pnpm exec opennextjs-cloudflare build",
+    "deploy:app": "pnpm run opennext:build && pnpm exec opennextjs-cloudflare deploy",
+    "deploy:database": "node scripts/migrate-production.mjs",
+    "workers:build": "pnpm run deploy:database && pnpm run opennext:build",
+    "workers:deploy": "pnpm exec opennextjs-cloudflare deploy",
+    "upload": "pnpm run cf:build && pnpm exec opennextjs-cloudflare upload",
+    "cf-typegen": "pnpm exec wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "deploy:vercel:dry": "node scripts/vercel-config-dry.mjs",
+    "deploy:cloudflare:dry": "pnpm run opennext:build && pnpm exec wrangler deploy --dry-run",
+    "deploy:dry": "pnpm run deploy:vercel:dry && pnpm run deploy:cloudflare:dry"
   },
   "dependencies": {
     "@docsearch/react": "^3.9.0",
     "@faceless-ui/collapsibles": "^2.0.0-beta.0",
     "@faceless-ui/css-grid": "1.3.0-rc.0",
-    "@faceless-ui/modal": "3.0.0-beta.2",
+    "@faceless-ui/modal": "^3.0.0",
     "@faceless-ui/mouse-info": "2.0.0-beta.0",
     "@faceless-ui/scroll-info": "2.0.0",
     "@faceless-ui/slider": "2.0.0-beta.0",
     "@faceless-ui/window-info": "3.0.1",
     "@opennextjs/cloudflare": "^1.19.4",
-    "@payloadcms/db-mongodb": "3.72.0",
-    "@payloadcms/email-nodemailer": "3.72.0",
-    "@payloadcms/live-preview-react": "3.72.0",
-    "@payloadcms/next": "3.72.0",
-    "@payloadcms/plugin-form-builder": "3.72.0",
-    "@payloadcms/plugin-nested-docs": "3.72.0",
-    "@payloadcms/plugin-redirects": "3.72.0",
-    "@payloadcms/plugin-seo": "3.72.0",
-    "@payloadcms/richtext-lexical": "3.72.0",
-    "@payloadcms/storage-vercel-blob": "3.72.0",
-    "@payloadcms/ui": "3.72.0",
+    "@payloadcms/db-d1-sqlite": "3.84.1",
+    "@payloadcms/db-postgres": "3.84.1",
+    "@payloadcms/email-nodemailer": "3.84.1",
+    "@payloadcms/live-preview-react": "3.84.1",
+    "@payloadcms/next": "3.84.1",
+    "@payloadcms/plugin-form-builder": "3.84.1",
+    "@payloadcms/plugin-nested-docs": "3.84.1",
+    "@payloadcms/plugin-redirects": "3.84.1",
+    "@payloadcms/plugin-seo": "3.84.1",
+    "@payloadcms/richtext-lexical": "3.84.1",
+    "@payloadcms/storage-r2": "3.84.1",
+    "@payloadcms/storage-vercel-blob": "3.84.1",
+    "@payloadcms/ui": "3.84.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-portal": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@sendgrid/mail": "^8.1.4",
     "@stripe/react-stripe-js": "^3.1.1",
     "@stripe/stripe-js": "^1.47.0",
     "@zubricks/plugin-google-analytics": "^1.0.8",
@@ -59,11 +79,9 @@
     "graphql": "16.8.1",
     "gray-matter": "^4.0.3",
     "instantsearch.js": "^4.72.2",
-    "next": "15.4.10",
+    "next": "15.5.15",
     "next-sitemap": "^4.0.6",
-    "node-cron": "^3.0.3",
-    "nodemailer-sendgrid": "^1.0.3",
-    "payload": "3.72.0",
+    "payload": "3.84.1",
     "prism-react-renderer": "^2.3.1",
     "qs-esm": "7.0.2",
     "react": "19.2.3",
@@ -83,7 +101,8 @@
     "uuid": "10.0.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "15.3.4",
+    "@cloudflare/workers-types": "^4.20260426.1",
+    "@next/bundle-analyzer": "15.5.15",
     "@octokit/types": "^9.0.0",
     "@payloadcms/eslint-config": "3.28.0",
     "@payloadcms/eslint-plugin": "3.28.0",
@@ -93,19 +112,46 @@
     "@types/react-dom": "19.1.6",
     "@types/react-google-recaptcha": "^2.1.9",
     "cli-progress": "^3.11.2",
-    "discord.js": "^14.7.1",
     "dotenv": "^16.4.7",
     "eslint": "9.22.0",
     "prettier": "3.4.2",
     "typescript": "5.7.3",
     "wrangler": "^4.86.0"
   },
+  "_futureDependencies": {
+    "_comment": "Not installed — JSON cannot use // comments; copy a line into dependencies/devDependencies when you implement the feature.",
+    "dependencies": {
+      "node-cron": "^3.0.3"
+    },
+    "devDependencies": {
+      "discord.js": "^14.7.1"
+    }
+  },
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp",
       "@parcel/watcher",
-      "esbuild"
-    ]
+      "esbuild",
+      "workerd"
+    ],
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "zod": "4"
+      }
+    },
+    "overrides": {
+      "formdata-node": "6.0.3"
+    }
   },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+  "packageManager": "pnpm@10.33.2",
+  "cloudflare": {
+    "bindings": {
+      "PAYLOAD_SECRET": {
+        "description": "Required. Generate with `openssl rand -hex 32`"
+      },
+      "PAYLOAD_LOG_LEVEL": {
+        "description": "Optional. `info` | `debug` | `warn` | `error` — JSON logs in Workers (see with-cloudflare-d1 template)"
+      }
+    }
+  }
 }

@@ -51,10 +51,10 @@ export const useCustomerPortal = (args: {
           method: 'POST',
         })
 
-        const data = await req.json()
+        const data = (await req.json()) as { error?: string; url?: string }
 
         if (req.ok) {
-          router.push(data.url)
+          if (data.url) router.push(data.url)
         } else {
           throw new Error(data?.error || 'Something went wrong')
         }

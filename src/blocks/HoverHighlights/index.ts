@@ -6,6 +6,7 @@ import richText from '../../fields/richText'
 
 export const HoverHighlights: Block = {
   slug: 'hoverHighlights',
+  dbName: 'hhl',
   fields: [
     blockFields({
       name: 'hoverHighlightsFields',
@@ -17,6 +18,7 @@ export const HoverHighlights: Block = {
         {
           name: 'highlights',
           type: 'array',
+          dbName: 'rows',
           fields: [
             {
               name: 'text',

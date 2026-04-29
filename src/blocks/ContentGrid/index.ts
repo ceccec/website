@@ -6,6 +6,7 @@ import richText from '../../fields/richText'
 
 export const ContentGrid: Block = {
   slug: 'contentGrid',
+  dbName: 'cgr',
   fields: [
     blockFields({
       name: 'contentGridFields',
@@ -16,6 +17,7 @@ export const ContentGrid: Block = {
             {
               name: 'style',
               type: 'select',
+              enumName: 'cgr_style',
               defaultValue: 'gridBelow',
               label: 'Style',
               options: [

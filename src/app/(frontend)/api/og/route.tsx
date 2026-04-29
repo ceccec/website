@@ -3,8 +3,7 @@ import type { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
 import { NextResponse } from 'next/server'
 
-export const runtime = 'edge'
-
+/** Default Node route handler; `edge` is not supported here with OpenNext Cloudflare bundling. */
 export async function GET(req: NextRequest): Promise<ImageResponse> {
   try {
     // Make sure the font exists in the specified path:

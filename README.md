@@ -16,6 +16,55 @@ This site showcases lots of cool stuff like how to use Next.js 15 + Payload's lo
 - GraphQL for Payload Cloud
 - Stripe for Payload Cloud
 
+## Deployment
+
+The app chooses **database + file storage** from environment variables (see [`src/lib/deploymentTarget.ts`](./src/lib/deploymentTarget.ts) and [`payload.config.ts`](./src/payload.config.ts)):
+
+| Platform | When it activates | Payload DB | Uploads |
+|----------|-------------------|------------|---------|
+| **Cloudflare Workers** (default) | No `POSTGRES_URL` / `DATABASE_URL` for Postgres, or `PAYLOAD_HOSTING=cloudflare` | [**D1**](https://developers.cloudflare.com/d1/) | [**R2**](https://developers.cloudflare.com/r2/) |
+| **Vercel / Node + Postgres** | `POSTGRES_URL` or `DATABASE_URL` (`postgres://…`), or `PAYLOAD_HOSTING=vercel` | [**Postgres**](https://github.com/payloadcms/payload/tree/main/packages/db-postgres) | [**Vercel Blob**](https://vercel.com/docs/storage/vercel-blob) (`BLOB_READ_WRITE_TOKEN`) |
+
+Use **one production database per deployment**: SQLite (D1) and Postgres schemas are not interchangeable—run **`pnpm exec payload migrate`** (and backups) against each provider you use. Compare [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1) vs [**with-vercel-website**](https://github.com/payloadcms/payload/tree/main/templates/with-vercel-website).
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fwebsite)
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/payloadcms/website)
+
+If you deploy from a **fork**, replace `payloadcms/website` in both URLs with your `owner/repo`.
+
+### Deploy to Vercel (Postgres + Blob)
+
+Connect [**Neon**](https://neon.tech/) or another Postgres and [**Vercel Blob**](https://vercel.com/docs/storage/vercel-blob) (see [with-vercel-website README](https://github.com/payloadcms/payload/blob/main/templates/with-vercel-website/README.md)). Set **`POSTGRES_URL`** (or **`DATABASE_URL`**) and **`BLOB_READ_WRITE_TOKEN`**, **`PAYLOAD_SECRET`**, and the rest of [`.env.example`](./.env.example). **Build:** `pnpm build`. **`deploy:database`** runs **`payload migrate`** only (no Wrangler) when Postgres is configured.
+
+More detail: [DEPLOYMENT.md](./DEPLOYMENT.md). Environment variables: [`.env.example`](./.env.example). Local Wrangler secrets template: [`.dev.vars.example`](./.dev.vars.example).
+
+### Cloudflare Workers (native bindings)
+
+Click **Deploy to Cloudflare** to fork into your account, provision resources from [`wrangler.jsonc`](./wrangler.jsonc), and deploy with [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/). The [Deploy to Cloudflare](https://developers.cloudflare.com/workers/platform/deploy-buttons/) flow reads Wrangler config and can create or bind **D1**, **R2**, and related resources automatically. The repository must be **public** for others to use the button ([limitations](https://developers.cloudflare.com/workers/platform/deploy-buttons/#limitations)).
+
+Payload uses these **native Worker bindings** (see [`wrangler.jsonc`](./wrangler.jsonc)):
+
+- **D1** (`D1`) — SQLite database for Payload
+- **R2** (`R2`) — media uploads
+- **R2** (`NEXT_INC_CACHE_R2_BUCKET`) — OpenNext incremental cache
+- **ASSETS** — static assets from `.open-next/assets`
+- **IMAGES** — Cloudflare Images
+- **WORKER_SELF_REFERENCE** — service binding for the same Worker
+
+Set **`PAYLOAD_SECRET`** (and other secrets you use in production) when prompted; [`package.json`](./package.json) `cloudflare.bindings` lists descriptions for the deploy UI. After first provisioning, ensure **`database_id`** in [`wrangler.jsonc`](./wrangler.jsonc) matches your D1 database if it was still a placeholder.
+
+As in [with-cloudflare-d1](https://github.com/payloadcms/payload/blob/main/templates/with-cloudflare-d1/README.md): **bundle size** may require a **paid Workers plan** ([limits](https://developers.cloudflare.com/workers/platform/limits/#worker-size)). **GraphQL** may be limited on Workers ([upstream context](https://github.com/cloudflare/workerd/issues/5175)). **`pnpm run opennext:build`** runs **`generate:llms`**; set **`GITHUB_ACCESS_TOKEN`** in CI or Workers env if you want full doc-linked output during build.
+
+In Workers Builds, either:
+
+1. **Split build and deploy (recommended):** **Build** — `pnpm run workers:build`, **Deploy** — `pnpm run workers:deploy`. If the UI pre-fills **Build** with `pnpm run build`, switch it—plain `build` targets Next.js only; Workers needs the OpenNext pipeline in `workers:build`.
+2. **Single deploy step:** **Deploy** — `pnpm run deploy`, **Build** empty if your project allows install-only before deploy.
+
+**Dry checks (no publish):** `pnpm run deploy:dry` runs `deploy:vercel:dry` then `deploy:cloudflare:dry` ([`package.json`](./package.json)); CI runs `deploy:vercel:dry` only.
+
+Wrangler/D1 local workflow: [DEPLOYMENT.md](./DEPLOYMENT.md).
+
 ## ⭐ The CMS
 
 [Payload](https://github.com/payloadcms/payload) is leveraged for everything that this site does, outside of its documentation which is all stored as Markdown in the Payload repo on GitHub. Both the CMS and the website frontend are found within the same app folder.

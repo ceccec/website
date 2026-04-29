@@ -37,35 +37,54 @@ const localhost = process.env.NEXT_PUBLIC_IS_LIVE
       },
     ]
 
+function imageRemotePatternsFromEnv() {
+  const patterns = []
+  for (const key of ['NEXT_PUBLIC_SITE_URL', 'NEXT_PUBLIC_CLOUD_CMS_URL']) {
+    const raw = process.env[key]
+    if (!raw?.trim()) continue
+    try {
+      const u = new URL(raw)
+      patterns.push({
+        protocol: u.protocol === 'http:' ? 'http' : 'https',
+        hostname: u.hostname,
+        port: u.port || '',
+        pathname: '/**',
+      })
+    } catch {
+      // ignore
+    }
+  }
+  const extra = process.env.NEXT_PUBLIC_IMAGE_REMOTE_HOSTS
+  if (extra?.trim()) {
+    for (const hostname of extra.split(',').map((s) => s.trim()).filter(Boolean)) {
+      patterns.push({
+        protocol: 'https',
+        hostname,
+        port: '',
+        pathname: '/**',
+      })
+    }
+  }
+  return patterns
+}
+
 const nextConfig = withBundleAnalyzer({
+  /** Prefer this app’s lockfile when a parent directory has another (e.g. npm + pnpm). */
+  outputFileTracingRoot: dirname,
   eslint: {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year,
+    localPatterns: [
+      {
+        pathname: '/api/media/file/**',
+      },
+    ],
     remotePatterns: [
       ...localhost,
-      {
-        protocol: 'https',
-        hostname: 'cms.payloadcms.com',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cloud-api.payloadcms.com',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cms.local.payloadcms.com',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'stage.cms.payloadcms.com',
-        port: '',
-      },
+      ...imageRemotePatternsFromEnv(),
       {
         protocol: 'https',
         hostname: 'cdn.discordapp.com',
@@ -83,7 +102,8 @@ const nextConfig = withBundleAnalyzer({
       },
       {
         protocol: 'https',
-        hostname: process.env.BLOB_STORE_ID,
+        hostname: '**.public.blob.vercel-storage.com',
+        pathname: '/**',
       },
     ].filter(Boolean),
   },
@@ -166,4 +186,11 @@ const nextConfig = withBundleAnalyzer({
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
 
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+if (process.env.PAYLOAD_HOSTING !== 'vercel' && process.env.VERCEL !== '1') {
+  import('@opennextjs/cloudflare').then((m) =>
+    m.initOpenNextCloudflareForDev({
+      remoteBindings: false,
+      envFiles: [],
+    }),
+  )
+}

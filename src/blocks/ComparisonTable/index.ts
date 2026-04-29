@@ -4,6 +4,7 @@ import { blockFields } from '@root/fields/blockFields'
 
 export const ComparisonTable: Block = {
   slug: 'comparisonTable',
+  dbName: 'cmp',
   fields: [
     blockFields({
       name: 'comparisonTableFields',
@@ -16,6 +17,7 @@ export const ComparisonTable: Block = {
         {
           name: 'style',
           type: 'select',
+          enumName: 'cmp_style',
           defaultValue: 'default',
           label: 'Style',
           options: [

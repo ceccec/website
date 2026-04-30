@@ -2,6 +2,7 @@
 
 import type { OnSubmit } from '@forms/types'
 import type { Project, Team } from '@root/payload-cloud-types'
+import type { AddDomainFormData } from '@root/types/forms'
 
 import { Text } from '@forms/fields/Text/index'
 import Form from '@forms/Form/index'
@@ -33,13 +34,14 @@ export const AddDomain: React.FC<{
 
   const saveDomain = React.useCallback<OnSubmit>(
     async ({ data }) => {
+      const formData = data as Partial<AddDomainFormData>
       // The type `Project.domains[0]` -> does not work because the array is not required - Payload type issue?
       const newDomain: {
         cloudflareID?: string
         domain: string
         id?: string
       } = {
-        domain: data[domainFieldPath] as string,
+        domain: formData[domainFieldPath] as string,
       }
 
       const domainExists = projectDomains?.find(

@@ -5,7 +5,7 @@ import type { TeamWithCustomer } from '@cloud/_api/fetchTeam'
 import type { ProjectDeployResponse } from '@root/app/(frontend)/types'
 import type { Plan, Project, Team, Template, User } from '@root/payload-cloud-types'
 
-import { revalidateCache } from '@cloud/_actions/revalidateCache'
+import { revalidateCloudInfraCache } from '@cloud/_actions/revalidateCloudInfra'
 import { BranchSelector } from '@cloud/_components/BranchSelector/index'
 import { ComparePlans } from '@cloud/_components/ComparePlans/index'
 import { CreditCardSelector } from '@cloud/_components/CreditCardSelector/index'
@@ -111,15 +111,43 @@ const Checkout: React.FC<{
     })
   }, [])
 
-  const handleTeamChange = useCallback((incomingTeam: Team) => {
-    // TODO: query the team's customer and attach it here
-    // just make a simple fetch to `/api/teams/customer` and append it to the team
-    const teamWithCustomer = incomingTeam as TeamWithCustomer
+  const handleTeamChange = useCallback(async (incomingTeam: Team) => {
+    if (!incomingTeam) {
+      return
+    }
 
-    if (incomingTeam) {
+    try {
+      // Fetch team's Stripe customer for payment method selection
+      const customerResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${incomingTeam.id}/with-customer`,
+        {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      )
+
+      if (customerResponse.ok) {
+        const teamWithCustomer = (await customerResponse.json()) as TeamWithCustomer
+        dispatchCheckoutState({
+          type: 'SET_TEAM',
+          payload: teamWithCustomer,
+        })
+      } else {
+        // Fallback: use team without customer data
+        dispatchCheckoutState({
+          type: 'SET_TEAM',
+          payload: incomingTeam as TeamWithCustomer,
+        })
+      }
+    } catch (error) {
+      console.error('Failed to fetch team customer:', error) // eslint-disable-line no-console
+      // Fallback: use team without customer data
       dispatchCheckoutState({
         type: 'SET_TEAM',
-        payload: teamWithCustomer,
+        payload: incomingTeam as TeamWithCustomer,
       })
     }
   }, [])
@@ -158,9 +186,12 @@ const Checkout: React.FC<{
       )
 
       if (response.ok) {
-        await revalidateCache({
-          tag: `projects`,
-        })
+        if (project?.id != null && String(project.id) !== '') {
+          await revalidateCloudInfraCache({
+            projectRecordId: project.id,
+            projectSlug: project.slug,
+          })
+        }
 
         router.push(`/${cloudSlug}`)
 

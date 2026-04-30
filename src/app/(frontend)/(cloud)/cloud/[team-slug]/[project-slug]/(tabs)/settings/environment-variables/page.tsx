@@ -58,6 +58,7 @@ export default async ({
             environmentSlug={environmentSlug}
             envs={project?.environmentVariables}
             projectID={project?.id}
+            projectSlug={project?.slug}
           />
         </Accordion>
         <HR />
@@ -68,6 +69,7 @@ export default async ({
             environmentSlug={environmentSlug}
             envs={project?.environmentVariables}
             projectID={project?.id}
+            projectSlug={project?.slug}
           />
         )}
       </React.Fragment>

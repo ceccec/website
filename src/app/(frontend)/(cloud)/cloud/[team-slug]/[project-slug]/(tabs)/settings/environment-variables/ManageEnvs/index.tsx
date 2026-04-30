@@ -1,8 +1,10 @@
 'use client'
 
 import type { Project } from '@root/payload-cloud-types'
+import type { EnvironmentVariableFormData } from '@root/types/forms'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
+import { uuidTags } from '@uuid'
 import { Accordion } from '@components/Accordion/index'
 import { Button } from '@components/Button/index'
 import { Heading } from '@components/Heading/index'
@@ -37,6 +39,7 @@ type Props = {
   environmentSlug?: string
   envs: Project['environmentVariables']
   projectID: Project['id']
+  projectSlug?: Project['slug']
 }
 
 export const ManageEnv: React.FC<Props> = ({
@@ -44,6 +47,7 @@ export const ManageEnv: React.FC<Props> = ({
   environmentSlug,
   envs,
   projectID,
+  projectSlug,
 }) => {
   const modalSlug = `delete-env-${id}`
   const [fetchedEnvValue, setFetchedEnvValue] = React.useState<string | undefined>(undefined)
@@ -84,9 +88,9 @@ export const ManageEnv: React.FC<Props> = ({
   }, [environmentSlug, key, projectID])
 
   const updateEnv = React.useCallback(
-    async ({ data }) => {
-      const newEnvKey = data[envKeyFieldPath]
-      const newEnvValue = data[envValueFieldPath]
+    async ({ data }: { data: EnvironmentVariableFormData }) => {
+      const newEnvKey = data.envKey
+      const newEnvValue = data.envValue
 
       if (typeof newEnvValue === 'string' && typeof newEnvKey === 'string' && id) {
         try {
@@ -117,10 +121,14 @@ export const ManageEnv: React.FC<Props> = ({
           if (req.status === 200) {
             toast.success('Environment variable updated successfully.')
 
-            // TODO: set in state
+            // Update local state for immediate UI feedback
+            setFetchedEnvValue(newEnvValue)
 
             await revalidateCache({
-              tag: `project_${projectID}`,
+              tags: uuidTags.cloud.projectDetailRevalidateTags({
+                id: projectID,
+                slug: projectSlug,
+              }),
             })
           }
         } catch (e) {
@@ -128,7 +136,7 @@ export const ManageEnv: React.FC<Props> = ({
         }
       }
     },
-    [id, environmentSlug, projectID],
+    [id, environmentSlug, projectID, projectSlug],
   )
 
   const deleteEnv = React.useCallback(async () => {
@@ -148,17 +156,29 @@ export const ManageEnv: React.FC<Props> = ({
         },
       )
 
-      // TODO: alert user based on status code & message
+      const res = await req.json()
+
+      if (!req.ok) {
+        toast.error(parseOptionalMessagePayload(res) || 'Failed to delete environment variable.')
+        return
+      }
 
       if (req.status === 200) {
-        // reloadProject()
+        toast.success('Environment variable deleted successfully.')
+        closeModal(modalSlug)
+
+        await revalidateCache({
+          tags: uuidTags.cloud.projectDetailRevalidateTags({
+            id: projectID,
+            slug: projectSlug,
+          }),
+        })
       }
     } catch (e) {
       console.error(e) // eslint-disable-line no-console
-    } finally {
-      closeModal(modalSlug)
+      toast.error('An unexpected error occurred while deleting the environment variable.')
     }
-  }, [environmentSlug, key, projectID, closeModal, modalSlug])
+  }, [environmentSlug, key, projectID, projectSlug, closeModal, modalSlug])
 
   return (
     <>
@@ -227,8 +247,9 @@ export const ManageEnvs: React.FC<{
   environmentSlug?: string
   envs: Project['environmentVariables']
   projectID: Project['id']
+  projectSlug?: Project['slug']
 }> = (props) => {
-  const { environmentSlug, envs, projectID } = props
+  const { environmentSlug, envs, projectID, projectSlug } = props
 
   return (
     <CollapsibleGroup allowMultiple transCurve="ease" transTime={250}>
@@ -240,6 +261,7 @@ export const ManageEnvs: React.FC<{
             envs={envs}
             key={env.id}
             projectID={projectID}
+            projectSlug={projectSlug}
           />
         ))}
       </div>

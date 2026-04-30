@@ -2,8 +2,10 @@
 
 import type { OnSubmit } from '@forms/types'
 import type { Project } from '@root/payload-cloud-types'
+import type { AddEnvironmentVariablesFormData } from '@root/types/forms'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
+import { uuidTags } from '@uuid'
 import { ArrayProvider, useArray } from '@forms/fields/Array/context'
 import { AddArrayRow, ArrayRow } from '@forms/fields/Array/index'
 import { Text } from '@forms/fields/Text/index'
@@ -21,10 +23,11 @@ type AddEnvsProps = {
   environmentSlug?: string
   envs: Project['environmentVariables']
   projectID: Project['id']
+  projectSlug?: Project['slug']
 }
 
 export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
-  const { environmentSlug, envs, projectID } = props
+  const { environmentSlug, envs, projectID, projectSlug } = props
 
   const { clearRows, uuids } = useArray()
 
@@ -32,8 +35,9 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
 
   const handleSubmit: OnSubmit = React.useCallback(
     async ({ unflattenedData }) => {
-      if (unflattenedData?.newEnvs?.length > 0) {
-        const sanitizedEnvs = unflattenedData.newEnvs.reduce((acc, env) => {
+      const formData = unflattenedData as Partial<AddEnvironmentVariablesFormData>
+      if (formData?.newEnvs?.length > 0) {
+        const sanitizedEnvs = formData.newEnvs.reduce((acc, env) => {
           const envKey = env.key?.trim()
           if (envKey && !acc.includes(envKey)) {
             acc.push({
@@ -76,7 +80,10 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
             clearRows()
 
             await revalidateCache({
-              tag: `project_${projectID}`,
+              tags: uuidTags.cloud.projectDetailRevalidateTags({
+                id: projectID,
+                slug: projectSlug,
+              }),
             })
           }
 
@@ -86,7 +93,7 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
         }
       }
     },
-    [projectID, clearRows],
+    [projectID, projectSlug, clearRows],
   )
 
   return (

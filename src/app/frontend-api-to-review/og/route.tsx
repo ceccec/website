@@ -278,7 +278,8 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
         width: 1200,
       },
     )
-  } catch (e: any) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err))
     console.error(`${e.message}`) // eslint-disable-line no-console
     return NextResponse.error()
   }

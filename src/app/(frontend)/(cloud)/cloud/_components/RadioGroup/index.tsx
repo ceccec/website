@@ -9,7 +9,7 @@ type RadioOption = {
 }
 export const CloudRadioGroup: React.FC<{
   initialValue?: string
-  onChange: (option: any) => void
+  onChange: (option: string | number) => void
   options: RadioOption[]
   path: string
 }> = ({ initialValue, onChange: onChangeFromProps, options, path }) => {

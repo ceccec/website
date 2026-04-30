@@ -24,7 +24,7 @@ const Page = async ({
   params,
 }: {
   params: Promise<{
-    slug: any
+    slug: string[]
   }>
 }) => {
   const { isEnabled: draft } = await draftMode()
@@ -62,7 +62,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{
-    slug: any
+    slug: string[]
   }>
 }): Promise<Metadata> {
   const { slug } = await params

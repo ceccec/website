@@ -28,7 +28,8 @@ export const ResetPassword: React.FC = () => {
           passwordConfirm: data.passwordConfirm as string,
           token: token as string,
         })
-      } catch (e: any) {
+      } catch (err: unknown) {
+          const error = err instanceof Error ? err : new Error(String(err))
         throw new Error(e.message)
       }
     },

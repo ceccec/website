@@ -55,7 +55,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{
-    slug: any
+    slug: string
   }>
 }): Promise<Metadata> {
   const { isEnabled: draft } = await draftMode()

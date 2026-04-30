@@ -2,7 +2,7 @@
 
 import type { Install } from '@cloud/_api/fetchInstalls'
 import type { RepoResults } from '@cloud/_api/fetchRepos'
-import type { Team } from '@root/payload-cloud-types'
+import type { Team, User } from '@root/payload-cloud-types'
 
 import { fetchInstalls } from '@cloud/_api/fetchInstalls'
 import { InstallationButton } from '@cloud/_components/InstallationButton/index'
@@ -28,7 +28,7 @@ const perPage = 30
 export const ImportProject: React.FC<{
   installs: Install[]
   repos?: RepoResults
-  user: any
+  user: null | undefined | User
   uuid: string
 }> = (props) => {
   const { installs: initialInstalls, repos: initialRepos, user, uuid } = props

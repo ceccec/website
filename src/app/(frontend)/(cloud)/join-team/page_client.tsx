@@ -50,7 +50,8 @@ export const JoinTeam: React.FC = () => {
           } else {
             throw new Error(error)
           }
-        } catch (e: any) {
+        } catch (err: unknown) {
+        const error = err instanceof Error ? err : new Error(String(err))
           setError(`An error occurred while accepting team invitation: ${e.message}`)
           setLoading(false)
         }

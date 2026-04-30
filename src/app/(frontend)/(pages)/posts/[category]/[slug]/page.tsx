@@ -25,7 +25,7 @@ const PostPage = async ({
 }: {
   params: Promise<{
     category: string
-    slug: any
+    slug: string
   }>
 }) => {
   const { isEnabled: draft } = await draftMode()

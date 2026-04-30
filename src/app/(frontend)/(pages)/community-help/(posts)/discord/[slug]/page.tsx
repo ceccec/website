@@ -13,7 +13,7 @@ import type { Messages } from './client_page'
 import { DiscordThreadPage } from './client_page'
 
 const isThreadData = (
-  data: any,
+  data: Record<string, unknown>,
 ): data is {
   communityHelpJSON: {
     info: {
@@ -102,7 +102,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{
-    slug: any
+    slug: string
   }>
 }): Promise<Metadata> {
   const { isEnabled: draft } = await draftMode()

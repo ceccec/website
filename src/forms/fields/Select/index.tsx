@@ -12,7 +12,7 @@ import classes from './index.module.scss'
 
 type Option = {
   label: string
-  value: any
+  value: string | number
 }
 
 type SelectProps = {

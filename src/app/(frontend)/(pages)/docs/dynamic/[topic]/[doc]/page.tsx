@@ -37,7 +37,7 @@ export default async function DocsPage(args: {
   const payload = await getPayload()
 
   let curTopic: null | Topic = null
-  let curTopicGroup: any = null
+  let curTopicGroup: Record<string, unknown> | null = null
 
   for (const topicGroup of topicGroups) {
     const found = topicGroup.topics.find((topic) => topic.slug === topicSlug)

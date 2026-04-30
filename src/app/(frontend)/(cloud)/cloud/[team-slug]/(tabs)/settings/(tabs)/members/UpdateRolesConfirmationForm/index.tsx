@@ -19,7 +19,7 @@ interface UpdateRolesConfirmationFormProps {
   onRolesUpdated: (newRoles: ('admin' | 'owner' | 'user')[]) => void
   originalRoles: ('admin' | 'owner' | 'user')[][]
   selectedMember: Member
-  setRoles: any
+  setRoles: string[]
   team: Team
   user: User
 }

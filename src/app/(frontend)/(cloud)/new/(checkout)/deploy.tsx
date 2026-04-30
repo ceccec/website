@@ -21,7 +21,7 @@ export const deploy = async (args: {
   project: null | Project | undefined
   router: AppRouterInstance
   stripe: null | Stripe | undefined
-  unflattenedData: any
+  unflattenedData: Record<string, unknown>
   user: null | undefined | User
 }): Promise<void> => {
   const {

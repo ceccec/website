@@ -15,7 +15,7 @@ import classes from './index.module.scss'
 export const Text: React.FC<
   {
     copy?: boolean
-    customOnChange?: (e: any) => void
+    customOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
     elementAttributes?: React.InputHTMLAttributes<HTMLInputElement>
     readOnly?: boolean
     suffix?: React.ReactNode

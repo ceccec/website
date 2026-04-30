@@ -15,7 +15,7 @@ import { GithubDiscussionPage } from './client_page'
 type DateFromSource = string
 
 const isDiscussionData = (
-  data: any,
+  data: Record<string, unknown>,
 ): data is {
   communityHelpJSON: {
     answer?: Answer
@@ -98,7 +98,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{
-    slug: any
+    slug: string
   }>
 }): Promise<Metadata> {
   const { isEnabled: draft } = await draftMode()

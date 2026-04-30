@@ -1,5 +1,7 @@
 # Payload website
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fceccec%2Fwebsite) [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ceccec/website)
+
 A full **Next.js + Payload** app: one deployable unit that serves the public **payloadcms.com** experience (this repo: [ceccec/website](https://github.com/ceccec/website) · upstream [payloadcms/website](https://github.com/payloadcms/website)).
 
 **Jump:** [What is delivered](#what-is-delivered-when-deployed) · [Deploy](#deploy) · [Manual](#copy-paste-deploy-manual) · [Vercel path](#vercel-postgres-and-blob) · [Cloudflare path](#cloudflare-workers-d1-and-r2) · [Runtime](#runtime--environment) · [Docker](#docker-compose-node-mongodb--nginx) · [Local](#local-development)
@@ -28,11 +30,7 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 
 ## Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fceccec%2Fwebsite)
-
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ceccec/website)
-
-Buttons clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
+The buttons above clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
 
 **Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI that executes **`pnpm run workers:build`** (migrate → OpenNext). **Only `PAYLOAD_SECRET` is required:** set the same value under Worker **Variables & Secrets** and **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
 

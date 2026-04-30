@@ -3,8 +3,8 @@
 # Platform bindings (KV, Queues, …) are declared in wrangler.jsonc — optional snippets:
 # config/wrangler.optional-bindings.jsonc (merge only what you provision; none required).
 #
-# Same binding names + descriptions as `config/cloudflare.bindings.json` → `package.json`
-# → `cloudflare` after `pnpm sync:cloudflare-bindings`.
+# Variable names align with `config/cloudflare-env-reference.md` and
+# `package.json` → `cloudflare.bindings` (from `config/cloudflare.bindings.json`, pnpm sync:cloudflare-bindings).
 # https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets
 #
 # `NEXT_PUBLIC_*` — set in `.env` and in Workers **Build** environment (inlined at build).

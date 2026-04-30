@@ -30,11 +30,24 @@ Stack: Next.js 15 (App Router), TypeScript, SCSS modules, [Lexical](https://payl
 
 ## Deploy
 
-The buttons above clone **ceccec/website**. Replace `ceccec` with `payloadcms` in both URLs for upstream.
+The buttons above point at **ceccec/website**; replace `ceccec` with `payloadcms` for upstream.
 
-**Green one-click (Cloudflare Workers Builds):** use default **`pnpm build`**. It runs [`scripts/build.mjs`](./scripts/build.mjs): on Workers CI that executes **`pnpm run workers:build`** (migrate → OpenNext). **Only `PAYLOAD_SECRET` is required:** set the same value under Worker **Variables & Secrets** and **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** so migrate succeeds. **Deploy command:** `pnpm run workers:deploy` or `npx wrangler deploy` after build.
+### Deploy to Cloudflare (per [Cloudflare documentation](https://developers.cloudflare.com/workers/platform/deploy-buttons/))
 
-**Leave every other wizard field blank** unless you need build-time `NEXT_PUBLIC_*` or a secret outside Admin. Prefer **Payload Admin → Globals** — [**Public site settings**](./src/globals/PublicSiteSettings.ts) (URLs, analytics, Algolia app IDs) and [**Integration secrets**](./src/globals/IntegrationSecrets.ts) — so editors can configure the site **without** redeploying. Optional Worker overrides are documented in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json) (`pnpm sync:cloudflare-bindings` syncs descriptions into [`package.json`](./package.json)); the JSON **`introduction`** is docs-only for the Deploy wizard copy.
+Only what that page states (see the page for full wording and examples):
+
+- **What the button does:** clone the Git repository into the user’s **GitHub or GitLab** account; **configure** the project (repository name, Worker name, required resource names) on one setup page (changes reflected in the created repo); **build and deploy** with [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) and deploy to the Cloudflare network — **required resources are automatically provisioned and bound** to the Worker without additional setup.
+- **Embedding:** use the [Markdown / HTML / URL snippets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#how-to-set-up-deploy-to-cloudflare-buttons) and replace the repository URL (optional subdirectory per that section). If you already use Workers Builds, you can copy a button snippet from the dashboard (**share** on the Worker).
+- **[Automatic resource provisioning](https://developers.cloudflare.com/workers/platform/deploy-buttons/#automatic-resource-provisioning):** Cloudflare **reads the Wrangler configuration file** in your repo to determine resource requirements, provisions resources, and **updates the Wrangler configuration** where applicable for newly created resources (for example database IDs and namespace IDs). Your repository must include **default values for resource names, resource IDs and any other properties for each binding.** Supported resource types are listed on that page.
+- **[Worker environment variables and secrets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets):** [environment variables](https://developers.cloudflare.com/workers/configuration/environment-variables/) may be set in Wrangler as usual (`vars`). [Secrets](https://developers.cloudflare.com/workers/configuration/secrets/) may be listed in **`.dev.vars.example`** or **`.env.example`** in [dotenv](https://www.npmjs.com/package/dotenv) format. [Secrets Store](https://developers.cloudflare.com/secrets-store/) bindings may be configured in Wrangler as in the doc’s examples.
+- **[Best practices](https://developers.cloudflare.com/workers/platform/deploy-buttons/#best-practices):** custom **`build`** and **`deploy`** scripts in **`package.json`** are **automatically detected** and pre-populated; users may change or accept them. If there is **no `deploy` script**, Cloudflare preconfigures **`npx wrangler deploy`**. If there is **no `build` script**, the build field is left **blank**. For **D1 migrations** run from **`deploy`**, the migration command should reference the **binding name**, not the database name. Optional **`package.json` → `cloudflare` → `bindings`** entries may include a **`description`** per binding (including env vars/secrets); inline markdown is supported — see the doc’s example.
+- **[Limitations](https://developers.cloudflare.com/workers/platform/deploy-buttons/#limitations):** monorepo caveats, subdirectory rules, one Deploy button per Workers app in a monorepo, **Workers only** (not Pages), **github.com** / **gitlab.com** only (no self-hosted), **public** repositories only.
+
+### This repository (not part of Cloudflare’s deploy-button spec)
+
+- **Workers build path:** [`scripts/build.mjs`](./scripts/build.mjs) (often **`pnpm run workers:build`** on CI). **Deploy:** [`package.json`](./package.json) scripts (e.g. **`workers:deploy`**, **`deploy`**). See **[Runtime](#runtime--environment)** and [DEPLOYMENT.md](./DEPLOYMENT.md).
+- **Binding descriptions for `cloudflare.bindings`:** [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json) → **`pnpm sync:cloudflare-bindings`** → [`package.json`](./package.json).
+- **Wrangler:** [`wrangler.jsonc`](./wrangler.jsonc). **Env catalog (this codebase):** [`config/cloudflare-env-reference.md`](./config/cloudflare-env-reference.md).
 
 ---
 
@@ -102,13 +115,17 @@ cp .dev.vars.example .dev.vars
 
 Edit `.env` / `.dev.vars` — at least `PAYLOAD_SECRET` (**required** for **`pnpm build`** / `payload migrate` in CI too — add the same value under Workers **build** env vars).
 
-Create D1 and wire `database_id` ([docs](https://developers.cloudflare.com/d1/get-started/)):
+Create **two** D1 databases and paste each **`database_id`** into [`wrangler.jsonc`](./wrangler.jsonc) ([D1 get started](https://developers.cloudflare.com/d1/get-started/)):
 
 ```bash
-pnpm exec wrangler d1 create website-db
+pnpm exec wrangler d1 create payload-website
+pnpm exec wrangler d1 create payload-website-next-tag-cache
 ```
 
-Copy the printed **`database_id`** into [`wrangler.jsonc`](./wrangler.jsonc) under `d1_databases[0].database_id`.
+- **`d1_databases[0]`** (`binding`: `D1`) — Payload CMS data (`payload migrate`).
+- **`d1_databases[1]`** (`binding`: `NEXT_TAG_CACHE_D1`) — OpenNext on-demand tag cache ([OpenNext caching](https://opennext.js.org/cloudflare/caching)); SQL migrations live in [`d1-migrations/next-tag-cache/`](./d1-migrations/next-tag-cache/).
+
+**Durable Objects:** OpenNext’s revalidation queue (`NEXT_CACHE_DO_QUEUE` / `DOQueueHandler`) is declared in `wrangler.jsonc` with a **migrations** entry — first deploy applies the DO migration.
 
 Full Cloudflare deploy (migrate + OpenNext + deploy Worker):
 
@@ -149,19 +166,17 @@ Resolved in [`src/lib/deploymentTarget.ts`](./src/lib/deploymentTarget.ts) (see 
 
 Templates: [**with-cloudflare-d1**](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1) · [**with-vercel-website**](https://github.com/payloadcms/payload/tree/main/templates/with-vercel-website)
 
-**Cloudflare / Deploy catalog:** every variable the [Deploy to Cloudflare](https://developers.cloudflare.com/workers/platform/deploy-buttons/) flow can document is listed in [`config/cloudflare.bindings.json`](./config/cloudflare.bindings.json). After changing descriptions, run **`pnpm sync:cloudflare-bindings`** so [`package.json`](./package.json) `cloudflare` stays in sync.
-
 **Scripts (copy one line)**
 
 ```bash
 pnpm build                  # routes via scripts/build.mjs → Vercel: next build | Workers CI: workers:build (OpenNext)
-pnpm run build:vercel       # explicit Postgres / next build path (same as Vercel branch inside `pnpm build`)
+pnpm run build:vercel       # `PAYLOAD_HOSTING=vercel` + same pipeline as `pnpm build` on the Node/Vercel/Docker stack
 pnpm run deploy:database    # migrate (+ remote D1 PRAGMA optimize on Cloudflare path)
 pnpm run workers:build      # deploy:database + opennext:build (also invoked by `pnpm build` on Workers CI)
 pnpm run workers:deploy     # deploy Worker after workers:build
 pnpm run deploy             # deploy:database + full Worker pipeline
 pnpm run deploy:dry         # dry-run Vercel + Cloudflare configs
-pnpm sync:cloudflare-bindings  # config/cloudflare.bindings.json → package.json `cloudflare`
+pnpm sync:cloudflare-bindings  # config/cloudflare.bindings.json → package.json `cloudflare.bindings`
 ```
 
 ---

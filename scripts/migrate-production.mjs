@@ -1,126 +1,103 @@
 #!/usr/bin/env node
 /**
  * Runs `payload migrate` so the database matches `src/migrations` (Payload docs: database migrations).
- * That is the normal way to get a complete schema for local D1 / SSG and avoid missing-table errors.
  *
- * After migrate, optionally runs `wrangler d1 execute … PRAGMA optimize`:
- * - `--remote` when `wrangler.jsonc` has a real D1 UUID (unless `SKIP_D1_REMOTE_OPTIMIZE`);
- * - `--local` otherwise so local builds can use Wrangler’s local D1 without Cloudflare API.
- * Skip both with `SKIP_D1_PRAGMA=1` or `SKIP_D1_OPTIMIZE=1`.
+ * Cloudflare-only follow-ups (see `.cursor/rules/payload-migrations.mdc`):
+ * - `wrangler d1 migrations apply NEXT_TAG_CACHE_D1` (OpenNext tag cache DB)
+ * - `wrangler d1 execute D1 … PRAGMA optimize` (Payload D1)
  *
- * Escape hatches (use sparingly — see `.cursor/rules/payload-migrations.mdc`):
- * - `SKIP_DATABASE_MIGRATE=1` — skip `payload migrate` (e.g. building without a DB, or migrations applied elsewhere).
- * - `PAYLOAD_MIGRATE_ASSUME_YES=1` — answer “yes” if Payload warns about dev-mode schema drift (data loss risk; CI/ephemeral DB or explicit review only).
- * - **`CI=true`** (GitHub Actions, etc.) — same non-interactive migrate as `PAYLOAD_MIGRATE_ASSUME_YES` unless `PAYLOAD_MIGRATE_ASSUME_NO=1`.
- * - **`scripts/build.mjs`** defaults **`PAYLOAD_MIGRATE_ASSUME_YES=1`** for spawned pipelines unless `PAYLOAD_MIGRATE_ASSUME_YES` or **`PAYLOAD_MIGRATE_ASSUME_NO`** is already set — avoids blocking **`pnpm build`** on prompts.
+ * Escape hatches (see `payload-migrations.mdc`):
+ * - `SKIP_DATABASE_MIGRATE` — skip Payload migrate.
+ * - `SKIP_NEXT_TAG_CACHE_MIGRATIONS` — skip OpenNext tag-cache D1 SQL migrations.
+ * - `SKIP_D1_REMOTE_OPTIMIZE` / `SKIP_D1_PRAGMA` / `SKIP_D1_OPTIMIZE` — Wrangler remote/local heuristics.
+ * - `PAYLOAD_MIGRATE_ASSUME_YES` / `PAYLOAD_MIGRATE_ASSUME_NO` — interactive migrate; CI implies assume-yes unless NO.
+ *
+ * Node-only: stack detection uses `scripts/lib/deploymentTarget.mjs` (no Workers `navigator`).
  */
 import { execSync } from 'node:child_process'
-import fs from 'node:fs'
-import path from 'node:path'
 
-/** Align with `src/lib/deploymentTarget.ts` (runs in Node only — no Worker UA). */
-function getDeploymentTarget() {
-  if (process.env.PAYLOAD_HOSTING === 'vercel') return 'vercel'
-  if (process.env.PAYLOAD_HOSTING === 'cloudflare') return 'cloudflare'
-  if (typeof navigator !== 'undefined') {
-    const ua = navigator.userAgent
-    if (typeof ua === 'string' && ua.includes('Cloudflare-Workers')) return 'cloudflare'
-  }
-  if (
-    process.env.PAYLOAD_DB_ADAPTER === 'mongodb' ||
-    (process.env.MONGODB_URL && process.env.MONGODB_URL.trim().startsWith('mongodb')) ||
-    (process.env.DATABASE_URL && process.env.DATABASE_URL.trim().startsWith('mongodb'))
-  ) {
-    return 'vercel'
-  }
-  if (process.env.VERCEL === '1') return 'vercel'
-  const url = process.env.POSTGRES_URL || process.env.DATABASE_URL
-  if (url && /^postgres(ql)?:/i.test(url)) return 'vercel'
-  return 'cloudflare'
-}
+import { getDeploymentTargetFromEnv } from './lib/deploymentTarget.mjs'
+import { runPayloadMigratePipeline } from './lib/payloadMigrateRunner.mjs'
+import { wranglerD1DatabaseIds } from './lib/wranglerConfig.mjs'
 
-/** First `database_id` under `d1_databases` in `wrangler.jsonc` (JSONC-safe via regex). */
-function wranglerD1DatabaseId() {
-  try {
-    const text = fs.readFileSync(path.join(process.cwd(), 'wrangler.jsonc'), 'utf8')
-    const m = text.match(/"database_id"\s*:\s*"([^"]+)"/)
-    return m?.[1]?.trim() ?? ''
-  } catch {
-    return ''
-  }
-}
+/** D1 + R2 only — no OpenNext DO queue (see `wrangler.payload-cli.jsonc`). */
+const WRANGLER_D1_CLI = 'wrangler.payload-cli.jsonc'
 
 function isLikelyValidD1Uuid(id) {
   if (!id || id.includes('REPLACE')) return false
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
 }
 
-function runWranglerD1Pragma(args) {
+function wranglerEnv() {
+  return {
+    ...process.env,
+    NODE_ENV: 'production',
+    PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || 'ignore',
+  }
+}
+
+function runWranglerD1MigrationsApply(binding, remoteArgs) {
   execSync(
-    `pnpm exec wrangler d1 execute D1 --command "PRAGMA optimize" ${args}`,
-    { stdio: 'inherit', env: { ...process.env, NODE_ENV: 'production', PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || 'ignore' } },
+    `pnpm exec wrangler --config ${WRANGLER_D1_CLI} d1 migrations apply ${binding} ${remoteArgs}`,
+    {
+      stdio: 'inherit',
+      env: wranglerEnv(),
+    },
   )
 }
 
-const env = {
-  ...process.env,
-  NODE_ENV: 'production',
-  PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || 'ignore',
+function runWranglerD1Pragma(args) {
+  execSync(
+    `pnpm exec wrangler --config ${WRANGLER_D1_CLI} d1 execute D1 --command "PRAGMA optimize" ${args}`,
+    {
+      stdio: 'inherit',
+      env: wranglerEnv(),
+    },
+  )
 }
 
-function runPayloadMigrate() {
-  if (process.env.SKIP_DATABASE_MIGRATE === '1' || process.env.SKIP_DATABASE_MIGRATE === 'true') {
+runPayloadMigratePipeline(process.env)
+
+const isCf = getDeploymentTargetFromEnv(process.env) === 'cloudflare'
+const { payload: d1PayloadId, tagCache: d1TagId } = wranglerD1DatabaseIds()
+
+if (isCf && process.env.SKIP_NEXT_TAG_CACHE_MIGRATIONS !== '1' && process.env.SKIP_NEXT_TAG_CACHE_MIGRATIONS !== 'true') {
+  if (!d1TagId || d1TagId.includes('REPLACE')) {
     console.warn(
-      '[migrate-production] SKIP_DATABASE_MIGRATE set — skipping payload migrate. Prefer running migrations so schema matches src/migrations.',
+      '[migrate-production] NEXT_TAG_CACHE_D1 has no real database_id yet — skip OpenNext tag-cache D1 migrations.',
     )
-    return
+  } else {
+    const skipRemote =
+      process.env.SKIP_D1_REMOTE_OPTIMIZE === '1' ||
+      process.env.SKIP_D1_REMOTE_OPTIMIZE === 'true' ||
+      !isLikelyValidD1Uuid(d1TagId)
+    const remoteArgs = skipRemote ? '--local' : '--remote'
+    try {
+      runWranglerD1MigrationsApply('NEXT_TAG_CACHE_D1', remoteArgs)
+    } catch {
+      console.warn(
+        `[migrate-production] wrangler d1 migrations apply NEXT_TAG_CACHE_D1 ${remoteArgs} failed — continuing.`,
+      )
+    }
   }
-
-  const assumeNo =
-    process.env.PAYLOAD_MIGRATE_ASSUME_NO === '1' ||
-    process.env.PAYLOAD_MIGRATE_ASSUME_NO === 'true'
-
-  const ci =
-    process.env.CI === '1' ||
-    process.env.CI === 'true' ||
-    process.env.CONTINUOUS_INTEGRATION === 'true'
-
-  const assumeYes =
-    !assumeNo &&
-    (process.env.PAYLOAD_MIGRATE_ASSUME_YES === '1' ||
-      process.env.PAYLOAD_MIGRATE_ASSUME_YES === 'true' ||
-      ci)
-
-  if (assumeYes && ci && !process.env.PAYLOAD_MIGRATE_ASSUME_YES) {
-    console.warn(
-      '[migrate-production] CI detected — running migrate non-interactively (set PAYLOAD_MIGRATE_ASSUME_NO=1 to fail instead of auto-yes).',
-    )
-  }
-
-  if (assumeYes) {
-    execSync('printf "y\\n" | payload migrate', { stdio: 'inherit', env, shell: true })
-    return
-  }
-
-  execSync('payload migrate', { stdio: 'inherit', env })
+} else if (isCf && process.env.SKIP_NEXT_TAG_CACHE_MIGRATIONS === '1') {
+  console.warn(
+    '[migrate-production] SKIP_NEXT_TAG_CACHE_MIGRATIONS set — skipping wrangler d1 migrations apply NEXT_TAG_CACHE_D1.',
+  )
 }
 
-runPayloadMigrate()
-
-const d1Id = wranglerD1DatabaseId()
-const skipRemote =
+const skipRemotePragma =
   process.env.SKIP_D1_REMOTE_OPTIMIZE === '1' ||
   process.env.SKIP_D1_REMOTE_OPTIMIZE === 'true' ||
-  !isLikelyValidD1Uuid(d1Id)
+  !isLikelyValidD1Uuid(d1PayloadId)
 
 const skipAllPragma =
   process.env.SKIP_D1_PRAGMA === '1' ||
   process.env.SKIP_D1_PRAGMA === 'true' ||
   process.env.SKIP_D1_OPTIMIZE === '1'
 
-/** Prefer remote when you have a real D1 id; otherwise local Wrangler (miniflare) DB for dev builds. */
-if (getDeploymentTarget() === 'cloudflare' && !skipAllPragma) {
-  if (!skipRemote) {
+if (isCf && !skipAllPragma) {
+  if (!skipRemotePragma) {
     runWranglerD1Pragma('--remote')
   } else {
     try {

@@ -14,14 +14,8 @@ const pkgPath = join(root, 'package.json')
 const cfBindingsPath = join(root, 'config', 'cloudflare.bindings.json')
 const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
 const cf = JSON.parse(readFileSync(cfBindingsPath, 'utf8'))
-const pkgCf = {
-  introduction: pkg.cloudflare?.introduction ?? '',
-  bindings: pkg.cloudflare?.bindings,
-}
-const srcCf = {
-  introduction: cf.introduction ?? '',
-  bindings: cf.bindings,
-}
+const pkgCf = { bindings: pkg.cloudflare?.bindings }
+const srcCf = { bindings: cf.bindings }
 if (JSON.stringify(pkgCf) !== JSON.stringify(srcCf)) {
   console.error(
     'verify-payload-wiring: package.json `cloudflare` out of sync with config/cloudflare.bindings.json — run: node scripts/sync-cloudflare-bindings.mjs',

@@ -1,0 +1,25 @@
+# Route Handlers & Proxy
+
+## Official docs
+
+| Topic | Link |
+|-------|------|
+| Introduction | [Route Handlers](https://nextjs.org/docs/app/getting-started/route-handlers) |
+| `route.js` API | [route segment](https://nextjs.org/docs/app/api-reference/file-conventions/route) |
+| Request helpers | [`NextRequest`](https://nextjs.org/docs/app/api-reference/functions/next-request), [`NextResponse`](https://nextjs.org/docs/app/api-reference/functions/next-response) |
+| Proxy | [Proxy (Getting Started)](https://nextjs.org/docs/app/getting-started/proxy), [`proxy.js`](https://nextjs.org/docs/app/api-reference/file-conventions/proxy) |
+| Segment limits | [`dynamicParams`](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/dynamicParams), [`maxDuration`](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/maxDuration), [`runtime`](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/runtime) |
+
+## This repo + Payload
+
+- **`src/app/**/route.ts`** can proxy Payload REST or implement webhooks; validate payloads at the boundary (**`unknown`** → narrowed types).
+- Prefer **`getPayload`** in Route Handlers when you need Local API semantics (**`payload-apis.mdc`**).
+- **`runtime = 'edge'`** — confirm Payload and DB adapters support that deployment surface ([Edge Runtime](https://nextjs.org/docs/app/api-reference/edge)).
+
+## Checklist
+
+- [ ] HTTP methods (`GET`, `POST`, …) explicit; appropriate status codes and caching headers.
+- [ ] Do not duplicate CMS business rules that should live in Payload hooks — call Local API and keep one source of truth.
+- [ ] CORS and auth for public APIs per **`payload-security-deployment.mdc`** / your app’s threat model.
+
+**More:** **`next-data-fetching-and-actions.mdc`** · **`next-caching-revalidation.mdc`**

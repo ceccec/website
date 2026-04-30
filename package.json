@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:vercel": "pnpm run generate:llms && payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
+    "build:vercel": "cross-env PAYLOAD_HOSTING=vercel node scripts/build.mjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "pnpm run generate:types:cloudflare && pnpm run generate:types:payload",
@@ -17,6 +17,8 @@
     "generate:types:payload": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:llms": "payload run src/scripts/generateLLMs.ts",
     "generate:cursor-rules:payload": "node scripts/generate-payload-cursor-rules.mjs",
+    "generate:cursor-rules:next": "node scripts/generate-next-cursor-rules.mjs",
+    "generate:cursor-rules": "pnpm run generate:cursor-rules:payload && pnpm run generate:cursor-rules:next",
     "build:skipDocs": "cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
     "postbuild": "next-sitemap --config ./next-sitemap.config.cjs",
     "analyze": "ANALYZE=true next build --webpack",
@@ -129,6 +131,7 @@
     "dotenv": "^17.4.2",
     "eslint": "9.39.4",
     "prettier": "3.8.3",
+    "strip-json-comments": "3.1.1",
     "typescript": "5.8.3",
     "wrangler": "^4.86.0"
   },
@@ -161,220 +164,12 @@
   },
   "packageManager": "pnpm@10.33.2",
   "cloudflare": {
-    "introduction": "**What you actually need for build & deploy:** Only **`PAYLOAD_SECRET`** is **required** (same value under Worker **Variables & Secrets** and **Build variables and secrets** — [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)). Infrastructure (**D1, R2, ASSETS**) is declared in **`wrangler.jsonc`**, not here.\n\n**Optional — build pipeline only:** `NEXT_PUBLIC_*` **only if** you need values **baked into the bundle** at compile time; `GITHUB_ACCESS_TOKEN` for **`pnpm generate:llms`** in CI; `NEXT_PUBLIC_SKIP_BUILD_*` to shrink SSG; `PAYLOAD_HOSTING` if stack detection mis-fires. Omit until needed.\n\n**Prefer Payload Admin (Globals), not Worker env:** **`Public site settings`** and **`Integration secrets`** hold canonical URLs, analytics, Algolia search-client IDs, reCAPTCHA site key, newsletter/form IDs, Stripe publishable key surface, and most integration secrets. Editors change behavior **without** redeploy. Use Worker/Build variables **only** for secrets that cannot use Admin, CI-only tokens, or **`NEXT_PUBLIC_*`** inlining.\n\n**This list** documents every env key the repo may read — many are **Vercel-only**, **local dev**, or **unused** on a minimal Workers+D1 deploy. Platform coverage: [`config/cloudflare-platform-coverage.md`](./cloudflare-platform-coverage.md).",
     "bindings": {
       "PAYLOAD_SECRET": {
-        "description": "**Required.** Session/crypto secret for Payload + `payload migrate` (`openssl rand -hex 32`). Same value in Worker **Variables & Secrets** and **Build variables and secrets**. Prefer **Admin → Globals** for URLs and integrations; Worker env only for **`NEXT_PUBLIC_*`** inlining or secrets outside Admin."
-      },
-      "ANALYZE": {
-        "description": "**Optional.** Set to `true` only when running `pnpm analyze` (Next bundle analyzer)."
-      },
-      "BLOB_READ_WRITE_TOKEN": {
-        "description": "**Optional.** Vercel Blob read/write token — **Vercel + Postgres path only** (`@payloadcms/storage-vercel-blob`). Omit on Cloudflare R2."
-      },
-      "CLOUDFLARE_ENV": {
-        "description": "**Optional.** Wrangler environment name for `getPlatformProxy` when resolving bindings locally (see Payload Cloudflare template)."
-      },
-      "CLOUDFLARE_REMOTE_BINDINGS": {
-        "description": "**Optional.** Set to `true` so local dev uses **remote** D1/R2/etc. via Wrangler (`getPlatformProxy` + `initOpenNextCloudflareForDev`) — pairs with `CLOUDFLARE_ENV`."
-      },
-      "CRON_SECRET": {
-        "description": "**Optional.** Bearer for Payload `jobs` / cron access (see `templates/website` + `templates/with-vercel-website`). Same role as `NEXT_PRIVATE_CRON_KEY` — either may be set."
-      },
-      "COMMIT_DOCS_API_KEY": {
-        "description": "**Optional.** Secret — internal docs commit webhook (`collections/Docs`)."
-      },
-      "COMMIT_DOCS_API_URL": {
-        "description": "**Optional.** Endpoint URL paired with `COMMIT_DOCS_API_KEY` for docs automation."
-      },
-      "COOKIE_DOMAIN": {
-        "description": "**Optional.** Auth cookie `domain` for Payload Users (`collections/Users.ts`). Often empty locally."
-      },
-      "DATABASE_URL": {
-        "description": "**Optional.** Postgres (`postgres://…`) or Mongo (`mongodb://…`) on Node/Vercel only — omit on Workers+D1 (`deploymentTarget.ts`)."
-      },
-      "DISABLE_SECURE_COOKIE": {
-        "description": "**Optional.** Set to disable `Secure` / `SameSite=None` on auth cookies even in production (testing only)."
-      },
-      "DISCORD_SCRAPE_CHANNEL_ID": {
-        "description": "**Optional.** Discord channel ID for community-help scraping flows."
-      },
-      "DISCORD_TOKEN": {
-        "description": "**Optional.** Secret — Discord bot token for integrations."
-      },
-      "DOCS_DIR_V2": {
-        "description": "**Optional.** Local filesystem path to v2 docs checkout (`src/scripts/fetchDocs.ts`)."
-      },
-      "DOCS_DIR_V3": {
-        "description": "**Optional.** Local filesystem path to v3 docs checkout (`src/scripts/fetchDocs.ts`)."
-      },
-      "GA_CREDENTIALS": {
-        "description": "**Optional.** Secret — Google Analytics Data API credentials JSON (`api/analytics/*`). Store as Worker secret."
-      },
-      "GA_PROPERTY_ID": {
-        "description": "**Optional.** GA4 property ID for server-side analytics routes."
-      },
-      "GA_USE_DEMO_DATA": {
-        "description": "**Optional.** Set `true` to use demo data in analytics API routes instead of live GA."
+        "description": "**Required** for Payload and for **`pnpm build`** / `payload migrate` in [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/). Use the **same** value under Worker **Variables & secrets** and **Build variables & secrets**. Generate: `openssl rand -hex 32`. URLs and most integrations belong in **Payload Admin → Globals** after deploy."
       },
       "GITHUB_ACCESS_TOKEN": {
-        "description": "**Optional.** GitHub PAT — `pnpm generate:llms` (add to **Build variables and secrets** for CI), docs branches, ContributionTable. See [Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)."
-      },
-      "MONGODB_URL": {
-        "description": "**Optional.** MongoDB connection string — **Node / Vercel only** (`templates/with-vercel-mongodb`). Do not set on Cloudflare Workers deploys."
-      },
-      "NEXT_PUBLIC_ALGOLIA_CH_ID": {
-        "description": "**Optional.** Public. Algolia app ID for community help search — **Build** env when you need it in the bundle."
-      },
-      "NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME": {
-        "description": "**Optional.** Public. Algolia index name for community help."
-      },
-      "NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY": {
-        "description": "**Optional.** Public. Algolia search-only API key for Docsearch component."
-      },
-      "NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY": {
-        "description": "**Optional.** Public. Algolia search client key for community help UI."
-      },
-      "NEXT_PUBLIC_CF_IMAGE_RESIZING": {
-        "description": "**Optional.** Public. **Default:** omit or leave unset — standard Next.js `next/image` (no Cloudflare `/cdn-cgi/image/` transforms). Set `true` only on a zone that has **Image transformations** enabled if you want that paid/opt-in path; uses `src/lib/cloudflareImageLoader.ts`. Requires `NEXT_PUBLIC_SITE_URL` (or CMS URL) origin to match the zone hostname."
-      },
-      "NEXT_PUBLIC_CLOUD_CMS_URL": {
-        "description": "**Optional.** Public. Payload Cloud GraphQL/API base URL for in-app cloud flows."
-      },
-      "NEXT_PUBLIC_CMS_URL": {
-        "description": "**Optional.** Public. CMS origin for media/RichText (build-inlined). Prefer **Globals → Public site settings → CMS public URL**."
-      },
-      "NEXT_PUBLIC_ENABLE_BETA_DOCS": {
-        "description": "**Optional.** Public. `true` to surface beta docs routes."
-      },
-      "NEXT_PUBLIC_ENABLE_LEGACY_DOCS": {
-        "description": "**Optional.** Public. `true` to surface legacy (v2) docs routes."
-      },
-      "NEXT_PUBLIC_FACEBOOK_PIXEL_ID": {
-        "description": "**Optional.** Public. Meta Pixel ID."
-      },
-      "NEXT_PUBLIC_GA_MEASUREMENT_ID": {
-        "description": "**Optional.** Public. Google Analytics measurement ID (G-…)."
-      },
-      "NEXT_PUBLIC_GITHUB_CLIENT_ID": {
-        "description": "**Optional.** Public. GitHub OAuth client ID for Cloud onboarding flows."
-      },
-      "NEXT_PUBLIC_GITHUB_REDIRECT_URI": {
-        "description": "**Optional.** Public. GitHub OAuth redirect URI registered with the OAuth app."
-      },
-      "NEXT_PUBLIC_GTM_MEASUREMENT_ID": {
-        "description": "**Optional.** Public. Google Tag Manager container ID when using GTM component."
-      },
-      "NEXT_PUBLIC_IMAGE_REMOTE_HOSTS": {
-        "description": "**Optional.** Public. Extra image hostnames for `next.config.js` `remotePatterns` (comma-separated or as configured)."
-      },
-      "NEXT_PUBLIC_IS_LIVE": {
-        "description": "**Optional.** Public. When set, tightens image hosts / production behavior in `next.config.js`."
-      },
-      "NEXT_PUBLIC_NEWSLETTER_FORM_ID": {
-        "description": "**Optional.** Public. HubSpot or form embed ID for newsletter block."
-      },
-      "NEXT_PUBLIC_OMIT_CLOUD_ERRORS": {
-        "description": "**Optional.** Public. `true` to hide Cloud GraphQL errors in the Auth provider (demo/support)."
-      },
-      "NEXT_PUBLIC_RECAPTCHA_SITE_KEY": {
-        "description": "**Optional.** Public. reCAPTCHA site key (forms)."
-      },
-      "NEXT_PUBLIC_SERVER_URL": {
-        "description": "**Optional.** Public. Legacy alias (`getServerSideURL`); prefer `PAYLOAD_PUBLIC_APP_URL` / `NEXT_PUBLIC_SITE_URL` in `src/utilities/getURL.ts`."
-      },
-      "NEXT_PUBLIC_SITE_URL": {
-        "description": "**Optional.** Public. Canonical URL for metadata/OG (build-inlined). Prefer **Globals → Public site settings → Canonical site URL**; set here only to inline at build."
-      },
-      "NEXT_PUBLIC_SKIP_BUILD_DOCS": {
-        "description": "**Optional.** Public. Skip docs page generation during build when truthy."
-      },
-      "NEXT_PUBLIC_SKIP_BUILD_HELPS": {
-        "description": "**Optional.** Public. Skip community-help build paths when truthy."
-      },
-      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": {
-        "description": "**Optional.** Public. Stripe publishable key for Checkout embedded UI."
-      },
-      "NEXT_PRIVATE_ALGOLIA_API_KEY": {
-        "description": "**Optional.** Secret. Algolia admin/search key for server-side community-help indexing — Worker secret."
-      },
-      "NEXT_PRIVATE_CRON_KEY": {
-        "description": "**Optional.** Secret. Shared key for cron-triggered routes (if configured)."
-      },
-      "NEXT_PRIVATE_DRAFT_SECRET": {
-        "description": "**Optional.** Secret. Preview/draft mode secret — must match draft URL generation (`formatPreviewURL`)."
-      },
-      "NEXT_PRIVATE_HUBSPOT_PORTAL_KEY": {
-        "description": "**Optional.** Secret. HubSpot portal ID / key for form integrations in Payload config."
-      },
-      "NEXT_PRIVATE_RECAPTCHA_SECRET_KEY": {
-        "description": "**Optional.** Secret. reCAPTCHA server-side verification key (Payload forms)."
-      },
-      "NEXT_PRIVATE_REVALIDATION_KEY": {
-        "description": "**Optional.** Secret. On-demand ISR/revalidate API (`api/revalidate`) — must match internal `revalidate` utility."
-      },
-      "PAYLOAD_ADMIN_FAVICON_URL": {
-        "description": "**Optional.** Absolute or `/` URL for admin favicon (`admin.meta.icons`, `examples/whitelabel`)."
-      },
-      "PAYLOAD_ADMIN_META_DESCRIPTION": {
-        "description": "**Optional.** Meta description for Payload admin (`admin.meta.description`)."
-      },
-      "PAYLOAD_ADMIN_TITLE_SUFFIX": {
-        "description": "**Optional.** Title suffix in Payload admin (`admin.meta.titleSuffix`, `examples/whitelabel`)."
-      },
-      "PAYLOAD_CORS_ORIGINS": {
-        "description": "**Optional.** Comma-separated allowed origins for Payload CORS (`payload.config.ts`)."
-      },
-      "PAYLOAD_DB_ADAPTER": {
-        "description": "**Optional.** Set `mongodb` to use `@payloadcms/db-mongodb` when the URL would otherwise be ambiguous. Usually inferred from `MONGODB_URL` / `DATABASE_URL`."
-      },
-      "PAYLOAD_ECOMMERCE": {
-        "description": "**Optional.** Set `true` to enable `@payloadcms/plugin-ecommerce` (beta — `templates/ecommerce`). Uses `users` as customers; Stripe checkout wiring is separate (`payments.paymentMethods`). Run `payload migrate` after enabling."
-      },
-      "PAYLOAD_ECOMMERCE_VARIANTS": {
-        "description": "**Optional.** With `PAYLOAD_ECOMMERCE`, set `true` to enable variant collections (`variants`, `variantTypes`, `variantOptions`). Run `payload migrate` after enabling."
-      },
-      "PAYLOAD_HOSTING": {
-        "description": "**Optional.** Override: `cloudflare` | `vercel` — forces stack when CI env would otherwise mis-detect (`deploymentTarget.ts`)."
-      },
-      "PAYLOAD_LOG_LEVEL": {
-        "description": "**Optional.** `info` | `debug` | `warn` | `error` — Payload logger."
-      },
-      "PAYLOAD_MCP": {
-        "description": "**Optional.** Set `true` to enable `@payloadcms/plugin-mcp` ([docs](https://payloadcms.com/docs/plugins/mcp)) — see `src/plugins/mcp/config.ts`."
-      },
-      "PAYLOAD_MULTI_TENANT": {
-        "description": "**Optional.** Set `true` to enable `@payloadcms/plugin-multi-tenant` on the `pages` collection + `tenants` (`examples/multi-tenant`). Run `payload migrate` after enabling."
-      },
-      "PAYLOAD_PUBLIC_APP_URL": {
-        "description": "**Optional.** Server URL for Payload `serverURL`/CORS. Prefer **Globals → Public site settings → Canonical site URL**."
-      },
-      "PAYLOAD_RELEASE_SECRET": {
-        "description": "**Optional.** Secret. Shared with GitHub Actions for release automation webhooks."
-      },
-      "POSTGRES_URL": {
-        "description": "**Optional.** Postgres URL — **Vercel relational stack**. Leave unset on Workers+D1 to avoid misrouting migrate (`deploymentTarget.ts`)."
-      },
-      "SENDGRID_API_KEY": {
-        "description": "**Optional.** Secret — SendGrid API key (nodemailer in `payload.config.ts`)."
-      },
-      "SITEMAP_URL": {
-        "description": "**Optional.** Canonical site URL for `next-sitemap` generation (defaults to payloadcms.com if unset)."
-      },
-      "STRIPE_SECRET_KEY": {
-        "description": "**Optional.** Secret. Stripe secret API key — billing routes and (with publishable key + `PAYLOAD_ECOMMERCE`) `plugin-ecommerce` payments adapter."
-      },
-      "STRIPE_WEBHOOK_SECRET": {
-        "description": "**Optional.** Secret — Stripe webhook signing secret (`whsec_…`) for `/api/payments/stripe/webhooks`. Alias: `STRIPE_WEBHOOKS_SIGNING_SECRET`."
-      },
-      "SYNC_BATCH_LIMIT": {
-        "description": "**Optional.** Numeric batch size override for `fetchGitHub.ts` sync scripts."
-      },
-      "VERCEL": {
-        "description": "**Optional.** Omit on Workers. Read-only on Vercel (`VERCEL=1` in CI); pairs with `POSTGRES_URL` for stack detection."
-      },
-      "VERCEL_REDEPLOY_URL": {
-        "description": "**Optional.** Vercel deploy hook URL — used by `redeployWebsite.ts` script."
+        "description": "**Optional.** GitHub PAT — add under **Build variables & secrets** if you need **`pnpm generate:llms`** to refresh `public/llms*.txt` during CI. See [Deploy buttons — secrets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets); dotenv names also appear in `.dev.vars.example`."
       }
     }
   }

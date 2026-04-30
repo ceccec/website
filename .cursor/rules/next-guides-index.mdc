@@ -1,0 +1,91 @@
+---
+description: Next.js Guides hub — topic tutorials (auth, i18n, testing, …) with official links
+alwaysApply: false
+---
+
+# Guides index (App Router)
+
+Official hub: **[Guides](https://nextjs.org/docs/app/guides)**. Use this file to jump to a guide without scanning the whole sidebar. Pair with **`next-basics.mdc`** and topic rules.
+
+## AI & DX
+
+- [AI Coding Agents](https://nextjs.org/docs/app/guides/ai-agents)
+- [Next.js MCP Server](https://nextjs.org/docs/app/guides/mcp)
+- [Debugging](https://nextjs.org/docs/app/guides/debugging)
+- [Development environment](https://nextjs.org/docs/app/guides/local-development)
+
+## Data, auth, security
+
+- [Authentication](https://nextjs.org/docs/app/guides/authentication)
+- [Data security](https://nextjs.org/docs/app/guides/data-security)
+- [Environment variables](https://nextjs.org/docs/app/guides/environment-variables)
+- [Content Security Policy](https://nextjs.org/docs/app/guides/content-security-policy)
+
+## Caching & delivery
+
+- [How revalidation works](https://nextjs.org/docs/app/guides/how-revalidation-works)
+- [Caching (previous model)](https://nextjs.org/docs/app/guides/caching-without-cache-components)
+- [CDN Caching](https://nextjs.org/docs/app/guides/cdn-caching)
+- [ISR](https://nextjs.org/docs/app/guides/incremental-static-regeneration)
+- [Prefetching](https://nextjs.org/docs/app/guides/prefetching)
+- [Streaming](https://nextjs.org/docs/app/guides/streaming)
+- [Rendering philosophy](https://nextjs.org/docs/app/guides/rendering-philosophy)
+- [Migrating to Cache Components](https://nextjs.org/docs/app/guides/migrating-to-cache-components)
+
+## Deploy & infra
+
+- [Deploying to platforms](https://nextjs.org/docs/app/guides/deploying-to-platforms)
+- [Self-hosting](https://nextjs.org/docs/app/guides/self-hosting)
+- [CI Build Caching](https://nextjs.org/docs/app/guides/ci-build-caching)
+- [Custom Server](https://nextjs.org/docs/app/guides/custom-server)
+- [Production checklist](https://nextjs.org/docs/app/guides/production-checklist)
+
+## Content & SEO
+
+- [Draft Mode](https://nextjs.org/docs/app/guides/draft-mode)
+- [MDX](https://nextjs.org/docs/app/guides/mdx)
+- [JSON-LD](https://nextjs.org/docs/app/guides/json-ld)
+- [Public static pages](https://nextjs.org/docs/app/guides/public-static-pages)
+- [Videos](https://nextjs.org/docs/app/guides/videos)
+
+## Routing & architecture patterns
+
+- [Backend for Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+- [Internationalization](https://nextjs.org/docs/app/guides/internationalization)
+- [Multi-tenant](https://nextjs.org/docs/app/guides/multi-tenant)
+- [Multi-zones](https://nextjs.org/docs/app/guides/multi-zones)
+- [Redirecting](https://nextjs.org/docs/app/guides/redirecting)
+- [Preserving UI state](https://nextjs.org/docs/app/guides/preserving-ui-state)
+- [View transitions](https://nextjs.org/docs/app/guides/view-transitions)
+
+## Performance & bundles
+
+- [Package bundling](https://nextjs.org/docs/app/guides/package-bundling)
+- [Lazy loading](https://nextjs.org/docs/app/guides/lazy-loading)
+- [Memory usage](https://nextjs.org/docs/app/guides/memory-usage)
+- [Analytics / Speed Insights](https://nextjs.org/docs/app/guides/analytics)
+- [OpenTelemetry](https://nextjs.org/docs/app/guides/open-telemetry)
+
+## Progressive web & static
+
+- [Progressive Web Apps](https://nextjs.org/docs/app/guides/progressive-web-apps)
+- [Single-page applications](https://nextjs.org/docs/app/guides/single-page-applications)
+- [Static exports](https://nextjs.org/docs/app/guides/static-exports)
+
+## Testing
+
+- [Testing](https://nextjs.org/docs/app/guides/testing) — [Cypress](https://nextjs.org/docs/app/guides/testing/cypress), [Jest](https://nextjs.org/docs/app/guides/testing/jest), [Playwright](https://nextjs.org/docs/app/guides/testing/playwright), [Vitest](https://nextjs.org/docs/app/guides/testing/vitest)
+
+## Migration & upgrades
+
+- [Migrating](https://nextjs.org/docs/app/guides/migrating) — [App Router](https://nextjs.org/docs/app/guides/migrating/app-router-migration), [CRA](https://nextjs.org/docs/app/guides/migrating/from-create-react-app), [Vite](https://nextjs.org/docs/app/guides/migrating/from-vite)
+- [Upgrading](https://nextjs.org/docs/app/guides/upgrading) — [Codemods](https://nextjs.org/docs/app/guides/upgrading/codemods), [v14](https://nextjs.org/docs/app/guides/upgrading/version-14), [v15](https://nextjs.org/docs/app/guides/upgrading/version-15), [v16](https://nextjs.org/docs/app/guides/upgrading/version-16)
+
+## Advanced / platform
+
+- [PPR Platform Guide](https://nextjs.org/docs/app/guides/ppr-platform-guide)
+- [Instrumentation](https://nextjs.org/docs/app/guides/instrumentation)
+
+**More:** **`next-features-overview.mdc`** · **`next-deployment.mdc`**
+
+Regenerate via `pnpm generate:cursor-rules:next` after editing `scripts/definitions/next-bodies/*.md`, `scripts/definitions/next-cursor-rules.manifest.json`, or the hub table in `scripts/generate-next-cursor-rules.mjs`.

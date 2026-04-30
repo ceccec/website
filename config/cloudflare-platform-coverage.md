@@ -10,9 +10,11 @@ Single reference for **what Cloudflare offers**, **what Wrangler can bind**, **w
 |---------------------|-----------|----------|
 | **Workers** | Runs OpenNext-generated Worker (`main`: `.open-next/worker.js`) | Entry stack |
 | **Assets** | Static asset serving (`ASSETS` binding) | OpenNext |
-| **D1** | SQLite for Payload (`sqliteD1Adapter`) | `src/lib/payloadDB.ts`, migrations |
+| **D1** (`D1`) | SQLite for Payload (`sqliteD1Adapter`) | `src/lib/payloadDB.ts`, Payload `payload migrate` |
+| **D1** (`NEXT_TAG_CACHE_D1`) | OpenNext **on-demand** tag cache ([OpenNext caching](https://opennext.js.org/cloudflare/caching)) | `d1-migrations/next-tag-cache/*.sql`, `wrangler d1 migrations apply NEXT_TAG_CACHE_D1` |
+| **Durable Objects** (`NEXT_CACHE_DO_QUEUE`) | OpenNext ISR **revalidation queue** (`DOQueueHandler`) | `open-next.config.ts` → `queue: doQueue` |
 | **R2** (media bucket) | Payload uploads via `@payloadcms/storage-r2` | `src/plugins/storage/config.ts` |
-| **R2** (OpenNext cache bucket) | Incremental cache / ISR-style persistence | OpenNext binding name `NEXT_INC_CACHE_R2_BUCKET` |
+| **R2** (OpenNext cache bucket) | Incremental cache / ISR persistence | OpenNext `NEXT_INC_CACHE_R2_BUCKET` |
 | **Workers Images binding** | Declared as `images.binding: "IMAGES"` | **Not used** in `src/` (no `env.IMAGES` Worker API). Zone **Image Transformations** via URL are **off by default**; opt in with `NEXT_PUBLIC_CF_IMAGE_RESIZING=true` + `src/lib/cloudflareImageLoader.ts`. |
 | **Service binding** | `WORKER_SELF_REFERENCE` for same-script composition | OpenNext pattern |
 
@@ -48,18 +50,18 @@ Copy from `config/wrangler.optional-bindings.jsonc` into root `wrangler.jsonc` *
 
 ## D. Environment variables & secrets (deploy / CI)
 
-**Source of truth:** `config/cloudflare.bindings.json` → synced to `package.json` `cloudflare.bindings` via `pnpm exec node scripts/sync-cloudflare-bindings.mjs`.
+**Cloudflare (documentation):** [Deploy to Cloudflare buttons](https://developers.cloudflare.com/workers/platform/deploy-buttons/) — optional **`cloudflare.bindings`** descriptions and **`.dev.vars.example` / `.env.example`** for secrets; Wrangler defaults for [automatic resource provisioning](https://developers.cloudflare.com/workers/platform/deploy-buttons/#automatic-resource-provisioning).
 
-These cover **Payload**, **Next public env**, **Stripe**, **Algolia**, **analytics**, **OAuth**, etc.—not Worker bindings, but required for **full** product behavior on Cloudflare or hybrid targets. Many third-party keys are **paid** on those vendors (Stripe, Algolia, SendGrid, …).
+**This repo:** `config/cloudflare.bindings.json` → `pnpm sync:cloudflare-bindings` → `package.json`; full env table `config/cloudflare-env-reference.md`.
 
 ---
 
 ## E. “Full coverage” checklist for operators
 
-1. **Baseline:** `wrangler.jsonc` + `PAYLOAD_SECRET` + D1 + R2 buckets (see `src/lib/assertCloudflarePayloadBindings.ts`).
+1. **Baseline:** `wrangler.jsonc` + `PAYLOAD_SECRET` + **two D1s** (Payload + OpenNext tag cache) + Durable Object queue + R2 buckets (see `src/lib/assertCloudflarePayloadBindings.ts` for Payload’s `D1` + `R2`).
 2. **Media:** R2 + Next Image **implemented**. **Zone image transforms:** opt in with `NEXT_PUBLIC_CF_IMAGE_RESIZING` + transformations on the zone (see §B). **Stream** is **not** integrated—plan separately if you need adaptive streaming.
 3. **Optional CF primitives:** merge snippets from `wrangler.optional-bindings.jsonc` only when you have a concrete use (cache, queue, AI, etc.) and understand **pricing**.
-4. **Env catalog:** extend `config/cloudflare.bindings.json` when adding new secrets so the **Deploy** wizard stays accurate; re-run `sync-cloudflare-bindings.mjs`.
+4. **Env catalog:** document new secrets in `config/cloudflare-env-reference.md`. Add to `config/cloudflare.bindings.json` only if the **Deploy** wizard should list them; re-run `sync-cloudflare-bindings.mjs`.
 
 ---
 
@@ -71,7 +73,7 @@ These cover **Payload**, **Next public env**, **Stripe**, **Algolia**, **analyti
 | **npm / Payload** | Optional first-party plugins (**multi-tenant, MCP, ecommerce**) are **`PAYLOAD_* === 'true'`** — leaving them off avoids pulling their runtime paths (`src/plugins/env.ts`). Ecommerce enables **Stripe** client/server deps in code paths — keep off until needed. |
 | **Storage** | Exactly **one** adapter per deploy: R2 (CF), or S3-compatible env, or Vercel Blob (`src/plugins/storage/config.ts`) — never two. |
 | **Database** | Runtime uses **one** adapter (`src/lib/payloadDB.ts`): D1 on Workers, Postgres on Vercel Node, or MongoDB on Node — mutually exclusive by env. Multiple `@payloadcms/db-*` packages remain in `package.json` for **template / multi-target parity**, not to run together. |
-| **Third-party SaaS** | Prefer **Globals / Admin** for URLs and keys where this repo already supports them (`cloudflare.bindings.json` intro), so behavior changes without new packages. |
+| **Third-party SaaS** | Configure per product; see env reference and Payload Admin where applicable. |
 
 ---
 
@@ -81,7 +83,8 @@ These cover **Payload**, **Next public env**, **Stripe**, **Algolia**, **analyti
 |------|---------|
 | `wrangler.jsonc` | Production Worker config |
 | `config/wrangler.optional-bindings.jsonc` | Optional binding snippets |
-| `config/cloudflare.bindings.json` | Env var catalog for deploy UI |
+| `config/cloudflare.bindings.json` | `cloudflare.bindings` for Deploy wizard help text (synced to `package.json`) |
+| `config/cloudflare-env-reference.md` | Full env var catalog (human reference) |
 | `scripts/sync-cloudflare-bindings.mjs` | Sync JSON → `package.json` |
 | `src/lib/assertCloudflarePayloadBindings.ts` | Runtime assertion for D1 + R2 |
 | `src/lib/payloadDB.ts` | `resolvePayloadDB` — D1 / Postgres / MongoDB routing |

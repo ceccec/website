@@ -34,3 +34,6 @@ jobs:
 
       - name: Validate vercel.json
         run: pnpm run deploy:vercel:dry
+
+      - name: Validate Wrangler config (types codegen)
+        run: pnpm exec wrangler types --env-interface CloudflareEnv /tmp/cloudflare-env.ci.d.ts

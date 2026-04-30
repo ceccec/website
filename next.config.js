@@ -1,3 +1,6 @@
+/**
+ * Payload-led: `.cursor/rules/payload-basics.mdc` · Next: `.cursor/rules/next-basics.mdc` + `.cursor/rules/next-features-overview.mdc` · build/OpenNext/CI: `.cursor/rules/payload-deployment.mdc`.
+ */
 import { withPayload } from '@payloadcms/next/withPayload'
 import path from 'path'
 import { fileURLToPath } from 'node:url'

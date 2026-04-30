@@ -18,12 +18,6 @@ alwaysApply: false
 - **Integration / other packages** (Stripe, HubSpot, reCAPTCHA, webhooks, custom fields for a plugin): implement in a **sibling module** in the same folder (e.g. `integration.ts`, `handlers.ts`) or a clearly named `src/plugins/<name>/…` file; **import from `config.ts`** so wiring stays one screen. That code must follow **`payload-hooks.mdc`** (lightweight hooks), **`payload-security-deployment.mdc`** (secrets server-only), **`payload-performance.mdc`** (no long sync work — use jobs when appropriate), and the **topic rule** for that package (e.g. `payload-form-builder.mdc`, `payload-ecommerce.mdc`, `payload-uploads-storage.mdc`).
 - **Cross-plugin DRY only:** `src/plugins/lib/*` — not business domain logic.
 
-## First-party schema (prefer plugins when conventional)
-
-- **`getSchemaPlugins()`** (`src/plugins/schema/index.ts`) registers blocks, collections, globals, and template REST in **dependency order**. When behavior is **cross-cutting** — shared block packs, env-gated slices (`src/plugins/env.ts`), routes bundled with a template, or hooks that touch multiple entities — **extend the matching schema plugin** (`layoutBlocksPlugin`, `marketingPlugin`, `partnersPlugin`, `pagesPlugin`, …) instead of growing unrelated collection files.
-- **Single collection/global** concerns (that collection’s access, preview URLs, revalidation, labels) stay in **`src/collections`** / **`src/globals`** when they are **not** conventionally part of a plugin slice — but **reuse** fields/blocks exported from `src/plugins/schema`, `src/fields`, `src/blocks`.
-- **Website bundle** (`src/plugins/website`) wraps official `@payloadcms/*` plugins (`seo`, nested docs, forms, storage); keep factory calls thin — integrations live next to that plugin per **Layout (strict)** above.
-
 ## Per-plugin deep links (bookmark)
 
 - [SEO](https://payloadcms.com/docs/plugins/seo) · [Redirects](https://payloadcms.com/docs/plugins/redirects) · [Nested docs](https://payloadcms.com/docs/plugins/nested-docs) · [Form builder](https://payloadcms.com/docs/plugins/form-builder) · [Multi-tenant](https://payloadcms.com/docs/plugins/multi-tenant) · [Ecommerce](https://payloadcms.com/docs/plugins/ecommerce) · [MCP](https://payloadcms.com/docs/plugins/mcp)

@@ -39,7 +39,10 @@ import { fileURLToPath } from 'url'
 
 import { Users } from './collections/Users'
 import { createCloudflareLogger } from './config/cloudflareLogger'
-import { getCloudflareContextFromWrangler } from './config/getCloudflareContextFromWrangler'
+import {
+  getCloudflareContextFromWrangler,
+  WRANGLER_PAYLOAD_CLI_CONFIG,
+} from './config/getCloudflareContextFromWrangler'
 import { jobsCanRun } from './config/jobsAccess'
 import { payloadLexicalEditor } from './config/payloadLexicalEditor'
 import { getTrustedOrigins } from './config/trustedOrigins'
@@ -101,7 +104,7 @@ const deploymentTarget = getDeploymentTarget()
 const cloudflare: CloudflareContext | undefined =
   deploymentTarget === 'cloudflare'
     ? isCLI || !isProduction
-      ? await getCloudflareContextFromWrangler()
+      ? await getCloudflareContextFromWrangler(isCLI ? WRANGLER_PAYLOAD_CLI_CONFIG : undefined)
       : await getCloudflareContext({ async: true })
     : undefined
 

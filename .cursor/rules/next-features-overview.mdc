@@ -1,0 +1,27 @@
+---
+description: Next.js App Router — official overview docs ↔ Cursor rules (hub)
+alwaysApply: true
+---
+
+# Next.js features — overview index
+
+Start from the **official** page for each area ([nextjs.org/docs](https://nextjs.org/docs/)); use the **Cursor rule** for this repo’s paths.
+
+| Feature area | Official overview | Cursor rule |
+|--------------|-------------------|-------------|
+| **Routing & layouts** | [Project structure](https://nextjs.org/docs/app/getting-started/project-structure), [Layouts and pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages), [Linking and navigating](https://nextjs.org/docs/app/getting-started/linking-and-navigating), [File conventions](https://nextjs.org/docs/app/api-reference/file-conventions) | `next-app-router-routing.mdc` |
+| **Server & Client Components / rendering** | [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components), [Streaming](https://nextjs.org/docs/app/guides/streaming) | `next-server-client-and-rendering.mdc` |
+| **Data fetching & mutations** | [Fetching data](https://nextjs.org/docs/app/getting-started/fetching-data), [Mutating data](https://nextjs.org/docs/app/getting-started/mutating-data), [Forms](https://nextjs.org/docs/app/guides/forms) | `next-data-fetching-and-actions.mdc` |
+| **Caching & revalidation** | [Caching](https://nextjs.org/docs/app/getting-started/caching), [Revalidating](https://nextjs.org/docs/app/getting-started/revalidating), [How revalidation works](https://nextjs.org/docs/app/guides/how-revalidation-works) | `next-caching-revalidation.mdc` |
+| **Styling** | [CSS](https://nextjs.org/docs/app/getting-started/css), [Tailwind v3](https://nextjs.org/docs/app/guides/tailwind-v3-css), [Sass](https://nextjs.org/docs/app/guides/sass) | `next-styling.mdc` |
+| **Images, fonts, third-party scripts** | [Image optimization](https://nextjs.org/docs/app/getting-started/images), [Font optimization](https://nextjs.org/docs/app/getting-started/fonts), [Scripts](https://nextjs.org/docs/app/guides/scripts), [Third-party libraries](https://nextjs.org/docs/app/guides/third-party-libraries) | `next-images-fonts-and-scripts.mdc` |
+| **Metadata & SEO** | [Metadata and OG images](https://nextjs.org/docs/app/getting-started/metadata-and-og-images), [JSON-LD](https://nextjs.org/docs/app/guides/json-ld) | `next-metadata-and-og.mdc` |
+| **Route Handlers & Proxy** | [Route Handlers](https://nextjs.org/docs/app/getting-started/route-handlers), [Proxy](https://nextjs.org/docs/app/getting-started/proxy) | `next-route-handlers-and-proxy.mdc` |
+| **Config, CLI, bundlers, adapters** | [next.config.js](https://nextjs.org/docs/app/api-reference/config/next-config-js), [CLI](https://nextjs.org/docs/app/api-reference/cli), [Turbopack](https://nextjs.org/docs/app/api-reference/turbopack), [Adapters](https://nextjs.org/docs/app/api-reference/adapters) | `next-config-adapters-turbopack.mdc` |
+| **Directives & runtime APIs** | [Directives](https://nextjs.org/docs/app/api-reference/directives), [Functions](https://nextjs.org/docs/app/api-reference/functions), [Edge Runtime](https://nextjs.org/docs/app/api-reference/edge) | `next-api-directives-and-functions.mdc` |
+| **Guides (topic tutorials)** | [Guides](https://nextjs.org/docs/app/guides) | `next-guides-index.mdc` |
+| **Deploy & production** | [Deploying](https://nextjs.org/docs/app/getting-started/deploying), [Production checklist](https://nextjs.org/docs/app/guides/production-checklist), [Self-hosting](https://nextjs.org/docs/app/guides/self-hosting) | `next-deployment.mdc` |
+
+**More:** Basics → `next-basics.mdc` (always-on) · Payload integration → `payload-basics.mdc` · This repo’s migrate & workers → `payload-deployment.mdc`
+
+Regenerate via `pnpm generate:cursor-rules:next` after editing `scripts/definitions/next-bodies/*.md`, `scripts/definitions/next-cursor-rules.manifest.json`, or the hub table in `scripts/generate-next-cursor-rules.mjs`.

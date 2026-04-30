@@ -15,7 +15,7 @@ This repo’s Wrangler config is [`wrangler.jsonc`](wrangler.jsonc).
 
 ### Payload ↔ Cloudflare alignment
 
-At runtime, [`src/payload.config.ts`](src/payload.config.ts) resolves **OpenNext `CloudflareContext`** for D1 + R2 (after [`assertCloudflarePayloadBindings`](src/lib/assertCloudflarePayloadBindings.ts)). Local dev mirrors prod binding behavior via **`CLOUDFLARE_REMOTE_BINDINGS=true`** (remote D1/R2) and **`CLOUDFLARE_ENV`** when using Wrangler environments — see [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json).
+At runtime, [`src/payload.config.ts`](src/payload.config.ts) resolves **OpenNext `CloudflareContext`** for D1 + R2 (after [`assertCloudflarePayloadBindings`](src/lib/assertCloudflarePayloadBindings.ts)). Local dev mirrors prod binding behavior via **`CLOUDFLARE_REMOTE_BINDINGS=true`** (remote D1/R2) and **`CLOUDFLARE_ENV`** when using Wrangler environments — see [`config/cloudflare-env-reference.md`](config/cloudflare-env-reference.md) (`CLOUDFLARE_*` rows).
 
 **Cursor MCP:** With **[Payload](https://payloadcms.com/docs)** and **[Cloudflare](https://developers.cloudflare.com/workers/)** MCP servers enabled in Cursor, you can cross-check bindings and env against current docs; this repo cannot invoke those MCPs from CI.
 
@@ -29,22 +29,25 @@ At runtime, [`src/payload.config.ts`](src/payload.config.ts) resolves **OpenNext
 
 **App code:** This repo does not call optional bindings (e.g. KV) until **you** add routes or jobs that use `env.*`. OpenNext continues to own `.open-next/worker.js`; advanced bindings (e.g. Durable Objects) may need a custom Worker layout — treat those as expert-only.
 
-### Environment variable catalog (Deploy wizard)
+### Deploy to Cloudflare (documentation only)
 
-Human-readable names and copy for **Deploy to Cloudflare** live in [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json). Run **`pnpm sync:cloudflare-bindings`** to copy **`bindings`** into [`package.json`](package.json) under **`cloudflare.bindings`** — that is what the Deploy wizard reads (alongside [`.dev.vars.example`](.dev.vars.example)). **`PAYLOAD_SECRET`** is listed first and marked **Required**; everything else is optional reference copy. An optional root-level **`introduction`** in the JSON file is **docs-only** (not synced): it tells operators to leave other wizard fields blank and prefer **Admin → Globals** ([`PublicSiteSettings`](src/globals/PublicSiteSettings.ts), [`IntegrationSecrets`](src/globals/IntegrationSecrets.ts)) for URLs and integrations unless a value must be build-inlined (`NEXT_PUBLIC_*`) or kept outside Admin.
+Authoritative behavior is **[Deploy to Cloudflare buttons](https://developers.cloudflare.com/workers/platform/deploy-buttons/)**. In particular:
 
-### Deploy to Cloudflare button + `PAYLOAD_SECRET`
+- **[Worker environment variables and secrets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets):** secrets may appear in **`.dev.vars.example`** or **`.env.example`** (dotenv format); optional **`package.json` → `cloudflare` → `bindings`** with a **`description`** per key — see **[Best practices](https://developers.cloudflare.com/workers/platform/deploy-buttons/#best-practices)**.
+- **Wrangler** resource requirements and defaults: **[Automatic resource provisioning](https://developers.cloudflare.com/workers/platform/deploy-buttons/#automatic-resource-provisioning)**.
 
-Per [Deploy to Cloudflare — Worker secrets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets), the setup flow reads **`.dev.vars.example`** / **`.env.example`** (dotenv-style) and uses **`package.json` → `cloudflare.bindings`** only for **labels and help text**. This repo already defines **`PAYLOAD_SECRET`** in [`.dev.vars.example`](.dev.vars.example), [`.env.example`](.env.example), and [`package.json`](package.json) `cloudflare.bindings`, so the wizard **should** prompt for it.
+**This repo:** [`config/cloudflare.bindings.json`](config/cloudflare.bindings.json) → **`pnpm sync:cloudflare-bindings`** → [`package.json`](package.json); [`wrangler.jsonc`](wrangler.jsonc); env table [`config/cloudflare-env-reference.md`](config/cloudflare-env-reference.md).
 
-**Build vs runtime:** `pnpm build` runs **`payload migrate`** before deploy. If migrate still fails with “missing secret”, add **`PAYLOAD_SECRET`** under **Settings → Builds → [Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** for that project (same value as the Worker secret).
+### Builds and secrets (this repo)
+
+[`scripts/build.mjs`](scripts/build.mjs) runs **`payload migrate`** on some paths. If the build needs a secret, set it per [**Workers Builds — Build variables and secrets**](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) as well as Worker secrets when applicable.
 
 ## Checklist
 
-1. Set **`database_id`** in [`wrangler.jsonc`](wrangler.jsonc) after [`wrangler d1 create`](https://developers.cloudflare.com/d1/get-started/) or provisioning (the seed flow often fills this automatically).
-2. **`PAYLOAD_SECRET`:** required for **`pnpm payload migrate`** during **`pnpm build`** ([`scripts/build.mjs`](scripts/build.mjs) → **`workers:build`** on Workers CI). Set it for **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** if the deploy wizard did not inject it into the build environment (see **Deploy to Cloudflare button + `PAYLOAD_SECRET`** above). Generate with `openssl rand -hex 32`. Templates: [`.dev.vars.example`](.dev.vars.example), [`.env.example`](.env.example).
+1. Set **`database_id`** for **both** D1 bindings in [`wrangler.jsonc`](wrangler.jsonc): **`D1`** (Payload) and **`NEXT_TAG_CACHE_D1`** (OpenNext tag cache — separate database). [`scripts/migrate-production.mjs`](scripts/migrate-production.mjs) runs **`wrangler d1 migrations apply NEXT_TAG_CACHE_D1`** when the tag-cache id is real (skip with **`SKIP_NEXT_TAG_CACHE_MIGRATIONS=1`**). DO migration **`opennext-cache-v1`** applies `DOQueueHandler` on first deploy.
+2. **`PAYLOAD_SECRET`:** required for **`pnpm payload migrate`** during **`pnpm build`** ([`scripts/build.mjs`](scripts/build.mjs) → **`workers:build`** on Workers CI). Set it for **[Workers Builds → Build variables and secrets](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)** if the build environment lacks it (see **Builds and secrets (this repo)** above). Generate with `openssl rand -hex 32`. Templates: [`.dev.vars.example`](.dev.vars.example), [`.env.example`](.env.example).
 3. **Build / deploy:** default **`pnpm build`** runs OpenNext on Workers CI; **Deploy** — `pnpm run workers:deploy` or `npx wrangler deploy`. Full pipeline: `pnpm run deploy` per [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/). OpenNext runs **`pnpm run build`** internally; the repo sets **`OPEN_NEXT_INNER_BUILD=1`** for that nested step so it runs **`next build` only** and does not recurse into **`workers:build`**.
-4. Dry run: `pnpm run deploy:cloudflare:dry` or `pnpm run deploy:dry`.
+4. Dry run: `pnpm run deploy:cloudflare:dry` or `pnpm run deploy:dry` (local). **CI:** [`.github/workflows/deploy-dry.yml`](.github/workflows/deploy-dry.yml) (light: `vercel.json` + `wrangler types` + `verify:wiring`); full OpenNext + `wrangler deploy --dry-run` — [`.github/workflows/deploy-cloudflare-dry.yml`](.github/workflows/deploy-cloudflare-dry.yml) (**workflow_dispatch** only, heavy).
 
 ## Vercel / Postgres + Blob
 

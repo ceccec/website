@@ -5,22 +5,10 @@
 import fs from 'fs'
 import { fileURLToPath } from 'url'
 
+import { hubTable3, moreLine, ruleMdc } from './lib/cursorRulesFormat.mjs'
+
 const rootDir = fileURLToPath(new URL('..', import.meta.url))
 const rulesDir = `${rootDir}/.cursor/rules`
-
-/** Third column: backtick-wrapped rule filename for markdown */
-function ruleMdc(name) {
-  return `\`${name}\``
-}
-
-function hubTable3(headerLine, separatorLine, rows) {
-  const body = rows.map(([a, b, c]) => `| ${a} | ${b} | ${c} |`).join('\n')
-  return `${headerLine}\n${separatorLine}\n${body}`
-}
-
-function moreLine(parts) {
-  return `**More:** ${parts.join(' · ')}`
-}
 
 const REGEN_FOOTER_FEATURES = `Regenerate this file via \`pnpm generate:cursor-rules:payload\` after editing \`scripts/generate-payload-cursor-rules.mjs\`.`
 
@@ -84,6 +72,7 @@ const MORE_FEATURES_HUB = moreLine([
 const MORE_DEPLOYMENT_HUB = moreLine([
   'Feature index → `payload-features-overview.mdc`',
   'Ecosystem → `payload-ecosystem.mdc`',
+  'Next.js hub → `next-features-overview.mdc`',
   'Basics → `payload-basics.mdc` (always-on)',
 ])
 
@@ -774,6 +763,8 @@ Start from the **official doc** for each topic; use the **Cursor rule** for this
 ${hubTable3('| Topic | Official doc | Cursor rule |', '|-------|--------------|-------------|', DEPLOYMENT_HUB_ROWS)}
 
 **This repo (CI / static build):** \`next.config.js\`, \`scripts/build.mjs\`, \`scripts/lib/deploymentTarget.mjs\`. **Default:** \`pnpm build\` on the Cloudflare path runs \`deploy:database\` → \`payload migrate\` first so **D1 matches \`src/migrations\`** before OpenNext/SSG (see \`payload-migrations.mdc\`). **Optional:** follow Payload’s **[building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection)** when you intentionally disconnect or use \`SKIP_DATABASE_MIGRATE\` for special pipelines.
+
+**Next.js / OpenNext / Worker runtime:** \`next-basics.mdc\`, \`next-features-overview.mdc\`, and \`next-deployment.mdc\` (App Router + platform deploy); topic rules \`next-caching-revalidation.mdc\`, \`next-config-adapters-turbopack.mdc\`, etc. **Payload still leads.** Official Next: [Deploying](https://nextjs.org/docs/app/getting-started/deploying), [Deploying to platforms](https://nextjs.org/docs/app/guides/deploying-to-platforms) — pair with Payload [deployment](https://payloadcms.com/docs/production/deployment) above.
 
 **LLM exports (\`pnpm generate:llms\`):** without \`GITHUB_ACCESS_TOKEN\`, \`src/scripts/generateLLMs.ts\` keeps committed \`public/llms.txt\` and \`public/llms-full.txt\` when present; set the token to refresh from GitHub.
 

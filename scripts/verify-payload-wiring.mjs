@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Ensures TypeScript passes and every `CACHE_DEPTH` key is referenced in `fetch*` (`_data/index.ts`)
- * so query depth stays aligned with `unstable_cache` keys.
+ * Ensures TypeScript passes, `CACHE_DEPTH` keys are used in `_data/index.ts`, and
+ * `package.json` → `cloudflare.bindings` matches `config/cloudflare.bindings.json`.
  */
 import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -9,6 +9,25 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+
+const pkgPath = join(root, 'package.json')
+const cfBindingsPath = join(root, 'config', 'cloudflare.bindings.json')
+const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+const cf = JSON.parse(readFileSync(cfBindingsPath, 'utf8'))
+const pkgCf = {
+  introduction: pkg.cloudflare?.introduction ?? '',
+  bindings: pkg.cloudflare?.bindings,
+}
+const srcCf = {
+  introduction: cf.introduction ?? '',
+  bindings: cf.bindings,
+}
+if (JSON.stringify(pkgCf) !== JSON.stringify(srcCf)) {
+  console.error(
+    'verify-payload-wiring: package.json `cloudflare` out of sync with config/cloudflare.bindings.json — run: node scripts/sync-cloudflare-bindings.mjs',
+  )
+  process.exit(1)
+}
 
 execSync('pnpm exec tsc --noEmit', { stdio: 'inherit', cwd: root })
 
@@ -34,4 +53,4 @@ if (missing.length > 0) {
   process.exit(1)
 }
 
-console.log('verify-payload-wiring: OK (tsc + CACHE_DEPTH ↔ fetch layer)')
+console.log('verify-payload-wiring: OK (tsc + CACHE_DEPTH ↔ fetch + Cloudflare bindings sync)')

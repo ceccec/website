@@ -9,18 +9,18 @@ export type { DeploymentTarget }
 
 /** Resolved tenant scope when `@payloadcms/plugin-multi-tenant` is enabled and request is authenticated / routed. */
 export type TenantScope =
+  | { enabled: false }
   | {
       enabled: true
       id: number | string
       slug?: string
     }
-  | { enabled: false }
 
 /** ISO 4217 — commerce dimensions pair with {@link TenantScope} when ecommerce is on. */
 export type CurrencyCode = string
 
 /** Content + UI language — aligns Payload `localization` and next-intl. */
-export type LocaleCode = TypedLocale | string
+export type LocaleCode = string | TypedLocale
 
 /** Optional regional/market slice (tax, shipping zones, catalog); extend per product. */
 export type RegionCode = string

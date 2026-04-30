@@ -7,7 +7,7 @@ export async function createMarketingBillingSession(args: {
   payloadUserId: number | string
   returnUrl: string
   stripeCustomerId?: null | string
-}): Promise<{ url: string } | { error: string }> {
+}): Promise<{ error: string } | { url: string }> {
   if (getStripeServer() && args.stripeCustomerId?.trim()) {
     return createStripeBillingPortalSession({
       returnUrl: args.returnUrl,

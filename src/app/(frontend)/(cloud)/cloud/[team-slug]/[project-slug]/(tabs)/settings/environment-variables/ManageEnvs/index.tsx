@@ -4,7 +4,6 @@ import type { Project } from '@root/payload-cloud-types'
 import type { EnvironmentVariableFormData } from '@root/types/forms'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
-import { uuidTags } from '@uuid'
 import { Accordion } from '@components/Accordion/index'
 import { Button } from '@components/Button/index'
 import { Heading } from '@components/Heading/index'
@@ -20,6 +19,7 @@ import {
   assertRecordPayload,
   parseOptionalMessagePayload,
 } from '@utilities/payloadCloudJson'
+import { uuidTags } from '@uuid'
 import * as React from 'react'
 import { toast } from 'sonner'
 

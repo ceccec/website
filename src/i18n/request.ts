@@ -1,7 +1,6 @@
+import localization from '@root/i18n/localization'
 import { cookies } from 'next/headers'
 import { getRequestConfig } from 'next-intl/server'
-
-import localization from '@root/i18n/localization'
 
 const allowed = new Set(localization.locales.map((l) => l.code))
 

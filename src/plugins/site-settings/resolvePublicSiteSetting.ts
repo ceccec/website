@@ -1,12 +1,12 @@
-import { headers } from 'next/headers'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
-
 import { multiTenantEnabled } from '@root/plugins/env'
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import { payloadCacheKey, uuidTags } from '@uuid'
+import { unstable_cache } from 'next/cache'
+import { headers } from 'next/headers'
+import { cache } from 'react'
 
 import type { ResolvedPublicSiteSetting } from './resolvePublicSiteSetting.shared'
+
 import { resolvePublicSiteSettingFields } from './resolvePublicSiteSetting.shared'
 import {
   findTenantByRequestHost,
@@ -60,8 +60,8 @@ export const resolvePublicSiteSetting = cache(async (): Promise<ResolvedPublicSi
   return unstable_cache(
     async () => loadMergedForHost(hostKey),
     payloadCacheKey({
-      op: 'resolvePublicSiteSetting',
       host: hostKey || 'none',
+      op: 'resolvePublicSiteSetting',
     }),
     {
       tags: [uuidTags.tenantsPublicSite],

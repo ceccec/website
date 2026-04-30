@@ -1,8 +1,7 @@
 import type { TypedLocale } from 'payload'
 
-import { getLocale } from 'next-intl/server'
-
 import localization from '@root/i18n/localization'
+import { getLocale } from 'next-intl/server'
 
 const codes = new Set(localization.locales.map((l) => l.code))
 

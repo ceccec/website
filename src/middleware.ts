@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
 
 import localization from '@root/i18n/localization'
+import { NextResponse } from 'next/server'
 
 const allowed = new Set(localization.locales.map((l) => l.code))
 
@@ -21,8 +21,8 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.redirect(url)
   response.cookies.set('NEXT_LOCALE', localeParam, {
-    path: '/',
     maxAge: 60 * 60 * 24 * 365,
+    path: '/',
     sameSite: 'lax',
   })
   return response

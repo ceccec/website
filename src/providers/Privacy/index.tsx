@@ -1,7 +1,7 @@
 'use client'
 
-import { assertRecordPayload } from '@utilities/payloadCloudJson'
 import canUseDom from '@root/utilities/can-use-dom'
+import { assertRecordPayload } from '@utilities/payloadCloudJson'
 import React, { createContext, use, useCallback, useEffect, useState } from 'react'
 
 type Privacy = {

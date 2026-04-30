@@ -1,3 +1,5 @@
+import type { RevolutCheckoutPlan } from '@root/plugins/revolut/types'
+
 import {
   buildRevolutCheckoutUrl,
   isRevolutCheckoutConfigured,
@@ -7,7 +9,6 @@ import {
   createStripeSubscriptionCheckoutSession,
   getStripeServer,
 } from '@root/plugins/stripe'
-import type { RevolutCheckoutPlan } from '@root/plugins/revolut/types'
 
 export type MarketingCheckoutProvider = 'none' | 'revolut' | 'stripe'
 
@@ -15,8 +16,8 @@ export type MarketingCheckoutArgs = {
   cancelUrl: string
   existingStripeCustomerId?: null | string
   payloadUserId: number | string
-  priceId?: string
   plan?: RevolutCheckoutPlan
+  priceId?: string
   successUrl: string
   userEmail?: string
 }

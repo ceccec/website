@@ -130,7 +130,7 @@ const Checkout: React.FC<{
       )
 
       if (customerResponse.ok) {
-        const teamWithCustomer = (await customerResponse.json()) as TeamWithCustomer
+        const teamWithCustomer = (await customerResponse.json())
         dispatchCheckoutState({
           type: 'SET_TEAM',
           payload: teamWithCustomer,

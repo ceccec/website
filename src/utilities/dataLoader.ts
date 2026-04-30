@@ -18,31 +18,46 @@
  *     .find()
  */
 
+import type { TypedLocale, Where } from 'payload'
+
 import { resolvePayloadLocale } from '@root/i18n/payloadLocale'
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import { draftMode } from 'next/headers'
-import type { TypedLocale, Where } from 'payload'
 
 export type DataLoaderContext = {
-  locale?: TypedLocale
-  draft?: boolean
   depth?: number
+  draft?: boolean
+  locale?: TypedLocale
 }
 
 /** Builder for data loading operations. Fluent API with optional cache/revalidation support. */
 export class DataLoaderBuilder {
   private _collection: string = ''
-  private _locale: TypedLocale | undefined
-  private _draft: boolean | undefined
   private _depth: number = 0
-  private _where: Where = {}
-  private _select?: Record<string, boolean>
-  private _limit?: number
-  private _sort?: string | string[]
+  private _draft: boolean | undefined
   private _joins?: Record<string, any>
+  private _limit?: number
+  private _locale: TypedLocale | undefined
   private _overrideAccess: boolean = false
+  private _select?: Record<string, boolean>
+  private _sort?: string | string[]
+  private _where: Where = {}
 
   constructor(private context?: DataLoaderContext) {}
+
+  /** Resolve draft mode (context > arg > draftMode()). */
+  private async resolveDraft(): Promise<boolean> {
+    if (this.context?.draft !== undefined) {return this.context.draft}
+    if (this._draft !== undefined) {return this._draft}
+    return (await draftMode()).isEnabled
+  }
+
+  /** Resolve locale (context > arg > default). */
+  private async resolveLocale(localeArg?: TypedLocale): Promise<TypedLocale> {
+    if (localeArg) {return localeArg}
+    if (this.context?.locale) {return this.context.locale}
+    return resolvePayloadLocale()
+  }
 
   /** Set the collection name (required). */
   collection(name: string): this {
@@ -50,21 +65,71 @@ export class DataLoaderBuilder {
     return this
   }
 
-  /** Set WHERE clause. */
-  where(conditions: Where): this {
-    this._where = conditions
-    return this
-  }
-
-  /** Helper: exact slug match. */
-  slug(value: string): this {
-    this._where = { slug: { equals: value }, ...(this._where as any) }
-    return this
-  }
-
   /** Set cache depth. */
   depth(d: number): this {
     this._depth = d
+    return this
+  }
+
+  /** Execute multi-doc query. */
+  async find<T = any>(localeArg?: TypedLocale): Promise<T[]> {
+    const locale = await this.resolveLocale(localeArg)
+    const draft = await this.resolveDraft()
+    const payload = await getPayload()
+
+    const result = await payload.find({
+      collection: this._collection,
+      depth: this._depth,
+      draft,
+      limit: this._limit ?? 300,
+      locale,
+      overrideAccess: this._overrideAccess,
+      select: this._select,
+      where: this._where,
+      ...(this._sort && { sort: this._sort }),
+      ...(this._joins && { joins: this._joins }),
+    })
+
+    return result.docs as T[]
+  }
+
+  /** Execute single-doc query. */
+  async findOne<T = any>(localeArg?: TypedLocale): Promise<T | undefined> {
+    const locale = await this.resolveLocale(localeArg)
+    const draft = await this.resolveDraft()
+    const payload = await getPayload()
+
+    const result = await payload.find({
+      collection: this._collection,
+      depth: this._depth,
+      draft,
+      limit: 1,
+      locale,
+      overrideAccess: this._overrideAccess,
+      select: this._select,
+      where: this._where,
+      ...(this._sort && { sort: this._sort }),
+      ...(this._joins && { joins: this._joins }),
+    })
+
+    return (result.docs[0] as T) ?? undefined
+  }
+
+  /** Set JOINS for relational expansion. */
+  joins(value: Record<string, any>): this {
+    this._joins = value
+    return this
+  }
+
+  /** Set LIMIT. */
+  limit(n: number): this {
+    this._limit = n
+    return this
+  }
+
+  /** Override access control (for draft preview). */
+  overrideAccess(enable: boolean = true): this {
+    this._overrideAccess = enable
     return this
   }
 
@@ -78,9 +143,9 @@ export class DataLoaderBuilder {
     return this
   }
 
-  /** Set LIMIT. */
-  limit(n: number): this {
-    this._limit = n
+  /** Helper: exact slug match. */
+  slug(value: string): this {
+    this._where = { slug: { equals: value }, ...(this._where as any) }
     return this
   }
 
@@ -90,74 +155,10 @@ export class DataLoaderBuilder {
     return this
   }
 
-  /** Set JOINS for relational expansion. */
-  joins(value: Record<string, any>): this {
-    this._joins = value
+  /** Set WHERE clause. */
+  where(conditions: Where): this {
+    this._where = conditions
     return this
-  }
-
-  /** Override access control (for draft preview). */
-  overrideAccess(enable: boolean = true): this {
-    this._overrideAccess = enable
-    return this
-  }
-
-  /** Resolve locale (context > arg > default). */
-  private async resolveLocale(localeArg?: TypedLocale): Promise<TypedLocale> {
-    if (localeArg) return localeArg
-    if (this.context?.locale) return this.context.locale
-    return resolvePayloadLocale()
-  }
-
-  /** Resolve draft mode (context > arg > draftMode()). */
-  private async resolveDraft(): Promise<boolean> {
-    if (this.context?.draft !== undefined) return this.context.draft
-    if (this._draft !== undefined) return this._draft
-    return (await draftMode()).isEnabled
-  }
-
-  /** Execute single-doc query. */
-  async findOne<T = any>(localeArg?: TypedLocale): Promise<T | undefined> {
-    const locale = await this.resolveLocale(localeArg)
-    const draft = await this.resolveDraft()
-    const payload = await getPayload()
-
-    const result = await payload.find({
-      collection: this._collection,
-      depth: this._depth,
-      draft,
-      locale,
-      limit: 1,
-      overrideAccess: this._overrideAccess,
-      select: this._select,
-      where: this._where,
-      ...(this._sort && { sort: this._sort }),
-      ...(this._joins && { joins: this._joins }),
-    })
-
-    return (result.docs[0] as T) ?? undefined
-  }
-
-  /** Execute multi-doc query. */
-  async find<T = any>(localeArg?: TypedLocale): Promise<T[]> {
-    const locale = await this.resolveLocale(localeArg)
-    const draft = await this.resolveDraft()
-    const payload = await getPayload()
-
-    const result = await payload.find({
-      collection: this._collection,
-      depth: this._depth,
-      draft,
-      locale,
-      limit: this._limit ?? 300,
-      overrideAccess: this._overrideAccess,
-      select: this._select,
-      where: this._where,
-      ...(this._sort && { sort: this._sort }),
-      ...(this._joins && { joins: this._joins }),
-    })
-
-    return result.docs as T[]
   }
 }
 

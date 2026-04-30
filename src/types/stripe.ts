@@ -68,8 +68,8 @@ export interface StripeCustomer {
 
 /** Stripe Invoice line item (detailed). */
 export interface StripeInvoiceLineItem {
-  id: string
   description?: string
+  id: string
   period: {
     end: number
     start: number

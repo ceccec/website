@@ -1,5 +1,6 @@
-import { resolveRevolutPaymentLinkBase } from './env'
 import type { RevolutCheckoutPlan } from './types'
+
+import { resolveRevolutPaymentLinkBase } from './env'
 
 export type BuildRevolutCheckoutUrlArgs = {
   cancelUrl: string
@@ -23,7 +24,7 @@ function queryKey(primary: string, legacy: string, fallback: string): string {
  */
 export function buildRevolutCheckoutUrl(
   args: BuildRevolutCheckoutUrlArgs,
-): { url: string } | { error: string } {
+): { error: string } | { url: string } {
   const base = resolveRevolutPaymentLinkBase(args.plan)
   if (!base) {
     return {

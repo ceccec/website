@@ -3,6 +3,6 @@
  * {@link buildRequestPlatformContext}, import from `@root/platform/context.server`.
  */
 
-export type { DeploymentTarget, CurrencyCode, LocaleCode, RegionCode, TenantScope } from './types'
-export { getPlatformFeatureMatrix, type PlatformFeatureMatrix } from './features'
 export { getDefaultCurrencyCode, resolveCurrencyForRequest } from './currency'
+export { getPlatformFeatureMatrix, type PlatformFeatureMatrix } from './features'
+export type { CurrencyCode, DeploymentTarget, LocaleCode, RegionCode, TenantScope } from './types'

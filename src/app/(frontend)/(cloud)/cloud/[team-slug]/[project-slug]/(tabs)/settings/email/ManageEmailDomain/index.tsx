@@ -55,7 +55,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
   const getDomainVerificationStatus = useCallback(
     async (domainId: string) => {
       const query = qs.stringify({
-        domainId: domainId,
+        domainId,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -90,7 +90,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
   const loadCustomDomainEmailAPIKey = useCallback(
     async (domainId: string) => {
       const query = qs.stringify({
-        domainId: domainId,
+        domainId,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -148,7 +148,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
     async (domainId: string) => {
       try {
         const query = qs.stringify({
-          domainId: domainId,
+          domainId,
           env: environmentSlug,
         })
         const req = await fetch(

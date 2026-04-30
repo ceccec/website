@@ -1,6 +1,7 @@
 import type { MigrateDownArgs, MigrateUpArgs } from '@payloadcms/db-d1-sqlite'
 
 import type { MigrationModule } from './lib/migrationContract'
+
 import * as stage01 from './stages/stage_01_core_schema'
 import * as stage02 from './stages/stage_02_plugins_and_optional_collections'
 import * as stage03 from './stages/stage_03_users_subscription_plan'

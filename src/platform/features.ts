@@ -13,21 +13,21 @@ import {
 } from '@root/plugins/env'
 
 export type PlatformFeatureMatrix = {
-  multiTenant: boolean
   ecommerce: boolean
   ecommerceVariants: boolean
-  templateMarketing: boolean
+  multiTenant: boolean
   templateDocs: boolean
+  templateMarketing: boolean
   templatePartners: boolean
 }
 
 export function getPlatformFeatureMatrix(): PlatformFeatureMatrix {
   return {
-    multiTenant: multiTenantEnabled(),
     ecommerce: ecommerceEnabled(),
     ecommerceVariants: ecommerceVariantsEnabled(),
-    templateMarketing: marketingContentEnabled(),
+    multiTenant: multiTenantEnabled(),
     templateDocs: docsTemplateEnabled(),
+    templateMarketing: marketingContentEnabled(),
     templatePartners: partnersTemplateEnabled(),
   }
 }

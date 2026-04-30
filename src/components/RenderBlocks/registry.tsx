@@ -13,13 +13,6 @@
 import type { CaseStudy, Page, PartnerProgram, Post, ReusableContent } from '@root/payload-types'
 import type { ComponentType } from 'react'
 
-import {
-  CASE_STUDY_LAYOUT_BLOCK_SLUGS,
-  PAGE_LAYOUT_BLOCK_SLUGS,
-  POST_CONTENT_BLOCK_SLUGS,
-  REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS,
-} from '@root/plugins/schema/layoutBlockReferences'
-
 import { BannerBlock } from '@blocks/Banner/index'
 import { BlogContent } from '@blocks/BlogContent/index'
 import { BlogMarkdown } from '@blocks/BlogMarkdown/index'
@@ -50,6 +43,12 @@ import { Slider } from '@blocks/Slider/index'
 import { Statement } from '@blocks/Statement/index'
 import { Steps } from '@blocks/Steps/index'
 import { StickyHighlights } from '@blocks/StickyHighlights/index'
+import {
+  CASE_STUDY_LAYOUT_BLOCK_SLUGS,
+  PAGE_LAYOUT_BLOCK_SLUGS,
+  POST_CONTENT_BLOCK_SLUGS,
+  REUSABLE_CONTENT_LAYOUT_BLOCK_SLUGS,
+} from '@root/plugins/schema/layoutBlockReferences'
 
 /** `blockType` values from every Payload field that feeds {@link RenderBlocks}. */
 export type BlockSlugFromBlocks<A> = NonNullable<A> extends readonly (infer U)[]
@@ -63,8 +62,8 @@ export type LayoutBlockSlug =
   /** Appended in {@link Post} only — not a Payload block document. */
   | 'relatedPosts'
   | BlockSlugFromBlocks<NonNullable<CaseStudy['layout']>>
-  | BlockSlugFromBlocks<NonNullable<PartnerProgram['contentBlocks']>['afterDirectory']>
-  | BlockSlugFromBlocks<NonNullable<PartnerProgram['contentBlocks']>['beforeDirectory']>
+   
+   
   | BlockSlugFromBlocks<Page['layout']>
   | BlockSlugFromBlocks<Post['content']>
   | BlockSlugFromBlocks<ReusableContent['layout']>

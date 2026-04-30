@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 
-import { uuidTags } from '@uuid'
 import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
+import { uuidTags } from '@uuid'
 import { NextResponse } from 'next/server'
 
 export function GET(request: NextRequest): NextResponse {

@@ -6,9 +6,9 @@ import type { PublicSiteSettingOverrides } from './resolvePublicSiteSetting.shar
 
 /** Normalize request Host / X-Forwarded-Host (no port, lowercase). */
 export function normalizeRequestHost(
-  raw: string | null | undefined,
+  raw: null | string | undefined,
 ): string | undefined {
-  if (!raw) return undefined
+  if (!raw) {return undefined}
   const h = raw.split(':')[0].trim().toLowerCase()
   return h || undefined
 }
@@ -62,7 +62,7 @@ function candidateIndexForDoc(
   candidates: string[],
 ): number {
   const raw = doc.domain
-  if (typeof raw !== 'string') return -1
+  if (typeof raw !== 'string') {return -1}
   const domain = raw.trim().toLowerCase()
   return candidates.indexOf(domain)
 }
@@ -75,11 +75,11 @@ function candidateIndexForDoc(
 export async function findTenantByRequestHost(
   payload: Payload,
   host: string,
-): Promise<Record<string, unknown> | null> {
-  if (!multiTenantEnabled()) return null
+): Promise<null | Record<string, unknown>> {
+  if (!multiTenantEnabled()) {return null}
 
   const candidates = orderedDomainCandidates(host)
-  if (candidates.length === 0) return null
+  if (candidates.length === 0) {return null}
 
   const res = await payload.find({
     // Collection exists when `PAYLOAD_MULTI_TENANT=true`; generated slugs may omit it when off.
@@ -94,16 +94,16 @@ export async function findTenantByRequestHost(
     },
   })
 
-  if (!res.docs.length) return null
+  if (!res.docs.length) {return null}
 
-  let best: Record<string, unknown> | null = null
+  let best: null | Record<string, unknown> = null
   let bestIdx = Number.POSITIVE_INFINITY
 
   for (const doc of res.docs) {
-    if (doc === null || typeof doc !== 'object') continue
+    if (doc === null || typeof doc !== 'object') {continue}
     const row = doc as Record<string, unknown>
     const idx = candidateIndexForDoc(row, candidates)
-    if (idx === -1) continue
+    if (idx === -1) {continue}
     if (idx < bestIdx) {
       bestIdx = idx
       best = row
@@ -118,29 +118,29 @@ export function tenantDocToPublicSiteOverrides(
   doc: Record<string, unknown>,
 ): PublicSiteSettingOverrides {
   return {
-    siteUrl: pickString(doc.siteUrl),
-    cmsUrl: pickString(doc.cmsUrl),
-    cloudCmsUrl: pickString(doc.cloudCmsUrl),
-    gaMeasurementId: pickString(doc.gaMeasurementId),
-    gtmContainerId: pickString(doc.gtmContainerId),
-    facebookPixelId: pickString(doc.facebookPixelId),
-    enableBetaDocs: pickBool(doc.enableBetaDocs),
-    enableLegacyDocs: pickBool(doc.enableLegacyDocs),
-    newsletterFormId: pickString(doc.newsletterFormId),
-    recaptchaSiteKey: pickString(doc.recaptchaSiteKey),
     algoliaApplicationId: pickString(doc.algoliaApplicationId),
     algoliaCommunityIndexName: pickString(doc.algoliaCommunityIndexName),
     algoliaDocsearchKey: pickString(doc.algoliaDocsearchKey),
+    cloudCmsUrl: pickString(doc.cloudCmsUrl),
+    cmsUrl: pickString(doc.cmsUrl),
+    enableBetaDocs: pickBool(doc.enableBetaDocs),
+    enableLegacyDocs: pickBool(doc.enableLegacyDocs),
+    facebookPixelId: pickString(doc.facebookPixelId),
+    gaMeasurementId: pickString(doc.gaMeasurementId),
+    gtmContainerId: pickString(doc.gtmContainerId),
+    newsletterFormId: pickString(doc.newsletterFormId),
+    recaptchaSiteKey: pickString(doc.recaptchaSiteKey),
+    siteUrl: pickString(doc.siteUrl),
   }
 }
 
-function pickString(v: unknown): string | null | undefined {
-  if (v === null || v === undefined) return undefined
-  if (typeof v === 'string') return v.trim() === '' ? undefined : v
+function pickString(v: unknown): null | string | undefined {
+  if (v === null || v === undefined) {return undefined}
+  if (typeof v === 'string') {return v.trim() === '' ? undefined : v}
   return String(v)
 }
 
 function pickBool(v: unknown): boolean | null | undefined {
-  if (v === null || v === undefined) return undefined
+  if (v === null || v === undefined) {return undefined}
   return Boolean(v)
 }

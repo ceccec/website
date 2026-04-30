@@ -2,8 +2,6 @@ import { getPayload } from '@root/lib/getPayload'
 import { marketingContentEnabled, partnersTemplateEnabled } from '@root/plugins/env'
 import { draftMode } from 'next/headers'
 
-import { CACHE_DEPTH } from './cacheDepths'
-
 import type {
   Budget,
   CaseStudy,
@@ -23,6 +21,7 @@ import type {
   TopBar,
 } from '../../payload-types'
 
+import { CACHE_DEPTH } from './cacheDepths'
 import { emptyGetStartedGlobal, emptyMarketingLayoutGlobals } from './payloadTemplateStubs'
 
 /** Shared `where.and` fragment: published docs only when not in draft preview. */

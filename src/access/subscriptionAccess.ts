@@ -1,6 +1,6 @@
 import type { Access } from 'payload'
 
-export type SubscriptionStatus = 'inactive' | 'active' | 'past_due' | 'canceled'
+export type SubscriptionStatus = 'active' | 'canceled' | 'inactive' | 'past_due'
 
 /** Sync from Stripe (webhook / Price `metadata.plan_tier`) — rank drives content access. */
 export const SUBSCRIPTION_PLANS = ['none', 'starter', 'pro', 'enterprise'] as const
@@ -16,12 +16,12 @@ export type ContentAccessTier = (typeof CONTENT_ACCESS_TIERS)[number]
 /** Numeric rank for a user's **subscriptionPlan** (not subscription status). */
 export function subscriptionPlanRank(plan: null | string | undefined): number {
   switch (plan) {
-    case 'starter':
-      return 1
-    case 'pro':
-      return 2
     case 'enterprise':
       return 3
+    case 'pro':
+      return 2
+    case 'starter':
+      return 1
     default:
       return 0
   }
@@ -30,15 +30,15 @@ export function subscriptionPlanRank(plan: null | string | undefined): number {
 /** Minimum plan rank required to read a document with this **accessTier** (published). */
 export function requiredRankForContentTier(tier: null | string | undefined): number {
   switch (tier) {
-    case 'public':
-      return 0
-    case 'subscriber':
-    case 'starter':
-      return 1
-    case 'pro':
-      return 2
     case 'enterprise':
       return 3
+    case 'pro':
+      return 2
+    case 'public':
+      return 0
+    case 'starter':
+    case 'subscriber':
+      return 1
     default:
       return 0
   }
@@ -53,10 +53,10 @@ export function allowedContentTiersForRank(rank: number): ContentAccessTier[] {
 export type SubscriberFields = {
   subscriptionCurrentPeriodEnd?: Date | null | string
   subscriptionPlan?: null | string
-  subscriptionStatus?: null | SubscriptionStatus | string
+  subscriptionStatus?: null | string | SubscriptionStatus
 }
 
-export function subscriptionPeriodStillValid(user: SubscriberFields | null | undefined): boolean {
+export function subscriptionPeriodStillValid(user: null | SubscriberFields | undefined): boolean {
   const end = user?.subscriptionCurrentPeriodEnd
   if (end == null || end === '') {
     return true
@@ -71,7 +71,7 @@ export function subscriptionPeriodStillValid(user: SubscriberFields | null | und
 /**
  * Active paying subscriber: correct **subscriptionStatus**, period not expired, and a non-**none** plan.
  */
-export function isActiveSubscriber(user: null | undefined | SubscriberFields): boolean {
+export function isActiveSubscriber(user: null | SubscriberFields | undefined): boolean {
   if (!user || user.subscriptionStatus !== 'active') {
     return false
   }
@@ -82,7 +82,7 @@ export function isActiveSubscriber(user: null | undefined | SubscriberFields): b
 }
 
 /** Effective entitlement rank (0–3) for list/query access — combines status, period, and plan. */
-export function userEntitlementRank(user: null | undefined | SubscriberFields): number {
+export function userEntitlementRank(user: null | SubscriberFields | undefined): number {
   if (!user || user.subscriptionStatus !== 'active') {
     return 0
   }

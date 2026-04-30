@@ -11,24 +11,24 @@
  * - Unified API call pattern
  */
 
-import { useCallback, useState } from 'react'
 import type { Project } from '@root/payload-cloud-types'
+import type { CreateProjectParams, CreateProjectResult } from '@root/types/deployment'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
-import { assertRecordPayload, isRecord } from '@utilities/payloadCloudJson'
 import {
   createDeploymentError,
   DeploymentErrorCode,
-  parseDeploymentError,
   getErrorToastMessage,
+  parseDeploymentError,
 } from '@utilities/deploymentErrors'
-import type { CreateProjectParams, CreateProjectResult } from '@root/types/deployment'
+import { assertRecordPayload, isRecord } from '@utilities/payloadCloudJson'
+import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 
 interface UseCreateProjectUseCaseResult {
   createProject: (params: CreateProjectParams) => Promise<CreateProjectResult>
+  error: null | string
   loading: boolean
-  error: string | null
   reset: () => void
 }
 
@@ -37,7 +37,7 @@ interface UseCreateProjectUseCaseResult {
  */
 export function useCreateProjectUseCase(): UseCreateProjectUseCaseResult {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<null | string>(null)
 
   const createProject = useCallback(async (params: CreateProjectParams): Promise<CreateProjectResult> => {
     setLoading(true)
@@ -165,8 +165,8 @@ export function useCreateProjectUseCase(): UseCreateProjectUseCaseResult {
 
   return {
     createProject,
-    loading,
     error,
+    loading,
     reset,
   }
 }

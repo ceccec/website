@@ -3,12 +3,12 @@ import type { TypedUser } from 'payload'
 /** One row of `users.tenants` including plugin-injected `tenant` and domain `roles`. */
 export type TenantMembershipRow = {
   id?: string
-  tenant?: number | string | { id?: number | string } | null
-  roles?: string[] | null
+  roles?: null | string[]
+  tenant?: { id?: number | string } | null | number | string
 }
 
 /** Platform-wide admin (`users.roles` includes `admin`) — all tenants, bypass domain roles. */
-export function isGlobalPlatformAdmin(user: TypedUser | null | undefined): boolean {
+export function isGlobalPlatformAdmin(user: null | TypedUser | undefined): boolean {
   return Boolean(
     user &&
       typeof user === 'object' &&
@@ -18,11 +18,11 @@ export function isGlobalPlatformAdmin(user: TypedUser | null | undefined): boole
   )
 }
 
-export function getTenantIdFromMembershipRow(row: TenantMembershipRow): string | number | undefined {
+export function getTenantIdFromMembershipRow(row: TenantMembershipRow): number | string | undefined {
   const t = row.tenant
-  if (t === null || t === undefined) return undefined
+  if (t === null || t === undefined) {return undefined}
   if (typeof t === 'object' && 'id' in t && t.id !== undefined && t.id !== null) {
-    return t.id as number | string
+    return t.id
   }
   return t as number | string
 }
@@ -32,12 +32,12 @@ export function getTenantIdFromMembershipRow(row: TenantMembershipRow): string |
  * Global admin does not receive synthetic roles here — use {@link isGlobalPlatformAdmin} first.
  */
 export function rolesForTenant(
-  user: TypedUser | null | undefined,
-  tenantId: string | number,
+  user: null | TypedUser | undefined,
+  tenantId: number | string,
 ): string[] {
-  if (!user || typeof user !== 'object') return []
-  const rows = (user as { tenants?: TenantMembershipRow[] | null }).tenants
-  if (!Array.isArray(rows)) return []
+  if (!user || typeof user !== 'object') {return []}
+  const rows = (user as { tenants?: null | TenantMembershipRow[] }).tenants
+  if (!Array.isArray(rows)) {return []}
   const want = String(tenantId)
   for (const row of rows) {
     const tid = getTenantIdFromMembershipRow(row)
@@ -51,11 +51,11 @@ export function rolesForTenant(
 
 /** True if global admin, or the user has any of `allowed` domain roles for this tenant. */
 export function userHasTenantRole(
-  user: TypedUser | null | undefined,
-  tenantId: string | number,
+  user: null | TypedUser | undefined,
+  tenantId: number | string,
   ...allowed: string[]
 ): boolean {
-  if (isGlobalPlatformAdmin(user)) return true
+  if (isGlobalPlatformAdmin(user)) {return true}
   const assigned = rolesForTenant(user, tenantId)
   return allowed.some((role) => assigned.includes(role))
 }

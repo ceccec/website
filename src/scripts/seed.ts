@@ -10,22 +10,16 @@ import 'dotenv/config'
 
 import type { Payload } from 'payload'
 
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import { marketingContentEnabled } from '@root/plugins/env'
+import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 
 /** Minimal Lexical root for one paragraph (content block `columnOne`). */
 const WELCOME_LEXICAL = {
   root: {
     type: 'root',
-    format: '' as const,
-    indent: 0,
-    version: 1,
     children: [
       {
         type: 'paragraph',
-        format: '' as const,
-        indent: 0,
-        version: 1,
         children: [
           {
             type: 'text',
@@ -38,9 +32,15 @@ const WELCOME_LEXICAL = {
           },
         ],
         direction: 'ltr' as const,
+        format: '' as const,
+        indent: 0,
+        version: 1,
       },
     ],
     direction: 'ltr' as const,
+    format: '' as const,
+    indent: 0,
+    version: 1,
   },
 }
 
@@ -130,9 +130,8 @@ async function ensureHomePage() {
   await payload.create({
     collection: 'pages',
     data: {
-      _status: 'published',
       slug: 'home',
-      title: 'Home',
+      _status: 'published',
       hero: {
         type: 'default',
       },
@@ -140,11 +139,12 @@ async function ensureHomePage() {
         {
           blockType: 'content',
           contentFields: {
-            layout: 'oneColumn',
             columnOne: WELCOME_LEXICAL,
+            layout: 'oneColumn',
           },
         },
       ],
+      title: 'Home',
     },
     overrideAccess: true,
   })

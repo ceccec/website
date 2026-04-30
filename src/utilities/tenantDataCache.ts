@@ -15,25 +15,25 @@
 import type { Where } from 'payload'
 
 import { multiTenantEnabled } from '@root/plugins/env'
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
-import {
-  normalizeRequestHost,
-} from '@root/plugins/site-settings/tenantPublicSite'
 import {
   resolveContentTenantIdsForHost,
   whereTenantIn,
 } from '@root/plugins/multi-tenant/tenantHierarchy'
+import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import {
+  normalizeRequestHost,
+} from '@root/plugins/site-settings/tenantPublicSite'
 import { payloadCacheKey, uuidTags } from '@uuid'
-import { headers } from 'next/headers'
 import { unstable_cache } from 'next/cache'
+import { headers } from 'next/headers'
 
 /** Resolve `Host` / `X-Forwarded-Host` → tenant ids for this request (merge + domain chain). */
-export async function getTenantContentScopeIdsForRequest(): Promise<(string | number)[]> {
-  if (!multiTenantEnabled()) return []
+export async function getTenantContentScopeIdsForRequest(): Promise<(number | string)[]> {
+  if (!multiTenantEnabled()) {return []}
   try {
     const h = await headers()
     const host = normalizeRequestHost(h.get('x-forwarded-host') ?? h.get('host'))
-    if (!host) return []
+    if (!host) {return []}
     const payload = await getPayload()
     return resolveContentTenantIdsForHost(payload, host)
   } catch {
@@ -42,16 +42,16 @@ export async function getTenantContentScopeIdsForRequest(): Promise<(string | nu
 }
 
 export type TenantScopeContext = {
-  tenantIds: (string | number)[]
+  tenantIds: (number | string)[]
   /** `null` when there is no tenant scope (merge `where` only when non-null). */
-  whereTenant: Where | null
+  whereTenant: null | Where
 }
 
 /** Build `where` fragment for the default multi-tenant `tenant` field, or `null` if no ids. */
 export function tenantWhereFromIds(
-  tenantIds: (string | number)[],
-): Where | null {
-  if (tenantIds.length === 0) return null
+  tenantIds: (number | string)[],
+): null | Where {
+  if (tenantIds.length === 0) {return null}
   return whereTenantIn(tenantIds)
 }
 

@@ -33,12 +33,12 @@ export interface AddDomainFormData {
 
 /** Domain configuration structure */
 export interface DomainConfig {
-  id?: string
-  domain: string
   cloudflareId?: string
+  domain: string
+  id?: string
+  recordContent?: string
   recordName?: string
   recordType?: string
-  recordContent?: string
 }
 
 /** Type guard: validate environment variable form data */

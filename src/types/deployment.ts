@@ -18,24 +18,8 @@ export type ProjectSource = 'clone' | 'import' | 'new'
 
 /** Unified parameters across all three project creation flows */
 export interface CreateProjectParams {
-  /** Project source (determines API behavior) */
-  source: ProjectSource
-
   /** GitHub installation where repo will be created */
   installId?: number
-
-  /** Repository configuration */
-  repo: {
-    name: string
-    full_name?: string
-    id?: number
-  }
-
-  /** Team owner (defaults to user's first team) */
-  teamId?: string
-
-  /** Template (clone flow only) */
-  templateId?: string
 
   /** Make repository private */
   makePrivate?: boolean
@@ -43,8 +27,24 @@ export interface CreateProjectParams {
   /** Project display name */
   projectName?: string
 
+  /** Repository configuration */
+  repo: {
+    full_name?: string
+    id?: number
+    name: string
+  }
+
+  /** Project source (determines API behavior) */
+  source: ProjectSource
+
+  /** Team owner (defaults to user's first team) */
+  teamId?: string
+
+  /** Template (clone flow only) */
+  templateId?: string
+
   /** Current user */
-  user: User | null | undefined
+  user: null | undefined | User
 }
 
 /** Response from project creation */
@@ -55,50 +55,50 @@ export interface CreateProjectResult {
 
 /** Deployment checkout state — unified across all flows */
 export interface DeploymentCheckoutState {
-  /** Selected plan for subscription */
-  plan: Plan | null
-
   /** Free trial enabled (if plan supports it) */
   freeTrial: boolean
 
   /** Selected Stripe payment method Id */
-  paymentMethod: string | null
+  paymentMethod: null | string
 
-  /** Team with customer data (for saved payment methods) */
-  team: Team | null
+  /** Selected plan for subscription */
+  plan: null | Plan
 
   /** Selected payment method display (for UI) */
   selectedPaymentMethodLast4?: string
+
+  /** Team with customer data (for saved payment methods) */
+  team: null | Team
 }
 
 /** Stripe deployment orchestration state */
 export interface StripeDeploymentState {
-  status: 'idle' | 'validating-card' | 'deploying' | 'creating-subscription' | 'confirming-payment' | 'success' | 'error'
-  error: string | null
+  error: null | string
   progress: {
     cardValidated: boolean
+    paymentConfirmed: boolean
     projectDeployed: boolean
     subscriptionCreated: boolean
-    paymentConfirmed: boolean
   }
+  status: 'confirming-payment' | 'creating-subscription' | 'deploying' | 'error' | 'idle' | 'success' | 'validating-card'
 }
 
 /** Unified deployment execution parameters */
 export interface ExecuteDeploymentParams {
-  project: Project
   checkoutState: DeploymentCheckoutState
   formData: {
-    environmentVariables?: Array<{ key: string; value: string }>
     domains?: string[]
+    environmentVariables?: Array<{ key: string; value: string }>
   }
-  installId?: string | number
-  user: User | null | undefined
+  installId?: number | string
+  project: Project
+  user: null | undefined | User
 }
 
 /** Stripe components required for deployment */
 export interface StripeDeploymentContext {
-  stripe: Stripe | null
-  elements: StripeElements | null
+  elements: null | StripeElements
+  stripe: null | Stripe
 }
 
 /** Type guard: validate CreateProjectParams */

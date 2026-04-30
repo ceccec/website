@@ -10,11 +10,11 @@ import { sql } from '@payloadcms/db-d1-sqlite'
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   const res = (await db.run(
     sql`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'shares'`,
-  )) as { rows?: { sql?: string }[]; results?: { sql?: string }[] }
+  )) as { results?: { sql?: string }[]; rows?: { sql?: string }[] }
   const row = res.rows?.[0] ?? res.results?.[0]
   const createSql = row?.sql
-  if (typeof createSql !== 'string') return
-  if (!/`id`\s+integer/i.test(createSql)) return
+  if (typeof createSql !== 'string') {return}
+  if (!/`id`\s+integer/i.test(createSql)) {return}
 
   await db.run(sql`DROP TABLE IF EXISTS \`shares_rels\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`shares\`;`)

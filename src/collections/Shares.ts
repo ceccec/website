@@ -1,6 +1,6 @@
-import { randomBytes } from 'node:crypto'
-
 import type { CollectionConfig } from 'payload'
+
+import { randomBytes } from 'node:crypto'
 
 import { isAdmin } from '../access/isAdmin'
 
@@ -24,12 +24,12 @@ export const Shares: CollectionConfig = {
     {
       name: 'token',
       type: 'text',
-      index: true,
-      unique: true,
       admin: {
         description: 'Opaque secret segment for `/api/share/[token]` — filled automatically on create.',
         readOnly: true,
       },
+      index: true,
+      unique: true,
     },
     {
       name: 'resource',
@@ -49,9 +49,9 @@ export const Shares: CollectionConfig = {
   hooks: {
     beforeChange: [
       ({ data, operation }) => {
-        if (operation !== 'create') return data
+        if (operation !== 'create') {return data}
         const existing = data?.token
-        if (typeof existing === 'string' && existing.trim() !== '') return data
+        if (typeof existing === 'string' && existing.trim() !== '') {return data}
         return {
           ...data,
           token: randomBytes(24).toString('base64url'),

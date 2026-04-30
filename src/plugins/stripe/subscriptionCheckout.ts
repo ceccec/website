@@ -16,7 +16,7 @@ export type CreateStripeBillingPortalArgs = {
 /** Stripe Checkout Session — Price should set `metadata.plan_tier` for CMS gates. */
 export async function createStripeSubscriptionCheckoutSession(
   args: CreateStripeCheckoutSessionArgs,
-): Promise<{ url: string } | { error: string }> {
+): Promise<{ error: string } | { url: string }> {
   const stripe = getStripeServer()
   if (!stripe) {
     return { error: 'Stripe is not configured' }
@@ -39,7 +39,7 @@ export async function createStripeSubscriptionCheckoutSession(
       ? {
           ...base,
           customer: args.existingStripeCustomerId.trim(),
-          customer_update: { address: 'auto', name: 'auto', shipping: 'auto' },
+          customer_update: { name: 'auto', address: 'auto', shipping: 'auto' },
         }
       : {
           ...base,
@@ -56,7 +56,7 @@ export async function createStripeSubscriptionCheckoutSession(
 
 export async function createStripeBillingPortalSession(
   args: CreateStripeBillingPortalArgs,
-): Promise<{ url: string } | { error: string }> {
+): Promise<{ error: string } | { url: string }> {
   const stripe = getStripeServer()
   if (!stripe) {
     return { error: 'Stripe is not configured' }

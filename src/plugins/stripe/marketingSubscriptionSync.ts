@@ -1,11 +1,11 @@
+import type { SubscriptionPlan } from '@root/access/subscriptionAccess'
 import type { Payload, PayloadRequest } from 'payload'
 import type Stripe from 'stripe'
 
-import type { SubscriptionPlan } from '@root/access/subscriptionAccess'
 import { subscriptionPlanRank } from '@root/access/subscriptionAccess'
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
-import { uuidTags } from '@uuid'
 import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
+import { uuidTags } from '@uuid'
 
 import { getStripeServer } from './server'
 
@@ -36,14 +36,14 @@ export function mapStripeSubscriptionStatus(
     case 'active':
     case 'trialing':
       return 'active'
-    case 'past_due':
-    case 'unpaid':
-      return 'past_due'
     case 'canceled':
     case 'incomplete_expired':
       return 'canceled'
-    case 'paused':
+    case 'past_due':
+    case 'unpaid':
+      return 'past_due'
     case 'incomplete':
+    case 'paused':
     default:
       return 'inactive'
   }
@@ -86,7 +86,7 @@ async function resolvePayloadUserIdForCustomer(
   payload: Payload,
   stripe: Stripe,
   customerId: string,
-): Promise<number | string | null> {
+): Promise<null | number | string> {
   const existing = await payload.find({
     collection: 'users',
     depth: 0,
@@ -146,7 +146,7 @@ async function applyUserSubscriptionPatch(
     depth: 0,
     overrideAccess: true,
   })
-  const doc = current as unknown as Record<string, unknown> | null
+  const doc = current as unknown as null | Record<string, unknown>
   const prevVersion = typeof doc?.entitlementVersion === 'number' ? doc.entitlementVersion : 0
 
   const data = {
@@ -179,8 +179,8 @@ export async function dispatchMarketingStripeEvent(event: Stripe.Event): Promise
       await handleCheckoutSessionCompleted(payload, stripe, session)
       return
     }
-    case 'customer.subscription.updated':
-    case 'customer.subscription.deleted': {
+    case 'customer.subscription.deleted':
+    case 'customer.subscription.updated': {
       const subscription = event.data.object as Stripe.Subscription
       await handleCustomerSubscription(payload, stripe, subscription)
       return
@@ -222,7 +222,7 @@ async function handleCheckoutSessionCompleted(
   }
 
   const metaUserId = session.metadata?.payload_user_id || session.client_reference_id
-  let userId: number | string | null = null
+  let userId: null | number | string = null
 
   if (metaUserId) {
     const u = await payload

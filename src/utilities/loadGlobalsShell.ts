@@ -12,11 +12,11 @@ export async function loadGlobalsShell() {
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'globalsShell',
       depth: CACHE_DEPTH.globalsShell,
       globals: ['main-menu', 'footer', 'topBar'],
+      kind: 'marketing',
       locale,
+      variant: 'globalsShell',
     },
     () => fetchGlobals(),
     () => fetchGlobals(locale),

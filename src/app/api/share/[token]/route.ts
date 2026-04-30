@@ -6,9 +6,9 @@ import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
-function expiresMs(value: unknown): number | null {
-  if (value == null || value === '') return null
-  if (value instanceof Date) return value.getTime()
+function expiresMs(value: unknown): null | number {
+  if (value == null || value === '') {return null}
+  if (value instanceof Date) {return value.getTime()}
   if (typeof value === 'string') {
     const t = Date.parse(value)
     return Number.isNaN(t) ? null : t
@@ -78,9 +78,9 @@ export async function GET(
   }
 
   const doc = await payload.findById({
-    collection: relationTo as 'posts' | 'pages' | 'case-studies',
-    depth: 2,
     id,
+    collection: relationTo as 'case-studies' | 'pages' | 'posts',
+    depth: 2,
     overrideAccess: true,
   })
 
@@ -95,9 +95,9 @@ export async function GET(
       categorySlug = String((cat as { slug?: string }).slug ?? '')
     } else if (typeof cat === 'string' || typeof cat === 'number') {
       const c = await payload.findById({
+        id: cat,
         collection: 'categories',
         depth: 0,
-        id: cat,
         overrideAccess: true,
         select: { slug: true },
       })

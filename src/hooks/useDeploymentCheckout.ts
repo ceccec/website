@@ -12,24 +12,25 @@
  * - Reusable across multiple checkout components
  */
 
-import { useCallback, useState } from 'react'
 import type { Plan, Team } from '@root/payload-cloud-types'
 import type { DeploymentCheckoutState } from '@root/types/deployment'
 
+import { useCallback, useState } from 'react'
+
 interface UseDeploymentCheckoutOptions {
-  initialPlan?: Plan | null
-  initialTeam?: Team | null
-  initialPaymentMethod?: string | null
   initialFreeTrial?: boolean
+  initialPaymentMethod?: null | string
+  initialPlan?: null | Plan
+  initialTeam?: null | Team
 }
 
 interface UseDeploymentCheckoutResult {
-  state: DeploymentCheckoutState
-  setPlan: (plan: Plan | null) => void
-  setTeam: (team: Team | null) => void
-  setPaymentMethod: (methodId: string | null, last4?: string) => void
-  setFreeTrial: (enabled: boolean) => void
   reset: () => void
+  setFreeTrial: (enabled: boolean) => void
+  setPaymentMethod: (methodId: null | string, last4?: string) => void
+  setPlan: (plan: null | Plan) => void
+  setTeam: (team: null | Team) => void
+  state: DeploymentCheckoutState
 }
 
 /**
@@ -38,14 +39,14 @@ interface UseDeploymentCheckoutResult {
  */
 export function useDeploymentCheckout(options?: UseDeploymentCheckoutOptions): UseDeploymentCheckoutResult {
   const [state, setState] = useState<DeploymentCheckoutState>({
-    plan: options?.initialPlan ?? null,
-    team: options?.initialTeam ?? null,
-    paymentMethod: options?.initialPaymentMethod ?? null,
     freeTrial: options?.initialFreeTrial ?? false,
+    paymentMethod: options?.initialPaymentMethod ?? null,
+    plan: options?.initialPlan ?? null,
     selectedPaymentMethodLast4: undefined,
+    team: options?.initialTeam ?? null,
   })
 
-  const setPlan = useCallback((plan: Plan | null) => {
+  const setPlan = useCallback((plan: null | Plan) => {
     setState(prev => ({
       ...prev,
       plan,
@@ -54,14 +55,14 @@ export function useDeploymentCheckout(options?: UseDeploymentCheckoutOptions): U
     }))
   }, [])
 
-  const setTeam = useCallback((team: Team | null) => {
+  const setTeam = useCallback((team: null | Team) => {
     setState(prev => ({
       ...prev,
       team,
     }))
   }, [])
 
-  const setPaymentMethod = useCallback((methodId: string | null, last4?: string) => {
+  const setPaymentMethod = useCallback((methodId: null | string, last4?: string) => {
     setState(prev => ({
       ...prev,
       paymentMethod: methodId,
@@ -80,21 +81,21 @@ export function useDeploymentCheckout(options?: UseDeploymentCheckoutOptions): U
 
   const reset = useCallback(() => {
     setState({
-      plan: options?.initialPlan ?? null,
-      team: options?.initialTeam ?? null,
-      paymentMethod: options?.initialPaymentMethod ?? null,
       freeTrial: options?.initialFreeTrial ?? false,
+      paymentMethod: options?.initialPaymentMethod ?? null,
+      plan: options?.initialPlan ?? null,
       selectedPaymentMethodLast4: undefined,
+      team: options?.initialTeam ?? null,
     })
   }, [options])
 
   return {
-    state,
+    reset,
+    setFreeTrial,
+    setPaymentMethod,
     setPlan,
     setTeam,
-    setPaymentMethod,
-    setFreeTrial,
-    reset,
+    state,
   }
 }
 
@@ -102,8 +103,8 @@ export function useDeploymentCheckout(options?: UseDeploymentCheckoutOptions): U
  * Validation helper: ensure checkout state is valid for deployment
  */
 export function isValidCheckoutState(state: DeploymentCheckoutState): {
-  valid: boolean
   missingFields: string[]
+  valid: boolean
 } {
   const missingFields: string[] = []
 
@@ -120,7 +121,7 @@ export function isValidCheckoutState(state: DeploymentCheckoutState): {
   }
 
   return {
-    valid: missingFields.length === 0,
     missingFields,
+    valid: missingFields.length === 0,
   }
 }

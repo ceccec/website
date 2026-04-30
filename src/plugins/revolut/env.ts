@@ -2,9 +2,9 @@ import type { RevolutCheckoutPlan } from './types'
 
 /** Prefer `REVOLUT_PAYMENT_LINK_*`; legacy `PAYMENT_LINK_PLAN_*` still supported. */
 const PLAN_BASE_URL_KEYS: Record<RevolutCheckoutPlan, readonly [string, string]> = {
-  starter: ['REVOLUT_PAYMENT_LINK_STARTER', 'PAYMENT_LINK_PLAN_STARTER'],
-  pro: ['REVOLUT_PAYMENT_LINK_PRO', 'PAYMENT_LINK_PLAN_PRO'],
   enterprise: ['REVOLUT_PAYMENT_LINK_ENTERPRISE', 'PAYMENT_LINK_PLAN_ENTERPRISE'],
+  pro: ['REVOLUT_PAYMENT_LINK_PRO', 'PAYMENT_LINK_PLAN_PRO'],
+  starter: ['REVOLUT_PAYMENT_LINK_STARTER', 'PAYMENT_LINK_PLAN_STARTER'],
 }
 
 function firstEnv(...keys: string[]): string | undefined {

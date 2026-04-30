@@ -1,8 +1,8 @@
 import type { Project } from '@root/payload-cloud-types'
 
 import { PROJECT_QUERY, PROJECTS_QUERY } from '@data/project'
-import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
 import { mergeProjectEnvironment } from '@root/utilities/merge-project-environment'
+import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
 
 import type { GraphQLJsonBody } from './graphqlJson'
 

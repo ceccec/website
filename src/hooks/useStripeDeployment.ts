@@ -15,25 +15,25 @@
  * Returns clear status updates and proper error handling
  */
 
-import { useCallback, useState } from 'react'
-import type { StripeElements, Stripe } from '@stripe/stripe-js'
 import type { Project, User } from '@root/payload-cloud-types'
+import type { DeploymentCheckoutState, ExecuteDeploymentParams, StripeDeploymentState } from '@root/types/deployment'
+import type { Stripe, StripeElements } from '@stripe/stripe-js'
 
 import { updateCustomer } from '@cloud/_api/updateCustomer'
 import { teamHasDefaultPaymentMethod } from '@cloud/_utilities/teamHasDefaultPaymentMethod'
 import {
   createDeploymentError,
   DeploymentErrorCode,
-  parseDeploymentError,
   getErrorToastMessage,
+  parseDeploymentError,
 } from '@utilities/deploymentErrors'
-import type { DeploymentCheckoutState, StripeDeploymentState, ExecuteDeploymentParams } from '@root/types/deployment'
+import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 
 interface UseStripeDeploymentResult {
-  state: StripeDeploymentState
   deploy: (params: ExecuteDeploymentParams) => Promise<void>
   reset: () => void
+  state: StripeDeploymentState
 }
 
 /**
@@ -49,18 +49,18 @@ interface UseStripeDeploymentResult {
  * Proper error recovery and user feedback at each stage.
  */
 export function useStripeDeployment(
-  stripe: Stripe | null,
-  elements: StripeElements | null,
+  stripe: null | Stripe,
+  elements: null | StripeElements,
 ): UseStripeDeploymentResult {
   const [state, setState] = useState<StripeDeploymentState>({
-    status: 'idle',
     error: null,
     progress: {
       cardValidated: false,
+      paymentConfirmed: false,
       projectDeployed: false,
       subscriptionCreated: false,
-      paymentConfirmed: false,
     },
+    status: 'idle',
   })
 
   const deploy = useCallback(
@@ -75,7 +75,7 @@ export function useStripeDeployment(
       }
 
       try {
-        const { checkoutState, project, user, installId, formData } = params
+        const { checkoutState, formData, installId, project, user } = params
 
         // === Stage 1: Validate Inputs ===
         if (!installId) {
@@ -103,7 +103,7 @@ export function useStripeDeployment(
         }
 
         // === Stage 2: Card Validation (if payment method provided) ===
-        let paymentMethodId: string | null = null
+        let paymentMethodId: null | string = null
 
         if (checkoutState.paymentMethod) {
           setState(prev => ({ ...prev, status: 'validating-card' }))
@@ -127,15 +127,13 @@ export function useStripeDeployment(
             })
           }
 
-          const { client_secret: setupSecret } = (await setupResponse.json()) as {
-            client_secret: string
-          }
+          const { client_secret: setupSecret } = (await setupResponse.json())
 
           // Confirm card with SetupIntent
           const confirmResult = await stripe.confirmCardSetup(setupSecret, {
             payment_method: {
-              card: elements.getElement('cardNumber')!,
               billing_details: {},
+              card: elements.getElement('cardNumber')!,
             },
           })
 
@@ -200,15 +198,15 @@ export function useStripeDeployment(
                 id: project?.id,
                 freeTrial: checkoutState.freeTrial,
                 paymentMethod: paymentMethodId,
-                template:
-                  project?.template && typeof project.template !== 'string'
-                    ? project.template.id
-                    : project?.template,
                 plan: typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id,
                 team:
                   typeof checkoutState.team === 'string'
                     ? checkoutState.team
                     : checkoutState.team?.id,
+                template:
+                  project?.template && typeof project.template !== 'string'
+                    ? project.template.id
+                    : project?.template,
                 ...formData,
                 environmentVariables: formData.environmentVariables?.filter(
                   ({ key, value }) => key && value,
@@ -221,11 +219,7 @@ export function useStripeDeployment(
           },
         )
 
-        const deployBody = (await deployResponse.json()) as {
-          doc?: Project
-          error?: string
-          message?: string
-        }
+        const deployBody = (await deployResponse.json())
 
         if (!deployResponse.ok) {
           if (deployResponse.status === 409) {
@@ -254,12 +248,12 @@ export function useStripeDeployment(
           `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/subscriptions`,
           {
             body: JSON.stringify({
+              freeTrial: checkoutState.freeTrial,
               plan: typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id,
               team:
                 typeof checkoutState.team === 'string'
                   ? checkoutState.team
                   : checkoutState.team?.id,
-              freeTrial: checkoutState.freeTrial,
             }),
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -273,7 +267,7 @@ export function useStripeDeployment(
           })
         }
 
-        const { subscription } = (await subscriptionResponse.json()) as { subscription: unknown }
+        const { subscription } = (await subscriptionResponse.json())
 
         setState(prev => ({
           ...prev,
@@ -306,14 +300,14 @@ export function useStripeDeployment(
 
         // === Success ===
         setState({
-          status: 'success',
           error: null,
           progress: {
             cardValidated: true,
+            paymentConfirmed: true,
             projectDeployed: true,
             subscriptionCreated: true,
-            paymentConfirmed: true,
           },
+          status: 'success',
         })
 
         toast.success('Deployment complete! Your project is being configured.')
@@ -336,20 +330,20 @@ export function useStripeDeployment(
 
   const reset = useCallback(() => {
     setState({
-      status: 'idle',
       error: null,
       progress: {
         cardValidated: false,
+        paymentConfirmed: false,
         projectDeployed: false,
         subscriptionCreated: false,
-        paymentConfirmed: false,
       },
+      status: 'idle',
     })
   }, [])
 
   return {
-    state,
     deploy,
     reset,
+    state,
   }
 }

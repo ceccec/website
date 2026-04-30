@@ -6,21 +6,21 @@ import { getPayload as getPayloadFromPayload } from 'payload'
 
 /** Local API methods whose Promise results should pass through {@link deepUuidWrap} (reads + writes). */
 const LOCAL_API_WITH_DOC_RESULTS = new Set([
-  'find',
-  'findVersions',
-  'findDistinct',
-  'findById',
-  'findGlobal',
-  'findVersionById',
-  'findGlobalVersions',
-  'findGlobalVersionById',
   'create',
-  'update',
+  'createGlobal',
   'delete',
   'duplicate',
-  'restoreVersion',
+  'find',
+  'findById',
+  'findDistinct',
+  'findGlobal',
+  'findGlobalVersionById',
+  'findGlobalVersions',
+  'findVersionById',
+  'findVersions',
   'restoreGlobalVersion',
-  'createGlobal',
+  'restoreVersion',
+  'update',
   'updateGlobal',
 ])
 
@@ -74,7 +74,7 @@ function payloadWithDeepUuid(inner: Payload): Payload {
         return out.then((result) => wrapPayloadLocalResult(key, result))
       }
     },
-  }) as Payload
+  })
 }
 
 /**

@@ -8,11 +8,12 @@
 import type { DraftLocaleOpt } from '@data/index'
 import type { CommunityHelp } from '@root/payload-types'
 import type { TypedLocale } from 'payload'
+
 import { ARCHIVES_CACHE_TAG } from '@root/utilities/revalidateMarketingRoutes'
 import { payloadCacheKey, uuidTags } from '@uuid'
-import { getLocale } from 'next-intl/server'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 
 /** `cachedSlugDraftLocale` namespace → Payload collection slug for {@link uuidTags.collectionSlug}. */
 const MARKETING_NAMESPACE_COLLECTION: Record<string, string> = {
@@ -38,7 +39,7 @@ export function runDraftLocaleCache<R>(
   cacheShape: unknown,
   uncached: () => Promise<R>,
   cached: () => Promise<R>,
-  cacheOptions?: { revalidate?: number | false; tags?: string[] },
+  cacheOptions?: { revalidate?: false | number; tags?: string[] },
 ): Promise<R> {
   if (draft) {
     return uncached()
@@ -68,12 +69,12 @@ export async function cachedSlugDraftLocale<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'slugDraftLocale',
+      slug,
       cacheNamespace,
       depthKey,
-      slug,
+      kind: 'marketing',
       locale,
+      variant: 'slugDraftLocale',
     },
     () => find(slug),
     () => find(slug, { draft: false, locale }),
@@ -98,12 +99,12 @@ export async function cachedPageSegmentsDraftLocale<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'pageSegments',
       cacheNamespace,
       depthKey,
-      pathKey,
+      kind: 'marketing',
       locale,
+      pathKey,
+      variant: 'pageSegments',
     },
     () => find(segments),
     () => find(segments, { draft: false, locale }),
@@ -125,13 +126,13 @@ export async function cachedBlogDetailDraftLocale<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'blogDetail',
-      cacheNamespace,
-      depthKey,
-      categorySlug,
       slug,
+      cacheNamespace,
+      categorySlug,
+      depthKey,
+      kind: 'marketing',
       locale,
+      variant: 'blogDetail',
     },
     () => find(slug, categorySlug),
     () => find(slug, categorySlug, { draft: false, locale }),
@@ -152,12 +153,12 @@ export async function cachedSlugLocaleOnly<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'slugLocaleOnly',
+      slug,
       cacheNamespace,
       depthKey,
-      slug,
+      kind: 'marketing',
       locale,
+      variant: 'slugLocaleOnly',
     },
     () => find(slug),
     () => find(slug, locale),
@@ -177,11 +178,11 @@ export async function cachedArchiveByCategory<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'archiveByCategory',
-      depthKey,
       categorySlug,
+      depthKey,
+      kind: 'marketing',
       locale,
+      variant: 'archiveByCategory',
     },
     () => find(categorySlug, draft),
     () => find(categorySlug, false, locale),
@@ -195,7 +196,7 @@ export async function cachedArchiveByCategory<R>(
 export async function cachedLocaleList<R>(
   find: (localeArg?: TypedLocale) => Promise<R>,
   cacheKeyPrefix: readonly string[],
-  cacheOptions?: { revalidate?: number | false; tags?: string[] },
+  cacheOptions?: { revalidate?: false | number; tags?: string[] },
 ): Promise<R> {
   const locale = await getRequestLocale()
   const primaryKey = String(cacheKeyPrefix[0] ?? 'marketing')
@@ -209,9 +210,9 @@ export async function cachedLocaleList<R>(
     () => find(locale),
     payloadCacheKey({
       kind: 'marketing',
-      variant: 'localeList',
-      prefix: [...cacheKeyPrefix],
       locale,
+      prefix: [...cacheKeyPrefix],
+      variant: 'localeList',
     }),
     mergedOptions,
   )()
@@ -230,12 +231,12 @@ export async function cachedCommunityHelpsByType<R>(
     draft,
     locale,
     {
-      kind: 'marketing',
-      variant: 'communityHelpsByType',
+      type: String(type),
       cacheNamespace,
       depthKey,
-      type: String(type),
+      kind: 'marketing',
       locale,
+      variant: 'communityHelpsByType',
     },
     () => find(type),
     () => find(type, locale),

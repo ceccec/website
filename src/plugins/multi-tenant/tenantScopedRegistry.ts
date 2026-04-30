@@ -1,13 +1,13 @@
 import type { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import type { CollectionConfig } from 'payload'
 
-import { Budgets, Industries, Regions, Specialties } from '@root/collections/PartnerFilters'
 import { CaseStudies } from '@root/collections/CaseStudies'
 import { Categories } from '@root/collections/Categories'
 import { CommunityHelp } from '@root/collections/CommunityHelp'
 import { Docs } from '@root/collections/Docs'
 import { Media } from '@root/collections/Media'
 import { Pages } from '@root/collections/Pages'
+import { Budgets, Industries, Regions, Specialties } from '@root/collections/PartnerFilters'
 import { Partners } from '@root/collections/Partners'
 import { Posts } from '@root/collections/Posts'
 import { ReusableContent } from '@root/collections/ReusableContent'
@@ -26,28 +26,28 @@ type MTCollectionEntry = NonNullable<MTCollections[keyof MTCollections]>
  * before `@payloadcms/plugin-multi-tenant`. Slugs come from **`collection.slug`** (single source of truth).
  */
 type TenantScopedSlice = {
-  enabled: () => boolean
   collections: readonly CollectionConfig[]
+  enabled: () => boolean
 }
 
 const CORE: TenantScopedSlice = {
-  enabled: () => true,
   collections: [Pages, Media, ReusableContent],
+  enabled: () => true,
 }
 
 const MARKETING: TenantScopedSlice = {
-  enabled: marketingContentEnabled,
   collections: [Posts, CaseStudies, CommunityHelp, Categories],
+  enabled: marketingContentEnabled,
 }
 
 const DOCS: TenantScopedSlice = {
-  enabled: docsTemplateEnabled,
   collections: [Docs],
+  enabled: docsTemplateEnabled,
 }
 
 const PARTNERS: TenantScopedSlice = {
-  enabled: partnersTemplateEnabled,
   collections: [Partners, Industries, Specialties, Regions, Budgets],
+  enabled: partnersTemplateEnabled,
 }
 
 /** Order matches schema registration intent; each slice is independent of the others. */
@@ -74,7 +74,7 @@ const PLUGIN_OPTIONS_BY_SLUG: Record<string, Record<string, unknown>> = {
 export function resolveTenantScopedSlugs(): string[] {
   const slugs: string[] = []
   for (const slice of TENANT_SCOPED_SLICES) {
-    if (!slice.enabled()) continue
+    if (!slice.enabled()) {continue}
     for (const col of slice.collections) {
       slugs.push(col.slug)
     }
@@ -88,7 +88,7 @@ export function resolveTenantScopedSlugs(): string[] {
 export function buildMultiTenantCollections(): MTCollections {
   const out: Record<string, MTCollectionEntry> = {}
   for (const slice of TENANT_SCOPED_SLICES) {
-    if (!slice.enabled()) continue
+    if (!slice.enabled()) {continue}
     for (const col of slice.collections) {
       const slug = col.slug
       out[slug] = (PLUGIN_OPTIONS_BY_SLUG[slug] ?? {}) as MTCollectionEntry

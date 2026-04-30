@@ -2,7 +2,7 @@
  * Best-effort decode of Payload **`id`** from a JWT **without verifying** the signature.
  * Safe for **cache tag hints** and correlation only — authorization remains on the GraphQL/REST response.
  */
-export function payloadCloudJwtUserId(token: string | null | undefined): string | undefined {
+export function payloadCloudJwtUserId(token: null | string | undefined): string | undefined {
   if (token == null || String(token).trim() === '') {
     return undefined
   }

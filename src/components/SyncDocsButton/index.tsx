@@ -1,9 +1,8 @@
 'use client'
 
 import { toast, useConfig } from '@payloadcms/ui'
-import React, { useState } from 'react'
-
 import { parseOptionalMessagePayload } from '@utilities/payloadCloudJson'
+import React, { useState } from 'react'
 
 import './index.scss'
 

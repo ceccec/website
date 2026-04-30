@@ -3,13 +3,13 @@ import Stripe from 'stripe'
 /** Align with `@payloadcms/plugin-ecommerce` Stripe adapter default. */
 const STRIPE_API_VERSION = '2025-03-31.basil' as Stripe.StripeConfig['apiVersion']
 
-let stripeSingleton: Stripe | null = null
+let stripeSingleton: null | Stripe = null
 
 /**
  * Server-only Stripe client (`STRIPE_SECRET_KEY`). Lazy singleton — safe when keys are unset.
  * When Stripe is off, use `@root/plugins/revolut` payment-link checkout instead.
  */
-export function getStripeServer(): Stripe | null {
+export function getStripeServer(): null | Stripe {
   const key = process.env.STRIPE_SECRET_KEY?.trim()
   if (!key) {
     return null

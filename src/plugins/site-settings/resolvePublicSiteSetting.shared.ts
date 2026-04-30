@@ -18,7 +18,7 @@ export type ResolvedPublicSiteSetting = {
 
 /** Optional document overrides (unused — env-only path passes `{}`). Kept for testing or future merge layers. */
 export type PublicSiteSettingOverrides = Partial<{
-  [K in keyof ResolvedPublicSiteSetting]: ResolvedPublicSiteSetting[K] | null
+  [K in keyof ResolvedPublicSiteSetting]: null | ResolvedPublicSiteSetting[K]
 }>
 
 export function resolvePublicSiteSettingFields(

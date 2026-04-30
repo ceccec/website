@@ -15,22 +15,22 @@ export const updateAlgolia = async (
     resolveIntegrationSecrets(payload),
   ])
 
-  const appID = publicCfg.algoliaApplicationId
+  const appId = publicCfg.algoliaApplicationId
   const apiKey = secrets.algoliaAdminApiKey
   const indexName = publicCfg.algoliaCommunityIndexName
 
-  if (!appID || !apiKey || !indexName) {
+  if (!appId || !apiKey || !indexName) {
     return
   }
 
-  const client = algoliasearch(appID, apiKey)
+  const client = algoliasearch(appId, apiKey)
   const index = client.initIndex(indexName)
 
   await index
     .partialUpdateObject(
       {
         helpful,
-        objectID: id,
+        objectId: id,
       },
       {
         createIfNotExists: false,
@@ -38,6 +38,6 @@ export const updateAlgolia = async (
     )
     .then(() => {
       // eslint-disable-next-line no-console
-      console.log('Updated objectID ' + id + ' in Algolia')
+      console.log('Updated objectId ' + id + ' in Algolia')
     })
 }

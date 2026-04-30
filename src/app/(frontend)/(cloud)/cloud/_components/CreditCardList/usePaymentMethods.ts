@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 import { confirmCardSetup } from '../../../new/(checkout)/confirmCardSetup'
 import { cardReducer } from './reducer'
 
-type SaveNewPaymentMethod = (paymentMethodID: string) => Promise<null | SetupIntent | undefined>
+type SaveNewPaymentMethod = (paymentMethodId: string) => Promise<null | SetupIntent | undefined>
 
 export const usePaymentMethods = (args: {
   delay?: number
@@ -44,10 +44,10 @@ export const usePaymentMethods = (args: {
   const elements = useElements()
 
   const setDefaultPaymentMethod = useCallback(
-    async (paymentMethodID: string) => {
+    async (paymentMethodId: string) => {
       try {
         const updatedCustomer = await updateCustomer(team, {
-          invoice_settings: { default_payment_method: paymentMethodID },
+          invoice_settings: { default_payment_method: paymentMethodId },
         })
 
         const newDefault = updatedCustomer?.invoice_settings?.default_payment_method
@@ -66,8 +66,8 @@ export const usePaymentMethods = (args: {
     async (successMessage?: string, doToast = true) => {
       let timer: NodeJS.Timeout
 
-      if (!team?.stripeCustomerID) {
-        setError('No customer ID')
+      if (!team?.stripeCustomerId) {
+        setError('No customer Id')
         return
       }
 
@@ -113,8 +113,8 @@ export const usePaymentMethods = (args: {
   }, [getPaymentMethods, initialValue])
 
   const deletePaymentMethod = useCallback(
-    async (paymentMethodID: string) => {
-      if (!paymentMethodID) {
+    async (paymentMethodId: string) => {
+      if (!paymentMethodId) {
         setError('No payment method')
         return
       }
@@ -129,7 +129,7 @@ export const usePaymentMethods = (args: {
 
       try {
         await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/payment-methods/${paymentMethodID}`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/payment-methods/${paymentMethodId}`,
           {
             credentials: 'include',
             headers: {
@@ -148,8 +148,8 @@ export const usePaymentMethods = (args: {
 
         // if this was the default payment method, we need to update the customer
         // only if the customer has another payment method on file
-        if (defaultPaymentMethod === paymentMethodID) {
-          const withoutDeleted = result?.filter((pm) => pm.id !== paymentMethodID)
+        if (defaultPaymentMethod === paymentMethodId) {
+          const withoutDeleted = result?.filter((pm) => pm.id !== paymentMethodId)
 
           const updatedCustomer = await updateCustomer(team, {
             invoice_settings: {
@@ -168,7 +168,7 @@ export const usePaymentMethods = (args: {
 
         dispatchResult({
           type: 'DELETE_CARD',
-          payload: paymentMethodID,
+          payload: paymentMethodId,
         })
 
         toast.success(`Payment method deleted successfully.`)
@@ -188,7 +188,7 @@ export const usePaymentMethods = (args: {
   )
 
   const saveNewPaymentMethod: SaveNewPaymentMethod = useCallback(
-    async (paymentMethodID) => {
+    async (paymentMethodId) => {
       if (isRequesting.current) {
         return null
       }
@@ -200,12 +200,12 @@ export const usePaymentMethods = (args: {
       try {
         const { setupIntent } = await confirmCardSetup({
           elements,
-          paymentMethod: paymentMethodID,
+          paymentMethod: paymentMethodId,
           stripe,
           team,
         })
 
-        const pmID =
+        const pmId =
           typeof setupIntent?.payment_method === 'string'
             ? setupIntent?.payment_method
             : setupIntent?.payment_method?.id || ''
@@ -213,7 +213,7 @@ export const usePaymentMethods = (args: {
         if (!defaultPaymentMethod) {
           const updatedCustomer = await updateCustomer(team, {
             invoice_settings: {
-              default_payment_method: pmID,
+              default_payment_method: pmId,
             },
           })
 
@@ -226,7 +226,7 @@ export const usePaymentMethods = (args: {
           )
         }
 
-        const newPaymentMethod = await fetchPaymentMethod({ paymentMethodID: pmID, team })
+        const newPaymentMethod = await fetchPaymentMethod({ paymentMethodId: pmId, team })
 
         if (!newPaymentMethod) {
           throw new Error('Could not retrieve new payment method')

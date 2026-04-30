@@ -1,7 +1,7 @@
 /**
  * Payload marketing `find`s + `unstable_cache` + next-intl locale.
  * Dynamic APIs (`getLocale`, `draftMode`, `resolvePayloadLocale`) stay **outside** cache callbacks.
- * All memoized keys use {@link payloadCacheKey} from `@uuid` (UUID v5); cache entries carry **tags**
+ * All memoized keys use {@link payloadCacheKey} from `@uuid` (UUId v5); cache entries carry **tags**
  * aligned with {@link uuidTags} + Payload hooks (`revalidateTag`).
  */
 

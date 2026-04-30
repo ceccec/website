@@ -39,22 +39,22 @@ export const CommunityHelp: CollectionConfig = {
       ],
     },
     {
-      name: 'githubID',
+      name: 'githubId',
       type: 'text',
       admin: {
         condition: (_, siblingData) => siblingData?.communityHelpType === 'github',
       },
       index: true,
-      label: 'GitHub ID',
+      label: 'GitHub Id',
     },
     {
-      name: 'discordID',
+      name: 'discordId',
       type: 'text',
       admin: {
         condition: (_, siblingData) => siblingData?.communityHelpType === 'discord',
       },
       index: true,
-      label: 'Discord ID',
+      label: 'Discord Id',
     },
     {
       name: 'communityHelpJSON',
@@ -100,12 +100,12 @@ export const CommunityHelp: CollectionConfig = {
         afterChange: [
           async ({ previousValue, req, siblingData, value }) => {
             if (previousValue !== value) {
-              const docID =
+              const docId =
                 siblingData.communityHelpType === 'discord'
-                  ? siblingData.discordID
-                  : siblingData.githubID
-              if (docID) {
-                await updateAlgolia(req.payload, docID, value)
+                  ? siblingData.discordId
+                  : siblingData.githubId
+              if (docId) {
+                await updateAlgolia(req.payload, docId, value)
               }
             }
           },

@@ -12,7 +12,7 @@ export const Secret: React.FC<{
 }> = ({ project }) => {
   const [fetchedSecret, setFetchedSecret] = React.useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const projectID = project?.id
+  const projectId = project?.id
 
   const fetchSecret = React.useCallback(async (): Promise<null | string> => {
     const timer = setTimeout(() => {
@@ -21,7 +21,7 @@ export const Secret: React.FC<{
 
     try {
       const req = await fetch(
-        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/secret`,
+        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/secret`,
         {
           credentials: 'include',
           headers: {
@@ -53,7 +53,7 @@ export const Secret: React.FC<{
     }
 
     return null
-  }, [projectID])
+  }, [projectId])
 
   let icon: React.ReactNode = null
   if (isLoading) {

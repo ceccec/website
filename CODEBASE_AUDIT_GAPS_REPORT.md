@@ -23,7 +23,7 @@ if (req.status === 200) {
   
   await revalidateCache({
     tags: uuidTags.cloud.projectDetailRevalidateTags({
-      id: projectID,
+      id: projectId,
       slug: projectSlug,
     }),
   })
@@ -56,7 +56,7 @@ setUpdatedEnv({
 ```typescript
 // Line 157 — INCOMPLETE ERROR HANDLING
 const req = await fetch(
-  `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env?${query}`,
+  `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env?${query}`,
   { method: 'DELETE', ... }
 )
 
@@ -251,7 +251,7 @@ const updateEnv = React.useCallback(
 
 **Impact:**
 - Loss of type safety in form handling
-- IDE autocomplete doesn't work
+- IdE autocomplete doesn't work
 - Refactoring risks (field name changes not caught)
 
 ---

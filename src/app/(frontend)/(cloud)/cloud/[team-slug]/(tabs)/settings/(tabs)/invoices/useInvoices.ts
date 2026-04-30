@@ -96,8 +96,8 @@ export const useInvoices = (args: {
   const loadMoreInvoices = useCallback(() => {
     if (result?.has_more && result?.data?.length) {
       const lastInvoice = result?.data?.[result?.data?.length - 1]
-      const lastInvoiceID = lastInvoice.id
-      void loadInvoices(undefined, lastInvoiceID)
+      const lastInvoiceId = lastInvoice.id
+      void loadInvoices(undefined, lastInvoiceId)
     }
   }, [loadInvoices, result])
 

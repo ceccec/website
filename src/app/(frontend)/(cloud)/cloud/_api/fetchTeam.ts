@@ -25,7 +25,7 @@ export interface Customer {
   }
 }
 
-export const fetchTeams = async (teamIDs: string[]): Promise<Team[]> => {
+export const fetchTeams = async (teamIds: string[]): Promise<Team[]> => {
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
   if (!token) {
@@ -38,7 +38,7 @@ export const fetchTeams = async (teamIDs: string[]): Promise<Team[]> => {
       variables: {
         limit: 50,
         page: 1,
-        teamIDs: teamIDs.filter(Boolean),
+        teamIds: teamIds.filter(Boolean),
       },
     }),
     headers: {

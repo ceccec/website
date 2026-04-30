@@ -76,7 +76,7 @@ export const Footer: React.FC<FooterType> = (props) => {
   const pathnameSegments = pathname.split('/').filter(Boolean)
   const isCloudPage = pathnameSegments.some((segment) => allowedSegments.includes(segment))
 
-  const themeID = useId()
+  const themeId = useId()
 
   return (
     <footer className={classes.footer} data-theme="dark" ref={wrapperRef}>
@@ -171,7 +171,7 @@ export const Footer: React.FC<FooterType> = (props) => {
             </div>
 
             <div className={classes.selectContainer}>
-              <label className="visually-hidden" htmlFor={themeID}>
+              <label className="visually-hidden" htmlFor={themeId}>
                 Switch themes
               </label>
               {selectRef?.current && (
@@ -183,7 +183,7 @@ export const Footer: React.FC<FooterType> = (props) => {
               )}
 
               <select
-                id={themeID}
+                id={themeId}
                 onChange={(e) => onThemeChange(e.target.value as 'auto' & Theme)}
                 ref={selectRef}
               >

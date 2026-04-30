@@ -2459,8 +2459,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	\`id\` integer PRIMARY KEY NOT NULL,
   	\`title\` text,
   	\`community_help_type\` text,
-  	\`github_i_d\` text,
-  	\`discord_i_d\` text,
+  	\`github_id\` text,
+  	\`discord_id\` text,
   	\`community_help_j_s_o_n\` text NOT NULL,
   	\`intro_description\` text,
   	\`slug\` text,
@@ -2470,8 +2470,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	\`created_at\` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL
   );
   `)
-  await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_github_i_d_idx\` ON \`community_help\` (\`github_i_d\`);`)
-  await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_discord_i_d_idx\` ON \`community_help\` (\`discord_i_d\`);`)
+  await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_github_id_idx\` ON \`community_help\` (\`github_id\`);`)
+  await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_discord_id_idx\` ON \`community_help\` (\`discord_id\`);`)
   await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_slug_idx\` ON \`community_help\` (\`slug\`);`)
   await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_updated_at_idx\` ON \`community_help\` (\`updated_at\`);`)
   await db.run(sql`CREATE INDEX IF NOT EXISTS \`community_help_created_at_idx\` ON \`community_help\` (\`created_at\`);`)
@@ -2947,7 +2947,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	\`email\` text,
   	\`slug\` text,
   	\`agency_status\` text DEFAULT 'active',
-  	\`hubspot_i_d\` text,
+  	\`hubspot_id\` text,
   	\`logo_id\` integer,
   	\`featured\` integer,
   	\`top_contributor\` integer,
@@ -3041,7 +3041,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	\`version_email\` text,
   	\`version_slug\` text,
   	\`version_agency_status\` text DEFAULT 'active',
-  	\`version_hubspot_i_d\` text,
+  	\`version_hubspot_id\` text,
   	\`version_logo_id\` integer,
   	\`version_featured\` integer,
   	\`version_top_contributor\` integer,
@@ -4693,8 +4693,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	\`title\` text NOT NULL,
   	\`confirmation_type\` text DEFAULT 'message',
   	\`redirect_url\` text,
-  	\`hub_spot_form_i_d\` text,
-  	\`custom_i_d\` text,
+  	\`hub_spot_form_id\` text,
+  	\`custom_id\` text,
   	\`require_recaptcha\` integer,
   	\`updated_at\` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
   	\`created_at\` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL

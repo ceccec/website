@@ -12,13 +12,13 @@ export const useSubscriptions = (args: {
   initialSubscriptions?: null | SubscriptionsResult
   team?: null | Team
 }): {
-  cancelSubscription: (subscriptionID: string) => void
+  cancelSubscription: (subscriptionId: string) => void
   error: string
   isLoading: 'deleting' | 'loading' | 'updating' | false | null
   loadMoreSubscriptions: () => void
   refreshSubscriptions: (successMessage?: string) => Promise<void>
   result: null | SubscriptionsResult
-  updateSubscription: (subscriptionID: string, subscription: Subscription) => void
+  updateSubscription: (subscriptionId: string, subscription: Subscription) => void
 } => {
   const { delay, initialSubscriptions, team } = args
 
@@ -81,9 +81,9 @@ export const useSubscriptions = (args: {
   )
 
   const updateSubscription = useCallback(
-    async (stripeSubscriptionID: string, newSubscription: Subscription) => {
-      if (!stripeSubscriptionID) {
-        setError('No subscription ID')
+    async (stripeSubscriptionId: string, newSubscription: Subscription) => {
+      if (!stripeSubscriptionId) {
+        setError('No subscription Id')
         return
       }
 
@@ -97,7 +97,7 @@ export const useSubscriptions = (args: {
         setIsLoading('updating')
 
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionID}`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionId}`,
           {
             body: JSON.stringify(newSubscription),
             credentials: 'include',
@@ -128,9 +128,9 @@ export const useSubscriptions = (args: {
   )
 
   const cancelSubscription = useCallback(
-    async (stripeSubscriptionID: string) => {
-      if (!stripeSubscriptionID) {
-        setError('No subscription ID')
+    async (stripeSubscriptionId: string) => {
+      if (!stripeSubscriptionId) {
+        setError('No subscription Id')
         return
       }
 
@@ -144,7 +144,7 @@ export const useSubscriptions = (args: {
         setIsLoading('deleting')
 
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionID}`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionId}`,
           {
             credentials: 'include',
             method: 'DELETE',
@@ -173,8 +173,8 @@ export const useSubscriptions = (args: {
   const loadMoreSubscriptions = useCallback(() => {
     if (result?.has_more && result?.data?.length) {
       const lastSubscription = result?.data?.[result?.data?.length - 1]
-      const lastSubscriptionID = lastSubscription.id
-      void getSubscriptions(undefined, lastSubscriptionID)
+      const lastSubscriptionId = lastSubscription.id
+      void getSubscriptions(undefined, lastSubscriptionId)
     }
   }, [getSubscriptions, result])
 

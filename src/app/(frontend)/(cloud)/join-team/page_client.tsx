@@ -2,7 +2,7 @@
 
 import { Gutter } from '@components/Gutter'
 import { Heading } from '@components/Heading'
-import { isValidParamID } from '@root/utilities/isValidParamID'
+import { isValidParamId } from '@root/utilities/isValidParamId'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -19,7 +19,7 @@ export const JoinTeam: React.FC = () => {
   const [error, setError] = useState<null | string>(null)
 
   useEffect(() => {
-    if (isValidParamID(team)) {
+    if (isValidParamId(team)) {
       setLoading(true)
 
       const acceptInvitation = async () => {

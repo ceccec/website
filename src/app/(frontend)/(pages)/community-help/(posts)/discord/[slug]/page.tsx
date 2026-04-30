@@ -28,8 +28,8 @@ const isThreadData = (
     slug: string
   }
   communityHelpType?: 'discord' | 'github'
-  discordID?: string
-  githubID?: string
+  discordId?: string
+  githubId?: string
   id: string
   slug?: string
   title?: string
@@ -40,7 +40,7 @@ const isThreadData = (
     'id' in data &&
     'title' in data &&
     'slug' in data &&
-    'discordID' in data &&
+    'discordId' in data &&
     'communityHelpType' in data &&
     'communityHelpJSON' in data
   )

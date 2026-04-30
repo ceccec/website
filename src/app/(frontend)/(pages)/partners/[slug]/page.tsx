@@ -179,7 +179,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
                         name: 'partnerId',
                         blockType: 'text',
                         defaultValue: String(partner.id),
-                        label: 'Partner ID',
+                        label: 'Partner Id',
                         required: false,
                       },
                     ],

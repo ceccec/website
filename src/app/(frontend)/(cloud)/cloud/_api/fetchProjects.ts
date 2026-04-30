@@ -17,7 +17,7 @@ export interface ProjectsRes {
   totalPages: number
 }
 
-export const fetchProjects = async (teamIDs: string[]): Promise<ProjectsRes> => {
+export const fetchProjects = async (teamIds: string[]): Promise<ProjectsRes> => {
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
   if (!token) {
@@ -30,7 +30,7 @@ export const fetchProjects = async (teamIDs: string[]): Promise<ProjectsRes> => 
       variables: {
         limit: 8,
         page: 1,
-        teamIDs: teamIDs.filter(Boolean),
+        teamIds: teamIds.filter(Boolean),
       },
     }),
     headers: {
@@ -59,12 +59,12 @@ export const fetchProjectsClient = async ({
   limit = 8,
   page = 1,
   search,
-  teamIDs,
+  teamIds,
 }: {
   limit?: number
   page: number
   search?: string
-  teamIDs: Array<string | undefined>
+  teamIds: Array<string | undefined>
 }): Promise<ProjectsRes> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
@@ -73,7 +73,7 @@ export const fetchProjectsClient = async ({
         limit,
         page,
         search,
-        teamIDs: teamIDs.filter(Boolean),
+        teamIds: teamIds.filter(Boolean),
       },
     }),
     credentials: 'include',
@@ -94,18 +94,18 @@ export const fetchProjectsClient = async ({
 export const fetchProjectClient = async ({
   environmentSlug,
   projectSlug,
-  teamID,
+  teamId,
 }: {
   environmentSlug?: string
   projectSlug?: string
-  teamID: string
+  teamId: string
 }): Promise<Project> => {
   const json = (await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: PROJECT_QUERY,
       variables: {
         projectSlug,
-        teamID,
+        teamId,
       },
     }),
     credentials: 'include',

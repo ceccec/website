@@ -1,12 +1,12 @@
 import type { CollectionConfig, Plugin } from 'payload'
 
-const SHORT_ID_FIELD = 'shortID'
+const SHORT_ID_FIELD = 'shortId'
 
 function dedupeStrings(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))]
 }
 
-/** Ensures admin quick-search matches partial UUIDs on `id` plus title; omits duplicate `id` column in favor of {@link SHORT_ID_FIELD}. */
+/** Ensures admin quick-search matches partial UUIds on `id` plus title; omits duplicate `id` column in favor of {@link SHORT_ID_FIELD}. */
 function mergeListSearchableFields(collection: CollectionConfig): string[] | undefined {
   const admin = collection.admin
   const explicit = admin?.listSearchableFields
@@ -45,23 +45,23 @@ function mergeDefaultColumns(collection: CollectionConfig): string[] {
   return dedupeStrings([SHORT_ID_FIELD, titleFallback])
 }
 
-function shortIDUiField(): CollectionConfig['fields'][number] {
+function shortIdUiField(): CollectionConfig['fields'][number] {
   return {
     name: SHORT_ID_FIELD,
     type: 'ui',
     admin: {
       components: {
-        Cell: '@root/components/Admin/ShortIDCell#ShortIDCell',
+        Cell: '@root/components/Admin/ShortIdCell#ShortIdCell',
       },
       disableBulkEdit: true,
     },
-    label: 'ID',
+    label: 'Id',
   }
 }
 
 function patchCollection(collection: CollectionConfig): CollectionConfig {
   const fields = collection.fields ?? []
-  const hasShortID = fields.some((f) => 'name' in f && f.name === SHORT_ID_FIELD)
+  const hasShortId = fields.some((f) => 'name' in f && f.name === SHORT_ID_FIELD)
 
   return {
     ...collection,
@@ -70,12 +70,12 @@ function patchCollection(collection: CollectionConfig): CollectionConfig {
       defaultColumns: mergeDefaultColumns(collection),
       listSearchableFields: mergeListSearchableFields(collection),
     },
-    fields: hasShortID ? fields : [...fields, shortIDUiField()],
+    fields: hasShortId ? fields : [...fields, shortIdUiField()],
   }
 }
 
 /**
- * Admin list: search includes `id` (partial UUID via `like`) plus title column; first column shows a short ID prefix (full id on hover). Edit URLs unchanged.
+ * Admin list: search includes `id` (partial UUId via `like`) plus title column; first column shows a short Id prefix (full id on hover). Edit URLs unchanged.
  */
 export function adminListSearchPlugin(): Plugin {
   return (config) => ({

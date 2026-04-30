@@ -1,5 +1,5 @@
 ---
-description: Payload TypeScript — generated types, naming (ID/DB), narrowing
+description: Payload TypeScript — generated types, naming (Id/DB), narrowing
 globs: "src/**/*.{ts,tsx}","**/payload-types.ts","**/payload-cloud-types.ts"
 alwaysApply: false
 ---
@@ -17,8 +17,8 @@ alwaysApply: false
 
 ## Naming — hand-written code
 
-- **Suffix `ID`**, not `Id`, for identifiers you own (`docID`, `teamID`, `mediaID`). Align with Payload fields like **`customID`**. **Acronyms:** **`DB`** not `Db` (`payloadDB.ts`, `resolvePayloadDB`).
-- **Generated props:** use names from `payload-types.ts` as-is; bridge with `const xID = doc.xId` only until schema rename + regenerate.
+- **Suffix `Id`**, not `Id`, for identifiers you own (`docId`, `teamId`, `mediaId`). Align with Payload fields like **`customId`**. **Acronyms:** **`DB`** not `Db` (`payloadDB.ts`, `resolvePayloadDB`).
+- **Generated props:** use names from `payload-types.ts` as-is; bridge with `const xId = doc.xId` only until schema rename + regenerate.
 - **Exceptions:** React **`useId`**, DOM **`getElementById`**, wire-format keys from remote APIs — unchanged.
 
 **Globals helpers:** `src/lib/resolveGlobalField.ts`, `src/globals/globalSlugs.ts`.

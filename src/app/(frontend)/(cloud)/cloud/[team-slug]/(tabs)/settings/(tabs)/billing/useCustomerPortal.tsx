@@ -8,9 +8,9 @@ const portalURL = `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/customer-portal`
 export const useCustomerPortal = (args: {
   headline?: string
   returnURL?: string
-  // if you send the subscriptionID, it will open the portal to that subscription
+  // if you send the subscriptionId, it will open the portal to that subscription
   // this uses the `subscription_cancel` flow in the customer portal
-  subscriptionID?: string
+  subscriptionId?: string
   team: Team
 }): {
   error: null | string
@@ -21,7 +21,7 @@ export const useCustomerPortal = (args: {
     headline = 'Payload Cloud',
     team,
     returnURL = `${process.env.NEXT_PUBLIC_SITE_URL}/cloud/${team.slug}/settings/billing`,
-    subscriptionID,
+    subscriptionId,
   } = args
 
   const router = useRouter()
@@ -41,7 +41,7 @@ export const useCustomerPortal = (args: {
           body: JSON.stringify({
             headline,
             returnURL,
-            subscriptionID,
+            subscriptionId,
             team: team.id,
           }),
           credentials: 'include',
@@ -63,7 +63,7 @@ export const useCustomerPortal = (args: {
         setLoading(false)
       }
     },
-    [team, router, subscriptionID, returnURL, headline],
+    [team, router, subscriptionId, returnURL, headline],
   )
 
   return {

@@ -30,7 +30,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
 
   const submitButtonRef = React.useRef<HTMLButtonElement>(null)
 
-  const newsletterFieldID = useId()
+  const newsletterFieldId = useId()
   const pathname = usePathname()
   const router = useRouter()
 
@@ -62,7 +62,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       setError(undefined)
 
       try {
-        const formID = resolveGlobalField(
+        const formId = resolveGlobalField(
           site.newsletterFormId,
           process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ID,
         )
@@ -73,7 +73,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
         toast.promise(
           fetch(`${resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL)}/api/form-submissions`, {
             body: JSON.stringify({
-              form: formID,
+              form: formId,
               hubspotCookie,
               pageName,
               pageUri,
@@ -106,14 +106,14 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
       {error && <div className={classes.errorWrap}>{`${error.message || ''}`}</div>}
       <FormComponent onSubmit={onSubmit}>
         <div className={classes.inputWrap}>
-          <label className="visually-hidden" htmlFor={newsletterFieldID}>
+          <label className="visually-hidden" htmlFor={newsletterFieldId}>
             Subscribe to our newsletter
           </label>
           <Text
             className={classes.emailInput}
             customOnChange={handleChange}
             name="email"
-            path={newsletterFieldID}
+            path={newsletterFieldId}
             placeholder={placeholder}
             required
             type="text"

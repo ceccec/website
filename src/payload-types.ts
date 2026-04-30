@@ -312,7 +312,7 @@ export interface MediaExampleBlock {
 export interface Media {
   id: string;
   /**
-   * SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfID).
+   * SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfId).
    */
   contentSha256?: string | null;
   alt: string;
@@ -428,7 +428,7 @@ export interface Cta {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -451,7 +451,7 @@ export interface Cta {
           } | null);
       url?: string | null;
       label: string;
-      customID?: string | null;
+      customId?: string | null;
     };
     bannerImage?: (string | null) | Media;
     gradientBackground?: boolean | null;
@@ -506,7 +506,7 @@ export interface Page {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -558,7 +558,7 @@ export interface Page {
           } | null);
       url?: string | null;
       label: string;
-      customID?: string | null;
+      customId?: string | null;
     };
     richText?: {
       root: {
@@ -614,7 +614,7 @@ export interface Page {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -669,7 +669,7 @@ export interface Page {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
             /**
              * Choose how the link should be rendered.
              */
@@ -704,7 +704,7 @@ export interface Page {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -962,7 +962,7 @@ export interface Code {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1054,7 +1054,7 @@ export interface Partner {
    * Set to inactive to hide this partner from the directory.
    */
   agency_status?: ('active' | 'inactive') | null;
-  hubspotID?: string | null;
+  hubspotId?: string | null;
   logo: string | Media;
   /**
    * This field is managed by the Featured Partners field in the Partner Program collection
@@ -1255,7 +1255,7 @@ export interface CardGrid {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1283,7 +1283,7 @@ export interface CardGrid {
                   value: string | CaseStudy;
                 } | null);
             url?: string | null;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1461,7 +1461,7 @@ export interface CodeFeature {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1509,7 +1509,7 @@ export interface CodeFeature {
                       } | null);
                   url?: string | null;
                   label: string;
-                  customID?: string | null;
+                  customId?: string | null;
                 };
                 id?: string | null;
               }[]
@@ -1652,7 +1652,7 @@ export interface ContentGrid {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1887,11 +1887,11 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
-  hubSpotFormID?: string | null;
+  hubSpotFormId?: string | null;
   /**
    * Attached to submission button to track clicks
    */
-  customID?: string | null;
+  customId?: string | null;
   requireRecaptcha?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -1946,7 +1946,7 @@ export interface HoverCards {
                   value: string | CaseStudy;
                 } | null);
             url?: string | null;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -1994,7 +1994,7 @@ export interface HoverHighlights {
                   value: string | CaseStudy;
                 } | null);
             url?: string | null;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -2018,7 +2018,7 @@ export interface HoverHighlights {
           } | null);
       url?: string | null;
       label: string;
-      customID?: string | null;
+      customId?: string | null;
     };
   };
   id?: string | null;
@@ -2058,7 +2058,7 @@ export interface LinkGrid {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -2115,7 +2115,7 @@ export interface LogoGrid {
           } | null);
       url?: string | null;
       label: string;
-      customID?: string | null;
+      customId?: string | null;
     };
     logos?:
       | {
@@ -2218,7 +2218,7 @@ export interface MediaContent {
           } | null);
       url?: string | null;
       label: string;
-      customID?: string | null;
+      customId?: string | null;
     };
     images?:
       | {
@@ -2295,7 +2295,7 @@ export interface MediaContentAccordion {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           media: string | Media;
           id?: string | null;
@@ -2346,7 +2346,7 @@ export interface Pricing {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           features?:
             | {
@@ -2378,7 +2378,7 @@ export interface ReusableContentBlock {
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
     reusableContent: string | ReusableContent;
-    customID?: string | null;
+    customId?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -2595,7 +2595,7 @@ export interface Slider {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
             /**
              * Choose how the link should be rendered.
              */
@@ -2628,7 +2628,7 @@ export interface Slider {
             } | null);
         url?: string | null;
         label: string;
-        customID?: string | null;
+        customId?: string | null;
       };
       id?: string | null;
     }[];
@@ -2685,7 +2685,7 @@ export interface Statement {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -2787,7 +2787,7 @@ export interface StickyHighlights {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           type?: ('code' | 'media') | null;
           code?: string | null;
@@ -2829,7 +2829,7 @@ export interface StickyHighlights {
                       } | null);
                   url?: string | null;
                   label: string;
-                  customID?: string | null;
+                  customId?: string | null;
                 };
                 id?: string | null;
               }[]
@@ -2951,7 +2951,7 @@ export interface Link {
         } | null);
     url?: string | null;
     label: string;
-    customID?: string | null;
+    customId?: string | null;
     /**
      * Choose how the link should be rendered.
      */
@@ -3329,8 +3329,8 @@ export interface CommunityHelp {
   id: string;
   title?: string | null;
   communityHelpType?: ('discord' | 'github') | null;
-  githubID?: string | null;
-  discordID?: string | null;
+  githubId?: string | null;
+  discordId?: string | null;
   communityHelpJSON:
     | {
         [k: string]: unknown;
@@ -3638,8 +3638,8 @@ export interface CaseStudiesSelect<T extends boolean = true> {
 export interface CommunityHelpSelect<T extends boolean = true> {
   title?: T;
   communityHelpType?: T;
-  githubID?: T;
-  discordID?: T;
+  githubId?: T;
+  discordId?: T;
   communityHelpJSON?: T;
   introDescription?: T;
   slug?: T;
@@ -3758,7 +3758,7 @@ export interface PartnersSelect<T extends boolean = true> {
   email?: T;
   slug?: T;
   agency_status?: T;
-  hubspotID?: T;
+  hubspotId?: T;
   logo?: T;
   featured?: T;
   topContributor?: T;
@@ -3869,7 +3869,7 @@ export interface PagesSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -3898,7 +3898,7 @@ export interface PagesSelect<T extends boolean = true> {
               reference?: T;
               url?: T;
               label?: T;
-              customID?: T;
+              customId?: T;
             };
         richText?: T;
         description?: T;
@@ -3919,7 +3919,7 @@ export interface PagesSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -3936,7 +3936,7 @@ export interface PagesSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                     appearance?: T;
                   };
               id?: T;
@@ -3960,7 +3960,7 @@ export interface PagesSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -4136,8 +4136,8 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
-  hubSpotFormID?: T;
-  customID?: T;
+  hubSpotFormId?: T;
+  customId?: T;
   requireRecaptcha?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -4232,7 +4232,7 @@ export interface AdminSetting {
   createdAt?: string | null;
 }
 /**
- * Preferred place for site URLs and public analytics/search IDs after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.
+ * Preferred place for site URLs and public analytics/search Ids after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "public-site-settings".
@@ -4315,7 +4315,7 @@ export interface IntegrationSecret {
    */
   algoliaAdminApiKey?: string | null;
   /**
-   * Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.
+   * Overrides `NEXT_PRIVATE_REVALIdATION_KEY` when set.
    */
   revalidationKey?: string | null;
   /**
@@ -4354,7 +4354,7 @@ export interface Footer {
                     } | null);
                 url?: string | null;
                 label: string;
-                customID?: string | null;
+                customId?: string | null;
               };
               id?: string | null;
             }[]
@@ -4393,7 +4393,7 @@ export interface MainMenu {
                 value: string | CaseStudy;
               } | null);
           url?: string | null;
-          customID?: string | null;
+          customId?: string | null;
         };
         description?: string | null;
         descriptionLinks?:
@@ -4416,7 +4416,7 @@ export interface MainMenu {
                     } | null);
                 url?: string | null;
                 label: string;
-                customID?: string | null;
+                customId?: string | null;
               };
               id?: string | null;
             }[]
@@ -4443,7 +4443,7 @@ export interface MainMenu {
                       } | null);
                   url?: string | null;
                   label: string;
-                  customID?: string | null;
+                  customId?: string | null;
                 };
                 description?: string | null;
               };
@@ -4484,7 +4484,7 @@ export interface MainMenu {
                             } | null);
                         url?: string | null;
                         label: string;
-                        customID?: string | null;
+                        customId?: string | null;
                       };
                       id?: string | null;
                     }[]
@@ -4512,7 +4512,7 @@ export interface MainMenu {
                             } | null);
                         url?: string | null;
                         label: string;
-                        customID?: string | null;
+                        customId?: string | null;
                       };
                       id?: string | null;
                     }[]
@@ -4542,7 +4542,7 @@ export interface MainMenu {
         } | null);
     url?: string | null;
     label: string;
-    customID?: string | null;
+    customId?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -4573,7 +4573,7 @@ export interface TopBar {
         } | null);
     url?: string | null;
     label: string;
-    customID?: string | null;
+    customId?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -4643,7 +4643,7 @@ export interface GetStarted {
               } | null);
           url?: string | null;
           label: string;
-          customID?: string | null;
+          customId?: string | null;
         };
         id?: string | null;
       }[]
@@ -4705,7 +4705,7 @@ export interface PartnerProgram {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -4730,7 +4730,7 @@ export interface PartnerProgram {
                 } | null);
             url?: string | null;
             label: string;
-            customID?: string | null;
+            customId?: string | null;
           };
           id?: string | null;
         }[]
@@ -4868,7 +4868,7 @@ export interface FooterSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -4896,7 +4896,7 @@ export interface MainMenuSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
-              customID?: T;
+              customId?: T;
             };
         description?: T;
         descriptionLinks?:
@@ -4910,7 +4910,7 @@ export interface MainMenuSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -4929,7 +4929,7 @@ export interface MainMenuSelect<T extends boolean = true> {
                           reference?: T;
                           url?: T;
                           label?: T;
-                          customID?: T;
+                          customId?: T;
                         };
                     description?: T;
                   };
@@ -4949,7 +4949,7 @@ export interface MainMenuSelect<T extends boolean = true> {
                                 reference?: T;
                                 url?: T;
                                 label?: T;
-                                customID?: T;
+                                customId?: T;
                               };
                           id?: T;
                         };
@@ -4969,7 +4969,7 @@ export interface MainMenuSelect<T extends boolean = true> {
                                 reference?: T;
                                 url?: T;
                                 label?: T;
-                                customID?: T;
+                                customId?: T;
                               };
                           id?: T;
                         };
@@ -4986,7 +4986,7 @@ export interface MainMenuSelect<T extends boolean = true> {
         reference?: T;
         url?: T;
         label?: T;
-        customID?: T;
+        customId?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -5007,7 +5007,7 @@ export interface TopBarSelect<T extends boolean = true> {
         reference?: T;
         url?: T;
         label?: T;
-        customID?: T;
+        customId?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -5043,7 +5043,7 @@ export interface GetStartedSelect<T extends boolean = true> {
               reference?: T;
               url?: T;
               label?: T;
-              customID?: T;
+              customId?: T;
             };
         id?: T;
       };
@@ -5079,7 +5079,7 @@ export interface PartnerProgramSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };
@@ -5094,7 +5094,7 @@ export interface PartnerProgramSelect<T extends boolean = true> {
                     reference?: T;
                     url?: T;
                     label?: T;
-                    customID?: T;
+                    customId?: T;
                   };
               id?: T;
             };

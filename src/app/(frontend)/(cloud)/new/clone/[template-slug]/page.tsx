@@ -6,7 +6,7 @@ import { fetchMe } from '@cloud/_api/fetchMe'
 import { fetchTemplate } from '@cloud/_api/fetchTemplate'
 import { Gutter } from '@components/Gutter/index'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
-import { uuid as generateUUID } from '@root/utilities/uuid'
+import { uuid as generateUUId } from '@root/utilities/uuid'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 
@@ -34,7 +34,7 @@ export default async ({
 
   const token = await fetchGitHubToken()
 
-  const uuid = generateUUID()
+  const uuid = generateUUId()
 
   if (!token) {
     redirect(

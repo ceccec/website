@@ -31,12 +31,12 @@ export default async ({
   const plans = await fetchPlans()
   const subscriptions = await fetchSubscriptions(team)
 
-  const hasCustomerID = team?.stripeCustomerID
+  const hasCustomerId = team?.stripeCustomerId
 
   return (
     <Fragment>
       <SectionHeader title="Subscriptions" />
-      {!hasCustomerID && (
+      {!hasCustomerId && (
         <Message error="This team does not have a billing account. Please contact support to resolve this issue." />
       )}
       <TeamSubscriptionsPage plans={plans} subscriptions={subscriptions} team={team} user={user} />

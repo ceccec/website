@@ -26,7 +26,7 @@ export interface Config {
 }
 export interface AtlasOrg {
   id: string
-  atlasOrgID?: string
+  atlasOrgId?: string
   atlasProjects?: string[] | AtlasProject[]
   projectCount?: number
   updatedAt: string
@@ -34,7 +34,7 @@ export interface AtlasOrg {
 }
 export interface AtlasProject {
   id: string
-  atlasProjectID?: string
+  atlasProjectId?: string
   projects?: string[] | Project[]
   projectCount?: number
   updatedAt: string
@@ -85,7 +85,7 @@ export interface Project {
       | 'suspendingError'
     deletedOn?: string
     troubleshoot?: boolean
-    digitalOceanAppID?: string
+    digitalOceanAppId?: string
     deploymentBranch?: string
     outputDirectory?: string
     buildScript?: string
@@ -103,18 +103,18 @@ export interface Project {
       | number
       | boolean
       | null
-    atlasProjectID?: string
+    atlasProjectId?: string
     atlasConnectionString?: string
     atlasDatabaseName?: string
     atlasDatabaseType?: 'cluster' | 'serverless'
     atlasDatabaseUser?: string
     atlasDatabasePassword?: string
     cloudflareCacheKey?: string
-    cloudflareDNSRecordID?: string
+    cloudflareDNSRecordId?: string
     defaultDomain?: string
     domains?: {
       domain: string
-      cloudflareID?: string
+      cloudflareId?: string
       recordType?: 'A' | 'CNAME'
       recordName?: string
       recordContent?: string
@@ -127,7 +127,7 @@ export interface Project {
     }[]
     id?: string
   }[]
-  digitalOceanAppID?: string
+  digitalOceanAppId?: string
   deploymentBranch?: string
   outputDirectory?: string
   buildScript?: string
@@ -147,30 +147,30 @@ export interface Project {
     | null
   source?: 'github'
   repositoryFullName?: string
-  repositoryID?: string
-  installID?: string
+  repositoryId?: string
+  installId?: string
   useGitProxy?: boolean
   cloudflareCacheKey?: string
-  cloudflareDNSRecordID?: string
+  cloudflareDNSRecordId?: string
   defaultDomain?: string
   domains?: {
     domain: string
-    cloudflareID?: string
+    cloudflareId?: string
     recordType?: 'A' | 'CNAME'
     recordName?: string
     recordContent?: string
     id?: string
   }[]
-  atlasProjectID?: string
+  atlasProjectId?: string
   atlasConnectionString?: string
   atlasDatabaseName?: string
   atlasDatabaseType?: 'cluster' | 'serverless'
   atlasDatabaseUser?: string
   atlasDatabasePassword?: string
-  cognitoIdentityID?: string
-  cognitoIdentityPoolID?: string
-  cognitoUserPoolID?: string
-  cognitoUserPoolClientID?: string
+  cognitoIdentityId?: string
+  cognitoIdentityPoolId?: string
+  cognitoUserPoolId?: string
+  cognitoUserPoolClientId?: string
   s3Bucket?: string
   s3BucketRegion?: string
   cognitoPassword?: string
@@ -180,7 +180,7 @@ export interface Project {
     value?: string
     id?: string
   }[]
-  stripeSubscriptionID?: string
+  stripeSubscriptionId?: string
   stripeSubscriptionStatus?:
     | 'active'
     | 'canceled'
@@ -191,10 +191,10 @@ export interface Project {
     | 'unpaid'
     | 'paused'
   resendAPIKey?: string
-  resendAPIKeyID?: string
-  resendDomainID?: string
+  resendAPIKeyId?: string
+  resendDomainId?: string
   defaultDomainResendDNSRecords?: {
-    cloudflareID: string
+    cloudflareId: string
     type: 'MX' | 'TXT' | 'CNAME'
     name: string
     value: string
@@ -202,8 +202,8 @@ export interface Project {
   }[]
   customEmailDomains?: {
     domain: string
-    resendDomainID?: string
-    resendAPIKeyID?: string
+    resendDomainId?: string
+    resendAPIKeyId?: string
     resendAPIKey?: string
     customDomainResendDNSRecords?: {
       type: 'MX' | 'TXT' | 'CNAME'
@@ -226,7 +226,7 @@ export interface Plan {
   name: string
   slug: string
   private?: boolean
-  stripeProductID?: string
+  stripeProductId?: string
   priceJSON?:
     | {
         [k: string]: unknown
@@ -272,7 +272,7 @@ export interface Team {
     id?: string
   }[]
   billingEmail: string
-  stripeCustomerID?: string
+  stripeCustomerId?: string
   skipSync?: boolean
   createdBy?: string | User
   updatedAt: string
@@ -281,7 +281,7 @@ export interface Team {
 export interface User {
   id: string
   name?: string
-  githubID?: string
+  githubId?: string
   teams?: {
     team?: string | Team
     roles: ('owner' | 'admin' | 'user')[]
@@ -357,7 +357,7 @@ export interface Deployment {
   project: string | Project
   environmentSlug: string
   cause: 'manual' | 'push' | 'initial' | 'configChange' | 'environmentConfigChange' | 'webhook'
-  deploymentID: string
+  deploymentId: string
   commitSha?: string
   commitMessage?: string
   lastSync?: string
@@ -405,10 +405,10 @@ export interface Job {
 export interface TeardownError {
   id: string
   project: {
-    projectID?: string
+    projectId?: string
     name: string
     teamName?: string
-    teamID: string
+    teamId: string
   }
   serviceErrors?: {
     service?: string

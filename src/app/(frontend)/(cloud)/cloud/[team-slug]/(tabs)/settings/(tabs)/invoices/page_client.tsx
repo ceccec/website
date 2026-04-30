@@ -22,7 +22,7 @@ export const TeamInvoicesPage: React.FC<{
   user: User
 }> = ({ invoices: initialInvoices, team, user }) => {
   const isCurrentTeamOwner = checkTeamRoles(user, team, ['owner'])
-  const hasCustomerID = team?.stripeCustomerID
+  const hasCustomerId = team?.stripeCustomerId
 
   const {
     isLoading,
@@ -35,7 +35,7 @@ export const TeamInvoicesPage: React.FC<{
 
   return (
     <React.Fragment>
-      {hasCustomerID && (
+      {hasCustomerId && (
         <React.Fragment>
           {!isCurrentTeamOwner && (
             <p className={classes.error}>You must be an owner of this team to manage invoices.</p>

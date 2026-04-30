@@ -14,12 +14,12 @@ type UsePopulateDocumentOptions<T> = {
   enabled?: boolean
   /** Fallback value if fetch fails or is disabled */
   fallback?: T
-  /** Document ID to fetch */
+  /** Document Id to fetch */
   id?: number | string
 }
 
 /**
- * Fetches a Payload document by ID from the REST API.
+ * Fetches a Payload document by Id from the REST API.
  * @returns The document data and loading state
  */
 export function usePopulateDocument<T>({

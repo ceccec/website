@@ -32,7 +32,7 @@ const modalSlug = 'confirm-delete-payment-method'
 const CardList: React.FC<CreditCardListType> = (props) => {
   const { initialPaymentMethods, team } = props
   const scrollRef = useRef<HTMLDivElement>(null)
-  const newCardID = useRef<string>(`new-card-${uuid()}`)
+  const newCardId = useRef<string>(`new-card-${uuid()}`)
   const [showNewCard, setShowNewCard] = useState(false)
   const paymentMethodToDelete = useRef<null | PaymentMethod>(null)
   const { closeModal, openModal } = useModal()
@@ -53,10 +53,10 @@ const CardList: React.FC<CreditCardListType> = (props) => {
   useEffect(() => {
     if (paymentMethods) {
       const firstCard = paymentMethods?.[0]?.id
-      newCardID.current = `new-card-${uuid()}`
+      newCardId.current = `new-card-${uuid()}`
       setShowNewCard(!firstCard)
     }
-  }, [paymentMethods, newCardID])
+  }, [paymentMethods, newCardId])
 
   return (
     <div className={classes.creditCardList}>
@@ -129,7 +129,7 @@ const CardList: React.FC<CreditCardListType> = (props) => {
             appearance="primary"
             label={isLoading === 'saving' ? 'Saving...' : 'Save new card'}
             onClick={() => {
-              void saveNewPaymentMethod(newCardID.current)
+              void saveNewPaymentMethod(newCardId.current)
             }}
           />
         )}

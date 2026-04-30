@@ -10,7 +10,7 @@ type Collection = keyof Config['collections']
 const defaultLocale = localization.defaultLocale as TypedLocale
 
 /**
- * Local API `find` by slug. **`depth`** controls relation population (IDs vs nested docs);
+ * Local API `find` by slug. **`depth`** controls relation population (Ids vs nested docs);
  * **`locale`** must match the request when localized fields are used—see [Localization](https://payloadcms.com/docs/configuration/localization).
  */
 async function getDocument(collection: Collection, slug: string, depth = 0, locale: TypedLocale = defaultLocale) {
@@ -30,9 +30,9 @@ async function getDocument(collection: Collection, slug: string, depth = 0, loca
   return page.docs[0]
 }
 
-async function getDocumentByID(collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) {
+async function getDocumentById(collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) {
   const payload = await getPayload()
-  return payload.findByID({ id, collection, depth, locale })
+  return payload.findById({ id, collection, depth, locale })
 }
 
 /**
@@ -44,10 +44,10 @@ export const getCachedDocument = (collection: Collection, slug: string, depth = 
     tags: [`${collection}_${slug}`],
   })
 
-export const getCachedDocumentByID = (collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) =>
+export const getCachedDocumentById = (collection: Collection, id: number | string, depth = 0, locale: TypedLocale = defaultLocale) =>
   unstable_cache(
-    async () => getDocumentByID(collection, id, depth, locale),
-    [collection, 'byID', String(id), String(depth), locale],
+    async () => getDocumentById(collection, id, depth, locale),
+    [collection, 'byId', String(id), String(depth), locale],
     {
       tags: [`${collection}_id_${String(id)}`],
     },

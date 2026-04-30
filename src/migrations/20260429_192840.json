@@ -17373,15 +17373,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "github_i_d": {
-          "name": "github_i_d",
+        "github_id": {
+          "name": "github_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "discord_i_d": {
-          "name": "discord_i_d",
+        "discord_id": {
+          "name": "discord_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -17440,17 +17440,17 @@
         }
       },
       "indexes": {
-        "community_help_github_i_d_idx": {
-          "name": "community_help_github_i_d_idx",
+        "community_help_github_id_idx": {
+          "name": "community_help_github_id_idx",
           "columns": [
-            "github_i_d"
+            "github_id"
           ],
           "isUnique": false
         },
-        "community_help_discord_i_d_idx": {
-          "name": "community_help_discord_i_d_idx",
+        "community_help_discord_id_idx": {
+          "name": "community_help_discord_id_idx",
           "columns": [
-            "discord_i_d"
+            "discord_id"
           ],
           "isUnique": false
         },
@@ -20839,8 +20839,8 @@
           "autoincrement": false,
           "default": "'active'"
         },
-        "hubspot_i_d": {
-          "name": "hubspot_i_d",
+        "hubspot_id": {
+          "name": "hubspot_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -21523,8 +21523,8 @@
           "autoincrement": false,
           "default": "'active'"
         },
-        "version_hubspot_i_d": {
-          "name": "version_hubspot_i_d",
+        "version_hubspot_id": {
+          "name": "version_hubspot_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -35631,15 +35631,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "hub_spot_form_i_d": {
-          "name": "hub_spot_form_i_d",
+        "hub_spot_form_id": {
+          "name": "hub_spot_form_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "custom_i_d": {
-          "name": "custom_i_d",
+        "custom_id": {
+          "name": "custom_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false,

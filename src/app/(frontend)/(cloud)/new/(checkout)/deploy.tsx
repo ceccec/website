@@ -16,7 +16,7 @@ import { createSubscription } from './createSubscription'
 export const deploy = async (args: {
   checkoutState: CheckoutState
   elements: null | StripeElements | undefined
-  installID?: string
+  installId?: string
   onDeploy?: (project: ProjectDeployResponse) => void
   project: null | Project | undefined
   router: AppRouterInstance
@@ -27,7 +27,7 @@ export const deploy = async (args: {
   const {
     checkoutState,
     elements,
-    installID,
+    installId,
     onDeploy,
     project,
     router,
@@ -37,8 +37,8 @@ export const deploy = async (args: {
   } = args
 
   try {
-    if (!installID) {
-      throw new Error(`No installation ID was found for this project.`)
+    if (!installId) {
+      throw new Error(`No installation Id was found for this project.`)
     }
 
     if (!user) {
@@ -71,7 +71,7 @@ export const deploy = async (args: {
         team: checkoutState.team,
       })
 
-      const pmID =
+      const pmId =
         typeof setupIntent?.payment_method === 'string'
           ? setupIntent?.payment_method
           : setupIntent?.payment_method?.id || ''
@@ -81,7 +81,7 @@ export const deploy = async (args: {
       if (!teamHasDefaultPaymentMethod(checkoutState?.team)) {
         await updateCustomer(checkoutState.team, {
           invoice_settings: {
-            default_payment_method: pmID,
+            default_payment_method: pmId,
           },
         })
       }
@@ -99,7 +99,7 @@ export const deploy = async (args: {
             project?.template && typeof project.template !== 'string'
               ? project.template.id
               : project?.template,
-          // reduce large payloads to only the ID, i.e. plan and team
+          // reduce large payloads to only the Id, i.e. plan and team
           plan: typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id,
           team: typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team.id,
           ...formState,
@@ -107,7 +107,7 @@ export const deploy = async (args: {
           environmentVariables: formState.environmentVariables?.filter(
             ({ key, value }) => key && value,
           ),
-          installID,
+          installId,
         },
       }),
       credentials: 'include',

@@ -47,7 +47,7 @@
 **When you follow it:**
 - ✅ Response structure validated before use
 - ✅ Types centralized in `@types/`
-- ✅ IDE catches misuse at compile-time
+- ✅ IdE catches misuse at compile-time
 
 **Example:**
 ```typescript

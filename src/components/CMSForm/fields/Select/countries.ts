@@ -405,7 +405,7 @@ export const countryOptions = [
   },
   {
     label: 'Indonesia',
-    value: 'ID',
+    value: 'Id',
   },
   {
     label: 'Iran, Islamic Republic Of',

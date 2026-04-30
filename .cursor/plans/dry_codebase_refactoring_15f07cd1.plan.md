@@ -227,7 +227,7 @@ export const fetchPage = async (slugSegments, options?) => {
 ### 5.1 Delete template stubs if no longer used
 
 - **File:** [`src/app/_data/payloadTemplateStubs.ts`](src/app/_data/payloadTemplateStubs.ts)
-- **Current:** `emptyMarketingLayoutGlobals()`, `emptyGetStartedGlobal()` return zero-UUID stub objects when marketing is off.
+- **Current:** `emptyMarketingLayoutGlobals()`, `emptyGetStartedGlobal()` return zero-UUId stub objects when marketing is off.
 - **Check:** Are these actually returned from `fetchGlobals()`, `fetchGetStarted()` when the feature flags are false? If yes, keep. If no, delete.
 - **Action:** Grep for calls to `emptyMarketingLayoutGlobals` and `emptyGetStartedGlobal`. If unused, delete the file.
 

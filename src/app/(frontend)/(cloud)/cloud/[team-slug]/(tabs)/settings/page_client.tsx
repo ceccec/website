@@ -96,7 +96,7 @@ export const TeamSettingsPage: React.FC<{
         <FormSubmissionError />
         <FormProcessing message="Updating team, one moment..." />
         <Text initialValue={team?.name} label="Team Name" path="name" required />
-        <UniqueTeamSlug initialValue={team?.slug} teamID={team?.id} />
+        <UniqueTeamSlug initialValue={team?.slug} teamId={team?.id} />
         <Text
           initialValue={team?.billingEmail}
           label="Billing Email"
@@ -107,9 +107,9 @@ export const TeamSettingsPage: React.FC<{
       </Form>
       <HR />
       <Text
-        description="This is your team's ID within Payload"
+        description="This is your team's Id within Payload"
         disabled
-        label="Team ID"
+        label="Team Id"
         value={team?.id}
       />
     </React.Fragment>

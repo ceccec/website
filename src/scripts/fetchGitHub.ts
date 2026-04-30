@@ -14,8 +14,8 @@ const headers = {
 }
 
 type ExistingDiscussion = {
-  docID: string
-  githubID: string
+  docId: string
+  githubId: string
 }
 
 async function fetchGitHub(): Promise<void> {
@@ -303,8 +303,8 @@ async function fetchGitHub(): Promise<void> {
   })
 
   const existingDiscussions: ExistingDiscussion[] = existingDiscussionsResult.docs.map((thread) => ({
-    docID: thread.id,
-    githubID: thread.githubID as string,
+    docId: thread.id,
+    githubId: thread.githubId as string,
   }))
 
   // Apply batch limit if set
@@ -327,12 +327,12 @@ async function fetchGitHub(): Promise<void> {
       return
     }
 
-    const existingDiscussion = existingDiscussions.find((d) => d.githubID === discussion.id)
+    const existingDiscussion = existingDiscussions.find((d) => d.githubId === discussion.id)
     const data = {
       slug: discussion.slug,
       communityHelpJSON: discussion,
       communityHelpType: 'github' as const,
-      githubID: discussion.id,
+      githubId: discussion.id,
       threadCreatedAt: discussion.createdAt,
       title: discussion.title,
     }
@@ -341,7 +341,7 @@ async function fetchGitHub(): Promise<void> {
       if (existingDiscussion) {
         // Update existing discussion
         await payload.update({
-          id: existingDiscussion.docID,
+          id: existingDiscussion.docId,
           collection: 'community-help',
           data,
           overrideAccess: true,

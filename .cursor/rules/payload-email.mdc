@@ -8,7 +8,7 @@ alwaysApply: false
 
 - **Docs:** [Email](https://payloadcms.com/docs/email/overview)
 - **This repo:** `nodemailerAdapter` + SendGrid transport — `src/email/sendgridMailTransport.ts`, `defaultFromAddress` / `defaultFromName` in `payload.config.ts`.
-- **Env:** `SENDGRID_API_KEY` and related vars — document in `.env.example`; never log secrets.
+- **Env:** `SENDGRId_API_KEY` and related vars — document in `.env.example`; never log secrets.
 - **Forgot password / verification:** Rely on Payload auth email hooks and templates where configured on **Users**.
 
 ## Checklist

@@ -9,7 +9,7 @@ export function GET(request: NextRequest): NextResponse {
   const slug = request.nextUrl.searchParams.get('slug')
   const secret = request.nextUrl.searchParams.get('secret')
 
-  if (secret !== process.env.NEXT_PRIVATE_REVALIDATION_KEY) {
+  if (secret !== process.env.NEXT_PRIVATE_REVALIdATION_KEY) {
     return NextResponse.json({ now: Date.now(), revalidated: false })
   }
 

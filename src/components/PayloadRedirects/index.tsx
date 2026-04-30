@@ -1,7 +1,7 @@
 import type { CaseStudy, Page, Post } from '@types'
 import type React from 'react'
 
-import { getCachedDocumentByID } from '@utilities/getDocument'
+import { getCachedDocumentById } from '@utilities/getDocument'
 import { getCachedRedirects } from '@utilities/getRedirects'
 import { notFound, redirect } from 'next/navigation'
 
@@ -29,7 +29,7 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
       const collection = redirectItem.to?.reference?.relationTo
       const id = redirectItem.to?.reference?.value
 
-      const document = await getCachedDocumentByID(collection, id)()
+      const document = await getCachedDocumentById(collection, id)()
       redirectUrl =
         redirectItem.to?.reference?.relationTo === 'posts'
           ? '/blog/'

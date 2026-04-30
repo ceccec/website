@@ -530,7 +530,7 @@ export default buildConfig({
 })
 ```
 
-The Payload Config is strongly typed and ties directly into Payload's TypeScript codebase. This means your IDE (such as VSCode) will provide helpful information like type-ahead suggestions while you write your config.
+The Payload Config is strongly typed and ties directly into Payload's TypeScript codebase. This means your IdE (such as VSCode) will provide helpful information like type-ahead suggestions while you write your config.
 
 <Banner type="success">
   **Tip:** The location of your Payload Config can be customized. [More
@@ -646,7 +646,7 @@ The following options are available:
 | **`autoGenerate`**     | By default, Payload will auto-generate TypeScript interfaces for all collections and globals that your config defines. Opt out by setting `typescript.autoGenerate: false`. [More details](../typescript/overview).                                                                                                                                                                                                                                     |
 | **`declare`**          | By default, Payload adds a `declare` block to your generated types, which makes sure that Payload uses your generated types for all Local API methods. Opt out by setting `typescript.declare: false`.                                                                                                                                                                                                                                                  |
 | **`outputFile`**       | Control the output path and filename of Payload's auto-generated types by defining the `typescript.outputFile` property to a full, absolute path.                                                                                                                                                                                                                                                                                                       |
-| **`strictDraftTypes`** | Enable strict type safety for draft mode. When enabled: (1) Query operations (`find`, `findByID`) with `draft: true` will type required fields as optional, since validation is skipped for drafts. (2) The `draft` property is forbidden for collections without drafts in create operations. (3) Create operations enforce proper data requirements via discriminated unions. Defaults to `false`. **This will become the default behavior in v4.0.** |
+| **`strictDraftTypes`** | Enable strict type safety for draft mode. When enabled: (1) Query operations (`find`, `findById`) with `draft: true` will type required fields as optional, since validation is skipped for drafts. (2) The `draft` property is forbidden for collections without drafts in create operations. (3) Create operations enforce proper data requirements via discriminated unions. Defaults to `false`. **This will become the default behavior in v4.0.** |
 
 ## Config Location
 
@@ -1068,7 +1068,7 @@ The following options are available:
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `group`                      | Text or localization object used to group Collection and Global links in the admin navigation. Set to `false` to hide the link from the navigation while keeping its routes accessible.                                      |
 | `hidden`                     | Set to true or a function, called with the current user, returning true to exclude this Collection from navigation and admin routing.                                                                                        |
-| `useAsTitle`                 | Specify a top-level field to use for a document title throughout the Admin Panel. If no field is defined, the ID of the document is used as the title.                                                                       |
+| `useAsTitle`                 | Specify a top-level field to use for a document title throughout the Admin Panel. If no field is defined, the Id of the document is used as the title.                                                                       |
 | `description`                | Text to display below the Collection label in the List View to give editors more information. Alternatively, you can use the `admin.components.Description` to render a React component. [More details](#custom-components). |
 | `defaultColumns`             | Array of field names that correspond to which columns to show by default in this Collection's List View.                                                                                                                     |
 | `disableCopyToLocale`        | Disables the "Copy to Locale" button while editing documents within this Collection. Only applicable when localization is enabled.                                                                                           |
@@ -1089,7 +1089,7 @@ The following options are available:
 
 <Banner type="warning">
   **Note:** If you set `useAsTitle` to a relationship or join field, it will use
-  only the ID of the related document(s) as the title. To display a specific
+  only the Id of the related document(s) as the title. To display a specific
   field (i.e. title) from the related document instead, create a virtual field
   that extracts the desired data, and set `useAsTitle` to that virtual field.
 </Banner>
@@ -1208,7 +1208,7 @@ The following options are available:
 
 ### List Searchable Fields
 
-In the List View, there is a "search" box that allows you to quickly find a document through a simple text search. By default, it searches on the ID field. If defined, the `admin.useAsTitle` field is used. Or, you can explicitly define which fields to search based on the needs of your application.
+In the List View, there is a "search" box that allows you to quickly find a document through a simple text search. By default, it searches on the Id field. If defined, the `admin.useAsTitle` field is used. Or, you can explicitly define which fields to search based on the needs of your application.
 
 To define which fields should be searched, use the `admin.listSearchableFields` property in your Collection Config:
 
@@ -1995,7 +1995,7 @@ localization: {
   locales: ['en', 'es'],
   filterAvailableLocales: async ({ req, locales }) => {
     if (getTenantFromCookie(req.headers, 'text')) {
-      const fullTenant = await req.payload.findByID({
+      const fullTenant = await req.payload.findById({
         id: getTenantFromCookie(req.headers, 'text') as string,
         collection: 'tenants',
         req,
@@ -2695,11 +2695,11 @@ Transactions in SQLite are disabled by default. You need to pass `transactionOpt
 
 </Banner>
 
-The initial request made to Payload will begin a new transaction and attach it to the `req.transactionID`. If you have a `hook` that interacts with the database, you can opt in to using the same transaction by passing the `req` in the arguments. For example:
+The initial request made to Payload will begin a new transaction and attach it to the `req.transactionId`. If you have a `hook` that interacts with the database, you can opt in to using the same transaction by passing the `req` in the arguments. For example:
 
 ```ts
 const afterChange: CollectionAfterChangeHook = async ({ req }) => {
-  // because req.transactionID is assigned from Payload and passed through,
+  // because req.transactionId is assigned from Payload and passed through,
   // my-slug will only persist if the entire request is successful
   await req.payload.create({
     req,
@@ -2713,7 +2713,7 @@ const afterChange: CollectionAfterChangeHook = async ({ req }) => {
 
 ## Async Hooks with Transactions
 
-Since Payload hooks can be async and be written to not await the result, it is possible to have an incorrect success response returned on a request that is rolled back. If you have a hook where you do not `await` the result, then you should **not** pass the `req.transactionID`.
+Since Payload hooks can be async and be written to not await the result, it is possible to have an incorrect success response returned on a request that is rolled back. If you have a hook where you do not `await` the result, then you should **not** pass the `req.transactionId`.
 
 ```ts
 const afterChange: CollectionAfterChangeHook = async ({ req }) => {
@@ -2728,7 +2728,7 @@ const afterChange: CollectionAfterChangeHook = async ({ req }) => {
   })
 
   // Should this call fail, it will not rollback other changes
-  // because the req (and its transactionID) is not passed through
+  // because the req (and its transactionId) is not passed through
   const safelyIgnoredAsync = req.payload.create({
     collection: 'my-slug',
     data: {
@@ -2744,11 +2744,11 @@ When writing your own scripts or custom endpoints, you may wish to have direct c
 
 The following functions can be used for managing transactions:
 
-- `payload.db.beginTransaction` - Starts a new session and returns a transaction ID for use in other Payload Local API calls.
+- `payload.db.beginTransaction` - Starts a new session and returns a transaction Id for use in other Payload Local API calls.
 - `payload.db.commitTransaction` - Takes the identifier for the transaction, finalizes any changes.
 - `payload.db.rollbackTransaction` - Takes the identifier for the transaction, discards any changes.
 
-Payload uses the `req` object to pass the transaction ID through to the database adapter. If you are not using the `req` object, you can make a new object to pass the transaction ID directly to database adapter methods and Local API calls.
+Payload uses the `req` object to pass the transaction Id through to the database adapter. If you are not using the `req` object, you can make a new object to pass the transaction Id directly to database adapter methods and Local API calls.
 Example:
 
 ```ts
@@ -2759,7 +2759,7 @@ const standalonePayloadScript = async () => {
   // initialize Payload
   await payload.init({ config })
 
-  const transactionID = await payload.db.beginTransaction()
+  const transactionId = await payload.db.beginTransaction()
 
   try {
     // Make an update using the Local API
@@ -2771,7 +2771,7 @@ const standalonePayloadScript = async () => {
       where: {
         slug: { equals: 'my-slug' },
       },
-      req: { transactionID },
+      req: { transactionId },
     })
 
     /*
@@ -2780,10 +2780,10 @@ const standalonePayloadScript = async () => {
      */
 
     // Commit the transaction
-    await payload.db.commitTransaction(transactionID)
+    await payload.db.commitTransaction(transactionId)
   } catch (error) {
     // Rollback the transaction
-    await payload.db.rollbackTransaction(transactionID)
+    await payload.db.rollbackTransaction(transactionId)
   }
 }
 
@@ -2943,10 +2943,10 @@ export default buildConfig({
 | `transactionOptions`              | An object with configuration properties used in [transactions](https://www.mongodb.com/docs/manual/core/transactions/) or `false` which will disable the use of transactions.                                                                                                                                |
 | `collation`                       | Enable language-specific string comparison with customizable options. Available on MongoDB 3.4+. Defaults locale to "en". Example: `{ strength: 3 }`. For a full list of collation options and their definitions, see the [MongoDB documentation](https://www.mongodb.com/docs/manual/reference/collation/). |
 | `allowAdditionalKeys`             | By default, Payload strips all additional keys from MongoDB data that don't exist in the Payload schema. If you have some data that you want to include to the result but it doesn't exist in Payload, you can set this to `true`. Be careful as Payload access control _won't_ work for this data.          |
-| `allowIDOnCreate`                 | Set to `true` to use the `id` passed in data on the create API operations without using a custom ID field.                                                                                                                                                                                                   |
+| `allowIdOnCreate`                 | Set to `true` to use the `id` passed in data on the create API operations without using a custom Id field.                                                                                                                                                                                                   |
 | `disableFallbackSort`             | Set to `true` to disable the adapter adding a fallback sort when sorting by non-unique fields, this can affect performance in some cases but it ensures a consistent order of results.                                                                                                                       |
 | `useAlternativeDropDatabase`      | Set to `true` to use an alternative `dropDatabase` implementation that calls `collection.deleteMany({})` on every collection instead of sending a raw `dropDatabase` command. Payload only uses `dropDatabase` for testing purposes. Defaults to `false`.                                                    |
-| `useBigIntForNumberIDs`           | Set to `true` to use `BigInt` for custom ID fields of type `'number'`. Useful for databases that don't support `double` or `int32` IDs. Defaults to `false`.                                                                                                                                                 |
+| `useBigIntForNumberIds`           | Set to `true` to use `BigInt` for custom Id fields of type `'number'`. Useful for databases that don't support `double` or `int32` Ids. Defaults to `false`.                                                                                                                                                 |
 | `useJoinAggregations`             | Set to `false` to disable join aggregations (which use correlated subqueries) and instead populate join fields via multiple `find` queries. Defaults to `true`.                                                                                                                                              |
 | `usePipelineInSortLookup`         | Set to `false` to disable the use of `pipeline` in the `$lookup` aggregation in sorting. Defaults to `true`.                                                                                                                                                                                                 |
 
@@ -3096,7 +3096,7 @@ export default buildConfig({
 | `beforeSchemaInit`               | Drizzle schema hook. Runs before the schema is built. [More Details](#beforeschemainit)                                                                                                                                 |
 | `afterSchemaInit`                | Drizzle schema hook. Runs after the schema is built. [More Details](#afterschemainit)                                                                                                                                   |
 | `generateSchemaOutputFile`       | Override generated schema from `payload generate:db-schema` file path. Defaults to `{CWD}/src/payload-generated.schema.ts`                                                                                              |
-| `allowIDOnCreate`                | Set to `true` to use the `id` passed in data on the create API operations without using a custom ID field.                                                                                                              |
+| `allowIdOnCreate`                | Set to `true` to use the `id` passed in data on the create API operations without using a custom Id field.                                                                                                              |
 | `readReplicas`                   | An array of DB read replicas connection strings, can be used to offload read-heavy traffic.                                                                                                                             |
 | `readReplicasAfterWriteInterval` | How long (ms) after a write to keep routing reads to the primary instead of a replica. Prevents stale reads caused by replication lag. Only relevant when `readReplicas` is set. Default `2000`. Set to `0` to disable. |
 | `blocksAsJSON`                   | Store blocks as a JSON column instead of using the relational structure which can improve performance with a large amount of blocks                                                                                     |
@@ -3381,8 +3381,8 @@ export default buildConfig({
 | `beforeSchemaInit`         | Drizzle schema hook. Runs before the schema is built. [More Details](#beforeschemainit)                                                                                          |
 | `afterSchemaInit`          | Drizzle schema hook. Runs after the schema is built. [More Details](#afterschemainit)                                                                                            |
 | `generateSchemaOutputFile` | Override generated schema from `payload generate:db-schema` file path. Defaults to `{CWD}/src/payload-generated.schema.ts`                                                       |
-| `autoIncrement`            | Pass `true` to enable SQLite [AUTOINCREMENT](https://www.sqlite.org/autoinc.html) for primary keys to ensure the same ID cannot be reused from deleted rows                      |
-| `allowIDOnCreate`          | Set to `true` to use the `id` passed in data on the create API operations without using a custom ID field.                                                                       |
+| `autoIncrement`            | Pass `true` to enable SQLite [AUTOINCREMENT](https://www.sqlite.org/autoinc.html) for primary keys to ensure the same Id cannot be reused from deleted rows                      |
+| `allowIdOnCreate`          | Set to `true` to use the `id` passed in data on the create API operations without using a custom Id field.                                                                       |
 | `blocksAsJSON`             | Store blocks as a JSON column instead of using the relational structure which can improve performance with a large amount of blocks                                              |
 | `busyTimeout`              | Maximum time in milliseconds to wait when the database is locked. Default is `0`.                                                                                                |
 | `wal`                      | Enable Write-Ahead Logging (WAL) mode for improved performance and concurrency. [More Details](#wal-mode)                                                                        |
@@ -3876,7 +3876,7 @@ Virtual paths use dot notation to traverse relationships and nested data:
 
 #### Displaying Relationship Names
 
-Instead of just showing relationship IDs, display the actual names or titles:
+Instead of just showing relationship Ids, display the actual names or titles:
 
 ```ts
 // Original relationship field
@@ -4262,11 +4262,11 @@ export const Orders: CollectionConfig = {
   documentation](../performance/overview).
 </Banner>
 
-## Custom ID Fields
+## Custom Id Fields
 
-All [Collections](../configuration/collections) automatically generate their own ID field. If needed, you can override this behavior by providing an explicit ID field to your config. This field should either be required or have a hook to generate the ID dynamically.
+All [Collections](../configuration/collections) automatically generate their own Id field. If needed, you can override this behavior by providing an explicit Id field to your config. This field should either be required or have a hook to generate the Id dynamically.
 
-To define a custom ID field, add a top-level field with the `name` property set to `id`:
+To define a custom Id field, add a top-level field with the `name` property set to `id`:
 
 ```ts
 import type { CollectionConfig } from 'payload'
@@ -4284,8 +4284,8 @@ export const MyCollection: CollectionConfig = {
 ```
 
 <Banner type="warning">
-  **Reminder:** The Custom ID Fields can only be of type [`Number`](./number) or
-  [`Text`](./text). Custom ID fields with type `text` must not contain `/` or
+  **Reminder:** The Custom Id Fields can only be of type [`Number`](./number) or
+  [`Text`](./text). Custom Id fields with type `text` must not contain `/` or
   `.` characters.
 </Banner>
 
@@ -5312,7 +5312,7 @@ Copied data is written to `localStorage` under the key `_payloadClipboard`. This
 - The clipboard persists across browser tabs (same origin)
 - It is not shared between different Payload origins
 
-When pasting, Payload validates that the copied block type exists in the target field's `blocks` config. If the schemas are incompatible, the paste action will not be available. All block and nested array IDs are automatically regenerated on paste to prevent duplicate key errors.
+When pasting, Payload validates that the copied block type exists in the target field's `blocks` config. If the schemas are incompatible, the paste action will not be available. All block and nested array Ids are automatically regenerated on paste to prevent duplicate key errors.
 
 <Banner type="warning">
   **"Paste Fields" replaces all blocks, even when a single row is on the clipboard.**
@@ -5942,7 +5942,7 @@ The Code Field inherits all of the default admin options from the base [Field Ad
 | Option              | Description                                                                                                                                                                     |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`language`**      | This property can be set to any language listed [here](https://github.com/microsoft/monaco-editor/tree/main/src/basic-languages).                                               |
-| **`editorOptions`** | Options that can be passed to the monaco editor, [view the full list](https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IDiffEditorConstructionOptions.html). |
+| **`editorOptions`** | Options that can be passed to the monaco editor, [view the full list](https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IdiffEditorConstructionOptions.html). |
 
 ## Example
 
@@ -7944,7 +7944,7 @@ The shape of the data to save for a document with the field configured this way 
 
 ```json
 {
-  // ObjectID of the related user
+  // ObjectId of the related user
   "owner": "6031ac9e1289176380734024"
 }
 ```
@@ -8011,7 +8011,7 @@ The `hasMany` tells Payload that there may be more than one collection saved to 
 }
 ```
 
-To save to the `hasMany` relationship field we need to send an array of IDs:
+To save to the `hasMany` relationship field we need to send an array of Ids:
 
 ```json
 {
@@ -8071,7 +8071,7 @@ Collection List admin UI is limited to the `id` value.
 For a polymorphic relationship, the response will always be an array of objects. Each object will contain
 the `relationTo` and `value` properties.
 
-The data can be queried by the related document ID:
+The data can be queried by the related document Id:
 
 `?where[field.value][equals]=6031ac9e1289176380734024`.
 
@@ -8252,12 +8252,12 @@ place.
 Let's take the Posts and Categories example. It makes sense to define which category a post belongs to while editing the
 post.
 
-It would generally not be necessary to have a list of post IDs stored directly on the category as well, for a few
+It would generally not be necessary to have a list of post Ids stored directly on the category as well, for a few
 reasons:
 
 - You want to have a "single source of truth" for relationships, and not worry about keeping two sources in sync with
   one another
-- If you have hundreds, thousands, or even millions of posts, you would not want to store all of those post IDs on a
+- If you have hundreds, thousands, or even millions of posts, you would not want to store all of those post Ids on a
   given category
 - Etc.
 
@@ -8339,7 +8339,7 @@ You can control the user experience of the join field using the `admin` config p
 When a document is returned that for a Join field is populated with related documents. The structure returned is an
 object with:
 
-- `docs` an array of related documents or only IDs if the depth is reached
+- `docs` an array of related documents or only Ids if the depth is reached
 - `hasNextPage` a boolean indicating if there are additional documents
 - `totalDocs` a total number of documents, exists only if `count: true` is passed to the join query
 
@@ -8367,7 +8367,7 @@ object with:
 When a document is returned that for a polymorphic Join field (with `collection` as an array) is populated with related documents. The structure returned is an
 object with:
 
-- `docs` an array of `relationTo` - the collection slug of the document and `value` - the document itself or the ID if the depth is reached
+- `docs` an array of `relationTo` - the collection slug of the document and `value` - the document itself or the Id if the depth is reached
 - `hasNextPage` a boolean indicating if there are additional documents
 - `totalDocs` a total number of documents, exists only if `count: true` is passed to the join query
 
@@ -8496,7 +8496,7 @@ Consistent with Payload's goal of making you learn as little of Payload as possi
 Instead, you can invest your time and effort into learning the underlying open-source tools that will allow you to apply your learnings elsewhere as well.
 
 <PayloadMedia
-  mediaID="69444ac1cca4069327f4fad2"
+  mediaId="69444ac1cca4069327f4fad2"
   caption="Admin Panel screenshot of a Rich Text field"
 />
 
@@ -9864,7 +9864,7 @@ The following options are available:
 | Function     | Allows/Denies Access                                                 |
 | ------------ | -------------------------------------------------------------------- |
 | **`create`** | Used in the `create` operation. [More details](#create).             |
-| **`read`**   | Used in the `find` and `findByID` operations. [More details](#read). |
+| **`read`**   | Used in the `find` and `findById` operations. [More details](#read). |
 | **`update`** | Used in the `update` operation. [More details](#update).             |
 | **`delete`** | Used in the `delete` operation. [More details](#delete).             |
 
@@ -9963,7 +9963,7 @@ The following arguments are provided to the `read` function:
 | Option    | Description                                                                                                                   |
 | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | **`req`** | The [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) object containing the currently authenticated `user`. |
-| **`id`**  | `id` of document requested, if within `findByID`.                                                                             |
+| **`id`**  | `id` of document requested, if within `findById`.                                                                             |
 
 ### Update
 
@@ -10862,7 +10862,7 @@ The following arguments are provided to the `afterChange` hook:
 
 ### beforeRead
 
-Runs before `find` and `findByID` operations are transformed for output by `afterRead`. This hook fires before hidden fields are removed and before localized fields are flattened into the requested locale. Using this Hook will provide you with all locales and all hidden fields via the `doc` argument.
+Runs before `find` and `findById` operations are transformed for output by `afterRead`. This hook fires before hidden fields are removed and before localized fields are flattened into the requested locale. Using this Hook will provide you with all locales and all hidden fields via the `doc` argument.
 
 ```ts
 import type { CollectionBeforeReadHook } from 'payload'
@@ -10929,7 +10929,7 @@ The following arguments are provided to the `beforeDelete` hook:
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`collection`** | The [Collection](../configuration/collections) in which this Hook is running against.                                                                 |
 | **`context`**    | Custom context passed between hooks. [More details](./context).                                                                                       |
-| **`id`**         | The ID of the Document being deleted.                                                                                                                 |
+| **`id`**         | The Id of the Document being deleted.                                                                                                                 |
 | **`req`**        | The [Web Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) object. This is mocked for [Local API](../local-api/overview) operations. |
 
 ### afterDelete
@@ -10953,7 +10953,7 @@ The following arguments are provided to the `afterDelete` hook:
 | **`collection`** | The [Collection](../configuration/collections) in which this Hook is running against.                                                                 |
 | **`context`**    | Custom context passed between hooks. [More details](./context).                                                                                       |
 | **`doc`**        | The resulting Document after changes are applied.                                                                                                     |
-| **`id`**         | The ID of the Document that was deleted.                                                                                                              |
+| **`id`**         | The Id of the Document that was deleted.                                                                                                              |
 | **`req`**        | The [Web Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) object. This is mocked for [Local API](../local-api/overview) operations. |
 
 ### afterOperation
@@ -11631,7 +11631,7 @@ const membershipStatusField: Field = {
         if (value !== previousValue) {
           // Log or perform an action when the membership status changes
           console.log(
-            `User ID ${req.user.id} changed their membership status from ${previousValue} to ${value}.`,
+            `User Id ${req.user.id} changed their membership status from ${previousValue} to ${value}.`,
           )
           // Here, you can implement actions that could track conversions from one tier to another
         }
@@ -11820,7 +11820,7 @@ const Customer: CollectionConfig = {
     beforeChange: [
       async ({ context, data }) => {
         // assign the customerData to context for use later
-        context.customerData = await fetchCustomerData(data.customerID)
+        context.customerData = await fetchCustomerData(data.customerId)
         return {
           ...data,
           // some data we use here
@@ -11845,7 +11845,7 @@ const Customer: CollectionConfig = {
 
 ### Preventing Infinite Loops
 
-Let's say you have an `afterChange` hook, and you want to do a calculation inside the hook (as the document ID needed for the calculation is available in the `afterChange` hook, but not in the `beforeChange` hook). Once that's done, you want to update the document with the result of the calculation.
+Let's say you have an `afterChange` hook, and you want to do a calculation inside the hook (as the document Id needed for the calculation is available in the `afterChange` hook, but not in the `beforeChange` hook). Once that's done, you want to update the document with the result of the calculation.
 
 Bad example:
 
@@ -11862,7 +11862,7 @@ const Customer: CollectionConfig = {
           collection: 'customers',
           id: doc.id,
           data: {
-            ...(await fetchCustomerData(data.customerID)),
+            ...(await fetchCustomerData(data.customerId)),
           },
         })
       },
@@ -11894,7 +11894,7 @@ const MyCollection: CollectionConfig = {
           collection: contextHooksSlug,
           id: doc.id,
           data: {
-            ...(await fetchCustomerData(data.customerID)),
+            ...(await fetchCustomerData(data.customerId)),
           },
           context: {
             // set a flag to prevent from running again
@@ -12006,7 +12006,7 @@ You can specify more options within the Local API vs. REST or GraphQL due to the
 | `showHiddenFields`   | Opt-in to receiving hidden fields. By default, they are hidden from returned documents in accordance to your config.                                                                                                                                                                                                                                                  |
 | `pagination`         | Set to false to return all documents and avoid querying for document counts.                                                                                                                                                                                                                                                                                          |
 | `context`            | [Context](../hooks/context), which will then be passed to `context` and `req.context`, which can be read by hooks. Useful if you want to pass additional information to the hooks which shouldn't be necessarily part of the document, for example a `triggerBeforeChange` option which can be read by the BeforeChange hook to determine if it should run or not. |
-| `disableErrors`      | When set to `true`, errors will not be thrown. Instead, the `findByID` operation will return `null`, and the `find` operation will return an empty documents array.                                                                                                                                                                                                   |
+| `disableErrors`      | When set to `true`, errors will not be thrown. Instead, the `findById` operation will return `null`, and the `find` operation will return an empty documents array.                                                                                                                                                                                                   |
 | `disableTransaction` | When set to `true`, a [database transactions](../database/transactions) will not be initialized.                                                                                                                                                                                                                                                                      |
 
 _There are more options available on an operation by operation basis outlined below._
@@ -12065,7 +12065,7 @@ const post = await payload.create({
   file: uploadedFile,
 
   // If you want to create a document that is a duplicate of another document
-  duplicateFromID: 'document-id-to-duplicate',
+  duplicateFromId: 'document-id-to-duplicate',
 })
 ```
 
@@ -12095,11 +12095,11 @@ const result = await payload.find({
   here](../queries/pagination).
 </Banner>
 
-### Find by ID#collection-find-by-id
+### Find by Id#collection-find-by-id
 
 ```js
 // Result will be a Post document.
-const result = await payload.findByID({
+const result = await payload.findById({
   collection: 'posts', // required
   id: '507f1f77bcf86cd799439011', // required
   depth: 2,
@@ -12148,7 +12148,7 @@ const result = await payload.findDistinct({
 })
 ```
 
-### Update by ID#collection-update-by-id
+### Update by Id#collection-update-by-id
 
 ```js
 // Result will be the updated Post document.
@@ -12616,7 +12616,7 @@ export const PostForm: React.FC = () => {
 
 The key points from the previous example also apply here.
 
-To update a document instead of creating one, you would use `payload.update()` with the relevant data and **passing the document ID.**
+To update a document instead of creating one, you would use `payload.update()` with the relevant data and **passing the document Id.**
 
 Here's how the server function would look:
 
@@ -13160,12 +13160,12 @@ The \`find\` endpoint supports the following additional query parameters:
   },
   },
   {
-  operation: "Find By ID",
+  operation: "Find By Id",
   method: "GET",
   path: "/api/{collection-slug}/{id}",
-  description: "Find a specific document by ID",
+  description: "Find a specific document by Id",
   example: {
-  slug: "findByID",
+  slug: "findById",
   req: true,
   res: {
   id: "644a5c24cc1383022535fc7c",
@@ -13249,17 +13249,17 @@ The \`find\` endpoint supports the following additional query parameters:
   },
   },
   {
-  operation: "Update By ID",
+  operation: "Update By Id",
   method: "PATCH",
   path: "/api/{collection-slug}/{id}",
-  description: "Update a document by ID",
+  description: "Update a document by Id",
   example: {
-  slug: "updateDocumentByID",
+  slug: "updateDocumentById",
   req: {
   credentials: true,
   headers: true,
   body: {
-  title: "I have been updated by ID!",
+  title: "I have been updated by Id!",
   categories: "example-uuid",
   tags: {
   relationTo: "location",
@@ -13271,7 +13271,7 @@ The \`find\` endpoint supports the following additional query parameters:
   message: "Updated successfully.",
   doc: {
   id: "644a5c24cc1383022535fc7c",
-  title: "I have been updated by ID!",
+  title: "I have been updated by Id!",
   content: "REST API examples",
   categories: {
   id: "example-uuid",
@@ -13321,12 +13321,12 @@ The \`find\` endpoint supports the following additional query parameters:
   },
   },
   {
-  operation: "Delete by ID",
+  operation: "Delete by Id",
   method: "DELETE",
   path: "/api/{collection-slug}/{id}",
-  description: "Delete an existing document by ID",
+  description: "Delete an existing document by Id",
   example: {
-  slug: "deleteByID",
+  slug: "deleteById",
   req: {
   credentials: true,
   headers: true,
@@ -13873,7 +13873,7 @@ When using `X-Payload-HTTP-Method-Override`, it expects the body to be a query s
 
 ```ts
 const res = await fetch(`${api}/${collectionSlug}/${id}`, {
-  // Only the findByID endpoint supports HTTP method overrides with JSON data
+  // Only the findById endpoint supports HTTP method overrides with JSON data
   method: 'POST',
   credentials: 'include',
   headers: {
@@ -13939,8 +13939,8 @@ const posts = await sdk.find({
   where: { _status: { equals: 'published' } },
 })
 
-// Find by ID operation
-const posts = await sdk.findByID({
+// Find by Id operation
+const posts = await sdk.findById({
   id,
   collection: 'posts',
   draft: true,
@@ -13972,7 +13972,7 @@ const result = await sdk.count({
   where: { id: { equals: post.id } },
 })
 
-// Update (by ID) operation
+// Update (by Id) operation
 const result = await sdk.update({
   collection: 'posts',
   id: post.id,
@@ -13992,7 +13992,7 @@ const result = await sdk.update({
   data: { text: 'updated-text-bulk' },
 })
 
-// Delete (by ID) operation
+// Delete (by Id) operation
 const result = await sdk.delete({ id: post.id, collection: 'posts' })
 
 // Delete (bulk) operation
@@ -14050,8 +14050,8 @@ const result = await sdk.findVersions({
   where: { parent: { equals: post.id } },
 })
 
-// Find Version by ID operation
-const result = await sdk.findVersionByID({
+// Find Version by Id operation
+const result = await sdk.findVersionById({
   collection: 'posts',
   id: version.id,
 })
@@ -14067,8 +14067,8 @@ const result = await sdk.findGlobalVersions({
   slug: 'global',
 })
 
-// Find Global Version by ID operation
-const result = await sdk.findGlobalVersionByID({
+// Find Global Version by Id operation
+const result = await sdk.findGlobalVersionById({
   id: version.id,
   slug: 'global',
 })
@@ -14217,7 +14217,7 @@ export const PublicUser: CollectionConfig = {
 
 | Query Name         | Operation           |
 | ------------------ | ------------------- |
-| `PublicUser`       | `findByID`          |
+| `PublicUser`       | `findById`          |
 | `PublicUsers`      | `find`              |
 | `countPublicUsers` | `count`             |
 | `mePublicUser`     | `me` auth operation |
@@ -14846,14 +14846,14 @@ To learn more, see the [Indexes documentation](../database/indexes).
 
 Set the [Depth](./depth) to only the level that you need to avoid populating unnecessary related documents.
 
-Relationships will only populate down to the specified depth, and any relationships beyond that depth will only return the ID of the related document.
+Relationships will only populate down to the specified depth, and any relationships beyond that depth will only return the Id of the related document.
 
 ```ts
 const posts = await payload.find({
   collection: 'posts',
   where: { ... },
   // highlight-start
-  depth: 0, // Only return the IDs of related documents
+  depth: 0, // Only return the Ids of related documents
   // highlight-end
 })
 ```
@@ -15051,7 +15051,7 @@ query {
 Source: https://payloadcms.com/docs/queries/depth
 
 
-Documents in Payload can have relationships to other Documents. This is true for both [Collections](../configuration/collections) as well as [Globals](../configuration/globals). When you query a Document, you can specify the depth at which to populate any of its related Documents either as full objects, or only their IDs.
+Documents in Payload can have relationships to other Documents. This is true for both [Collections](../configuration/collections) as well as [Globals](../configuration/globals). When you query a Document, you can specify the depth at which to populate any of its related Documents either as full objects, or only their Ids.
 
 Since Documents can be infinitely nested or recursively related, it's important to be able to control how deep your API populates. Depth can impact the performance of your queries by affecting the load on the database and the size of the response.
 
@@ -15225,7 +15225,7 @@ const getPosts = async (payload: Payload) => {
 The `id` field is always included in the result, regardless of your `select` query. If you pass an empty `select` object, only the `id` will be returned:
 
 ```ts
-const post = await payload.findByID({
+const post = await payload.findById({
   collection: 'posts',
   id: '1',
   select: {},
@@ -16307,7 +16307,7 @@ import { importMap } from './dashboard/importMap.js'
 ```
 
 <Banner type="info">
-  Your IDE may auto-update this import when you move the folder, but it may not.
+  Your IdE may auto-update this import when you move the folder, but it may not.
   To catch any stale references to the old path, run a build or type-check
   (`pnpm build` or `pnpm tsc --noEmit`) and fix any import errors until it
   passes.
@@ -17539,7 +17539,7 @@ The `useDocumentInfo` hook provides information about the current document being
 | **`hasPublishedDoc`**              | Whether the document has a published version.                                                                                                    |
 | **`hasPublishPermission`**         | Whether the current user has permission to publish the document.                                                                                 |
 | **`hasSavePermission`**            | Whether the current user has permission to save the document.                                                                                    |
-| **`id`**                           | If the doc is a collection, its ID will be returned.                                                                                             |
+| **`id`**                           | If the doc is a collection, its Id will be returned.                                                                                             |
 | **`incrementVersionCount`**        | Method to increment the version count of the document.                                                                                           |
 | **`initialData`**                  | The initial data of the document.                                                                                                                |
 | **`isEditing`**                    | Whether the document is being edited (as opposed to created).                                                                                    |
@@ -17912,7 +17912,7 @@ This hook returns an array with two elements:
 import { usePayloadAPI } from '@payloadcms/ui'
 
 const MyComponent: React.FC = () => {
-  // Fetch data from a collection item using its ID
+  // Fetch data from a collection item using its Id
   const [{ data, isError, isLoading }, { setParams }] = usePayloadAPI(
     '/api/posts/123',
     {
@@ -18046,9 +18046,9 @@ Payload automatically creates an internally used `payload-preferences` Collectio
 
 | Key               | Value                                                             |
 | ----------------- | ----------------------------------------------------------------- |
-| `id`              | A unique ID for each preference stored.                           |
+| `id`              | A unique Id for each preference stored.                           |
 | `key`             | A unique `key` that corresponds to the preference.                |
-| `user.value`      | The ID of the `user` that is storing its preference.              |
+| `user.value`      | The Id of the `user` that is storing its preference.              |
 | `user.relationTo` | The `slug` of the Collection that the `user` is logged in as.     |
 | `value`           | The value of the preference. Can be any data shape that you need. |
 | `createdAt`       | A timestamp of when the preference was created.                   |
@@ -18633,7 +18633,7 @@ async function MyServerComponent({
 }: {
   payload: Payload
 }) {
-  const page = await payload.findByID({
+  const page = await payload.findById({
     collection: 'pages',
     id: '123',
   })
@@ -18844,7 +18844,7 @@ All Server Components automatically receive the `locale` object as a prop by def
 import React from 'react'
 
 export default async function MyServerComponent({ payload, locale }) {
-  const localizedPage = await payload.findByID({
+  const localizedPage = await payload.findById({
     collection: 'pages',
     id: '123',
     locale,
@@ -22148,7 +22148,7 @@ const result = await payload.verifyEmail({
 })
 ```
 
-**Note:** the token you need to pass to the `verifyEmail` function is unique to verification and is not the same as the token that you can retrieve from the `forgotPassword` operation. It can be found on the user document, as a hidden `_verificationToken` field. If you'd like to retrieve this token, you can use the Local API's `find` or `findByID` methods, setting `showHiddenFields: true`.
+**Note:** the token you need to pass to the `verifyEmail` function is unique to verification and is not the same as the token that you can retrieve from the `forgotPassword` operation. It can be found on the user document, as a hidden `_verificationToken` field. If you'd like to retrieve this token, you can use the Local API's `find` or `findById` methods, setting `showHiddenFields: true`.
 
 **Note:** if you do not have a `config.serverURL` set, Payload will attempt to create one for you if the user was created via REST or GraphQL by looking at the incoming `req`. But this is not supported if you are creating the user via the Local API's `payload.create()` method. If this applies to you, and you do not have a `serverURL` set, you may want to override your `verify.generateEmailHTML` function to provide a full URL to link the user to a proper verification page.
 
@@ -23961,7 +23961,7 @@ const lexicalJSON = convertHTMLToLexical({
 
 **Required data attributes:**
 
-- `data-lexical-upload-id`: The ID of the uploaded document
+- `data-lexical-upload-id`: The Id of the uploaded document
 - `data-lexical-upload-relation-to`: The collection slug (e.g., 'media')
 
 ### Approach 2: Parse and Upload Images Before Conversion
@@ -24039,7 +24039,7 @@ const lexicalJSON = await convertHTMLWithImageUpload(
 
 ### Approach 3: Construct Upload Nodes with buildEditorState
 
-If you already have upload IDs and want to build the Lexical JSON structure, use the `buildEditorState` helper for a type-safe, simplified approach. This helper requires less boilerplate and eliminates the need to manually construct the root node.
+If you already have upload Ids and want to build the Lexical JSON structure, use the `buildEditorState` helper for a type-safe, simplified approach. This helper requires less boilerplate and eliminates the need to manually construct the root node.
 
 ```ts
 import { buildEditorState } from '@payloadcms/richtext-lexical'
@@ -24054,9 +24054,9 @@ const lexicalJSON = buildEditorState({
       format: '',
       version: 3,
       relationTo: 'media',
-      value: 'your-upload-id-here', // ID of the uploaded document
+      value: 'your-upload-id-here', // Id of the uploaded document
       fields: {}, // Any additional fields configured for the upload feature
-      id: uuid(), // Unique ID for this node instance (not the upload document ID)
+      id: uuid(), // Unique Id for this node instance (not the upload document Id)
     },
   ],
 })
@@ -24076,19 +24076,19 @@ await payload.create({
 **Images disappear during conversion:**
 
 - Ensure images have both `data-lexical-upload-id` and `data-lexical-upload-relation-to` attributes
-- Verify the upload ID exists in your upload collection
+- Verify the upload Id exists in your upload collection
 - Check that the `relationTo` value matches your upload collection slug
 
 **"Cannot read property 'id' of undefined" errors:**
 
-- The upload document may not exist - verify the ID is correct
+- The upload document may not exist - verify the Id is correct
 - Ensure the upload collection is properly configured
 - Check that the referenced upload hasn't been deleted
 
 **Images work in the admin UI but not in conversion:**
 
 - The admin UI handles pending uploads differently than server-side conversion
-- Server-side conversion requires existing upload IDs, not pending uploads
+- Server-side conversion requires existing upload Ids, not pending uploads
 - Always upload images before converting HTML
 
 <Banner type="success">
@@ -24216,7 +24216,7 @@ The `UploadFeature` includes a built-in transformer that recognizes a special pl
 ![media:6507f7b9a4d3c2e1f0ab1234]()
 ```
 
-Where `media` is your upload collection slug and the second part is the document ID. When `convertMarkdownToLexical` processes this, it creates a proper Upload node with the correct `relationTo` and `value`.
+Where `media` is your upload collection slug and the second part is the document Id. When `convertMarkdownToLexical` processes this, it creates a proper Upload node with the correct `relationTo` and `value`.
 
 When converting **from** Lexical to Markdown, Upload nodes are serialized back into this same placeholder format (unless the document is populated, in which case the URL and alt text are used directly as a standard markdown image).
 
@@ -24224,7 +24224,7 @@ When converting **from** Lexical to Markdown, Upload nodes are serialized back i
 
 If you're migrating content that contains standard `![alt] (url)` image references, the recommended approach is:
 
-1. Upload your images to the Media collection first to get their document IDs
+1. Upload your images to the Media collection first to get their document Ids
 2. Pre-process your Markdown to replace `![alt] (url)` with `![media:<id>]()`
 3. Then run `convertMarkdownToLexical`
 
@@ -25066,7 +25066,7 @@ The `BlocksFeature` allows you to embed Payload's [Blocks Field](../fields/block
 
 ## Basic Setup
 
-<PayloadMedia mediaID="694343f20b5443302f1ac8ea" />
+<PayloadMedia mediaId="694343f20b5443302f1ac8ea" />
 
 To add blocks to your Lexical editor, include the `BlocksFeature` in your editor configuration:
 
@@ -25122,7 +25122,7 @@ Blocks use the same configuration schema as Blocks within Payload's [Blocks Fiel
 
 ## Blocks vs Inline Blocks
 
-<PayloadMedia mediaID="694363f344068e126d9341cb" />
+<PayloadMedia mediaId="694363f344068e126d9341cb" />
 
 The `BlocksFeature` supports two types of blocks:
 
@@ -25202,7 +25202,7 @@ You can customize how blocks appear in the editor by providing custom React comp
 
 ### Block Components
 
-<PayloadMedia mediaID="69448a6ecaf2c46e92a857c2" />
+<PayloadMedia mediaId="69448a6ecaf2c46e92a857c2" />
 
 For regular blocks, use the `admin.components.Block` property to provide a custom component:
 
@@ -25259,7 +25259,7 @@ The `BlockCollapsible` component automatically renders an edit button that opens
 
 You can also choose to render something completely different in your custom block component:
 
-<PayloadMedia mediaID="69448bc4caf2c46e92a857db" />
+<PayloadMedia mediaId="69448bc4caf2c46e92a857db" />
 
 ```tsx
 'use client'
@@ -25306,7 +25306,7 @@ export const BlockComponent: React.FC<LexicalBlockClientProps> = () => {
 
 For inline blocks, similar composable primitives are available:
 
-<PayloadMedia mediaID="69448c6c4c5a3ac5b9be6bd1" />
+<PayloadMedia mediaId="69448c6c4c5a3ac5b9be6bd1" />
 
 ```tsx
 'use client'
@@ -25337,7 +25337,7 @@ export const MyInlineBlockComponent: React.FC<
 
 Or, you can choose to render something completely different in your custom inline block component, for example a badge with a username:
 
-<PayloadMedia mediaID="69448fb34c5a3ac5b9be6bf3" />
+<PayloadMedia mediaId="69448fb34c5a3ac5b9be6bf3" />
 
 ```tsx
 'use client'
@@ -25382,7 +25382,7 @@ You can also customize the label shown in the block header using `admin.componen
 
 **Block Label:**
 
-<PayloadMedia mediaID="6944875ba6d8eab67a52bddb" />
+<PayloadMedia mediaId="6944875ba6d8eab67a52bddb" />
 
 ```tsx
 'use client'
@@ -25403,7 +25403,7 @@ export const MyBlockLabel: React.FC<LexicalBlockLabelClientProps> = () => {
 
 **Inline Block Label:**
 
-<PayloadMedia mediaID="69448867caf2c46e92a85788" />
+<PayloadMedia mediaId="69448867caf2c46e92a85788" />
 
 ```tsx
 'use client'
@@ -25475,7 +25475,7 @@ Each converter allows you to define custom renderers for your block types, givin
 
 ## Code Block
 
-<PayloadMedia mediaID="69448939caf2c46e92a857a9" />
+<PayloadMedia mediaId="69448939caf2c46e92a857a9" />
 
 Payload provides a pre-built `CodeBlock` that you can use directly in your projects. It includes syntax highlighting, language selection, and optional TypeScript type definitions support:
 
@@ -27924,7 +27924,7 @@ import config from '../payload.config'
 export default async function Page() {
   const payload = await getPayload({ config })
 
-  const page = await payload.findByID({
+  const page = await payload.findById({
     collection: 'pages',
     id: '123',
     draft: true,
@@ -28122,7 +28122,7 @@ And return the following values:
 <Banner type="info">
   It is important that the `depth` argument matches exactly with the depth of
   your initial page request. The depth property is used to populated
-  relationships and uploads beyond their IDs. See [Depth](../queries/depth) for
+  relationships and uploads beyond their Ids. See [Depth](../queries/depth) for
   more information.
 </Banner>
 
@@ -28461,8 +28461,8 @@ Each document in this new `versions` collection will store a set of meta propert
 
 ```json
 {
-  "_id": "61cf752c19cdf1b1af7b61f1", // a unique ID of this version
-  "parent": "61ce1354091d5b3ffc20ea6e", // the ID of the parent document
+  "_id": "61cf752c19cdf1b1af7b61f1", // a unique Id of this version
+  "parent": "61ce1354091d5b3ffc20ea6e", // the Id of the parent document
   "autosave": false, // used to denote if this version was created via autosave
   "version": {
     // your document's data goes here
@@ -28477,21 +28477,21 @@ Global versions are stored the same as the collection version shown above, excep
 
 ## Version operations
 
-Versions expose new operations for both collections and globals. They allow you to find and query versions, find a single version by ID, and publish (or restore) a version by ID. Both Collections and Globals support the same new operations. They are used primarily by the admin UI, but if you are writing custom logic in your app and would like to utilize them, they're available for you to use as well via REST, GraphQL, and Local APIs.
+Versions expose new operations for both collections and globals. They allow you to find and query versions, find a single version by Id, and publish (or restore) a version by Id. Both Collections and Globals support the same new operations. They are used primarily by the admin UI, but if you are writing custom logic in your app and would like to utilize them, they're available for you to use as well via REST, GraphQL, and Local APIs.
 
 **Collection REST endpoints:**
 
 | Method | Path                                 | Description                       |
 | ------ | ------------------------------------ | --------------------------------- |
 | `GET`  | `/api/{collectionSlug}/versions`     | Find and query paginated versions |
-| `GET`  | `/api/{collectionSlug}/versions/:id` | Find a specific version by ID     |
-| `POST` | `/api/{collectionSlug}/versions/:id` | Restore a version by ID           |
+| `GET`  | `/api/{collectionSlug}/versions/:id` | Find a specific version by Id     |
+| `POST` | `/api/{collectionSlug}/versions/:id` | Restore a version by Id           |
 
 **Collection GraphQL queries:**
 
 | Query Name                               | Operation         |
 | ---------------------------------------- | ----------------- |
-| **`version{collection.label.singular}`** | `findVersionByID` |
+| **`version{collection.label.singular}`** | `findVersionById` |
 | **`versions{collection.label.plural}`**  | `findVersions`    |
 
 **And mutation:**
@@ -28522,11 +28522,11 @@ const result = await payload.findVersions({
 })
 ```
 
-### Find by ID
+### Find by Id
 
 ```js
 // Result will be a Post document.
-const result = await payload.findVersionByID({
+const result = await payload.findVersionById({
   collection: 'posts', // required
   id: '507f1f77bcf86cd799439013', // required
   depth: 2,
@@ -28557,14 +28557,14 @@ const result = await payload.restoreVersion({
 | Method | Path                                     | Description                       |
 | ------ | ---------------------------------------- | --------------------------------- |
 | `GET`  | `/api/globals/{globalSlug}/versions`     | Find and query paginated versions |
-| `GET`  | `/api/globals/{globalSlug}/versions/:id` | Find a specific version by ID     |
-| `POST` | `/api/globals/{globalSlug}/versions/:id` | Restore a version by ID           |
+| `GET`  | `/api/globals/{globalSlug}/versions/:id` | Find a specific version by Id     |
+| `POST` | `/api/globals/{globalSlug}/versions/:id` | Restore a version by Id           |
 
 **Global GraphQL queries:**
 
 | Query Name                   | Operation         |
 | ---------------------------- | ----------------- |
-| **`version{global.label}`**  | `findVersionByID` |
+| **`version{global.label}`**  | `findVersionById` |
 | **`versions{global.label}`** | `findVersions`    |
 
 **Global GraphQL mutation:**
@@ -28595,11 +28595,11 @@ const result = await payload.findGlobalVersions({
 })
 ```
 
-### Find by ID
+### Find by Id
 
 ```js
 // Result will be a Post document.
-const result = await payload.findGlobalVersionByID({
+const result = await payload.findGlobalVersionById({
   slug: 'header', // required
   id: '507f1f77bcf86cd799439013', // required
   depth: 2,
@@ -28687,7 +28687,7 @@ Within the Admin UI, if drafts are enabled, a document can be shown with one of 
 
 #### Using the `draft` parameter
 
-When drafts are enabled, the `create`, `update`, `find`, and `findByID` operations for REST, GraphQL, and Local APIs expose a `draft` parameter. For write operations, it controls validation and where data is written. For read operations, it determines whether to return draft versions.
+When drafts are enabled, the `create`, `update`, `find`, and `findById` operations for REST, GraphQL, and Local APIs expose a `draft` parameter. For write operations, it controls validation and where data is written. For read operations, it determines whether to return draft versions.
 
 ```ts
 // REST API
@@ -28767,7 +28767,7 @@ Setting `_status: "draft"` will not bypass required field validation. You need t
 
 #### Reading drafts vs. published documents
 
-In addition to the `draft` argument within `create` and `update` operations, a `draft` argument is also exposed for `find` and `findByID` operations.
+In addition to the `draft` argument within `create` and `update` operations, a `draft` argument is also exposed for `find` and `findById` operations.
 
 When `draft` is set to `true` while reading a document, **Payload will return the most recent version from the versions table**, regardless of whether it's a draft or published document.
 
@@ -28779,7 +28779,7 @@ When `draft` is set to `true` while reading a document, **Payload will return th
 
 At this point, your published document remains unchanged in the main collection, and you have two newer draft versions in the `_[collectionSlug]_versions` table.
 
-When you fetch the document with a standard `find` or `findByID` operation, the published document from the main collection is returned and draft versions are ignored.
+When you fetch the document with a standard `find` or `findById` operation, the published document from the main collection is returned and draft versions are ignored.
 
 However, if you pass `draft: true` to the read operation, Payload will return the most recent version from the versions table. In the scenario above with two draft versions, you'll get the latest (second) draft.
 
@@ -30576,7 +30576,7 @@ export default buildConfig({
     defaultFromAddress: 'info@payloadcms.com',
     defaultFromName: 'Payload',
     transportOptions: nodemailerSendgrid({
-      apiKey: process.env.SENDGRID_API_KEY,
+      apiKey: process.env.SENDGRId_API_KEY,
     }),
   }),
 })
@@ -30656,7 +30656,7 @@ await payload.sendEmail({
 })
 ```
 
-Anything supported by Nodemailer’s attachments—streams, Buffers, URLs, content IDs for inline images (cid), etc.—will work here.
+Anything supported by Nodemailer’s attachments—streams, Buffers, URLs, content Ids for inline images (cid), etc.—will work here.
 
 ### Resend adapter
 
@@ -30705,7 +30705,7 @@ If you store files in a Payload collection with `upload: true`, you can attach t
 **Example: Attaching a file from a Media collection**
 
 ```ts
-const mediaDoc = await payload.findByID({
+const mediaDoc = await payload.findById({
   collection: 'media',
   id: 'your-file-id',
 })
@@ -30745,7 +30745,7 @@ await payload.sendEmail({
 ### With Resend adapter:
 
 ```ts
-const mediaDoc = await payload.findByID({
+const mediaDoc = await payload.findById({
   collection: 'media',
   id: 'your-file-id',
 })
@@ -31405,7 +31405,7 @@ export default buildConfig({
         // These are the properties that the function should output
         outputSchema: [
           {
-            name: 'postID',
+            name: 'postId',
             type: 'text',
             required: true,
           },
@@ -31422,7 +31422,7 @@ export default buildConfig({
           })
           return {
             output: {
-              postID: newPost.id,
+              postId: newPost.id,
             },
           }
         },
@@ -31602,7 +31602,7 @@ Calling third-party services without blocking your API:
     },
   ],
   handler: async ({ input, req }) => {
-    const doc = await req.payload.findByID({
+    const doc = await req.payload.findById({
       collection: 'documents',
       id: input.documentId,
     })
@@ -31644,7 +31644,7 @@ Sometimes you want to fail a task based on business logic:
     },
   ],
   handler: async ({ input, req }) => {
-    const order = await req.payload.findByID({
+    const order = await req.payload.findById({
       collection: 'orders',
       id: input.orderId,
     })
@@ -31672,7 +31672,7 @@ Tasks fail by throwing errors. When a task encounters any type of failure—whet
 
 ```ts
 handler: async ({ input, req }) => {
-  const order = await req.payload.findByID({
+  const order = await req.payload.findById({
     collection: 'orders',
     id: input.orderId,
   })
@@ -31720,7 +31720,7 @@ const job = await payload.jobs.queue({
 await payload.jobs.run()
 
 // Check the job status
-const completedJob = await payload.findByID({
+const completedJob = await payload.findById({
   collection: 'payload-jobs',
   id: job.id,
 })
@@ -31814,7 +31814,7 @@ export const createPostHandler: TaskHandler<'createPost'> = async ({
   })
   return {
     output: {
-      postID: newPost.id,
+      postId: newPost.id,
     },
   }
 }
@@ -32013,7 +32013,7 @@ export default buildConfig({
 
           // This workflow first runs a task called `createPost`.
 
-          // You need to define a unique ID for this task invocation
+          // You need to define a unique Id for this task invocation
           // that will always be the same if this workflow fails
           // and is re-executed in the future. Here, we hard-code it to '1'
           const output = await tasks.createPost('1', {
@@ -32026,7 +32026,7 @@ export default buildConfig({
           // called `updatePost`
           await tasks.updatePost('2', {
             input: {
-              post: job.taskStatus.createPost['1'].output.postID, // or output.postID
+              post: job.taskStatus.createPost['1'].output.postId, // or output.postId
               title: job.input.title + '2',
             },
           })
@@ -32143,7 +32143,7 @@ Tasks can pass data to subsequent tasks through their outputs:
 
 ```ts
 handler: async ({ job, tasks }) => {
-  // Task 1: Create a document and return its ID
+  // Task 1: Create a document and return its Id
   await tasks.createDocument('create-doc', {
     input: { title: 'My Document' },
   })
@@ -32190,7 +32190,7 @@ job.taskStatus = {
 
 ### Workflow best practices
 
-#### Use descriptive task IDs
+#### Use descriptive task Ids
 
 ```ts
 // Hard to debug
@@ -32222,7 +32222,7 @@ await tasks.sendEmail('send-email', { input }) // Can retry independently
 await tasks.addToMailingList('add-to-list', { input })
 ```
 
-#### Pass IDs, not entire objects
+#### Pass Ids, not entire objects
 
 ```ts
 // Passing large objects
@@ -32234,13 +32234,13 @@ await tasks.processUser('process', {
   },
 })
 
-// Pass just the ID
+// Pass just the Id
 await tasks.processUser('process', {
   input: {
     userId: '123',
   },
 })
-// Task fetches what it needs: await req.payload.findByID(...)
+// Task fetches what it needs: await req.payload.findById(...)
 ```
 
 #### Set appropriate retry counts
@@ -32311,7 +32311,7 @@ export default buildConfig({
             task: async ({ req }) => {
               // This runs exclusively - no other job for the same
               // documentId can run at the same time
-              const doc = await req.payload.findByID({
+              const doc = await req.payload.findById({
                 collection: 'posts',
                 id: job.input.documentId,
               })
@@ -32447,7 +32447,7 @@ concurrency: {
 
 #### Important Considerations
 
-- **Key uniqueness:** The concurrency key should uniquely identify the resource being operated on. Include all relevant identifiers (collection slug, document ID, locale, etc.).
+- **Key uniqueness:** The concurrency key should uniquely identify the resource being operated on. Include all relevant identifiers (collection slug, document Id, locale, etc.).
 
 - **Global by default:** By default, concurrency is global across all queues. A job with key `sync:doc1` in the `default` queue will block a job with the same key in the `emails` queue. Include the queue name in your key if you want queue-specific concurrency.
 
@@ -32642,7 +32642,7 @@ const job = await payload.jobs.queue({
 })
 
 // Later, check the job status
-const updatedJob = await payload.findByID({
+const updatedJob = await payload.findById({
   collection: 'payload-jobs',
   id: job.id,
 })
@@ -32737,10 +32737,10 @@ await payload.jobs.queue({
 
 Payload allows you to cancel jobs that are either queued or currently running. When cancelling a running job, the current task will finish executing, but no subsequent tasks will run. This happens because the job checks its cancellation status between tasks.
 
-To cancel a specific job, use the `payload.jobs.cancelByID` method with the job's ID:
+To cancel a specific job, use the `payload.jobs.cancelById` method with the job's Id:
 
 ```ts
-await payload.jobs.cancelByID({
+await payload.jobs.cancelById({
   id: createdJob.id,
 })
 ```
@@ -33031,8 +33031,8 @@ await payload.jobs.run({
 **Run a single job:**
 
 ```ts
-const results = await payload.jobs.runByID({
-  id: myJobID,
+const results = await payload.jobs.runById({
+  id: myJobId,
 })
 ```
 
@@ -33234,7 +33234,7 @@ Here's a quick guide to help you choose:
 - **Production (Dedicated Server):** Use Bin script with `--cron` flag
 - **Production (Serverless):** Use Endpoint + Vercel Cron
 - **Development:** Use Bin script or Local API
-- **Testing:** Use Local API with `payload.jobs.runByID()`
+- **Testing:** Use Local API with `payload.jobs.runById()`
 
 ## Troubleshooting
 
@@ -33398,7 +33398,7 @@ Look for jobs with:
 Check the job logs in the `payload-jobs` collection:
 
 ```ts
-const job = await payload.findByID({
+const job = await payload.findById({
   collection: 'payload-jobs',
   id: jobId,
 })
@@ -34235,13 +34235,13 @@ Soft deletes are fully supported across all Payload APIs: **Local**, **REST**, a
 The following operations respect and support the `trash` functionality:
 
 - `find`
-- `findByID`
+- `findById`
 - `update`
-- `updateByID`
+- `updateById`
 - `delete`
-- `deleteByID`
+- `deleteById`
 - `findVersions`
-- `findVersionByID`
+- `findVersionById`
 
 ### Understanding `trash` Behavior
 
@@ -34594,10 +34594,10 @@ USE_HTTPS=true
 
 This will ensure that the WebSocket connection uses the correct protocol (`wss://` instead of `ws://`) when HTTPS is enabled.
 
-Alternatively if more of your URL is dynamic, you can set the full URL for the WebSocket connection using the `PAYLOAD_HMR_URL_OVERRIDE` environment variable:
+Alternatively if more of your URL is dynamic, you can set the full URL for the WebSocket connection using the `PAYLOAD_HMR_URL_OVERRIdE` environment variable:
 
 ```
-PAYLOAD_HMR_URL_OVERRIDE=wss://localhost:3000/_next/webpack-hmr
+PAYLOAD_HMR_URL_OVERRIdE=wss://localhost:3000/_next/webpack-hmr
 ```
 
 ## Database password encoding issues
@@ -34920,7 +34920,7 @@ Source: https://payloadcms.com/docs/typescript/ts-plugin
   issues](https://github.com/payloadcms/payload/issues) you encounter.
 </Banner>
 
-Payload ships an optional TypeScript Language Service Plugin (`@payloadcms/typescript-plugin`) that enhances your IDE experience when working with [Custom Components](../custom-components/overview). It understands Payload's `PayloadComponent` import path conventions and provides:
+Payload ships an optional TypeScript Language Service Plugin (`@payloadcms/typescript-plugin`) that enhances your IdE experience when working with [Custom Components](../custom-components/overview). It understands Payload's `PayloadComponent` import path conventions and provides:
 
 - **Path validation** — red squigglies when a component path doesn't resolve to a real file
 - **Export validation** — errors when the named export doesn't exist in the target module, with "Did you mean?" suggestions
@@ -34963,7 +34963,7 @@ For teams, add the following to `.vscode/settings.json` so everyone is prompted 
 After selecting the workspace version, restart the TypeScript server (`Cmd+Shift+P` → "TypeScript: Restart TS Server").
 
 <Banner type="info">
-  TypeScript Language Service Plugins only run inside your IDE. They do not
+  TypeScript Language Service Plugins only run inside your IdE. They do not
   affect `tsc` compilation or your build output.
 </Banner>
 
@@ -36171,7 +36171,7 @@ Each of the `priceConditions` are executed by the `getPaymentTotal` utility that
 
 ### Upload
 
-Add this field to your form to collect file uploads. Files are stored in a specified upload-enabled collection, and the file ID is stored as the submission value. This field is disabled by default and must be explicitly enabled.
+Add this field to your form to collect file uploads. Files are stored in a specified upload-enabled collection, and the file Id is stored as the submission value. This field is disabled by default and must be explicitly enabled.
 
 | Property           | Type      | Description                                                                                  |
 | ------------------ | --------- | -------------------------------------------------------------------------------------------- |
@@ -36200,7 +36200,7 @@ formBuilderPlugin({
 
 #### Frontend Implementation
 
-The simplest way to handle upload fields is to submit files directly with the form as `multipart/form-data`. The form builder will automatically upload files to the appropriate collection and store the file IDs in the submission.
+The simplest way to handle upload fields is to submit files directly with the form as `multipart/form-data`. The form builder will automatically upload files to the appropriate collection and store the file Ids in the submission.
 
 ```ts
 async function submitFormWithFiles(
@@ -36224,7 +36224,7 @@ async function submitFormWithFiles(
     }
   }
 
-  // Add the form ID and non-file submission data as JSON
+  // Add the form Id and non-file submission data as JSON
   formData.append(
     '_payload',
     JSON.stringify({
@@ -36246,11 +36246,11 @@ The server will:
 
 1. Validate MIME types and file sizes against the field configuration
 2. Upload files to the specified upload collection
-3. Store the created file IDs in the submission data
+3. Store the created file Ids in the submission data
 
 #### Alternative: Pre-upload Files
 
-If you prefer more control over the upload process (e.g., for progress tracking or resumable uploads), you can upload files separately and submit their IDs:
+If you prefer more control over the upload process (e.g., for progress tracking or resumable uploads), you can upload files separately and submit their Ids:
 
 ```ts
 // 1. Upload file to the upload collection
@@ -36266,7 +36266,7 @@ async function uploadFile(file: File, collectionSlug: string) {
   return response.json() // { doc: { id, filename, ... } }
 }
 
-// 2. Submit form with file ID
+// 2. Submit form with file Id
 async function submitFormWithFileIds(
   formId: string,
   fields: FormField[],
@@ -36968,9 +36968,9 @@ const pages: CollectionConfig = {
             // Reconstruct the relationship from the split columns created by toCSV
             const id = data[`${columnName}_id`]
             if (id) {
-              return id // Return just the ID for the relationship
+              return id // Return just the Id for the relationship
             }
-            return undefined // Skip if no ID provided
+            return undefined // Skip if no Id provided
           },
         },
       },
@@ -37030,7 +37030,7 @@ The following parameters are used by the export function to handle requests:
 | `limit`          | number   | The max number of documents to export. Leave empty to export all matching documents.                              |
 | `page`           | number   | The page of documents to start from (used with limit for pagination).                                             |
 | `sort`           | string   | The field to use for ordering documents (e.g., `createdAt`, `-title` for descending).                             |
-| `depth`          | number   | How deeply to populate relationships. Default: `1`. Set to `0` to export IDs only.                                |
+| `depth`          | number   | How deeply to populate relationships. Default: `1`. Set to `0` to export Ids only.                                |
 | `locale`         | string   | The locale code to query documents or `all` for multi-locale export.                                              |
 | `drafts`         | boolean  | When `true`, includes draft versions for collections with drafts enabled.                                         |
 | `fields`         | string[] | Which collection fields to include in the export. Defaults to all fields.                                         |
@@ -37074,8 +37074,8 @@ payload.create({
 
 | Mode   | Description                                                                                             |
 | ------ | ------------------------------------------------------------------------------------------------------- |
-| create | Only creates new documents. Documents with existing IDs will fail.                                      |
-| update | Only updates existing documents. Requires `id` column in CSV. Documents without matching IDs will fail. |
+| create | Only creates new documents. Documents with existing Ids will fail.                                      |
+| update | Only updates existing documents. Requires `id` column in CSV. Documents without matching Ids will fail. |
 | upsert | Creates new documents or updates existing ones based on `id`. Most flexible option.                     |
 
 ### Import Results
@@ -38020,7 +38020,7 @@ type MultiTenantPluginConfig<ConfigTypes = unknown> = {
   basePath?: string
   /**
    * After a tenant is deleted, the plugin will attempt to clean up related documents
-   * - removing documents with the tenant ID
+   * - removing documents with the tenant Id
    * - removing the tenant from users
    *
    * @default true
@@ -38356,9 +38356,9 @@ type ContextType = {
    */
   options: OptionObject[]
   /**
-   * The currently selected tenant ID
+   * The currently selected tenant Id
    */
-  selectedTenantID: number | string | undefined
+  selectedTenantId: number | string | undefined
   /**
    * Prevents a refresh when the tenant is changed
    *
@@ -38367,9 +38367,9 @@ type ContextType = {
    */
   setPreventRefreshOnChange: React.Dispatch<React.SetStateAction<boolean>>
   /**
-   * Sets the selected tenant ID
+   * Sets the selected tenant Id
    *
-   * @param args.id - The ID of the tenant to select
+   * @param args.id - The Id of the tenant to select
    * @param args.refresh - Whether to refresh the page
    * after changing the tenant
    */
@@ -38487,7 +38487,7 @@ level and stores the following fields.
 
 | Field   | Description                                                                                                                                                                                                                                                                                  |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `label` | The label of the breadcrumb. This field is automatically set to either the `collection.admin.useAsTitle` (if defined) or is set to the `ID` of the document. You can also dynamically define the `label` by passing a function to the options property of [`generateLabel`](#generatelabel). |
+| `label` | The label of the breadcrumb. This field is automatically set to either the `collection.admin.useAsTitle` (if defined) or is set to the `Id` of the document. You can also dynamically define the `label` by passing a function to the options property of [`generateLabel`](#generatelabel). |
 | `url`   | The URL of the breadcrumb. By default, this field is undefined. You can manually define this field by passing a property called function to the plugin options property of [`generateURL`](#generateurl).                                                                                    |
 
 ### Options
@@ -38499,7 +38499,7 @@ An array of collections slugs to enable nested docs.
 #### `generateLabel`
 
 Each `breadcrumb` has a required `label` field. By default, its value will be set to the collection's `admin.useAsTitle`
-or fallback to the `ID` of the document.
+or fallback to the `Id` of the document.
 
 You can also pass a function to dynamically set the `label` of your breadcrumb.
 
@@ -38927,7 +38927,7 @@ This function is called once per locale per document and should return `true` to
 
       // Example: Multi-tenant locale filtering
       // Only index locales that are enabled for this document's tenant
-      const tenant = await req.payload.findByID({
+      const tenant = await req.payload.findById({
         collection: 'tenants',
         id: doc.tenant.id,
       })
@@ -39285,7 +39285,7 @@ All "generate" functions receive the following arguments:
 | **`globalSlug`**           | The slug of the global.                                               |
 | **`hasPublishPermission`** | Whether the user has permission to publish the document.              |
 | **`hasSavePermission`**    | Whether the user has permission to save the document.                 |
-| **`id`**                   | The ID of the document.                                               |
+| **`id`**                   | The Id of the document.                                               |
 | **`initialData`**          | The initial data of the document.                                     |
 | **`initialState`**         | The initial state of the document.                                    |
 | **`locale`**               | The locale of the document.                                           |
@@ -39760,7 +39760,7 @@ will need to be hard-coded.
 
 Using `sync` will do the following:
 
-- Adds and maintains a `stripeID` read-only field on each collection, this is a field generated _by Stripe_ and used as a cross-reference
+- Adds and maintains a `stripeId` read-only field on each collection, this is a field generated _by Stripe_ and used as a cross-reference
 - Adds a direct link to the resource on Stripe.com
 - Adds and maintains an `skipSync` read-only flag on each collection to prevent infinite syncs when hooks trigger webhooks
 - Adds the following hooks to each collection:
@@ -40066,7 +40066,7 @@ adminOrPublishedStatus: ({ req: { user } }) => {
 
 ### isCustomer
 
-Checks if the user is a customer (authenticated but not an admin). This is used internally to auto-assign the customer ID when creating addresses - customers can only create addresses for themselves, while admins can create addresses for any customer.
+Checks if the user is a customer (authenticated but not an admin). This is used internally to auto-assign the customer Id when creating addresses - customers can only create addresses for themselves, while admins can create addresses for any customer.
 
 Example:
 
@@ -40205,9 +40205,9 @@ carts: {
 }
 ```
 
-Carts are created when a customer adds their first item to the cart. The cart is then updated as they add or remove items. The cart is linked to a _Customer_ via the `customer` field. If the user is authenticated, this will be set to their user ID. If the user is not authenticated, this will be `null`.
+Carts are created when a customer adds their first item to the cart. The cart is then updated as they add or remove items. The cart is linked to a _Customer_ via the `customer` field. If the user is authenticated, this will be set to their user Id. If the user is not authenticated, this will be `null`.
 
-When guest carts are enabled and the user is not authenticated, the cart ID is stored in local storage and used to fetch the cart on subsequent requests. Access control by default works so that if the user is not authenticated then they can only access carts that have no customer linked to them.
+When guest carts are enabled and the user is not authenticated, the cart Id is stored in local storage and used to fetch the cart on subsequent requests. Access control by default works so that if the user is not authenticated then they can only access carts that have no customer linked to them.
 
 ### Cart API Endpoints
 
@@ -40218,12 +40218,12 @@ The plugin automatically adds custom endpoints to the carts collection for manag
 Adds an item to the cart. If an item matching the same criteria already exists (determined by the `cartItemMatcher`), its quantity is incremented instead of creating a duplicate entry.
 
 ```
-POST /api/carts/:cartID/add-item
+POST /api/carts/:cartId/add-item
 ```
 
 | Body Parameter | Type                                    | Description                                          |
 | -------------- | --------------------------------------- | ---------------------------------------------------- |
-| `item`         | `{ product: string, variant?: string }` | The item to add (product ID and optional variant ID) |
+| `item`         | `{ product: string, variant?: string }` | The item to add (product Id and optional variant Id) |
 | `quantity`     | `number`                                | Quantity to add. Defaults to `1`.                    |
 | `secret`       | `string`                                | Secret for guest cart access (if applicable).        |
 
@@ -40232,12 +40232,12 @@ POST /api/carts/:cartID/add-item
 Updates an item in the cart. Supports both setting a specific quantity and incrementing/decrementing using MongoDB-style operators.
 
 ```
-POST /api/carts/:cartID/update-item
+POST /api/carts/:cartId/update-item
 ```
 
 | Body Parameter | Type                         | Description                                                                           |
 | -------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
-| `itemID`       | `string`                     | The cart item row ID to update.                                                       |
+| `itemId`       | `string`                     | The cart item row Id to update.                                                       |
 | `quantity`     | `number \| { $inc: number }` | Set to a number or use `{ $inc: n }` to increment (positive) or decrement (negative). |
 | `removeOnZero` | `boolean`                    | Remove item if quantity reaches 0. Defaults to `true`.                                |
 | `secret`       | `string`                     | Secret for guest cart access (if applicable).                                         |
@@ -40248,33 +40248,33 @@ Examples:
 // Set quantity to 5
 fetch('/api/carts/123/update-item', {
   method: 'POST',
-  body: JSON.stringify({ itemID: 'item-456', quantity: 5 }),
+  body: JSON.stringify({ itemId: 'item-456', quantity: 5 }),
 })
 
 // Increment by 1
 fetch('/api/carts/123/update-item', {
   method: 'POST',
-  body: JSON.stringify({ itemID: 'item-456', quantity: { $inc: 1 } }),
+  body: JSON.stringify({ itemId: 'item-456', quantity: { $inc: 1 } }),
 })
 
 // Decrement by 1
 fetch('/api/carts/123/update-item', {
   method: 'POST',
-  body: JSON.stringify({ itemID: 'item-456', quantity: { $inc: -1 } }),
+  body: JSON.stringify({ itemId: 'item-456', quantity: { $inc: -1 } }),
 })
 ```
 
 #### Remove Item
 
-Removes an item from the cart by its row ID.
+Removes an item from the cart by its row Id.
 
 ```
-POST /api/carts/:cartID/remove-item
+POST /api/carts/:cartId/remove-item
 ```
 
 | Body Parameter | Type     | Description                                   |
 | -------------- | -------- | --------------------------------------------- |
-| `itemID`       | `string` | The cart item row ID to remove.               |
+| `itemId`       | `string` | The cart item row Id to remove.               |
 | `secret`       | `string` | Secret for guest cart access (if applicable). |
 
 #### Clear Cart
@@ -40282,7 +40282,7 @@ POST /api/carts/:cartID/remove-item
 Removes all items from the cart.
 
 ```
-POST /api/carts/:cartID/clear
+POST /api/carts/:cartId/clear
 ```
 
 | Body Parameter | Type     | Description                                   |
@@ -40293,7 +40293,7 @@ POST /api/carts/:cartID/clear
 
 The `cartItemMatcher` option allows you to customize how the plugin determines if two cart items should be considered the same. When items match, their quantities are combined instead of creating separate entries. When items don't match, they appear as separate line items in the cart.
 
-By default, items are matched by `product` and `variant` IDs only. This means if a customer adds the same product twice, the quantity is incremented rather than creating a duplicate entry.
+By default, items are matched by `product` and `variant` Ids only. This means if a customer adds the same product twice, the quantity is incremented rather than creating a duplicate entry.
 
 However, many ecommerce scenarios require distinguishing the same product based on additional criteria:
 
@@ -40324,22 +40324,22 @@ const fulfillmentCartItemMatcher: CartItemMatcher = ({
   existingItem,
   newItem,
 }) => {
-  const existingProductID =
+  const existingProductId =
     typeof existingItem.product === 'object'
       ? existingItem.product.id
       : existingItem.product
 
-  const existingVariantID =
+  const existingVariantId =
     existingItem.variant && typeof existingItem.variant === 'object'
       ? existingItem.variant.id
       : existingItem.variant
 
-  const productMatches = existingProductID === newItem.product
+  const productMatches = existingProductId === newItem.product
 
   // Variant matching: both must have same variant or both must have no variant
   const variantMatches = newItem.variant
-    ? existingVariantID === newItem.variant
-    : !existingVariantID
+    ? existingVariantId === newItem.variant
+    : !existingVariantId
 
   // Fulfillment matching: items with different fulfillment options are separate
   const existingFulfillment = existingItem.fulfillment as string | undefined
@@ -40431,7 +40431,7 @@ import {
 const result = await addItem({
   payload,
   cartsSlug: 'carts',
-  cartID: '123',
+  cartId: '123',
   item: { product: 'prod-1', variant: 'var-1' },
   quantity: 2,
 })
@@ -40440,8 +40440,8 @@ const result = await addItem({
 const result = await updateItem({
   payload,
   cartsSlug: 'carts',
-  cartID: '123',
-  itemID: 'item-row-id',
+  cartId: '123',
+  itemId: 'item-row-id',
   quantity: { $inc: 1 }, // or just a number to set directly
 })
 
@@ -40449,15 +40449,15 @@ const result = await updateItem({
 const result = await removeItem({
   payload,
   cartsSlug: 'carts',
-  cartID: '123',
-  itemID: 'item-row-id',
+  cartId: '123',
+  itemId: 'item-row-id',
 })
 
 // Clear cart
 const result = await clearCart({
   payload,
   cartsSlug: 'carts',
-  cartID: '123',
+  cartId: '123',
 })
 ```
 
@@ -40573,7 +40573,7 @@ See the [Stripe adapter](#stripe-adapter) for an example of client side argument
 #### `groupOverrides`
 
 The `groupOverrides` option allows you to customize the fields that are available for a specific payment adapter. It takes a `GroupField` object with a `fields` function that receives the default fields and returns an array of fields.
-These fields are stored in transactions and can be used to collect additional information for the payment method. Stripe, for example, will track the `paymentIntentID`.
+These fields are stored in transactions and can be used to collect additional information for the payment method. Stripe, for example, will track the `paymentIntentId`.
 
 Example for overriding the default fields:
 
@@ -40767,7 +40767,7 @@ export const defaultProductsValidation: ProductsValidation = ({
   if (variant) {
     if (!variant[priceField]) {
       throw new Error(
-        `Variant with ID ${variant.id} does not have a price in ${currency}.`,
+        `Variant with Id ${variant.id} does not have a price in ${currency}.`,
       )
     }
 
@@ -40776,7 +40776,7 @@ export const defaultProductsValidation: ProductsValidation = ({
       (variant.inventory && variant.inventory < quantity)
     ) {
       throw new Error(
-        `Variant with ID ${variant.id} is out of stock or does not have enough inventory.`,
+        `Variant with Id ${variant.id} is out of stock or does not have enough inventory.`,
       )
     }
   } else if (product) {
@@ -40952,7 +40952,7 @@ The `EcommerceProvider` component is used to wrap your application and provide t
 | `debug`            | `boolean`          | Enable or disable debug mode. This will send more information to the console.                               |
 | `enableVariants`   | `boolean`          | Enable or disable product variants support. Defaults to `true`.                                             |
 | `paymentMethods`   | `PaymentMethod[]`  | An array of payment method adapters for the client side. See [Payment adapters](./plugin#payment-adapters). |
-| `syncLocalStorage` | `boolean` `object` | Whether to sync the cart ID to local storage. Defaults to `true`. Takes an object for configuration         |
+| `syncLocalStorage` | `boolean` `object` | Whether to sync the cart Id to local storage. Defaults to `true`. Takes an object for configuration         |
 
 Example usage:
 
@@ -41011,13 +41011,13 @@ Example usage:
 
 #### syncLocalStorage
 
-The `syncLocalStorage` prop is used to enable or disable syncing the cart ID to local storage. This allows the cart to persist across page reloads and sessions. It defaults to `true`.
+The `syncLocalStorage` prop is used to enable or disable syncing the cart Id to local storage. This allows the cart to persist across page reloads and sessions. It defaults to `true`.
 
 You can also provide an object with the following properties for more configuration:
 
 | Property | Type     | Description                                                                  |
 | -------- | -------- | ---------------------------------------------------------------------------- |
-| `key`    | `string` | The key to use for storing the cart ID in local storage. Defaults to `cart`. |
+| `key`    | `string` | The key to use for storing the cart Id in local storage. Defaults to `cart`. |
 
 ### useCart
 
@@ -41028,10 +41028,10 @@ The `useCart` hook is used to manage the cart state and actions. It provides met
 | `addItem`       | `(item: CartItemInput, quantity?: number) => void` | Method to add an item to the cart, optionally accepts a quantity to add multiple at once. |
 | `cart`          | `Cart` `null`                                      | The current cart state. Null or undefined if it doesn't exist.                            |
 | `clearCart`     | `() => void`                                       | Method to clear the cart.                                                                 |
-| `decrementItem` | `(item: IDType) => void`                           | Method to decrement the quantity of an item. Will remove it entirely if it reaches 0.     |
-| `incrementItem` | `(item: IDType) => void`                           | Method to increment the quantity of an item.                                              |
+| `decrementItem` | `(item: IdType) => void`                           | Method to decrement the quantity of an item. Will remove it entirely if it reaches 0.     |
+| `incrementItem` | `(item: IdType) => void`                           | Method to increment the quantity of an item.                                              |
 | `isLoading`     | `boolean`                                          | Boolean indicating if any async operation is in progress (e.g., adding/removing items).   |
-| `removeItem`    | `(item: IDType) => void`                           | Method to remove an item from the cart.                                                   |
+| `removeItem`    | `(item: IdType) => void`                           | Method to remove an item from the cart.                                                   |
 
 Example usage:
 
@@ -41063,7 +41063,7 @@ The `useAddresses` hook is used to fetch and manage addresses. It provides metho
 | `addresses`     | `Address[]`                                                       | The list of addresses, if any are available for the current user.                           |
 | `createAddress` | `(data: Address) => Promise<Address>`                             | Method to create a new address.                                                             |
 | `isLoading`     | `boolean`                                                         | Boolean indicating if any async operation is in progress (e.g., creating/updating address). |
-| `updateAddress` | `(addressID: IDType, data: Partial<Address>) => Promise<Address>` | Method to update an existing address by ID.                                                 |
+| `updateAddress` | `(addressId: IdType, data: Partial<Address>) => Promise<Address>` | Method to update an existing address by Id.                                                 |
 
 Example usage:
 
@@ -41084,7 +41084,7 @@ The `usePayments` hook is used to manage the checkout process. It provides metho
 
 | Property                | Type                       | Description                                                                                   |
 | ----------------------- | -------------------------- | --------------------------------------------------------------------------------------------- |
-| `confirmOrder`          | `(args) => Promise<Order>` | Method to confirm an order by ID. [More](#confirmOrder)                                       |
+| `confirmOrder`          | `(args) => Promise<Order>` | Method to confirm an order by Id. [More](#confirmOrder)                                       |
 | `initiatePayment`       | `(args) => Promise<void>`  | Method to initiate a payment for an order. [More](#initiatePayment)                           |
 | `isLoading`             | `boolean`                  | Boolean indicating if any async operation is in progress (e.g., initiating/confirming order). |
 | `paymentMethods`        | `PaymentMethod[]`          | The list of available payment methods.                                                        |
@@ -41111,17 +41111,17 @@ const CheckoutComponent = () => {
 
 #### confirmOrder
 
-Use this method to confirm an order by its ID. It requires the payment method ID and will return the order ID.
+Use this method to confirm an order by its Id. It requires the payment method Id and will return the order Id.
 
 ```ts
 try {
   const data = await confirmOrder('stripe', {
     additionalData: {
-      paymentIntentID: paymentIntent.id,
+      paymentIntentId: paymentIntent.id,
       customerEmail,
     },
   })
-  // Return type will contain `orderID`
+  // Return type will contain `orderId`
   // use data to redirect to your order page
 } catch (error) {
   // handle error
@@ -41137,7 +41137,7 @@ If the payment gateway requires additional confirmations offsite then you will n
 
 #### initiatePayment
 
-Use this method to initiate a payment for an order. It requires the cart ID and the payment method ID. Depending on the payment method, additional data may be required. Depending on the payment method used you may need to provide additional data, for example with Stripe:
+Use this method to initiate a payment for an order. It requires the cart Id and the payment method Id. Depending on the payment method, additional data may be required. Depending on the payment method used you may need to provide additional data, for example with Stripe:
 
 ```ts
 try {
@@ -41298,7 +41298,7 @@ const LogoutButton = () => {
 
 Clears all ecommerce session data from state and localStorage. This includes:
 
-- Cart data and cart ID
+- Cart data and cart Id
 - Cart secret (for guest carts)
 - User addresses
 - User state
@@ -41321,8 +41321,8 @@ Merges items from a source cart into a target cart. This is useful when you need
 
 | Parameter      | Type     | Description                                               |
 | -------------- | -------- | --------------------------------------------------------- |
-| `targetCartID` | `string` | The ID of the cart to merge items into                    |
-| `sourceCartID` | `string` | The ID of the cart to merge items from                    |
+| `targetCartId` | `string` | The Id of the cart to merge items into                    |
+| `sourceCartId` | `string` | The Id of the cart to merge items from                    |
 | `sourceSecret` | `string` | The secret for the source cart (required for guest carts) |
 
 When items are merged:
@@ -41413,7 +41413,7 @@ const handleLogout = async () => {
 }
 ```
 
-Both methods clear cart data, cart ID, cart secret, addresses, and user state from memory and localStorage.
+Both methods clear cart data, cart Id, cart secret, addresses, and user state from memory and localStorage.
 
 
 # Payment Adapters
@@ -41605,7 +41605,7 @@ You can make your own payment adapter by implementing the `PaymentAdapter` inter
 | `initiatePayment` | `(args: InitiatePaymentArgs) => Promise<InitiatePaymentResult>` | The function that is called via the `/api/payments/{provider_name}/initiate` endpoint to initiate a payment for an order. [More](#initiatePayment)                                             |
 | `confirmOrder`    | `(args: ConfirmOrderArgs) => Promise<void>`                     | The function that is called via the `/api/payments/{provider_name}/confirm-order` endpoint to confirm an order after a payment has been made. [More](#confirmOrder)                            |
 | `endpoints`       | `Endpoint[]`                                                    | (Optional) An array of endpoints to be bootstrapped to Payload's API in order to support the payment method. All API paths are relative to `/api/payments/{provider_name}`                     |
-| `group`           | `GroupField`                                                    | A group field config to be used in transactions to track the necessary data for the payment processor, eg. PaymentIntentID for Stripe. See [Payment Fields](#payment-fields) for more details. |
+| `group`           | `GroupField`                                                    | A group field config to be used in transactions to track the necessary data for the payment processor, eg. PaymentIntentId for Stripe. See [Payment Fields](#payment-fields) for more details. |
 
 The arguments can be extended but should always include the `PaymentAdapterArgs` type which has the following types:
 
@@ -41694,7 +41694,7 @@ export const initiatePayment: NonNullable<PaymentAdapter>['initiatePayment'] =
       const returnData: InitiatePaymentReturnType = {
         clientSecret: paymentIntent.client_secret || '',
         message: 'Payment initiated successfully',
-        paymentIntentID: paymentIntent.id,
+        paymentIntentId: paymentIntent.id,
       }
 
       return returnData
@@ -41734,8 +41734,8 @@ The return type can also contain any additional data with a minimum of the follo
 | Property        | Type     | Description                                     |
 | --------------- | -------- | ----------------------------------------------- |
 | `message`       | `string` | A success message to be returned to the client. |
-| `orderID`       | `string` | The ID of the created order.                    |
-| `transactionID` | `string` | The ID of the associated transaction.           |
+| `orderId`       | `string` | The Id of the created order.                    |
+| `transactionId` | `string` | The Id of the associated transaction.           |
 
 A heavily simplified example of implementing `confirmOrder` could look like:
 
@@ -41756,17 +41756,17 @@ export const confirmOrder: NonNullable<PaymentAdapter>['confirmOrder'] =
     const payload = req.payload
 
     const customerEmail = data.customerEmail
-    const paymentIntentID = data.paymentIntentID as string
+    const paymentIntentId = data.paymentIntentId as string
 
     const stripe = new Stripe(secretKey)
 
     try {
-      // Find our existing transaction by the payment intent ID
+      // Find our existing transaction by the payment intent Id
       const transactionsResults = await payload.find({
         collection: transactionsSlug,
         where: {
-          'stripe.paymentIntentID': {
-            equals: paymentIntentID,
+          'stripe.paymentIntentId': {
+            equals: paymentIntentId,
           },
         },
       })
@@ -41775,7 +41775,7 @@ export const confirmOrder: NonNullable<PaymentAdapter>['confirmOrder'] =
 
       // Verify the payment intent exists and retrieve it
       const paymentIntent =
-        await stripe.paymentIntents.retrieve(paymentIntentID)
+        await stripe.paymentIntents.retrieve(paymentIntentId)
 
       // Create the order in the database
       const order = await payload.create({
@@ -41787,14 +41787,14 @@ export const confirmOrder: NonNullable<PaymentAdapter>['confirmOrder'] =
 
       // Update the cart to mark it as purchased, this will prevent further updates to the cart
       await payload.update({
-        id: cartID,
+        id: cartId,
         collection: 'carts',
         data: {
           purchasedAt: timestamp,
         },
       })
 
-      // Update the transaction with the order ID and mark as succeeded
+      // Update the transaction with the order Id and mark as succeeded
       await payload.update({
         id: transaction.id,
         collection: transactionsSlug,
@@ -41806,8 +41806,8 @@ export const confirmOrder: NonNullable<PaymentAdapter>['confirmOrder'] =
 
       return {
         message: 'Payment initiated successfully',
-        orderID: order.id,
-        transactionID: transaction.id,
+        orderId: order.id,
+        transactionId: transaction.id,
       }
     } catch (error) {
       payload.logger.error(error, 'Error initiating payment with Stripe')
@@ -41834,14 +41834,14 @@ const groupField: GroupField = {
   },
   fields: [
     {
-      name: 'customerID',
+      name: 'customerId',
       type: 'text',
-      label: 'Stripe Customer ID',
+      label: 'Stripe Customer Id',
     },
     {
-      name: 'paymentIntentID',
+      name: 'paymentIntentId',
       type: 'text',
-      label: 'Stripe PaymentIntent ID',
+      label: 'Stripe PaymentIntent Id',
     },
   ],
 }
@@ -41870,7 +41870,7 @@ Always handle sensitive operations like creating payment intents and confirming 
 
 While we validate the products and prices on the server side when creating a payment intent, you should override the validation function to add any additional checks you may need for your specific use case.
 
-You are safe to pass the ID of a transaction to the frontend however you shouldn't pass any sensitive information or the transaction object itself.
+You are safe to pass the Id of a transaction to the frontend however you shouldn't pass any sensitive information or the transaction object itself.
 
 When passing price information to your payment provider it should always come from the server and it should be verified against the products in your database. Never trust price information coming from the client.
 
@@ -41916,7 +41916,7 @@ The access object can contain the following properties:
 | ----------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isAdmin`         | `Access`      | Access control to check if the user has `admin` permissions.                                                                                                      |
 | `isAuthenticated` | `Access`      | Access control to check if the user is authenticated. Use on the `create` access to allow any customer to create a new address.                                   |
-| `isCustomer`      | `FieldAccess` | Checks if the user is a customer (authenticated but not admin). Used to auto-assign customer ID when creating addresses.                                          |
+| `isCustomer`      | `FieldAccess` | Checks if the user is a customer (authenticated but not admin). Used to auto-assign customer Id when creating addresses.                                          |
 | `isDocumentOwner` | `Access`      | Access control to check if the user owns the document via the `customer` field. Used to limit read, update or delete to only the customers that own this address. |
 
 See the [access control section](./plugin#access) for more details on each of these functions.
@@ -42016,7 +42016,7 @@ The access object can contain the following properties:
 | ---------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isAdmin`              | `Access`      | Access control to check if the user has `admin` permissions. Used to limit create, update and delete access to only admins.                   |
 | `isDocumentOwner`      | `Access`      | Access control to check if the user owns the document via the `customer` field. Used to limit read to only the customers that own this order. |
-| `adminOnlyFieldAccess` | `FieldAccess` | Field level access control to check if the user has `admin` permissions. Limits the transaction ID field to admins only.                      |
+| `adminOnlyFieldAccess` | `FieldAccess` | Field level access control to check if the user has `admin` permissions. Limits the transaction Id field to admins only.                      |
 
 See the [access control section](./plugin#access) for more details on each of these functions.
 

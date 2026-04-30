@@ -29,7 +29,7 @@ export const Media: CollectionConfig<'media'> = {
       type: 'text',
       admin: {
         description:
-          'SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfID).',
+          'SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfId).',
         position: 'sidebar',
         readOnly: true,
       },

@@ -27,7 +27,7 @@ export type ButtonProps = {
     | 'warning'
     | null
   arrowClassName?: string
-  customID?: null | string
+  customId?: null | string
   disabled?: boolean
   el?: 'a' | 'button' | 'div' | 'link'
   /**

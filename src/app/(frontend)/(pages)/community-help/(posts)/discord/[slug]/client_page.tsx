@@ -32,7 +32,7 @@ export type Attachments = {
 
 export type Messages = {
   authorAvatar: string
-  authorID: string
+  authorId: string
   authorName: string
   content: string
   createdAtDate: number | string
@@ -53,8 +53,8 @@ export type ThreadProps = {
     slug: string
   }
   communityHelpType?: 'discord' | 'github'
-  discordID?: string
-  githubID?: string
+  discordId?: string
+  githubId?: string
   id: string
   slug?: string
   title?: string
@@ -66,7 +66,7 @@ export const DiscordThreadPage: React.FC<ThreadProps> = (props) => {
 
   const author = intro.authorName
 
-  const selectedAuthorAvatar = `https://cdn.discordapp.com/avatars/${intro.authorID}/${intro.authorAvatar}.png?size=48`
+  const selectedAuthorAvatar = `https://cdn.discordapp.com/avatars/${intro.authorId}/${intro.authorAvatar}.png?size=48`
   const defaultAuthorAvatar = 'https://cdn.discordapp.com/embed/avatars/0.png'
   const authorAvatarImg = intro.authorAvatar ? selectedAuthorAvatar : defaultAuthorAvatar
 

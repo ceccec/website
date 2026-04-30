@@ -6,16 +6,16 @@ export function emptyMarketingLayoutGlobals(): {
   mainMenu: MainMenu
   topBar: TopBar
 } {
-  const stubID = '00000000-0000-0000-0000-000000000000'
+  const stubId = '00000000-0000-0000-0000-000000000000'
 
   return {
-    footer: { id: stubID, columns: [] },
+    footer: { id: stubId, columns: [] },
     mainMenu: {
-      id: stubID,
+      id: stubId,
       menuCta: { label: '' },
       tabs: [],
     },
-    topBar: { id: stubID, enableTopBar: false },
+    topBar: { id: stubId, enableTopBar: false },
   }
 }
 

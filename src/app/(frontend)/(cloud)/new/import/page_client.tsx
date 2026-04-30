@@ -89,10 +89,10 @@ export const ImportProject: React.FC<{
       }
 
       await createDraftProject({
-        installID: selectedInstall?.id,
+        installId: selectedInstall?.id,
         onSubmit: onDraftProjectCreate,
         repo: foundRepo,
-        teamID: matchedTeam?.id,
+        teamId: matchedTeam?.id,
         user,
       })
     },
@@ -190,10 +190,10 @@ export const ImportProject: React.FC<{
                           onClick={async (repo) => {
                             try {
                               await createDraftProject({
-                                installID: selectedInstall?.id,
+                                installId: selectedInstall?.id,
                                 onSubmit: onDraftProjectCreate,
                                 repo,
-                                teamID: matchedTeam?.id,
+                                teamId: matchedTeam?.id,
                                 user,
                               })
                             } catch (error) {

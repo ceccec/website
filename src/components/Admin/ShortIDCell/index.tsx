@@ -6,9 +6,9 @@ import type { ReactNode } from 'react'
 import { truncateUuidForDisplay } from '@root/utilities/truncateUuidForDisplay'
 
 /**
- * List column: compact ID for scanning; row links / edit routes still use full `rowData.id`.
+ * List column: compact Id for scanning; row links / edit routes still use full `rowData.id`.
  */
-export function ShortIDCell(props: DefaultCellComponentProps<UIFieldClient>): ReactNode {
+export function ShortIdCell(props: DefaultCellComponentProps<UIFieldClient>): ReactNode {
   const raw = props.rowData?.id
   if (raw == null || raw === '') {
     return null

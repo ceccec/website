@@ -32,8 +32,7 @@ function isLikelyMissingGlobalTableError(err: unknown): boolean {
   const blob = parts.join('\n').toLowerCase()
   return (
     blob.includes('no such table') ||
-    blob.includes('does not exist') ||
-    (blob.includes('sql') && blob.includes('public_site_settings'))
+    blob.includes('does not exist')
   )
 }
 

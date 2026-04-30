@@ -14,7 +14,7 @@ import { toast } from 'sonner'
 
 import classes from './index.module.scss'
 
-const generateUUID = () => {
+const generateUUId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
@@ -25,9 +25,9 @@ export const AddDomain: React.FC<{
   project: Project
   team: Team
 }> = ({ environmentSlug, project, team }) => {
-  const [fieldKey, setFieldKey] = React.useState(generateUUID())
+  const [fieldKey, setFieldKey] = React.useState(generateUUId())
 
-  const projectID = project?.id
+  const projectId = project?.id
   const projectDomains = project?.domains
 
   const router = useRouter()
@@ -37,7 +37,7 @@ export const AddDomain: React.FC<{
       const formData = data as Partial<AddDomainFormData>
       // The type `Project.domains[0]` -> does not work because the array is not required - Payload type issue?
       const newDomain: {
-        cloudflareID?: string
+        cloudflareId?: string
         domain: string
         id?: string
       } = {
@@ -53,7 +53,7 @@ export const AddDomain: React.FC<{
       if (!domainExists) {
         try {
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}${
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
               environmentSlug ? `?env=${environmentSlug}` : ''
             }`,
             {
@@ -70,7 +70,7 @@ export const AddDomain: React.FC<{
 
           if (req.status === 200) {
             router.refresh()
-            setFieldKey(generateUUID())
+            setFieldKey(generateUUId())
             toast.success('Domain added successfully.')
           }
 
@@ -79,10 +79,10 @@ export const AddDomain: React.FC<{
           console.error(e) // eslint-disable-line no-console
         }
       } else {
-        setFieldKey(generateUUID())
+        setFieldKey(generateUUId())
       }
     },
-    [projectID, projectDomains],
+    [projectId, projectDomains],
   )
 
   return (

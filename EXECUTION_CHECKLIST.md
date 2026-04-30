@@ -35,7 +35,7 @@
 - Mapped violations to fixes
 
 ### ✅ **Phase 4: Implementation Guide** (Complete)
-- Created **IMPLEMENTATION_GUIDE_FILL_GAPS.md** with:
+- Created **IMPLEMENTATION_GUIdE_FILL_GAPS.md** with:
   - Gap-by-gap fixes using project rules
   - Code examples for each critical issue
   - 7-phase implementation priority
@@ -50,7 +50,7 @@
 | **DRY_REFACTORING_SUMMARY.md** | Track refactoring progress | Reviewing what was completed |
 | **CODEBASE_AUDIT_GAPS_REPORT.md** | Detailed gap analysis | Prioritizing next work |
 | **PROJECT_RULES_SUMMARY.md** | Architecture rules reference | Learning project patterns |
-| **IMPLEMENTATION_GUIDE_FILL_GAPS.md** | Code examples for fixes | Actually implementing fixes |
+| **IMPLEMENTATION_GUIdE_FILL_GAPS.md** | Code examples for fixes | Actually implementing fixes |
 | **EXECUTION_CHECKLIST.md** | This file | Tracking execution progress |
 
 ---
@@ -65,20 +65,20 @@ These are **high-impact, low-risk** changes that unlock better UX:
   - File: `ManageEnvs/index.tsx` line 123
   - Add: `setUpdatedEnv()` callback + parent state sync
   - Impact: Users see immediate feedback
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 1
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 1
 
 - [ ] **Add delete error handling** (GAP 2)  
   - File: Same, line 157
   - Add: Toast error messages + validation
   - Impact: Users know if delete succeeded
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 2
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 2
 
 - [ ] **Centralize Stripe types** (GAP 3)
   - Create: `src/types/stripe.ts`
   - Consolidate: 3 manual type definitions into one
   - Update: `fetchSubscriptions.ts`, `fetchTeam.ts`, `fetchInvoices.ts`
   - Impact: Single source of truth, easier maintenance
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 3
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 3
 
 ### **Near-Term (Next 2-3 Hours)** 🟠
 
@@ -87,18 +87,18 @@ Moderate effort, high value:
 - [ ] **Complete checkout flow** (GAP 4)
   - Add: Stripe customer attachment logic
   - Impact: Users don't lose subscription history
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 4
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 4
 
 - [ ] **Wire toast notifications** (GAP 5)
   - Add: Success/error feedback to all settings forms
   - Impact: Consistent UX across app
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 5
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 5
 
 - [ ] **Add form type safety** (GAP 7)
   - Create: `src/types/forms.ts`
   - Add: Types for EnvironmentVariableFormData, DomainFormData, etc.
-  - Impact: IDE autocomplete, compile-time safety
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 7
+  - Impact: IdE autocomplete, compile-time safety
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 7
 
 ### **Follow-Up (Next 4-6 Hours)** 🟡
 
@@ -108,20 +108,20 @@ Architecture improvements:
   - Refactor: 19 fetchers in `src/app/_data/index.ts`
   - Use: New `createDataLoader()` abstraction
   - Impact: DRY, type-safe, cacheable data loading
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 3 + `dataLoader.ts`
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 3 + `dataLoader.ts`
 
 - [ ] **Consolidate docs routes** (GAP 6)
   - Delete: `src/app/(frontend)/(pages)/docs/v2/...`
   - Delete: `src/app/(frontend)/(pages)/docs/dynamic/...`
   - Keep: Single canonical `src/app/(frontend)/(pages)/docs/[topic]/[doc]/`
   - Impact: Reduced maintenance, clearer code
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → GAP 6
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → GAP 6
 
 - [ ] **Standardize Cloud API types** (Phase 6)
   - Create: `src/types/cloud-api.ts`
   - Consolidate: All GraphQL response types
   - Impact: Consistency, easier testing
-  - Reference: `IMPLEMENTATION_GUIDE_FILL_GAPS.md` → "Consolidate Cloud API types"
+  - Reference: `IMPLEMENTATION_GUIdE_FILL_GAPS.md` → "Consolidate Cloud API types"
 
 ### **Sprint Goals** 📊
 
@@ -221,7 +221,7 @@ After implementation, measure:
 - ✅ **Type safety** — 0 missing type errors
 - ✅ **Centralization** — 1 copy of each type definition
 - ✅ **Performance** — No regression in metrics
-- ✅ **DX** — IDE autocomplete works everywhere
+- ✅ **DX** — IdE autocomplete works everywhere
 
 ---
 
@@ -266,7 +266,7 @@ git push origin feature/fill-gaps
 ## Resources
 
 - **Project Rules:** `PROJECT_RULES_SUMMARY.md`
-- **Implementation Details:** `IMPLEMENTATION_GUIDE_FILL_GAPS.md`
+- **Implementation Details:** `IMPLEMENTATION_GUIdE_FILL_GAPS.md`
 - **Audit Results:** `CODEBASE_AUDIT_GAPS_REPORT.md`
 - **Refactoring Status:** `DRY_REFACTORING_SUMMARY.md`
 - **PayloadCMS Docs:** https://payloadcms.com/docs

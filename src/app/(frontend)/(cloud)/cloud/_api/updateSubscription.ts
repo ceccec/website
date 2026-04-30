@@ -8,7 +8,7 @@ export const updateSubscription = async (
   subscription: Partial<Subscription>,
 ): Promise<Subscription> => {
   const sub = await fetch(
-    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${project?.stripeSubscriptionID}`,
+    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${project?.stripeSubscriptionId}`,
     {
       body: JSON.stringify(subscription),
       credentials: 'include',

@@ -66,7 +66,7 @@ export const TeamPage: React.FC<{
             const projectsRes = await fetchProjectsClient({
               page: searchChanged ? 1 : page,
               search: debouncedSearch,
-              teamIDs: [team.id],
+              teamIds: [team.id],
             })
 
             const end = Date.now()

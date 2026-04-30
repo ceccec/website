@@ -87,7 +87,7 @@ Between containers, **app → MongoDB / MinIO / Mailpit** uses normal **TCP** on
 
 ### `app` service (from [`docker-compose.yml`](docker-compose.yml))
 
-Defaults supply **Mongo**, **MinIO S3**, **Mailpit SMTP**, and public URLs — no **`BLOB_READ_WRITE_TOKEN`** or **`SENDGRID_API_KEY`** required for core functionality.
+Defaults supply **Mongo**, **MinIO S3**, **Mailpit SMTP**, and public URLs — no **`BLOB_READ_WRITE_TOKEN`** or **`SENDGRId_API_KEY`** required for core functionality.
 
 | Variable | Notes |
 |----------|--------|

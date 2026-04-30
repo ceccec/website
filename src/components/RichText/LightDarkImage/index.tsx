@@ -11,29 +11,29 @@ type Props = {
   alt: string
   caption?: string
   srcDark?: string
-  srcDarkID?: number | string
+  srcDarkId?: number | string
   srcLight?: string
-  srcLightID?: number | string
+  srcLightId?: number | string
 }
 
 export const LightDarkImage: (props: Props) => null | React.JSX.Element = ({
   alt,
   caption,
   srcDark,
-  srcDarkID,
+  srcDarkId,
   srcLight,
-  srcLightID,
+  srcLightId,
 }) => {
   const { theme } = useThemePreference()
   const isDark = theme === 'dark'
 
   const directSrc = isDark ? srcDark : srcLight
-  const mediaID = isDark ? srcDarkID : srcLightID
+  const mediaId = isDark ? srcDarkId : srcLightId
 
   const { data: media } = usePopulateDocument<Media>({
-    id: mediaID,
+    id: mediaId,
     collection: 'media',
-    enabled: !directSrc && !!mediaID,
+    enabled: !directSrc && !!mediaId,
   })
 
   const src = directSrc ?? media?.url

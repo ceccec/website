@@ -26,21 +26,21 @@ export function hubspotBodyContext(body: Record<string, unknown>): Record<string
 /** Sidebar fields merged onto forms via `plugin-form-builder` overrides. */
 export const formBuilderExtraFormFields: Field[] = [
   {
-    name: 'hubSpotFormID',
+    name: 'hubSpotFormId',
     type: 'text',
     admin: {
       position: 'sidebar',
     },
-    label: 'HubSpot Form ID',
+    label: 'HubSpot Form Id',
   },
   {
-    name: 'customID',
+    name: 'customId',
     type: 'text',
     admin: {
       description: 'Attached to submission button to track clicks',
       position: 'sidebar',
     },
-    label: 'Custom ID',
+    label: 'Custom Id',
   },
   {
     name: 'requireRecaptcha',
@@ -56,7 +56,7 @@ export const formBuilderRecaptchaSubmissionField: Field = {
   name: 'recaptcha',
   type: 'text',
   validate: async (value, { req, siblingData }) => {
-    const form = await req.payload.findByID({
+    const form = await req.payload.findById({
       id: siblingData?.form,
       collection: 'forms',
     })
@@ -108,8 +108,8 @@ export async function afterFormSubmissionChange({
     return
   }
   const form = formRef
-  const hubSpotFormID = form.hubSpotFormID
-  if (!hubSpotFormID) {
+  const hubSpotFormId = form.hubSpotFormId
+  if (!hubSpotFormId) {
     return
   }
 
@@ -120,8 +120,8 @@ export async function afterFormSubmissionChange({
       : {}
 
   const { submissionData: submissionDataFromDoc } = doc
-  const { hubspotPortalKey: portalID } = await resolveIntegrationSecrets(req.payload)
-  if (!portalID) {
+  const { hubspotPortalKey: portalId } = await resolveIntegrationSecrets(req.payload)
+  if (!portalId) {
     return
   }
 
@@ -137,7 +137,7 @@ export async function afterFormSubmissionChange({
 
   try {
     await fetch(
-      `https://api.hsforms.com/submissions/v3/integration/submit/${portalID}/${hubSpotFormID}`,
+      `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${hubSpotFormId}`,
       {
         body: JSON.stringify(data),
         headers: {
@@ -168,7 +168,7 @@ export async function beforeFormSubmissionChange({
 
   if (partnersTemplateEnabled() && partnerIdField?.value) {
     try {
-      const partner = await req.payload.findByID({
+      const partner = await req.payload.findById({
         id: partnerIdField.value,
         collection: 'partners',
         overrideAccess: true,

@@ -109,7 +109,7 @@ async function resolvePayloadUserIdForCustomer(
   }
   const metaId = customer.metadata?.payload_user_id
   if (metaId) {
-    const byMeta = await payload.findByID({
+    const byMeta = await payload.findById({
       id: metaId,
       collection: 'users',
       depth: 0,
@@ -140,7 +140,7 @@ async function applyUserSubscriptionPatch(
     subscriptionStatus: 'active' | 'canceled' | 'inactive' | 'past_due'
   },
 ): Promise<void> {
-  const current = await payload.findByID({
+  const current = await payload.findById({
     id: userId,
     collection: 'users',
     depth: 0,
@@ -226,7 +226,7 @@ async function handleCheckoutSessionCompleted(
 
   if (metaUserId) {
     const u = await payload
-      .findByID({
+      .findById({
         id: metaUserId,
         collection: 'users',
         depth: 0,

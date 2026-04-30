@@ -45,8 +45,8 @@ type Message = {
 }
 
 type ExistingThread = {
-  discordID: string
-  docID: string
+  discordId: string
+  docId: string
   messageCount: number
 }
 
@@ -181,7 +181,7 @@ function createSanitizedThread(thread: Thread, messages: Message[]) {
     intro: intro
       ? {
           authorAvatar: intro.author.avatar,
-          authorID: intro.author.id,
+          authorId: intro.author.id,
           authorName: intro.author.username,
           content: toHTML(intro.content),
         }
@@ -189,7 +189,7 @@ function createSanitizedThread(thread: Thread, messages: Message[]) {
     messageCount: combinedResponses.length,
     messages: combinedResponses.map(({ attachments, author, content, timestamp }) => ({
       authorAvatar: author.avatar,
-      authorID: author.id,
+      authorId: author.id,
       authorName: author.username,
       content: toHTML(content),
       createdAt: new Date(timestamp),
@@ -261,14 +261,14 @@ async function fetchDiscord() {
     },
   })
 
-  const existingThreadIDs: ExistingThread[] = existingThreadsResult.docs.map((thread) => ({
-    discordID: thread.discordID as string,
-    docID: thread.id,
+  const existingThreadIds: ExistingThread[] = existingThreadsResult.docs.map((thread) => ({
+    discordId: thread.discordId as string,
+    docId: thread.id,
     messageCount: (thread.communityHelpJSON as any)?.messageCount || 0,
   }))
 
   const filteredThreads = allThreads.filter((thread) => {
-    const existingThread = existingThreadIDs.find((existing) => existing.discordID === thread.id)
+    const existingThread = existingThreadIds.find((existing) => existing.discordId === thread.id)
     return (
       !existingThread || (existingThread && existingThread.messageCount !== thread.message_count)
     )
@@ -282,7 +282,7 @@ async function fetchDiscord() {
   const threadsToSync = filteredThreads.slice(0, batchLimit)
 
   console.log(
-    `[fetchDiscord] Found ${existingThreadIDs.length} existing threads in CMS, ${filteredThreads.length} need to be synced${
+    `[fetchDiscord] Found ${existingThreadIds.length} existing threads in CMS, ${filteredThreads.length} need to be synced${
       batchLimit < filteredThreads.length
         ? ` (processing ${batchLimit} this run due to SYNC_BATCH_LIMIT)`
         : ''
@@ -324,14 +324,14 @@ async function fetchDiscord() {
 
   const populateAll = async () => {
     for (const thread of populatedThreads) {
-      const existingThread = existingThreadIDs.find(
-        (existing) => existing.discordID === thread.info.id,
+      const existingThread = existingThreadIds.find(
+        (existing) => existing.discordId === thread.info.id,
       )
       const data = {
         slug: thread.slug,
         communityHelpJSON: thread,
         communityHelpType: 'discord' as const,
-        discordID: thread.info.id,
+        discordId: thread.info.id,
         threadCreatedAt: thread.info.createdAt,
         title: thread.info.name,
       }
@@ -340,7 +340,7 @@ async function fetchDiscord() {
         if (existingThread) {
           // Update existing thread
           await payload.update({
-            id: existingThread.docID,
+            id: existingThread.docId,
             collection: 'community-help',
             data,
             overrideAccess: true,

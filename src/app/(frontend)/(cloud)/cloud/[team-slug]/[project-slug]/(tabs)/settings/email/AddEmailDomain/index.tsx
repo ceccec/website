@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 
 import classes from './index.module.scss'
 
-const generateUUID = () => {
+const generateUUId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
@@ -23,15 +23,15 @@ export const AddEmailDomain: React.FC<{
   environmentSlug: string
   project: Project
 }> = ({ environmentSlug, project }) => {
-  const [fieldKey, setFieldKey] = React.useState(generateUUID())
+  const [fieldKey, setFieldKey] = React.useState(generateUUId())
 
-  const projectID = project?.id
+  const projectId = project?.id
   const projectEmailDomains = project?.customEmailDomains
 
   const saveEmailDomain = React.useCallback<OnSubmit>(
     async ({ data }) => {
       const newEmailDomain: {
-        cloudflareID?: string
+        cloudflareId?: string
         domain: string
         id?: string
       } = {
@@ -45,7 +45,7 @@ export const AddEmailDomain: React.FC<{
       if (!domainExists) {
         try {
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}${
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
               environmentSlug ? `?env=${environmentSlug}` : ''
             }`,
             {
@@ -62,7 +62,7 @@ export const AddEmailDomain: React.FC<{
 
           if (req.status === 200) {
             // reloadProject()
-            setFieldKey(generateUUID())
+            setFieldKey(generateUUId())
             toast.success('Domain added successfully.')
           } else {
             const body = await req.json()
@@ -74,11 +74,11 @@ export const AddEmailDomain: React.FC<{
           console.error(e) // eslint-disable-line no-console
         }
       } else {
-        setFieldKey(generateUUID())
+        setFieldKey(generateUUId())
         toast.error('Domain already exists.')
       }
     },
-    [projectID, projectEmailDomains],
+    [projectId, projectEmailDomains],
   )
 
   return (

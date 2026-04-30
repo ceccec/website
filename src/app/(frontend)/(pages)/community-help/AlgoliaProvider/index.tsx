@@ -7,12 +7,12 @@ import { Configure, InstantSearch } from 'react-instantsearch'
 import { getInitialState } from './getInitialState'
 
 let searchClient: SearchClient
-const appID = process.env.NEXT_PUBLIC_ALGOLIA_CH_ID
+const appId = process.env.NEXT_PUBLIC_ALGOLIA_CH_ID
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY
 const indexName = process.env.NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME
 // @ts-ignore
-if (appID && apiKey) {
-  searchClient = algoliasearch(appID, apiKey)
+if (appId && apiKey) {
+  searchClient = algoliasearch(appId, apiKey)
 }
 export const algoliaPerPage = 20
 

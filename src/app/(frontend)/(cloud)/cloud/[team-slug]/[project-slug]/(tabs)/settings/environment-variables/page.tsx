@@ -57,7 +57,7 @@ export default async ({
           <AddEnvs
             environmentSlug={environmentSlug}
             envs={project?.environmentVariables}
-            projectID={project?.id}
+            projectId={project?.id}
             projectSlug={project?.slug}
           />
         </Accordion>
@@ -68,7 +68,7 @@ export default async ({
           <ManageEnvs
             environmentSlug={environmentSlug}
             envs={project?.environmentVariables}
-            projectID={project?.id}
+            projectId={project?.id}
             projectSlug={project?.slug}
           />
         )}

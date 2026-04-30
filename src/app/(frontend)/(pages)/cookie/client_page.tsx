@@ -155,7 +155,7 @@ export const CookieClientPage: React.FC = () => {
                   </tr>
                   <tr>
                     <td>_hssrc</td>
-                    <td>Performance: to store a unique session ID.</td>
+                    <td>Performance: to store a unique session Id.</td>
                     <td>Session cookie (expires when the user closes the browser)</td>
                     <td>HubSpot</td>
                     <td>

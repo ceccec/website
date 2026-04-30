@@ -37,10 +37,10 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
   const site = useSitePublicConfigOptional()
 
   const {
-    id: formID,
+    id: formId,
     confirmationMessage,
     confirmationType,
-    customID,
+    customId,
     redirect: formRedirect,
     submitButtonLabel,
   } = form
@@ -87,7 +87,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
           const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
           const req = await fetch('/api/form-submissions', {
             body: JSON.stringify({
-              form: formID,
+              form: formId,
               hubspotCookie,
               pageName,
               pageUri,
@@ -150,7 +150,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 
       void submitForm()
     },
-    [router, formID, formRedirect, confirmationType, pathname, site.siteUrl, site.recaptchaSiteKey],
+    [router, formId, formRedirect, confirmationType, pathname, site.siteUrl, site.recaptchaSiteKey],
   )
 
   if (!form?.id) {
@@ -165,7 +165,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
       {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
       {!hasSubmitted && (
         <React.Fragment>
-          <Form formID={String(formID)} initialState={initialState} onSubmit={onSubmit}>
+          <Form formId={String(formId)} initialState={initialState} onSubmit={onSubmit}>
             <div className={classes.formFieldsWrap}>
               {form.fields?.map((field, index) => {
                 const Field: React.FC<any> = fields?.[field.blockType]
@@ -214,7 +214,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               icon={isLoading ? 'loading' : 'arrow'}
               iconRotation={45}
               iconSize={isLoading ? 'large' : 'medium'}
-              id={String(customID ?? formID)}
+              id={String(customId ?? formId)}
               label={isLoading ? 'Submitting...' : submitButtonLabel}
             />
           </Form>

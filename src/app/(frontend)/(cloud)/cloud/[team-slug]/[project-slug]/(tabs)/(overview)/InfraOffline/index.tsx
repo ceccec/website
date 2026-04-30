@@ -111,7 +111,7 @@ export const InfraOffline: React.FC<{
     const newProject = await fetchProjectClient({
       environmentSlug,
       projectSlug: initialProject.slug,
-      teamID: team.id,
+      teamId: team.id,
     })
 
     setProject(newProject)
@@ -138,7 +138,7 @@ export const InfraOffline: React.FC<{
     result: deployments,
   } = useGetProjectDeployments({
     environmentSlug,
-    projectID: project?.id,
+    projectId: project?.id,
   })
 
   const latestDeployment = deployments?.[0]
@@ -313,7 +313,7 @@ export const InfraOffline: React.FC<{
                     <a href="https://discord.com/invite/r6sCXqVk3v" target="_blank">
                       discord.
                     </a>{' '}
-                    We would love to help! Please provide your issue and Project ID from Settings
+                    We would love to help! Please provide your issue and Project Id from Settings
                     -&gt; Billing.
                   </Banner>
                 </React.Fragment>

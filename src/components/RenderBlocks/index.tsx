@@ -18,7 +18,7 @@ export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | Reus
 
 type Props = {
   blocks: BlocksProp[]
-  customID?: null | string
+  customId?: null | string
   disableGrid?: boolean
   disableGutter?: boolean
   disableOuterSpacing?: true
@@ -28,7 +28,7 @@ type Props = {
 }
 
 export const RenderBlocks: React.FC<Props> = (props) => {
-  const { blocks, customID, disableGrid, disableGutter, hero, layout } = props
+  const { blocks, customId, disableGrid, disableGutter, hero, layout } = props
   const heroTheme = hero?.type === 'home' ? 'dark' : hero?.theme
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
   const { theme: themeFromContext } = useThemePreference()
@@ -149,7 +149,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
   if (hasBlocks) {
     return (
       <Fragment>
-        <div id={customID ?? undefined} ref={docRef}>
+        <div id={customId ?? undefined} ref={docRef}>
           {blocks.map((block, index) => {
             const { blockName, blockType } = block
 

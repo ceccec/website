@@ -17,7 +17,7 @@ export const PublicSiteSettings: GlobalConfig = {
   },
   admin: {
     description:
-      'Preferred place for site URLs and public analytics/search IDs after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.',
+      'Preferred place for site URLs and public analytics/search Ids after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.',
     group: 'Site',
   },
   fields: [
@@ -59,19 +59,19 @@ export const PublicSiteSettings: GlobalConfig = {
               name: 'gaMeasurementId',
               type: 'text',
               admin: { description: 'Overrides `NEXT_PUBLIC_GA_MEASUREMENT_ID` when set.' },
-              label: 'Google Analytics measurement ID',
+              label: 'Google Analytics measurement Id',
             },
             {
               name: 'gtmContainerId',
               type: 'text',
               admin: { description: 'Overrides `NEXT_PUBLIC_GTM_MEASUREMENT_ID` when set.' },
-              label: 'Google Tag Manager container ID',
+              label: 'Google Tag Manager container Id',
             },
             {
               name: 'facebookPixelId',
               type: 'text',
               admin: { description: 'Overrides `NEXT_PUBLIC_FACEBOOK_PIXEL_ID` when set.' },
-              label: 'Meta / Facebook Pixel ID',
+              label: 'Meta / Facebook Pixel Id',
             },
           ],
           label: 'Analytics & tags',
@@ -96,7 +96,7 @@ export const PublicSiteSettings: GlobalConfig = {
               name: 'newsletterFormId',
               type: 'text',
               admin: { description: 'Overrides `NEXT_PUBLIC_NEWSLETTER_FORM_ID` when set.' },
-              label: 'Newsletter form ID',
+              label: 'Newsletter form Id',
             },
             {
               name: 'recaptchaSiteKey',
@@ -108,7 +108,7 @@ export const PublicSiteSettings: GlobalConfig = {
               name: 'algoliaApplicationId',
               type: 'text',
               admin: { description: 'Overrides `NEXT_PUBLIC_ALGOLIA_CH_ID` when set.' },
-              label: 'Algolia application ID (community help)',
+              label: 'Algolia application Id (community help)',
             },
             {
               name: 'algoliaCommunityIndexName',

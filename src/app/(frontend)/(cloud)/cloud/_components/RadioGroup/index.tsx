@@ -40,14 +40,14 @@ export const CloudRadioGroup: React.FC<{
             <input
               checked={isSelected}
               className={classes.radioInput}
-              id={`teamID-${index}`}
+              id={`teamId-${index}`}
               onChange={() => {
                 handleChange(option)
               }}
               type="radio"
               value={option.value}
             />
-            <label className={classes.radioCard} htmlFor={`teamID-${index}`}>
+            <label className={classes.radioCard} htmlFor={`teamId-${index}`}>
               <div className={classes.styledRadioInput} />
               <span>{option.label}</span>
             </label>

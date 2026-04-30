@@ -39,7 +39,7 @@ export type CMSLinkType = {
   buttonProps?: ButtonProps
   children?: React.ReactNode
   className?: string
-  customID?: null | string
+  customId?: null | string
   fullWidth?: boolean
   label?: null | string
   mobileFullWidth?: boolean
@@ -94,7 +94,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   buttonProps: buttonPropsFromProps,
   children,
   className,
-  customID,
+  customId,
   fullWidth = false,
   label,
   mobileFullWidth = false,
@@ -114,7 +114,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     return (
       <span
         className={className}
-        id={customID ?? ''}
+        id={customId ?? ''}
         onClick={onClick}
         onKeyDown={(event) => {
           if (onClick && isKeyboardActivation(event)) {
@@ -161,7 +161,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
           href={href}
           {...newTabProps}
           className={className}
-          id={customID ?? ''}
+          id={customId ?? ''}
           onClick={onClick}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
@@ -178,7 +178,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
         href={href}
         {...newTabProps}
         className={className}
-        id={customID ?? ''}
+        id={customId ?? ''}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -206,5 +206,5 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     buttonProps.icon = 'arrow'
   }
 
-  return <Button {...buttonProps} className={className} el="link" id={customID ?? ''} />
+  return <Button {...buttonProps} className={className} el="link" id={customId ?? ''} />
 }

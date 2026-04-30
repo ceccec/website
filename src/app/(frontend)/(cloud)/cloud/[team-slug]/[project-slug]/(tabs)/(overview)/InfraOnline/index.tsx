@@ -34,7 +34,7 @@ export const InfraOnline: React.FC<{
     result: deployments,
   } = useGetProjectDeployments({
     environmentSlug,
-    projectID: project?.id,
+    projectId: project?.id,
   })
 
   const latestDeployment = deployments?.[0]

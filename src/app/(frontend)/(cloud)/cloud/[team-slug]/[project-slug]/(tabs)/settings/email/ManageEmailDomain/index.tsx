@@ -42,20 +42,20 @@ export const ManageEmailDomain: React.FC<Props> = ({
   project,
   team,
 }) => {
-  const { id, customDomainResendDNSRecords, domain: domainURL, resendDomainID } = emailDomain
+  const { id, customDomainResendDNSRecords, domain: domainURL, resendDomainId } = emailDomain
   const modalSlug = `delete-emailDomain-${id}`
 
   const { closeModal, openModal } = useModal()
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>('not_started')
-  const projectID = project?.id
+  const projectId = project?.id
   const projectEmailDomains = project?.customEmailDomains
   const hasInitialized = useRef(false)
   const router = useRouter()
 
   const getDomainVerificationStatus = useCallback(
-    async (domainID: string) => {
+    async (domainId: string) => {
       const query = qs.stringify({
-        domainId: domainID,
+        domainId: domainId,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -81,16 +81,16 @@ export const ManageEmailDomain: React.FC<Props> = ({
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true
-      if (resendDomainID) {
-        void getDomainVerificationStatus(resendDomainID)
+      if (resendDomainId) {
+        void getDomainVerificationStatus(resendDomainId)
       }
     }
-  }, [getDomainVerificationStatus, resendDomainID])
+  }, [getDomainVerificationStatus, resendDomainId])
 
   const loadCustomDomainEmailAPIKey = useCallback(
-    async (domainID: string) => {
+    async (domainId: string) => {
       const query = qs.stringify({
-        domainId: domainID,
+        domainId: domainId,
         env: environmentSlug,
       })
       const res = await fetch(
@@ -117,7 +117,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
           env: environmentSlug,
         })
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}${
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
             query ? `?${query}` : ''
           }`,
           {
@@ -141,18 +141,18 @@ export const ManageEmailDomain: React.FC<Props> = ({
 
       return null
     },
-    [environmentSlug, projectID, router],
+    [environmentSlug, projectId, router],
   )
 
   const verifyEmailDomain = useCallback(
-    async (domainID: string) => {
+    async (domainId: string) => {
       try {
         const query = qs.stringify({
-          domainId: domainID,
+          domainId: domainId,
           env: environmentSlug,
         })
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/verify-email-domain${
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/verify-email-domain${
             query ? `?${query}` : ''
           }`,
           {
@@ -174,7 +174,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
         console.error(e) // eslint-disable-line no-console
       }
     },
-    [domainURL, environmentSlug, projectID, router],
+    [domainURL, environmentSlug, projectId, router],
   )
 
   const deleteEmailDomain = useCallback(async () => {
@@ -227,20 +227,20 @@ export const ManageEmailDomain: React.FC<Props> = ({
       >
         <div className={classes.domainContent}>
           <div className={classes.domainInfo}>
-            {(emailDomain.resendAPIKey && typeof emailDomain.resendDomainID === 'string') ?? (
+            {(emailDomain.resendAPIKey && typeof emailDomain.resendDomainId === 'string') ?? (
               <Secret
                 label="Resend API Key"
                 loadSecret={() =>
                   loadCustomDomainEmailAPIKey(
-                    typeof emailDomain.resendDomainID === 'string'
-                      ? emailDomain.resendDomainID
+                    typeof emailDomain.resendDomainId === 'string'
+                      ? emailDomain.resendDomainId
                       : '',
                   )
                 }
                 readOnly
               />
             )}
-            {emailDomain.resendDomainID && verificationStatus !== 'verified' && (
+            {emailDomain.resendDomainId && verificationStatus !== 'verified' && (
               <p>
                 To use your custom domain, add the following records to your DNS provider. Once
                 added, click verify to confirm your domain settings with Resend.
@@ -288,7 +288,7 @@ export const ManageEmailDomain: React.FC<Props> = ({
             <Button
               appearance={verificationStatusColor(verificationStatus)}
               label={formatVerificationStatus(verificationStatus)}
-              onClick={() => verifyEmailDomain(emailDomain.resendDomainID as string)}
+              onClick={() => verifyEmailDomain(emailDomain.resendDomainId as string)}
             />
           </div>
           <div className={classes.rightActions}>

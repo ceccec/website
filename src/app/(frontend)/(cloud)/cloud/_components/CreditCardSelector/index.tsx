@@ -32,7 +32,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
 
   const customer = team?.stripeCustomer
 
-  const newCardID = useRef<string>(`new-card-${uuid()}`)
+  const newCardId = useRef<string>(`new-card-${uuid()}`)
   const [internalState, setInternalState] = useState(initialValue)
   const [showNewCard, setShowNewCard] = useState<boolean>(() => {
     return !initialValue && (!initialPaymentMethods || initialPaymentMethods?.length === 0)
@@ -96,7 +96,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
   // after saving a new card, auto select it
   // the `saveNewPaymentMethod` function will also update the team's default, if needed
   const handleSaveNewCard = useCallback(async () => {
-    const setupIntent = await saveNewPaymentMethod(newCardID.current)
+    const setupIntent = await saveNewPaymentMethod(newCardId.current)
 
     const newPaymentMethod =
       typeof setupIntent?.payment_method === 'string'
@@ -153,17 +153,17 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
         })}
         {showNewCard && (
           <LargeRadio
-            checked={internalState === newCardID.current}
-            id={newCardID.current}
+            checked={internalState === newCardId.current}
+            id={newCardId.current}
             label={
               <CreditCardElement
                 onChange={() => {
-                  void handleChange(newCardID.current)
+                  void handleChange(newCardId.current)
                 }}
               />
             }
             name="card"
-            value={newCardID.current}
+            value={newCardId.current}
           />
         )}
       </div>
@@ -183,7 +183,7 @@ export const CreditCardSelector: React.FC<CreditCardSelectorType> = (props) => {
                   label="Add new card"
                   onClick={() => {
                     setShowNewCard(true)
-                    void handleChange(newCardID.current)
+                    void handleChange(newCardId.current)
                   }}
                 />
               )}

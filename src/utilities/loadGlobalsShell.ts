@@ -3,7 +3,7 @@ import { getRequestLocale, readDraftMode, runDraftLocaleCache } from '@utilities
 
 /**
  * Marketing shell globals: `getLocale` + `draftMode` + `unstable_cache` around
- * `fetchGlobals(locale)`. Cache key is UUID-backed via {@link runDraftLocaleCache}.
+ * `fetchGlobals(locale)`. Cache key is UUId-backed via {@link runDraftLocaleCache}.
  */
 export async function loadGlobalsShell() {
   const [draft, locale] = await Promise.all([readDraftMode(), getRequestLocale()])

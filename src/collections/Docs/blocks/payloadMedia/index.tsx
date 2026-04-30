@@ -20,14 +20,14 @@ export const PayloadMediaBlock: Block = {
       return {
         props: {
           caption: fields.caption,
-          mediaID: typeof fields.media === 'object' ? fields.media.id : fields.media,
+          mediaId: typeof fields.media === 'object' ? fields.media.id : fields.media,
         },
       }
     },
     import: ({ props }) => {
       return {
         caption: props.caption,
-        media: props.mediaID,
+        media: props.mediaId,
       }
     },
   },

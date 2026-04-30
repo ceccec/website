@@ -31,8 +31,8 @@ const isDiscussionData = (
     url: string
   }
   communityHelpType?: 'discord' | 'github'
-  discordID?: string
-  githubID?: string
+  discordId?: string
+  githubId?: string
   id: string
   slug?: string
   title?: string
@@ -43,7 +43,7 @@ const isDiscussionData = (
     'id' in data &&
     'title' in data &&
     'slug' in data &&
-    'githubID' in data &&
+    'githubId' in data &&
     'communityHelpType' in data &&
     'communityHelpJSON' in data
   )

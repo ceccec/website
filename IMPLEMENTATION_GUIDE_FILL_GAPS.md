@@ -62,7 +62,7 @@ type EnvironmentVariable = {
 type Props = {
   env: EnvironmentVariable
   envs: Project['environmentVariables']
-  projectID: Project['id']
+  projectId: Project['id']
   projectSlug?: Project['slug']
   environmentSlug?: string
   // ✅ Callback to update parent state
@@ -72,7 +72,7 @@ type Props = {
 export const ManageEnv: React.FC<Props> = ({
   env: { id, key },
   envs,
-  projectID,
+  projectId,
   projectSlug,
   environmentSlug,
   onEnvUpdated,
@@ -94,12 +94,12 @@ export const ManageEnv: React.FC<Props> = ({
         })
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env?${query}`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env?${query}`,
           {
             method: 'PATCH',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ arrayID: id, key: newEnvKey, value: newEnvValue }),
+            body: JSON.stringify({ arrayId: id, key: newEnvKey, value: newEnvValue }),
           },
         )
 
@@ -129,7 +129,7 @@ export const ManageEnv: React.FC<Props> = ({
         setIsLoading(false)
       }
     },
-    [id, environmentSlug, projectID, onEnvUpdated],
+    [id, environmentSlug, projectId, onEnvUpdated],
   )
 
   // ... rest of component
@@ -192,7 +192,7 @@ const deleteEnv = useCallback(async () => {
     })
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env?${query}`,
+      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env?${query}`,
       {
         method: 'DELETE',
         credentials: 'include',
@@ -223,7 +223,7 @@ const deleteEnv = useCallback(async () => {
     closeModal(modalSlug)
     setIsLoading(false)
   }
-}, [environmentSlug, key, projectID, id, closeModal, modalSlug, onEnvDeleted])
+}, [environmentSlug, key, projectId, id, closeModal, modalSlug, onEnvDeleted])
 ```
 
 ---
@@ -363,15 +363,15 @@ import { fetchNextTags, uuidTags } from '@uuid'
 import { payloadCloudToken } from './token'
 
 export const fetchSubscriptions = async (team?: string | Team): Promise<StripeSubscriptionsResult> => {
-  const teamID = typeof team === 'string' ? team : team?.id
-  if (!teamID) throw new Error('No team ID provided')
+  const teamId = typeof team === 'string' ? team : team?.id
+  if (!teamId) throw new Error('No team Id provided')
 
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
   if (!token) throw new Error('No token provided')
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${teamID}/subscriptions`,
+    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${teamId}/subscriptions`,
     {
       headers: {
         'Content-Type': 'application/json',
@@ -380,7 +380,7 @@ export const fetchSubscriptions = async (team?: string | Team): Promise<StripeSu
       method: 'POST',
       ...fetchNextTags(
         ...uuidTags.cloud.teamBillingScope({
-          id: teamID,
+          id: teamId,
           slug: typeof team === 'object' && team !== null && 'slug' in team ? team.slug : undefined,
         }),
       ),
@@ -467,7 +467,7 @@ export async function createMarketingCheckout(args: {
 
   // ✅ Type validation at boundary
   if (typeof existingStripeCustomerId !== 'string' && existingStripeCustomerId !== undefined) {
-    return { error: 'Invalid Stripe customer ID' }
+    return { error: 'Invalid Stripe customer Id' }
   }
 
   const provider = resolveMarketingCheckoutProvider()
@@ -648,7 +648,7 @@ export interface PlanFormData {
 import type { EnvironmentVariableFormData } from '@root/types/forms'
 
 const updateEnv = useCallback(async (data: EnvironmentVariableFormData) => {
-  const { envKey, envValue } = data // ✅ Type-safe, IDE autocomplete works
+  const { envKey, envValue } = data // ✅ Type-safe, IdE autocomplete works
   // ...
 }, [...])
 ```

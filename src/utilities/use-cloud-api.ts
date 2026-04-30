@@ -184,12 +184,12 @@ type ProjectWithTeam = {
 export const useGetProject: UseCloudAPI<
   null | ProjectWithTeam | undefined,
   {
-    projectID?: string
+    projectId?: string
     projectSlug?: string
     teamSlug?: string
   }
 > = (args) => {
-  const { projectID, projectSlug, teamSlug } = args || {}
+  const { projectId, projectSlug, teamSlug } = args || {}
 
   const query = qs.stringify({
     where: {
@@ -210,8 +210,8 @@ export const useGetProject: UseCloudAPI<
 
   let url = teamSlug && projectSlug ? `/api/projects?${query}&limit=1` : ''
 
-  if (projectID) {
-    url = `/api/projects?where[id][equals]=${projectID}&limit=1`
+  if (projectId) {
+    url = `/api/projects?where[id][equals]=${projectId}&limit=1`
   }
 
   const response = useCloudAPI<{
@@ -225,11 +225,11 @@ export const useGetProject: UseCloudAPI<
       ...response,
       // `undefined` and `null` results are needed for loading states and 404 redirects
       result:
-        (projectSlug || projectID) && response?.result?.docs
+        (projectSlug || projectId) && response?.result?.docs
           ? response.result.docs?.[0] || null
           : undefined,
     }
-  }, [response, projectSlug, projectID])
+  }, [response, projectSlug, projectId])
 }
 
 export const useGetProjectDeployments: UseCloudAPI<
@@ -238,10 +238,10 @@ export const useGetProjectDeployments: UseCloudAPI<
     environmentSlug?: string
     interval?: number
     page?: number
-    projectID?: string
+    projectId?: string
   }
 > = (args) => {
-  const { environmentSlug, interval, page = 0, projectID } = args || {}
+  const { environmentSlug, interval, page = 0, projectId } = args || {}
 
   const query = qs.stringify({
     limit: 10,
@@ -251,7 +251,7 @@ export const useGetProjectDeployments: UseCloudAPI<
       and: [
         {
           project: {
-            equals: projectID,
+            equals: projectId,
           },
         },
         {
@@ -283,17 +283,17 @@ export const useGetProjectDeployments: UseCloudAPI<
 export const useGetActiveProjectDeployment: UseCloudAPI<
   Deployment,
   {
-    projectID?: string
+    projectId?: string
   }
 > = (args) => {
-  const { projectID } = args || {}
+  const { projectId } = args || {}
 
   const query = qs.stringify({
     where: {
       and: [
         {
           project: {
-            equals: projectID,
+            equals: projectId,
           },
         },
         {

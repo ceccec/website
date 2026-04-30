@@ -95,7 +95,7 @@ Pick the layer that matches runtime and typing needs.
 ## Local API (preferred on server)
 
 - **Docs:** [Local API overview](https://payloadcms.com/docs/local-api/overview)
-- **This repo:** \`import { getPayload } from '@root/lib/getPayload'\` in Next RSC / route handlers / server actions; then \`payload.find\`, \`findByID\`, \`create\`, \`update\`, \`delete\`, \`count\`, etc.
+- **This repo:** \`import { getPayload } from '@root/lib/getPayload'\` in Next RSC / route handlers / server actions; then \`payload.find\`, \`findById\`, \`create\`, \`update\`, \`delete\`, \`count\`, etc.
 - **Scripts / \`payload run\`:** \`import { getPayload } from 'payload'\` + \`getPayload({ config })\` with \`@payload-config\` (see \`src/migrate.ts\`).
 - Use \`depth\`, \`select\`, \`where\`, \`sort\`, \`limit\`, \`pagination\` per docs. **Types** align with \`payload-types.ts\` when using generated collection slugs.
 
@@ -289,7 +289,7 @@ alwaysApply: false`,
 
 - **Storage plugin:** \`src/plugins/storage/config.ts\` — R2 (Cloudflare), S3-compatible (\`S3_*\`), or Vercel Blob; targets **\`media\`**.
 - **Collection:** \`src/collections/Media.ts\` — \`upload: true\`; **defaultPopulate** shapes frontend/API responses.
-- **SHA-256 dedupe:** \`src/collections/hooks/mediaContentSha256Dedupe.ts\` — \`beforeOperation\` hashes incoming bytes, queries **\`contentSha256\`**; on duplicate throws **409** \`APIError\` with \`duplicateOfID\` / \`duplicateAlt\` / \`duplicateFilename\` (no second blob). \`beforeChange\` persists **\`contentSha256\`** on new/changed files.
+- **SHA-256 dedupe:** \`src/collections/hooks/mediaContentSha256Dedupe.ts\` — \`beforeOperation\` hashes incoming bytes, queries **\`contentSha256\`**; on duplicate throws **409** \`APIError\` with \`duplicateOfId\` / \`duplicateAlt\` / \`duplicateFilename\` (no second blob). \`beforeChange\` persists **\`contentSha256\`** on new/changed files.
 - **Lexical:** \`src/config/payloadLexicalEditor.ts\` — \`UploadFeature({ collections: { media: { fields: … } } })\` embeds upload nodes in rich text; see \`payload-richtext-lexical.mdc\`.
 
 ## Three layers (virtual “drive”)
@@ -320,7 +320,7 @@ Use **\`media\` collection hooks** to centralize behavior for **all** ingress pa
 | **Drag file** onto field or editor | \`drop\` + \`DataTransfer.files\` | Admin upload field and Lexical drop target already upload; extend to set **\`data\`** (alt, path) in the same request. |
 | **Folder / tree drop** | \`webkitGetAsEntry\` / **File System Access** — walk \`File\` + \`webkitRelativePath\` | Client walks tree → **batch** creates (N API calls or one multipart custom route) — pass **path** in \`data\` for hooks to persist. |
 
-For **paste-from-HTML** (Word/Docs with embedded images): parse HTML → list asset URLs → download (respect CORS) or **dedupe** by hash → upload each → replace refs with \`media\` IDs in Lexical state.
+For **paste-from-HTML** (Word/Docs with embedded images): parse HTML → list asset URLs → download (respect CORS) or **dedupe** by hash → upload each → replace refs with \`media\` Ids in Lexical state.
 
 ## Jobs & limits
 
@@ -403,7 +403,7 @@ alwaysApply: false`,
 
 - **Docs:** [Email](https://payloadcms.com/docs/email/overview)
 - **This repo:** \`nodemailerAdapter\` + SendGrid transport — \`src/email/sendgridMailTransport.ts\`, \`defaultFromAddress\` / \`defaultFromName\` in \`payload.config.ts\`.
-- **Env:** \`SENDGRID_API_KEY\` and related vars — document in \`.env.example\`; never log secrets.
+- **Env:** \`SENDGRId_API_KEY\` and related vars — document in \`.env.example\`; never log secrets.
 - **Forgot password / verification:** Rely on Payload auth email hooks and templates where configured on **Users**.
 
 ## Checklist
@@ -454,7 +454,7 @@ alwaysApply: false`,
   },
   {
     file: 'payload-typescript.mdc',
-    yaml: `description: Payload TypeScript — generated types, naming (ID/DB), narrowing
+    yaml: `description: Payload TypeScript — generated types, naming (Id/DB), narrowing
 globs: "src/**/*.{ts,tsx}","**/payload-types.ts","**/payload-cloud-types.ts"
 alwaysApply: false`,
     body: `# TypeScript with Payload
@@ -470,8 +470,8 @@ alwaysApply: false`,
 
 ## Naming — hand-written code
 
-- **Suffix \`ID\`**, not \`Id\`, for identifiers you own (\`docID\`, \`teamID\`, \`mediaID\`). Align with Payload fields like **\`customID\`**. **Acronyms:** **\`DB\`** not \`Db\` (\`payloadDB.ts\`, \`resolvePayloadDB\`).
-- **Generated props:** use names from \`payload-types.ts\` as-is; bridge with \`const xID = doc.xId\` only until schema rename + regenerate.
+- **Suffix \`Id\`**, not \`Id\`, for identifiers you own (\`docId\`, \`teamId\`, \`mediaId\`). Align with Payload fields like **\`customId\`**. **Acronyms:** **\`DB\`** not \`Db\` (\`payloadDB.ts\`, \`resolvePayloadDB\`).
+- **Generated props:** use names from \`payload-types.ts\` as-is; bridge with \`const xId = doc.xId\` only until schema rename + regenerate.
 - **Exceptions:** React **\`useId\`**, DOM **\`getElementById\`**, wire-format keys from remote APIs — unchanged.
 
 **Globals helpers:** \`src/lib/resolveGlobalField.ts\`, \`src/globals/globalSlugs.ts\`.

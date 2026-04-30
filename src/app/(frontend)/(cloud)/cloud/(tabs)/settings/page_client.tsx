@@ -155,9 +155,9 @@ export const SettingsPage: React.FC<{
       </Form>
       <HR />
       <Text
-        description="This is your user's ID within Payload"
+        description="This is your user's Id within Payload"
         disabled
-        label="User ID"
+        label="User Id"
         value={user?.id}
       />
       <HR />

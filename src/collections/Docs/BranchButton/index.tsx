@@ -15,14 +15,14 @@ export const BranchButtonPromise: PayloadServerReactComponent<CustomComponent> =
 
   const segments = params?.segments as string[]
 
-  const documentID: string | undefined = segments?.length > 2 ? segments[2] : undefined
+  const documentId: string | undefined = segments?.length > 2 ? segments[2] : undefined
 
-  if (!documentID) {
+  if (!documentId) {
     return null
   }
 
-  const doc = await payload.findByID({
-    id: documentID,
+  const doc = await payload.findById({
+    id: documentId,
     collection: 'docs',
     depth: 0,
   })

@@ -18,9 +18,9 @@ import classes from './page.module.scss'
 const formatEnvVars = (project: Project): string => {
   return `PAYLOAD_CLOUD=true
 PAYLOAD_CLOUD_ENVIRONMENT=prod
-PAYLOAD_CLOUD_COGNITO_USER_POOL_CLIENT_ID=${project.cognitoUserPoolClientID}
-PAYLOAD_CLOUD_COGNITO_USER_POOL_ID=${project.cognitoUserPoolID}
-PAYLOAD_CLOUD_COGNITO_IDENTITY_POOL_ID=${project.cognitoIdentityPoolID}
+PAYLOAD_CLOUD_COGNITO_USER_POOL_CLIENT_ID=${project.cognitoUserPoolClientId}
+PAYLOAD_CLOUD_COGNITO_USER_POOL_ID=${project.cognitoUserPoolId}
+PAYLOAD_CLOUD_COGNITO_IDENTITY_POOL_ID=${project.cognitoIdentityPoolId}
 PAYLOAD_CLOUD_PROJECT_ID=${project.id}
 PAYLOAD_CLOUD_BUCKET=${project.s3Bucket}
 PAYLOAD_CLOUD_BUCKET_REGION=${project.s3BucketRegion}
@@ -76,24 +76,24 @@ export const ProjectFileStoragePage: React.FC<{
         />
         <ul className={classes.meta}>
           <li>
-            <strong>Cognito User Pool ID</strong>
-            <span>{project?.cognitoUserPoolID}</span>
+            <strong>Cognito User Pool Id</strong>
+            <span>{project?.cognitoUserPoolId}</span>
           </li>
           <li>
-            <strong>Cognito User Pool Client ID</strong>
-            <span>{project?.cognitoUserPoolClientID}</span>
+            <strong>Cognito User Pool Client Id</strong>
+            <span>{project?.cognitoUserPoolClientId}</span>
           </li>
           <li>
-            <strong>Cognito Identity Pool ID</strong>
-            <span>{project?.cognitoIdentityPoolID}</span>
+            <strong>Cognito Identity Pool Id</strong>
+            <span>{project?.cognitoIdentityPoolId}</span>
           </li>
           <li>
             <strong>Cognito Username</strong>
             <span>{project?.id}</span>
           </li>
           <li>
-            <strong>Cognito Identity ID</strong>
-            <span>{project?.cognitoIdentityID}</span>
+            <strong>Cognito Identity Id</strong>
+            <span>{project?.cognitoIdentityId}</span>
           </li>
           <li>
             <strong>Bucket name</strong>

@@ -61,13 +61,13 @@ const ensureAtLeastOneVersion = async (): Promise<void> => {
                 })
               } catch (e: unknown) {
                 payload.logger.error(
-                  `Unable to create version corresponding with collection ${slug} document ID ${doc.id}`,
+                  `Unable to create version corresponding with collection ${slug} document Id ${doc.id}`,
                   e?.errors || e,
                 )
               }
 
               payload.logger.info(
-                `Created version corresponding with ${slug} document ID ${doc.id}`,
+                `Created version corresponding with ${slug} document Id ${doc.id}`,
               )
             }
           }),

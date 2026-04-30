@@ -17,9 +17,9 @@ export type ProjectWithSubscription = {
 
 export const fetchProject = async (args: {
   projectSlug?: string
-  teamID?: string
+  teamId?: string
 }): Promise<Project> => {
-  const { projectSlug, teamID } = args || {}
+  const { projectSlug, teamId } = args || {}
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
   if (!token) {
     throw new Error('No token provided')
@@ -30,7 +30,7 @@ export const fetchProject = async (args: {
       query: PROJECT_QUERY,
       variables: {
         projectSlug,
-        teamID,
+        teamId,
       },
     }),
     headers: {

@@ -74,15 +74,15 @@ export const CloneTemplate: React.FC<{
     async ({ unflattenedData }) => {
       try {
         await createDraftProject({
-          installID: selectedInstall?.id,
+          installId: selectedInstall?.id,
           makePrivate: unflattenedData?.makePrivate,
           onSubmit: onDraftCreateProject,
           projectName: template?.name,
           repo: {
             name: unflattenedData?.repositoryName,
           },
-          teamID: matchedTeam?.id, // the first team is used as a fallback
-          templateID: template?.id,
+          teamId: matchedTeam?.id, // the first team is used as a fallback
+          templateId: template?.id,
           user,
         })
       } catch (err) {

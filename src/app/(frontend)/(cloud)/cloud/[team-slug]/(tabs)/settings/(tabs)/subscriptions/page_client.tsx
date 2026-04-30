@@ -33,7 +33,7 @@ export const TeamSubscriptionsPage = (props: {
   const subscriptionToDelete = React.useRef<null | string>(null)
 
   const isCurrentTeamOwner = checkTeamRoles(user, team, ['owner'])
-  const hasCustomerID = team?.stripeCustomerID
+  const hasCustomerId = team?.stripeCustomerId
 
   const {
     cancelSubscription,
@@ -48,7 +48,7 @@ export const TeamSubscriptionsPage = (props: {
 
   return (
     <React.Fragment>
-      {hasCustomerID && (
+      {hasCustomerId && (
         <React.Fragment>
           {!isCurrentTeamOwner && (
             <p className={classes.error}>
@@ -66,14 +66,14 @@ export const TeamSubscriptionsPage = (props: {
                 <React.Fragment>
                   <ul className={classes.list}>
                     {subscriptions?.data?.map((subscription) => {
-                      const { id: subscriptionID, project, status, trial_end } = subscription
+                      const { id: subscriptionId, project, status, trial_end } = subscription
                       const [item] = subscription.items.data
-                      const plan = plans?.find((p) => p.stripeProductID === item.price.product)
+                      const plan = plans?.find((p) => p.stripeProductId === item.price.product)
 
                       const trialEndDate = new Date(trial_end * 1000)
 
                       return (
-                        <li className={classes.subscription} key={subscriptionID}>
+                        <li className={classes.subscription} key={subscriptionId}>
                           <div className={classes.subscriptionDetails}>
                             {plan?.name && (
                               <div className={classes.productName}>{`${plan?.name} Plan`}</div>
@@ -105,7 +105,7 @@ export const TeamSubscriptionsPage = (props: {
                                 className={classes.subscriptionCancel}
                                 label="Cancel plan"
                                 onClick={() => {
-                                  subscriptionToDelete.current = subscriptionID
+                                  subscriptionToDelete.current = subscriptionId
                                   openModal(modalSlug)
                                 }}
                                 size="pill"

@@ -212,7 +212,7 @@ const Checkout: React.FC<{
       await deploy({
         checkoutState,
         elements,
-        installID: project?.installID,
+        installId: project?.installId,
         onDeploy,
         project,
         router,
@@ -326,8 +326,8 @@ const Checkout: React.FC<{
                     <Text initialValue={project?.name} label="Project name" path="name" required />
                     <UniqueProjectSlug
                       initialValue={project?.slug}
-                      projectID={project?.id}
-                      teamID={typeof project?.team === 'string' ? project?.team : project?.team?.id}
+                      projectId={project?.id}
+                      teamId={typeof project?.team === 'string' ? project?.team : project?.team?.id}
                       validateOnInit={true}
                     />
                     {isClone && (

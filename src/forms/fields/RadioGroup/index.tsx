@@ -71,14 +71,14 @@ const RadioGroup: React.FC<
       <ul className={classes.ul}>
         {options.map((option, index) => {
           const isSelected = String(option.value) === String(value)
-          const optionID = `${id}-${index}`
+          const optionId = `${id}-${index}`
 
           return (
             <li className={classes.li} key={index}>
-              <label className={classes.radioWrap} htmlFor={optionID}>
+              <label className={classes.radioWrap} htmlFor={optionId}>
                 <input
                   checked={isSelected}
-                  id={optionID}
+                  id={optionId}
                   onChange={() => {
                     onChange(option.value)
                     onClick?.()

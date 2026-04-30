@@ -11,7 +11,7 @@ Pick the layer that matches runtime and typing needs.
 ## Local API (preferred on server)
 
 - **Docs:** [Local API overview](https://payloadcms.com/docs/local-api/overview)
-- **This repo:** `import { getPayload } from '@root/lib/getPayload'` in Next RSC / route handlers / server actions; then `payload.find`, `findByID`, `create`, `update`, `delete`, `count`, etc.
+- **This repo:** `import { getPayload } from '@root/lib/getPayload'` in Next RSC / route handlers / server actions; then `payload.find`, `findById`, `create`, `update`, `delete`, `count`, etc.
 - **Scripts / `payload run`:** `import { getPayload } from 'payload'` + `getPayload({ config })` with `@payload-config` (see `src/migrate.ts`).
 - Use `depth`, `select`, `where`, `sort`, `limit`, `pagination` per docs. **Types** align with `payload-types.ts` when using generated collection slugs.
 

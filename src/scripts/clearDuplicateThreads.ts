@@ -16,16 +16,16 @@ async function clearDuplicateThreads() {
   })
 
   const existingThreads = existingThreadsResult.docs.map((thread) => ({
-    id: (thread.communityHelpType === 'discord' ? thread.discordID : thread.githubID) as string, // Use respective IDs
+    id: (thread.communityHelpType === 'discord' ? thread.discordId : thread.githubId) as string, // Use respective Ids
     communityHelpType: thread.communityHelpType,
-    uniqueID: thread.id,
+    uniqueId: thread.id,
   }))
 
   const threadGroups = existingThreads.reduce(
     (acc, thread) => {
-      const groupID = thread.id
-      acc[groupID] = acc[groupID] || []
-      acc[groupID].push(thread)
+      const groupId = thread.id
+      acc[groupId] = acc[groupId] || []
+      acc[groupId].push(thread)
       return acc
     },
     {} as Record<string, typeof existingThreads>,
@@ -34,7 +34,7 @@ async function clearDuplicateThreads() {
   const threadsToDelete: string[] = []
   const cleanedThreads = Object.values(threadGroups).map((group: any[]) => {
     if (group.length > 1) {
-      threadsToDelete.push(...group.slice(1).map((thread) => thread.uniqueID)) // Flatten by spreading
+      threadsToDelete.push(...group.slice(1).map((thread) => thread.uniqueId)) // Flatten by spreading
     }
     return group[0]
   })
@@ -52,7 +52,7 @@ async function clearDuplicateThreads() {
             collection: 'community-help',
             overrideAccess: true,
           })
-          console.log(`[clearDuplicateThreads] Successfully deleted thread with ID: ${id}`)
+          console.log(`[clearDuplicateThreads] Successfully deleted thread with Id: ${id}`)
         } catch (error) {
           console.error(`[clearDuplicateThreads] Error deleting thread ${id}:`, error)
         }

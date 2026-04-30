@@ -9,7 +9,7 @@ import { Banner } from '../blocks/Banner'
 import richText from '../fields/richText'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
-import { revalidateDocumentIDCache } from '../utilities/revalidateDocumentIDCache'
+import { revalidateDocumentIdCache } from '../utilities/revalidateDocumentIdCache'
 import {
   revalidateBlogCategory,
   revalidateBlogPost,
@@ -29,11 +29,11 @@ export const Posts: CollectionConfig = {
     livePreview: {
       url: async ({ data, req }) => {
         let categorySlug: string | undefined
-        const categoryID = typeof data?.category === 'string' ? data.category : undefined
-        if (categoryID) {
+        const categoryId = typeof data?.category === 'string' ? data.category : undefined
+        if (categoryId) {
           try {
-            const cat = await req.payload.findByID({
-              id: categoryID,
+            const cat = await req.payload.findById({
+              id: categoryId,
               collection: 'categories',
               depth: 0,
               overrideAccess: true,
@@ -49,11 +49,11 @@ export const Posts: CollectionConfig = {
     },
     preview: async (doc, { req }) => {
       let categorySlug: string | undefined
-      const categoryID = typeof doc?.category === 'string' ? doc.category : undefined
-      if (categoryID) {
+      const categoryId = typeof doc?.category === 'string' ? doc.category : undefined
+      if (categoryId) {
         try {
-          const cat = await req.payload.findByID({
-            id: categoryID,
+          const cat = await req.payload.findById({
+            id: categoryId,
             collection: 'categories',
             depth: 0,
             overrideAccess: true,
@@ -154,7 +154,7 @@ export const Posts: CollectionConfig = {
             afterChange: [
               async ({ previousValue, req, value }) => {
                 try {
-                  const category = await req.payload.findByID({
+                  const category = await req.payload.findById({
                     id: value,
                     collection: 'categories',
                     select: {
@@ -168,7 +168,7 @@ export const Posts: CollectionConfig = {
                   revalidateBlogCategory(category.slug)
 
                   if (previousValue != null && previousValue !== value) {
-                    const previousCategory = await req.payload.findByID({
+                    const previousCategory = await req.payload.findById({
                       id: previousValue,
                       collection: 'categories',
                       select: {
@@ -238,9 +238,9 @@ export const Posts: CollectionConfig = {
               }
 
               await Promise.all(
-                value.map(async (docID) => {
-                  const d = await req.payload.findByID({
-                    id: docID,
+                value.map(async (docId) => {
+                  const d = await req.payload.findById({
+                    id: docId,
                     collection: 'docs',
                     select: {
                       slug: true,
@@ -347,8 +347,8 @@ export const Posts: CollectionConfig = {
     afterChange: [
       async ({ doc, previousDoc, req }) => {
         try {
-          revalidateDocumentIDCache('posts', doc.id)
-          const category = await req.payload.findByID({
+          revalidateDocumentIdCache('posts', doc.id)
+          const category = await req.payload.findById({
             id: doc.category,
             collection: 'categories',
             select: {
@@ -368,7 +368,7 @@ export const Posts: CollectionConfig = {
             prev.slug != null &&
             (prev.category !== doc.category || prev.slug !== doc.slug)
           ) {
-            const prevCategory = await req.payload.findByID({
+            const prevCategory = await req.payload.findById({
               id: prev.category,
               collection: 'categories',
               select: {
@@ -387,8 +387,8 @@ export const Posts: CollectionConfig = {
     afterDelete: [
       async ({ doc, req }) => {
         try {
-          revalidateDocumentIDCache('posts', doc.id)
-          const category = await req.payload.findByID({
+          revalidateDocumentIdCache('posts', doc.id)
+          const category = await req.payload.findById({
             id: doc.category,
             collection: 'categories',
             select: {

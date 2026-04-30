@@ -22,7 +22,7 @@ export const LivestreamHero: React.FC<{
   const {
     breadcrumbs,
     links,
-    livestream: { id: youtubeID = '', date, guests, hideBreadcrumbs, richText },
+    livestream: { id: youtubeId = '', date, guests, hideBreadcrumbs, richText },
   } = props
 
   const site = useSitePublicConfigOptional()
@@ -105,18 +105,18 @@ export const LivestreamHero: React.FC<{
                 </div>
               </div>
             )}
-            {isLive && youtubeID && (
+            {isLive && youtubeId && (
               <div
                 className={[classes.videoCell, 'cols-8 start-10 cols-m-8 start-m-1']
                   .filter(Boolean)
                   .join(' ')}
               >
                 <div className={classes.videoWrap}>
-                  <Video id={youtubeID} platform="youtube" />
+                  <Video id={youtubeId} platform="youtube" />
                   <Button
                     className={[classes.link, classes[`link--default`]].join(' ')}
                     el="a"
-                    href={`https://www.youtube.com/watch?v=${youtubeID}`}
+                    href={`https://www.youtube.com/watch?v=${youtubeId}`}
                     icon="arrow"
                     label="Go watch on youtube"
                   />

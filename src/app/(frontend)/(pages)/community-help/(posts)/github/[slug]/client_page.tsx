@@ -47,8 +47,8 @@ export type DiscussionProps = {
     url: string
   }
   communityHelpType?: 'discord' | 'github'
-  discordID?: string
-  githubID?: string
+  discordId?: string
+  githubId?: string
   id: string
   slug?: string
   title?: string

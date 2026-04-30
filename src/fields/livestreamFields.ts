@@ -18,7 +18,7 @@ const livestreamFields: Field = {
         {
           name: 'id',
           type: 'text',
-          label: 'YouTube ID',
+          label: 'YouTube Id',
         },
         {
           name: 'date',

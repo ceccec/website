@@ -22,12 +22,12 @@ import classes from './index.module.scss'
 type AddEnvsProps = {
   environmentSlug?: string
   envs: Project['environmentVariables']
-  projectID: Project['id']
+  projectId: Project['id']
   projectSlug?: Project['slug']
 }
 
 export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
-  const { environmentSlug, envs, projectID, projectSlug } = props
+  const { environmentSlug, envs, projectId, projectSlug } = props
 
   const { clearRows, uuids } = useArray()
 
@@ -54,7 +54,7 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
             env: environmentSlug,
           })
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env${
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env${
               query ? `?${query}` : ''
             }`,
             {
@@ -81,7 +81,7 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
 
             await revalidateCache({
               tags: uuidTags.cloud.projectDetailRevalidateTags({
-                id: projectID,
+                id: projectId,
                 slug: projectSlug,
               }),
             })
@@ -93,7 +93,7 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
         }
       }
     },
-    [projectID, projectSlug, clearRows],
+    [projectId, projectSlug, clearRows],
   )
 
   return (

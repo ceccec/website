@@ -40,11 +40,11 @@ const defaultDeployLogs: LogLine[] = [
 const LiveLogs = ({
   type,
   active,
-  deploymentID,
+  deploymentId,
   environmentSlug,
 }: {
   active: boolean
-  deploymentID: string
+  deploymentId: string
   environmentSlug?: string
   type: 'BUILD' | 'DEPLOY'
 }) => {
@@ -86,7 +86,7 @@ const LiveLogs = ({
         ? `${`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}`.replace(
             'http',
             'ws',
-          )}/api/deployments/${deploymentID}/logs?logType=${type}${
+          )}/api/deployments/${deploymentId}/logs?logType=${type}${
             environmentSlug ? `&env=${environmentSlug}` : ''
           }`
         : '',
@@ -182,13 +182,13 @@ export const DeploymentLogs: React.FC<Props> = ({ deployment, environmentSlug })
         <Gutter key={deployment.id}>
           <LiveLogs
             active={activeTab === 'build'}
-            deploymentID={deployment.id}
+            deploymentId={deployment.id}
             environmentSlug={environmentSlug}
             type="BUILD"
           />
           <LiveLogs
             active={activeTab === 'deploy'}
-            deploymentID={deployment.id}
+            deploymentId={deployment.id}
             environmentSlug={environmentSlug}
             type="DEPLOY"
           />

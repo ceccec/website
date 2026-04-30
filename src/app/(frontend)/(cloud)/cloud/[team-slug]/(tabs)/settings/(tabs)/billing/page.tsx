@@ -24,7 +24,7 @@ export default async ({
   const team = await fetchTeamWithCustomer(teamSlug)
 
   const isCurrentTeamOwner = checkTeamRoles(user, team, ['owner'])
-  const hasCustomerID = team?.stripeCustomerID
+  const hasCustomerId = team?.stripeCustomerId
 
   const paymentMethods = await fetchPaymentMethods({ team })
 
@@ -33,7 +33,7 @@ export default async ({
       <SectionHeader
         intro={
           <React.Fragment>
-            {!hasCustomerID && (
+            {!hasCustomerId && (
               <p className={classes.error}>
                 This team does not have a billing account. Please contact support to resolve this
                 issue.
@@ -43,7 +43,7 @@ export default async ({
         }
         title="Billing"
       />
-      {hasCustomerID && (
+      {hasCustomerId && (
         <React.Fragment>
           {!isCurrentTeamOwner && (
             <p className={classes.error}>You must be an owner of this team to manage billing.</p>
@@ -63,8 +63,8 @@ export default async ({
             <Text
               description="This value was automatically generated when this team was created."
               disabled
-              label="Customer ID"
-              value={team?.stripeCustomerID}
+              label="Customer Id"
+              value={team?.stripeCustomerId}
             />
           </div>
         </React.Fragment>

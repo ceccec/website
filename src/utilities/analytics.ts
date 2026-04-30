@@ -10,7 +10,7 @@ export function analyticsEvent(event: string, value?: unknown, ids?: AnalyticsId
     ids?.gaMeasurementId,
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   )
-  const pixelID = resolveGlobalField(ids?.facebookPixelId, process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID)
+  const pixelId = resolveGlobalField(ids?.facebookPixelId, process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID)
 
   const Window = window as any // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -18,7 +18,7 @@ export function analyticsEvent(event: string, value?: unknown, ids?: AnalyticsId
     Window.gtag('event', event, value)
   }
 
-  if (pixelID) {
+  if (pixelId) {
     void import('react-facebook-pixel')
       .then((x) => x.default)
       .then((ReactPixel) => {

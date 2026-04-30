@@ -29,12 +29,12 @@ export default async ({
   const team = await fetchTeamWithCustomer(teamSlug)
   const invoices = await fetchInvoices(team)
 
-  const hasCustomerID = team?.stripeCustomerID
+  const hasCustomerId = team?.stripeCustomerId
 
   return (
     <React.Fragment>
       <SectionHeader title="Invoices" />
-      {!hasCustomerID && (
+      {!hasCustomerId && (
         <Message error="This team does not have a billing account. Please contact support to resolve this issue." />
       )}
       <TeamInvoicesPage invoices={invoices} team={team} user={user} />

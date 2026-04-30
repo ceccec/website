@@ -50,7 +50,7 @@ export const UpdateRolesConfirmationForm: React.FC<UpdateRolesConfirmationFormPr
         : selectedMember.user.name
       : ''
 
-  const userID =
+  const userId =
     selectedMember && selectedMember.user
       ? typeof selectedMember.user === 'string'
         ? selectedMember.user
@@ -65,11 +65,11 @@ export const UpdateRolesConfirmationForm: React.FC<UpdateRolesConfirmationFormPr
     }
 
     const req = await fetch(
-      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/${userID}/change-team-roles`,
+      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/${userId}/change-team-roles`,
       {
         body: JSON.stringify({
           roles: newRoles,
-          teamID: team.id,
+          teamId: team.id,
         }),
         credentials: 'include',
         headers: {

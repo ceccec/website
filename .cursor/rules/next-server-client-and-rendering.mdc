@@ -23,7 +23,7 @@ alwaysApply: false
 | **Streaming / `loading.js`** | Slow I/O; show skeletons while RSC work continues |
 
 - **Payload / DB access** belongs in **server** code paths; do not import `getPayload` into client bundles.
-- **Composition:** pass **serializable** props from server to client; for CMS references, pass **IDs** or **already-fetched** plain objects — see **`payload-basics.mdc`** (relations / depth).
+- **Composition:** pass **serializable** props from server to client; for CMS references, pass **Ids** or **already-fetched** plain objects — see **`payload-basics.mdc`** (relations / depth).
 
 ## Checklist
 

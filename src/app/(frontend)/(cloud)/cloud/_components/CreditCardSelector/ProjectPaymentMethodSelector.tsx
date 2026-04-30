@@ -23,7 +23,7 @@ export const ProjectPaymentMethodSelector: React.FC<{
 
   const onPaymentMethodChange = useCallback(
     async (newPaymentMethod: string) => {
-      if (project?.stripeSubscriptionID) {
+      if (project?.stripeSubscriptionId) {
         try {
           await updateSubscription(team, project, {
             default_payment_method: newPaymentMethod,

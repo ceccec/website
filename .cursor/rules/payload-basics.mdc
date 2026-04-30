@@ -74,7 +74,7 @@ Use **[official docs](https://payloadcms.com/docs/)** as source of truth (mirror
 ## Invariants
 
 - **Admin custom UI:** Follow [Custom components — overview](https://payloadcms.com/docs/custom-components/overview), register paths under `admin.components` / field `admin.components`, run **`pnpm generate:importmap`** — see `payload-custom-components.mdc`.
-- **Relations:** Generated types use `number \| Doc` (or similar). Treat **ID vs populated** explicitly: use **`depth`** / **`populate`** for nested data, or **narrow** in components (`typeof x === 'object' && x !== null` before field access).
+- **Relations:** Generated types use `number \| Doc` (or similar). Treat **Id vs populated** explicitly: use **`depth`** / **`populate`** for nested data, or **narrow** in components (`typeof x === 'object' && x !== null` before field access).
 - **REST / `fetch`:** Response bodies are **`unknown`** until validated or asserted at the boundary—same as Payload’s REST contract: **type at the edge**, not `any` throughout.
 - **`getPayload`:** Payload 3 caches the instance; **do not** add a second module-level cache in `getPayload.ts`.
 

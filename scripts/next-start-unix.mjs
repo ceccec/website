@@ -18,7 +18,7 @@ const projectRoot = path.join(__dirname, '..')
 const socketPath = (process.env.LISTEN_UNIX_SOCKET || '/run/payload/next.sock').trim()
 const dev = process.env.NODE_ENV !== 'production'
 
-// Do not pass `process.env.HOSTNAME` — Docker sets it to the container ID.
+// Do not pass `process.env.HOSTNAME` — Docker sets it to the container Id.
 const app = next({ dev, dir: projectRoot })
 const handle = app.getRequestHandler()
 

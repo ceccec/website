@@ -10,7 +10,7 @@ export const stateOptions = [
   { label: 'Florida', value: 'FL' },
   { label: 'Georgia', value: 'GA' },
   { label: 'Hawaii', value: 'HI' },
-  { label: 'Idaho', value: 'ID' },
+  { label: 'Idaho', value: 'Id' },
   { label: 'Illinois', value: 'IL' },
   { label: 'Indiana', value: 'IN' },
   { label: 'Iowa', value: 'IA' },

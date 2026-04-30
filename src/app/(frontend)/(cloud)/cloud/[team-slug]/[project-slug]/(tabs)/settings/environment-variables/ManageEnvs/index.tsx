@@ -38,7 +38,7 @@ type Props = {
   }
   environmentSlug?: string
   envs: Project['environmentVariables']
-  projectID: Project['id']
+  projectId: Project['id']
   projectSlug?: Project['slug']
 }
 
@@ -46,7 +46,7 @@ export const ManageEnv: React.FC<Props> = ({
   env: { id, key },
   environmentSlug,
   envs,
-  projectID,
+  projectId,
   projectSlug,
 }) => {
   const modalSlug = `delete-env-${id}`
@@ -66,7 +66,7 @@ export const ManageEnv: React.FC<Props> = ({
         key,
       })
       const req = await fetch(
-        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env${`?${query}`}`,
+        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env${`?${query}`}`,
         {
           credentials: 'include',
           headers: {
@@ -85,7 +85,7 @@ export const ManageEnv: React.FC<Props> = ({
     }
 
     return null
-  }, [environmentSlug, key, projectID])
+  }, [environmentSlug, key, projectId])
 
   const updateEnv = React.useCallback(
     async ({ data }: { data: EnvironmentVariableFormData }) => {
@@ -98,11 +98,11 @@ export const ManageEnv: React.FC<Props> = ({
             env: environmentSlug,
           })
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env${
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env${
               query ? `?${query}` : ''
             }`,
             {
-              body: JSON.stringify({ arrayID: id, key: newEnvKey, value: newEnvValue }),
+              body: JSON.stringify({ arrayId: id, key: newEnvKey, value: newEnvValue }),
               credentials: 'include',
               headers: {
                 'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ export const ManageEnv: React.FC<Props> = ({
 
             await revalidateCache({
               tags: uuidTags.cloud.projectDetailRevalidateTags({
-                id: projectID,
+                id: projectId,
                 slug: projectSlug,
               }),
             })
@@ -136,7 +136,7 @@ export const ManageEnv: React.FC<Props> = ({
         }
       }
     },
-    [id, environmentSlug, projectID, projectSlug],
+    [id, environmentSlug, projectId, projectSlug],
   )
 
   const deleteEnv = React.useCallback(async () => {
@@ -146,7 +146,7 @@ export const ManageEnv: React.FC<Props> = ({
         key,
       })
       const req = await fetch(
-        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/env?${query}`,
+        `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}/env?${query}`,
         {
           credentials: 'include',
           headers: {
@@ -169,7 +169,7 @@ export const ManageEnv: React.FC<Props> = ({
 
         await revalidateCache({
           tags: uuidTags.cloud.projectDetailRevalidateTags({
-            id: projectID,
+            id: projectId,
             slug: projectSlug,
           }),
         })
@@ -178,7 +178,7 @@ export const ManageEnv: React.FC<Props> = ({
       console.error(e) // eslint-disable-line no-console
       toast.error('An unexpected error occurred while deleting the environment variable.')
     }
-  }, [environmentSlug, key, projectID, projectSlug, closeModal, modalSlug])
+  }, [environmentSlug, key, projectId, projectSlug, closeModal, modalSlug])
 
   return (
     <>
@@ -246,10 +246,10 @@ export const ManageEnv: React.FC<Props> = ({
 export const ManageEnvs: React.FC<{
   environmentSlug?: string
   envs: Project['environmentVariables']
-  projectID: Project['id']
+  projectId: Project['id']
   projectSlug?: Project['slug']
 }> = (props) => {
-  const { environmentSlug, envs, projectID, projectSlug } = props
+  const { environmentSlug, envs, projectId, projectSlug } = props
 
   return (
     <CollapsibleGroup allowMultiple transCurve="ease" transTime={250}>
@@ -260,7 +260,7 @@ export const ManageEnvs: React.FC<{
             environmentSlug={environmentSlug}
             envs={envs}
             key={env.id}
-            projectID={projectID}
+            projectId={projectId}
             projectSlug={projectSlug}
           />
         ))}

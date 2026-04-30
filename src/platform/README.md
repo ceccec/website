@@ -17,7 +17,7 @@ This folder defines **orthogonal dimensions** so tenants, deployments, locales, 
 1. **Deployment ≠ tenant.** Workers vs Vercel is infrastructure; tenant is data isolation — compose both in access hooks / handlers when needed.
 2. **Locale ≠ currency.** Translate UI with next-intl/Payload; charge in ISO 4217 per tenant/store policy.
 3. **Feature matrix gates schema.** Optional plugins register collections only when env is on — migrations must cover the slices you deploy (`payload-deployment.mdc`).
-4. **Request context grows incrementally.** Use `buildRequestPlatformContext()` from server code after you resolve `getLocale()`, cookies, or future `x-tenant-*` headers — do not read tenants inside `unstable_cache` callbacks without passing IDs in from outside.
+4. **Request context grows incrementally.** Use `buildRequestPlatformContext()` from server code after you resolve `getLocale()`, cookies, or future `x-tenant-*` headers — do not read tenants inside `unstable_cache` callbacks without passing Ids in from outside.
 
 ## Env reference (extend alongside `src/plugins/env.ts`)
 

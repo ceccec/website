@@ -28,14 +28,14 @@ export const ManageDomain: React.FC<Props> = ({ domain, environmentSlug, project
   const router = useRouter()
 
   const { closeModal, openModal } = useModal()
-  const projectID = project?.id
+  const projectId = project?.id
   const [projectDomains, setProjectDomains] = React.useState(project?.domains || [])
 
   const patchDomains = React.useCallback(
     async (domains: Props['domain'][]) => {
       try {
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}${
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
             environmentSlug ? `?env=${environmentSlug}` : ''
           }`,
           {
@@ -60,7 +60,7 @@ export const ManageDomain: React.FC<Props> = ({ domain, environmentSlug, project
 
       return null
     },
-    [projectID, environmentSlug],
+    [projectId, environmentSlug],
   )
 
   const deleteDomain = React.useCallback(async () => {

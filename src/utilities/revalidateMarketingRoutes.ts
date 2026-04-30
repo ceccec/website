@@ -4,7 +4,7 @@ import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
  */
 import { revalidatePath } from 'next/cache'
 
-import { revalidateDocumentIDCache } from './revalidateDocumentIDCache'
+import { revalidateDocumentIdCache } from './revalidateDocumentIdCache'
 
 /** Tag used with `fetchArchive` / category archives (`Categories` collection hooks). */
 export const ARCHIVES_CACHE_TAG = 'archives'
@@ -29,13 +29,13 @@ export function revalidatePartnersProgramLayout(): void {
 
 type MarketingCollectionSlug = 'case-studies' | 'partners' | 'posts'
 
-/** One helper for “document ID tag + detail + section listing” (collections share this shape). */
+/** One helper for “document Id tag + detail + section listing” (collections share this shape). */
 export function revalidateMarketingDocument(
   collection: MarketingCollectionSlug,
   id: number | string,
   revalidateUrls: () => void,
 ): void {
-  revalidateDocumentIDCache(collection, id)
+  revalidateDocumentIdCache(collection, id)
   revalidateUrls()
 }
 

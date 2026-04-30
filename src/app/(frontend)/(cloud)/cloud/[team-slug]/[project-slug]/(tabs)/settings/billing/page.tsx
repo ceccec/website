@@ -54,8 +54,8 @@ export default async ({
   })
 
   const isCurrentTeamOwner = checkTeamRoles(user, team, ['owner'])
-  const hasCustomerID = team?.stripeCustomerID
-  const hasSubscriptionID = project?.stripeSubscriptionID
+  const hasCustomerId = team?.stripeCustomerId
+  const hasSubscriptionId = project?.stripeSubscriptionId
 
   const paymentMethods = await fetchPaymentMethods({
     team,
@@ -64,30 +64,30 @@ export default async ({
   return (
     <MaxWidth>
       <SectionHeader className={classes.header} title="Project billing" />
-      {!hasCustomerID && (
+      {!hasCustomerId && (
         <p className={classes.error}>
           This team does not have a billing account. Please contact support to resolve this issue.
         </p>
       )}
-      {!hasSubscriptionID && (
+      {!hasSubscriptionId && (
         <p className={classes.error}>
           This project does not have a subscription. Please contact support to resolve this issue.
         </p>
       )}
       <div className={classes.fields}>
         <Text
-          description="This is your project's ID within Payload"
+          description="This is your project's Id within Payload"
           disabled
-          label="Project ID"
+          label="Project Id"
           value={project?.id}
         />
-        {hasCustomerID && hasSubscriptionID && (
+        {hasCustomerId && hasSubscriptionId && (
           <React.Fragment>
             <Text
-              description="This is the ID of the subscription for this project."
+              description="This is the Id of the subscription for this project."
               disabled
-              label="Subscription ID"
-              value={project?.stripeSubscriptionID}
+              label="Subscription Id"
+              value={project?.stripeSubscriptionId}
             />
             <Text
               disabled

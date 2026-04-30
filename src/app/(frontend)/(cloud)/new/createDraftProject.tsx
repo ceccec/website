@@ -5,22 +5,22 @@ import { revalidateCache } from '@cloud/_actions/revalidateCache'
 import { assertRecordPayload, isRecord } from '@utilities/payloadCloudJson'
 
 export const createDraftProject = async ({
-  installID,
+  installId,
   makePrivate,
   onSubmit,
   projectName,
   repo,
-  teamID,
-  templateID,
+  teamId,
+  templateId,
   user,
 }: {
-  installID: number | undefined
+  installId: number | undefined
   makePrivate?: boolean
   onSubmit?: (project: Project) => void
   projectName?: string
   repo: Partial<Repo>
-  teamID: string | undefined
-  templateID?: string // only applies to `clone` flow
+  teamId: string | undefined
+  templateId?: string // only applies to `clone` flow
   user: null | undefined | User
 }): Promise<void> => {
   if (!user) {
@@ -35,18 +35,18 @@ export const createDraftProject = async ({
     const draftProject: Partial<Project> = {
       name: projectName || repo?.name || 'Untitled Project',
       defaultDomain: undefined,
-      installID: installID ? installID.toString() : undefined,
+      installId: installId ? installId.toString() : undefined,
       makePrivate,
       repositoryFullName: repo?.full_name,
-      repositoryID: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
+      repositoryId: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
       repositoryName: repo?.name,
       team:
-        teamID ||
+        teamId ||
         // fallback to first team
         (typeof user.teams?.[0]?.team === 'string'
           ? user.teams?.[0]?.team
           : user.teams?.[0]?.team?.id),
-      template: templateID,
+      template: templateId,
       // `buildScript`, `installScript`, and `runScript` are automatically set by the API based on any `package-lock.json` found in the repo
       // the user can change these later to whatever they want, but this prevents the user from having `yarn` commands set on an `npm` project, for example
     }

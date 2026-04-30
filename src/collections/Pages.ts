@@ -8,7 +8,7 @@ import { fullTitle } from '../fields/fullTitle'
 import { hero } from '../fields/hero'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
-import { revalidateDocumentIDCache } from '../utilities/revalidateDocumentIDCache'
+import { revalidateDocumentIdCache } from '../utilities/revalidateDocumentIdCache'
 import { revalidatePagePublicUrls } from '../utilities/revalidatePageRoutes'
 
 export const Pages: CollectionConfig = {
@@ -75,14 +75,14 @@ export const Pages: CollectionConfig = {
     afterChange: [
       ({ doc, previousDoc }) => {
         if (doc._status === 'published' || doc._status !== previousDoc?._status) {
-          revalidateDocumentIDCache('pages', doc.id)
+          revalidateDocumentIdCache('pages', doc.id)
           revalidatePagePublicUrls(doc)
         }
       },
     ],
     afterDelete: [
       ({ doc }) => {
-        revalidateDocumentIDCache('pages', doc.id)
+        revalidateDocumentIdCache('pages', doc.id)
         revalidatePagePublicUrls(doc)
       },
     ],

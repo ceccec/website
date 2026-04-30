@@ -13,8 +13,8 @@ const PROJECT = `
   repositoryFullName
   makePrivate
   stripeSubscriptionStatus
-  installID
-  repositoryID
+  installId
+  repositoryId
   deploymentBranch
   outputDirectory
   buildScript
@@ -39,8 +39,8 @@ const PROJECT = `
 `
 
 export const PROJECTS_QUERY = `
-query Project($teamIDs: [String!], $page: Int, $limit: Int, $search: String) {
-  Projects(where: { AND: [{ team: { in: $teamIDs } }], OR: [{ name: { like: $search } }, { slug: { like: $search } }] }, limit: $limit, page: $page) {
+query Project($teamIds: [String!], $page: Int, $limit: Int, $search: String) {
+  Projects(where: { AND: [{ team: { in: $teamIds } }], OR: [{ name: { like: $search } }, { slug: { like: $search } }] }, limit: $limit, page: $page) {
     docs {
       ${PROJECT}
     }
@@ -53,8 +53,8 @@ query Project($teamIDs: [String!], $page: Int, $limit: Int, $search: String) {
 `
 
 export const PROJECT_QUERY = `
-query Project($teamID: String, $projectSlug: String) {
-  Projects(where: { AND: [{ slug: { equals: $projectSlug }}, { team: { equals: $teamID }} ] }, limit: 1) {
+query Project($teamId: String, $projectSlug: String) {
+  Projects(where: { AND: [{ slug: { equals: $projectSlug }}, { team: { equals: $teamId }} ] }, limit: 1) {
     docs {
       ${PROJECT}
     }

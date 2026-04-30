@@ -2,7 +2,7 @@
  * Form Data Types — centralized types for all settings forms
  *
  * Single source of truth for form data structures used across Cloud settings pages.
- * Prevents `any` types in form handlers and enables IDE autocomplete.
+ * Prevents `any` types in form handlers and enables IdE autocomplete.
  *
  * Update when adding new settings forms; referenced by:
  * - src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/environment-variables/
@@ -35,7 +35,7 @@ export interface AddDomainFormData {
 export interface DomainConfig {
   id?: string
   domain: string
-  cloudflareID?: string
+  cloudflareId?: string
   recordName?: string
   recordType?: string
   recordContent?: string

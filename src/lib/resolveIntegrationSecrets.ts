@@ -46,7 +46,7 @@ export async function resolveIntegrationSecrets(payload: Payload): Promise<Resol
     ),
     revalidationKey: resolveGlobalField(
       globalDoc.revalidationKey,
-      process.env.NEXT_PRIVATE_REVALIDATION_KEY,
+      process.env.NEXT_PRIVATE_REVALIdATION_KEY,
     ),
   }
 }

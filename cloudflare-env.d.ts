@@ -30,7 +30,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
 License at http://www.apache.org/licenses/LICENSE-2.0
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+THIS CODE IS PROVIdED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
 WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
 MERCHANTABLITY OR NON-INFRINGEMENT.
@@ -70,18 +70,18 @@ declare class DOMException extends Error {
     static readonly DOMSTRING_SIZE_ERR: number;
     static readonly HIERARCHY_REQUEST_ERR: number;
     static readonly WRONG_DOCUMENT_ERR: number;
-    static readonly INVALID_CHARACTER_ERR: number;
+    static readonly INVALId_CHARACTER_ERR: number;
     static readonly NO_DATA_ALLOWED_ERR: number;
     static readonly NO_MODIFICATION_ALLOWED_ERR: number;
     static readonly NOT_FOUND_ERR: number;
     static readonly NOT_SUPPORTED_ERR: number;
     static readonly INUSE_ATTRIBUTE_ERR: number;
-    static readonly INVALID_STATE_ERR: number;
+    static readonly INVALId_STATE_ERR: number;
     static readonly SYNTAX_ERR: number;
-    static readonly INVALID_MODIFICATION_ERR: number;
+    static readonly INVALId_MODIFICATION_ERR: number;
     static readonly NAMESPACE_ERR: number;
-    static readonly INVALID_ACCESS_ERR: number;
-    static readonly VALIDATION_ERR: number;
+    static readonly INVALId_ACCESS_ERR: number;
+    static readonly VALIdATION_ERR: number;
     static readonly TYPE_MISMATCH_ERR: number;
     static readonly SECURITY_ERR: number;
     static readonly NETWORK_ERR: number;
@@ -89,7 +89,7 @@ declare class DOMException extends Error {
     static readonly URL_MISMATCH_ERR: number;
     static readonly QUOTA_EXCEEDED_ERR: number;
     static readonly TIMEOUT_ERR: number;
-    static readonly INVALID_NODE_TYPE_ERR: number;
+    static readonly INVALId_NODE_TYPE_ERR: number;
     static readonly DATA_CLONE_ERR: number;
     get stack(): any;
     set stack(value: any);
@@ -1051,12 +1051,12 @@ declare abstract class Crypto {
      */
     getRandomValues<T extends Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | BigInt64Array | BigUint64Array>(buffer: T): T;
     /**
-     * The **`randomUUID()`** method of the Crypto interface is used to generate a v4 UUID using a cryptographically secure random number generator.
+     * The **`randomUUId()`** method of the Crypto interface is used to generate a v4 UUId using a cryptographically secure random number generator.
      * Available only in secure contexts.
      *
-     * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Crypto/randomUUID)
+     * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Crypto/randomUUId)
      */
-    randomUUID(): string;
+    randomUUId(): string;
     DigestStream: typeof DigestStream;
 }
 /**
@@ -1389,7 +1389,7 @@ declare class MessageEvent extends Event {
      */
     readonly origin: string | null;
     /**
-     * The **`lastEventId`** read-only property of the unique ID for the event.
+     * The **`lastEventId`** read-only property of the unique Id for the event.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MessageEvent/lastEventId)
      */
@@ -3581,7 +3581,7 @@ type AiSearchChatCompletionsRequest = {
 // ============ AI Search Multi-Instance Types (Namespace-Scoped) ============
 /** `ai_search_options` shape for multi-instance requests — requires `instance_ids`. */
 type AiSearchMultiSearchOptions = AiSearchOptions & {
-    /** Instance IDs to search across (1-10). */
+    /** Instance Ids to search across (1-10). */
     instance_ids: string[];
 };
 /**
@@ -3750,7 +3750,7 @@ type AiSearchInstanceInfo = {
 type AiSearchListInstancesParams = {
     page?: number;
     per_page?: number;
-    /** Search instances by ID. */
+    /** Search instances by Id. */
     search?: string;
     /** Field to sort by. */
     order_by?: 'created_at';
@@ -3768,14 +3768,14 @@ type AiSearchListResponse = {
 };
 // ============ AI Search Config Types ============
 type AiSearchConfig = {
-    /** Instance ID (1-32 chars, pattern: ^[a-z0-9_]+(?:-[a-z0-9_]+)*$) */
+    /** Instance Id (1-32 chars, pattern: ^[a-z0-9_]+(?:-[a-z0-9_]+)*$) */
     id: string;
     /** Instance type. Omit to create with built-in storage. */
     type?: 'r2' | 'web-crawler' | string;
     /** Source URL (required for web-crawler type). */
     source?: string;
     source_params?: unknown;
-    /** Token ID (UUID format) */
+    /** Token Id (UUId format) */
     token_id?: string;
     ai_gateway_id?: string;
     /** Enable query rewriting (default false) */
@@ -4036,7 +4036,7 @@ declare abstract class AiSearchItems {
         timeoutMs?: number;
     }): Promise<AiSearchItemInfo>;
     /**
-     * Get an item by ID.
+     * Get an item by Id.
      * @param itemId The item identifier.
      * @returns Item service for info, download, sync, logs, and chunks operations.
      */
@@ -4077,7 +4077,7 @@ declare abstract class AiSearchJobs {
      */
     create(params?: AiSearchCreateJobParams): Promise<AiSearchJobInfo>;
     /**
-     * Get a job by ID.
+     * Get a job by Id.
      * @param jobId The job identifier.
      * @returns Job service for info, logs, and cancel operations.
      */
@@ -4529,7 +4529,7 @@ type ChatCompletionContentPartFile = {
     file: {
         /** Base64 encoded file data. */
         file_data?: string;
-        /** The ID of an uploaded file. */
+        /** The Id of an uploaded file. */
         file_id?: string;
         filename?: string;
     };
@@ -8898,7 +8898,7 @@ interface Ai_Cf_Ai4Bharat_Indictrans2_En_Indic_1B_Input {
     /**
      * Target langauge to translate to
      */
-    target_language: "asm_Beng" | "awa_Deva" | "ben_Beng" | "bho_Deva" | "brx_Deva" | "doi_Deva" | "eng_Latn" | "gom_Deva" | "gon_Deva" | "guj_Gujr" | "hin_Deva" | "hne_Deva" | "kan_Knda" | "kas_Arab" | "kas_Deva" | "kha_Latn" | "lus_Latn" | "mag_Deva" | "mai_Deva" | "mal_Mlym" | "mar_Deva" | "mni_Beng" | "mni_Mtei" | "npi_Deva" | "ory_Orya" | "pan_Guru" | "san_Deva" | "sat_Olck" | "snd_Arab" | "snd_Deva" | "tam_Taml" | "tel_Telu" | "urd_Arab" | "unr_Deva";
+    target_language: "asm_Beng" | "awa_Deva" | "ben_Beng" | "bho_Deva" | "brx_Deva" | "doideva" | "eng_Latn" | "gom_Deva" | "gon_Deva" | "guj_Gujr" | "hin_Deva" | "hne_Deva" | "kan_Knda" | "kas_Arab" | "kas_Deva" | "kha_Latn" | "lus_Latn" | "mag_Deva" | "maideva" | "mal_Mlym" | "mar_Deva" | "mni_Beng" | "mni_Mtei" | "npideva" | "ory_Orya" | "pan_Guru" | "san_Deva" | "sat_Olck" | "snd_Arab" | "snd_Deva" | "tam_Taml" | "tel_Telu" | "urd_Arab" | "unr_Deva";
 }
 interface Ai_Cf_Ai4Bharat_Indictrans2_En_Indic_1B_Output {
     /**
@@ -9926,7 +9926,7 @@ declare abstract class Ai<AiModelList extends AiModelListType = AiModels> {
      * Use the standalone `ai_search_namespaces` or `ai_search` Workers bindings instead.
      * See https://developers.cloudflare.com/ai-search/usage/workers-binding/
      *
-     * @param autoragId Instance ID
+     * @param autoragId Instance Id
      */
     autorag(autoragId: string): AutoRAG;
     // Batch request
@@ -10063,7 +10063,7 @@ declare abstract class AiGateway {
  */
 /** Information about a repository. */
 interface ArtifactsRepoInfo {
-    /** Unique repository ID. */
+    /** Unique repository Id. */
     id: string;
     /** Repository name. */
     name: string;
@@ -10086,7 +10086,7 @@ interface ArtifactsRepoInfo {
 }
 /** Result of creating a repository — includes the initial access token. */
 interface ArtifactsCreateRepoResult {
-    /** Unique repository ID. */
+    /** Unique repository Id. */
     id: string;
     /** Repository name. */
     name: string;
@@ -10112,7 +10112,7 @@ interface ArtifactsRepoListResult {
 }
 /** Result of creating an access token. */
 interface ArtifactsCreateTokenResult {
-    /** Unique token ID. */
+    /** Unique token Id. */
     id: string;
     /** Plaintext token (only returned at creation time). */
     plaintext: string;
@@ -10123,7 +10123,7 @@ interface ArtifactsCreateTokenResult {
 }
 /** Token metadata (no plaintext). */
 interface ArtifactsTokenInfo {
-    /** Unique token ID. */
+    /** Unique token Id. */
     id: string;
     /** Token scope: "read" or "write". */
     scope: 'read' | 'write';
@@ -10152,8 +10152,8 @@ interface ArtifactsRepo extends ArtifactsRepoInfo {
     /** List tokens for this repo (metadata only, no plaintext). */
     listTokens(): Promise<ArtifactsTokenListResult>;
     /**
-     * Revoke a token by plaintext or ID.
-     * @param tokenOrId Plaintext token or token ID.
+     * Revoke a token by plaintext or Id.
+     * @param tokenOrId Plaintext token or token Id.
      * @returns true if revoked, false if not found.
      */
     revokeToken(tokenOrId: string): Promise<boolean>;
@@ -10830,7 +10830,7 @@ interface IncomingRequestCfPropertiesBotManagementBase {
      */
     staticResource: boolean;
     /**
-     * List of IDs that correlate to the Bot Management heuristic detections made on a request (you can have multiple heuristic detections on the same request).
+     * List of Ids that correlate to the Bot Management heuristic detections made on a request (you can have multiple heuristic detections on the same request).
      */
     detectionIds: number[];
 }
@@ -11126,7 +11126,7 @@ declare type CertVerificationStatus =
  */
 declare type IncomingRequestCfPropertiesEdgeRequestKeepAliveStatus = 0 /** Unknown */ | 1 /** no keepalives (not found) */ | 2 /** no connection re-use, opening keepalive connection failed */ | 3 /** no connection re-use, keepalive accepted and saved */ | 4 /** connection re-use, refused by the origin server (`TCP FIN`) */ | 5; /** connection re-use, accepted by the origin server */
 /** ISO 3166-1 Alpha-2 codes */
-declare type Iso3166Alpha2Code = "AD" | "AE" | "AF" | "AG" | "AI" | "AL" | "AM" | "AO" | "AQ" | "AR" | "AS" | "AT" | "AU" | "AW" | "AX" | "AZ" | "BA" | "BB" | "BD" | "BE" | "BF" | "BG" | "BH" | "BI" | "BJ" | "BL" | "BM" | "BN" | "BO" | "BQ" | "BR" | "BS" | "BT" | "BV" | "BW" | "BY" | "BZ" | "CA" | "CC" | "CD" | "CF" | "CG" | "CH" | "CI" | "CK" | "CL" | "CM" | "CN" | "CO" | "CR" | "CU" | "CV" | "CW" | "CX" | "CY" | "CZ" | "DE" | "DJ" | "DK" | "DM" | "DO" | "DZ" | "EC" | "EE" | "EG" | "EH" | "ER" | "ES" | "ET" | "FI" | "FJ" | "FK" | "FM" | "FO" | "FR" | "GA" | "GB" | "GD" | "GE" | "GF" | "GG" | "GH" | "GI" | "GL" | "GM" | "GN" | "GP" | "GQ" | "GR" | "GS" | "GT" | "GU" | "GW" | "GY" | "HK" | "HM" | "HN" | "HR" | "HT" | "HU" | "ID" | "IE" | "IL" | "IM" | "IN" | "IO" | "IQ" | "IR" | "IS" | "IT" | "JE" | "JM" | "JO" | "JP" | "KE" | "KG" | "KH" | "KI" | "KM" | "KN" | "KP" | "KR" | "KW" | "KY" | "KZ" | "LA" | "LB" | "LC" | "LI" | "LK" | "LR" | "LS" | "LT" | "LU" | "LV" | "LY" | "MA" | "MC" | "MD" | "ME" | "MF" | "MG" | "MH" | "MK" | "ML" | "MM" | "MN" | "MO" | "MP" | "MQ" | "MR" | "MS" | "MT" | "MU" | "MV" | "MW" | "MX" | "MY" | "MZ" | "NA" | "NC" | "NE" | "NF" | "NG" | "NI" | "NL" | "NO" | "NP" | "NR" | "NU" | "NZ" | "OM" | "PA" | "PE" | "PF" | "PG" | "PH" | "PK" | "PL" | "PM" | "PN" | "PR" | "PS" | "PT" | "PW" | "PY" | "QA" | "RE" | "RO" | "RS" | "RU" | "RW" | "SA" | "SB" | "SC" | "SD" | "SE" | "SG" | "SH" | "SI" | "SJ" | "SK" | "SL" | "SM" | "SN" | "SO" | "SR" | "SS" | "ST" | "SV" | "SX" | "SY" | "SZ" | "TC" | "TD" | "TF" | "TG" | "TH" | "TJ" | "TK" | "TL" | "TM" | "TN" | "TO" | "TR" | "TT" | "TV" | "TW" | "TZ" | "UA" | "UG" | "UM" | "US" | "UY" | "UZ" | "VA" | "VC" | "VE" | "VG" | "VI" | "VN" | "VU" | "WF" | "WS" | "YE" | "YT" | "ZA" | "ZM" | "ZW";
+declare type Iso3166Alpha2Code = "AD" | "AE" | "AF" | "AG" | "AI" | "AL" | "AM" | "AO" | "AQ" | "AR" | "AS" | "AT" | "AU" | "AW" | "AX" | "AZ" | "BA" | "BB" | "BD" | "BE" | "BF" | "BG" | "BH" | "BI" | "BJ" | "BL" | "BM" | "BN" | "BO" | "BQ" | "BR" | "BS" | "BT" | "BV" | "BW" | "BY" | "BZ" | "CA" | "CC" | "CD" | "CF" | "CG" | "CH" | "CI" | "CK" | "CL" | "CM" | "CN" | "CO" | "CR" | "CU" | "CV" | "CW" | "CX" | "CY" | "CZ" | "DE" | "DJ" | "DK" | "DM" | "DO" | "DZ" | "EC" | "EE" | "EG" | "EH" | "ER" | "ES" | "ET" | "FI" | "FJ" | "FK" | "FM" | "FO" | "FR" | "GA" | "GB" | "GD" | "GE" | "GF" | "GG" | "GH" | "GI" | "GL" | "GM" | "GN" | "GP" | "GQ" | "GR" | "GS" | "GT" | "GU" | "GW" | "GY" | "HK" | "HM" | "HN" | "HR" | "HT" | "HU" | "Id" | "IE" | "IL" | "IM" | "IN" | "IO" | "IQ" | "IR" | "IS" | "IT" | "JE" | "JM" | "JO" | "JP" | "KE" | "KG" | "KH" | "KI" | "KM" | "KN" | "KP" | "KR" | "KW" | "KY" | "KZ" | "LA" | "LB" | "LC" | "LI" | "LK" | "LR" | "LS" | "LT" | "LU" | "LV" | "LY" | "MA" | "MC" | "MD" | "ME" | "MF" | "MG" | "MH" | "MK" | "ML" | "MM" | "MN" | "MO" | "MP" | "MQ" | "MR" | "MS" | "MT" | "MU" | "MV" | "MW" | "MX" | "MY" | "MZ" | "NA" | "NC" | "NE" | "NF" | "NG" | "NI" | "NL" | "NO" | "NP" | "NR" | "NU" | "NZ" | "OM" | "PA" | "PE" | "PF" | "PG" | "PH" | "PK" | "PL" | "PM" | "PN" | "PR" | "PS" | "PT" | "PW" | "PY" | "QA" | "RE" | "RO" | "RS" | "RU" | "RW" | "SA" | "SB" | "SC" | "SD" | "SE" | "SG" | "SH" | "SI" | "SJ" | "SK" | "SL" | "SM" | "SN" | "SO" | "SR" | "SS" | "ST" | "SV" | "SX" | "SY" | "SZ" | "TC" | "TD" | "TF" | "TG" | "TH" | "TJ" | "TK" | "TL" | "TM" | "TN" | "TO" | "TR" | "TT" | "TV" | "TW" | "TZ" | "UA" | "UG" | "UM" | "US" | "UY" | "UZ" | "VA" | "VC" | "VE" | "VG" | "VI" | "VN" | "VU" | "WF" | "WS" | "YE" | "YT" | "ZA" | "ZM" | "ZW";
 /** The 2-letter continent codes Cloudflare uses */
 declare type ContinentCode = "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA";
 type CfProperties<HostMetadata = unknown> = IncomingRequestCfProperties<HostMetadata> | RequestInitCfProperties;
@@ -11239,7 +11239,7 @@ interface Disposable {
  */
 interface EmailSendResult {
     /**
-     * The Email Message ID
+     * The Email Message Id
      */
     messageId: string;
 }
@@ -11633,7 +11633,7 @@ interface ImageHandle {
 interface HostedImagesBinding {
     /**
      * Get a handle for a hosted image
-     * @param imageId The ID of the image (UUID or custom ID)
+     * @param imageId The Id of the image (UUId or custom Id)
      * @returns A handle for per-image operations
      */
     image(imageId: string): ImageHandle;
@@ -11910,15 +11910,15 @@ declare module "cloudflare:pipelines" {
 // itself.
 // https://developers.cloudflare.com/pub-sub/
 interface PubSubMessage {
-    // Message ID
+    // Message Id
     readonly mid: number;
     // MQTT broker FQDN in the form mqtts://BROKER.NAMESPACE.cloudflarepubsub.com:PORT
     readonly broker: string;
     // The MQTT topic the message was sent on.
     readonly topic: string;
-    // The client ID of the client that published this message.
+    // The client Id of the client that published this message.
     readonly clientId: string;
-    // The unique identifier (JWT ID) used by the client to authenticate, if token
+    // The unique identifier (JWT Id) used by the client to authenticate, if token
     // auth was used.
     readonly jti?: string;
     // A Unix timestamp (seconds from Jan 1, 1970), set when the Pub/Sub Broker
@@ -13251,7 +13251,7 @@ type VectorizeIndexConfig = {
  * See {@link VectorizeIndexInfo} for its post-beta equivalent.
  */
 interface VectorizeIndexDetails {
-    /** The unique ID of the index */
+    /** The unique Id of the index */
     readonly id: string;
     /** The name of the index. */
     name: string;
@@ -13272,14 +13272,14 @@ interface VectorizeIndexInfo {
     dimensions: number;
     /** ISO 8601 datetime of the last processed mutation on in the index. All changes before this mutation will be reflected in the index state. */
     processedUpToDatetime: number;
-    /** UUIDv4 of the last mutation processed by the index. All changes before this mutation will be reflected in the index state. */
+    /** UUIdv4 of the last mutation processed by the index. All changes before this mutation will be reflected in the index state. */
     processedUpToMutation: number;
 }
 /**
  * Represents a single vector value set along with its associated metadata.
  */
 interface VectorizeVector {
-    /** The ID for the vector. This can be user-defined, and must be unique. It should uniquely identify the object, and is best set based on the ID of what the vector represents. */
+    /** The Id for the vector. This can be user-defined, and must be unique. It should uniquely identify the object, and is best set based on the Id of what the vector represents. */
     id: string;
     /** The vector values */
     values: VectorFloatArray | number[];
@@ -13422,7 +13422,7 @@ declare abstract class Vectorize {
  * providing metadata about the Worker Version using this binding.
  */
 type WorkerVersionMetadata = {
-    /** The ID of the Worker Version using this binding */
+    /** The Id of the Worker Version using this binding */
     id: string;
     /** The tag of the Worker Version using this binding */
     tag: string;

@@ -60,7 +60,7 @@ export const ProjectEmailPage: React.FC<{
           {project?.defaultDomain}
         </a>
       </p>
-      {project?.resendDomainID ? (
+      {project?.resendDomainId ? (
         <Secret label="Resend API Key" loadSecret={loadEmailAPIKey} readOnly />
       ) : (
         <Text disabled label="Resend API Key" placeholder="Resend API key not found" />

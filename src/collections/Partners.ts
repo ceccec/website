@@ -91,7 +91,7 @@ export const Partners: CollectionConfig = {
       ],
     },
     {
-      name: 'hubspotID',
+      name: 'hubspotId',
       type: 'text',
       access: {
         read: isAdminFieldLevel,
@@ -99,7 +99,7 @@ export const Partners: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-      label: 'HubSpot ID',
+      label: 'HubSpot Id',
     },
     {
       name: 'logo',

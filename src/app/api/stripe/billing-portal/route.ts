@@ -31,7 +31,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const fullUser = await payload.findByID({
+  const fullUser = await payload.findById({
     id: user.id,
     collection: 'users',
     depth: 0,

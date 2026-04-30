@@ -447,7 +447,7 @@ export const PrivacyClientPage: React.FC = () => {
               </li>
               <li>
                 <b>Mobile settings</b>. Using your mobile device settings to limit use of the
-                advertising ID associated with your mobile device for interest-based advertising
+                advertising Id associated with your mobile device for interest-based advertising
                 purposes.
               </li>
             </ul>

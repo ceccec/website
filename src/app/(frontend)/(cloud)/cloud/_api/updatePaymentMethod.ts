@@ -2,14 +2,14 @@ import type { Subscription } from '@cloud/_api/fetchSubscriptions'
 
 export const updatePaymentMethod = async (args: {
   paymentMethod: string
-  subscriptionID: string
-  teamID: string
+  subscriptionId: string
+  teamId: string
 }): Promise<Subscription> => {
-  const { paymentMethod, subscriptionID, teamID } = args
+  const { paymentMethod, subscriptionId, teamId } = args
 
   try {
     const req = await fetch(
-      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/${teamID}/subscriptions/${subscriptionID}`,
+      `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/${teamId}/subscriptions/${subscriptionId}`,
       {
         body: JSON.stringify({
           default_payment_method: paymentMethod,

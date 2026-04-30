@@ -1,7 +1,7 @@
 export const TEAM = `id
 name
 slug
-stripeCustomerID
+stripeCustomerId
 billingEmail
 isEnterprise
 members {
@@ -24,8 +24,8 @@ export const TEAM_QUERY = `
 `
 
 export const TEAMS_QUERY = `
-  query Team($teamIDs: [String!], $page: Int, $limit: Int, $search: String) {
-    Teams(where: { AND: [{ id: { in: $teamIDs } }], OR: [{ name: { like: $search } }, { slug: { like: $search } }] }, limit: $limit, page: $page) {
+  query Team($teamIds: [String!], $page: Int, $limit: Int, $search: String) {
+    Teams(where: { AND: [{ id: { in: $teamIds } }], OR: [{ name: { like: $search } }, { slug: { like: $search } }] }, limit: $limit, page: $page) {
       docs {
         ${TEAM}
       }

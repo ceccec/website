@@ -7,11 +7,11 @@ const {
   NEXT_PUBLIC_CMS_URL,
 } = process.env
 
-const appID = NEXT_PUBLIC_ALGOLIA_CH_ID || ''
+const appId = NEXT_PUBLIC_ALGOLIA_CH_ID || ''
 const apiKey = NEXT_PRIVATE_ALGOLIA_API_KEY || ''
 const indexName = NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME || ''
 
-const client = algoliasearch(appID, apiKey)
+const client = algoliasearch(appId, apiKey)
 
 const index = client.initIndex(indexName)
 
@@ -22,7 +22,7 @@ interface DiscordDoc {
   messageCount: number
   messages: unknown[]
   name: string
-  objectID: string
+  objectId: string
   platform: 'Discord' | 'Github'
   slug: string
 }
@@ -45,8 +45,8 @@ type CommunityHelpRestDoc = {
     title?: string
     upvotes?: number
   }
-  discordID?: string
-  githubID?: string
+  discordId?: string
+  githubId?: string
   helpful?: boolean
   threadCreatedAt?: string
 }
@@ -67,13 +67,13 @@ interface GithubDoc {
   helpful: boolean
   messageCount: number
   name: string
-  objectID: string
+  objectId: string
   platform: 'Discord' | 'Github'
   slug: string
   upvotes: number
 }
 export const syncToAlgolia = async (): Promise<void> => {
-  if (!appID || !apiKey || !indexName) {
+  if (!appId || !apiKey || !indexName) {
     throw new Error('Algolia environment variables are not set')
   }
 
@@ -87,9 +87,9 @@ export const syncToAlgolia = async (): Promise<void> => {
   const githubDocs: GithubDoc[] = []
 
   docs.forEach((doc: CommunityHelpRestDoc) => {
-    const { communityHelpJSON, discordID, githubID, helpful, threadCreatedAt } = doc
+    const { communityHelpJSON, discordId, githubId, helpful, threadCreatedAt } = doc
 
-    if (discordID) {
+    if (discordId) {
       const { slug, info, intro, messageCount, messages } = communityHelpJSON
       if (!info?.id || !info.name || !intro?.authorName) {
         return
@@ -112,12 +112,12 @@ export const syncToAlgolia = async (): Promise<void> => {
             }
           }
         }),
-        objectID: info.id,
+        objectId: info.id,
         platform: 'Discord',
       })
     }
 
-    if (githubID) {
+    if (githubId) {
       const { id, slug, author, body, comments, commentTotal, createdAt, title, upvotes } =
         communityHelpJSON
 
@@ -143,7 +143,7 @@ export const syncToAlgolia = async (): Promise<void> => {
         description: body ?? '',
         helpful: helpful ?? false,
         messageCount: commentTotal ?? 0,
-        objectID: id ?? '',
+        objectId: id ?? '',
         platform: 'Github',
         upvotes: upvotes ?? 0,
       })

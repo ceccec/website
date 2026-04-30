@@ -405,7 +405,7 @@ export const fetchPartners = async (): Promise<Partner[]> => {
     collection: 'partners',
     depth: CACHE_DEPTH.partnersList,
     limit: 300,
-    overrideAccess: false, // Respect field-level access control (excludes email and hubspotID)
+    overrideAccess: false, // Respect field-level access control (excludes email and hubspotId)
     sort: 'slug',
     where: {
       AND: [{ agency_status: { equals: 'active' } }, { _status: { equals: 'published' } }],

@@ -57,7 +57,7 @@ import { getServerSideURL } from './utilities/getURL'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const sendGridAPIKey = process.env.SENDGRID_API_KEY
+const sendGridAPIKey = process.env.SENDGRId_API_KEY
 
 /** Web API (HTTPS), same as legacy nodemailer-sendgrid; works when SMTP :587 is blocked. */
 const sendgridConfig = {

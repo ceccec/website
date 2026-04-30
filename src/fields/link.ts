@@ -111,7 +111,7 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
           required: true,
         },
         {
-          name: 'customID',
+          name: 'customId',
           type: 'text',
           admin: {
             width: '25%',
@@ -124,7 +124,7 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
       ...linkResult.fields,
       ...linkTypes,
       {
-        name: 'customID',
+        name: 'customId',
         type: 'text',
         admin: {
           width: '25%',

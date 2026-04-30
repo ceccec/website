@@ -15,20 +15,20 @@ import { stateReducer } from './reducer'
 export const UniqueSlug: React.FC<{
   collection: 'projects' | 'teams'
   disabled?: boolean
-  docID?: string
+  docId?: string
   initialValue?: string
   label?: string
   path?: 'createTeamFromSlug' | 'slug'
-  teamID?: string
+  teamId?: string
   validateOnInit?: boolean
 }> = ({
   collection = 'teams',
   disabled = false,
-  docID,
+  docId,
   initialValue,
   label = 'Slug',
   path = 'slug',
-  teamID,
+  teamId,
   validateOnInit = false,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -90,10 +90,10 @@ export const UniqueSlug: React.FC<{
               `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/validate-slug`,
               {
                 body: JSON.stringify({
-                  id: docID,
+                  id: docId,
                   slug: debouncedSlug,
                   collection,
-                  team: teamID,
+                  team: teamId,
                 }),
                 headers: {
                   'Content-Type': 'application/json',
@@ -140,9 +140,9 @@ export const UniqueSlug: React.FC<{
     state.userInteracted,
     debouncedSlug,
     collection,
-    teamID,
+    teamId,
     initialValue,
-    docID,
+    docId,
     disabled,
   ])
 
@@ -229,14 +229,14 @@ export const UniqueTeamSlug: React.FC<{
   initialValue?: string
   path?: 'createTeamFromSlug' | 'slug'
   readOnly?: boolean
-  teamID?: string
+  teamId?: string
 }> = (props) => {
-  const { initialValue, path = 'slug', readOnly, teamID } = props
+  const { initialValue, path = 'slug', readOnly, teamId } = props
   return (
     <UniqueSlug
       collection="teams"
       disabled={readOnly}
-      docID={teamID}
+      docId={teamId}
       initialValue={initialValue}
       label="Team Slug"
       path={path}
@@ -247,19 +247,19 @@ export const UniqueTeamSlug: React.FC<{
 export const UniqueProjectSlug: React.FC<{
   disabled?: boolean
   initialValue?: string
-  projectID?: string
-  teamID?: string
+  projectId?: string
+  teamId?: string
   validateOnInit?: boolean
-}> = ({ disabled: readOnly, initialValue, projectID, teamID, validateOnInit }) => {
+}> = ({ disabled: readOnly, initialValue, projectId, teamId, validateOnInit }) => {
   return (
     <UniqueSlug
       collection="projects"
       disabled={readOnly}
-      docID={projectID}
+      docId={projectId}
       initialValue={initialValue}
       label="Project Slug"
       path="slug"
-      teamID={teamID}
+      teamId={teamId}
       validateOnInit={validateOnInit}
     />
   )

@@ -24,7 +24,7 @@ export const createSubscription = async (args: {
         paymentMethod,
         project: {
           id: project.id,
-          // flatten relationships to only the ID
+          // flatten relationships to only the Id
           plan: typeof plan === 'string' ? plan : plan.id,
           team: typeof team === 'string' ? team : team.id,
         },

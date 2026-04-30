@@ -31,10 +31,10 @@ export async function sha256HexFromRequestFile(req: PayloadRequest): Promise<str
   return createHash('sha256').update(buf).digest('hex')
 }
 
-/** Runs before create / updateByID when a new file is present — blocks a second blob for identical bytes. */
+/** Runs before create / updateById when a new file is present — blocks a second blob for identical bytes. */
 export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> = async (input) => {
   const { context, operation, req } = input
-  if ((operation !== 'create' && operation !== 'updateByID') || !req.file) {
+  if ((operation !== 'create' && operation !== 'updateById') || !req.file) {
     return
   }
 
@@ -45,14 +45,14 @@ export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> 
 
   ;(context as Record<string, unknown>)[MEDIA_CONTENT_SHA256_CONTEXT_KEY] = hash
 
-  const currentID = operation === 'updateByID' ? String(input.args.id) : undefined
+  const currentId = operation === 'updateById' ? String(input.args.id) : undefined
 
   const where: Where =
-    currentID !== undefined
+    currentId !== undefined
       ? {
           and: [
             { contentSha256: { equals: hash } },
-            { id: { not_equals: currentID } },
+            { id: { not_equals: currentId } },
           ],
         }
       : { contentSha256: { equals: hash } }
@@ -78,7 +78,7 @@ export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> 
       duplicateAlt: typeof match.alt === 'string' ? match.alt : undefined,
       duplicateFilename:
         typeof match.filename === 'string' ? match.filename : undefined,
-      duplicateOfID: match.id,
+      duplicateOfId: match.id,
     },
     true,
   )

@@ -10,7 +10,7 @@ export interface Subscription {
 export const useSubscription = (args: {
   delay?: number
   initialValue?: null | Subscription
-  stripeSubscriptionID?: string
+  stripeSubscriptionId?: string
   team: Team
 }): {
   error: string
@@ -19,7 +19,7 @@ export const useSubscription = (args: {
   result: null | Subscription | undefined
   updateSubscription: (subscription: Subscription) => void
 } => {
-  const { delay, initialValue, stripeSubscriptionID, team } = args
+  const { delay, initialValue, stripeSubscriptionId, team } = args
   const isRequesting = useRef(false)
   const [result, setResult] = useState<null | Subscription | undefined>(initialValue)
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
@@ -28,8 +28,8 @@ export const useSubscription = (args: {
   const getSubscriptions = useCallback(() => {
     let timer: NodeJS.Timeout
 
-    if (!stripeSubscriptionID) {
-      setError('No subscription ID')
+    if (!stripeSubscriptionId) {
+      setError('No subscription Id')
       return
     }
 
@@ -44,7 +44,7 @@ export const useSubscription = (args: {
         setIsLoading(true)
 
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionID}`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionId}`,
           {
             credentials: 'include',
             method: 'GET',
@@ -77,7 +77,7 @@ export const useSubscription = (args: {
     return () => {
       clearTimeout(timer)
     }
-  }, [delay, stripeSubscriptionID, team?.id])
+  }, [delay, stripeSubscriptionId, team?.id])
 
   useEffect(() => {
     if (initialValue) {
@@ -94,8 +94,8 @@ export const useSubscription = (args: {
     (newSubscription: Subscription) => {
       let timer: NodeJS.Timeout
 
-      if (!stripeSubscriptionID) {
-        setError('No subscription ID')
+      if (!stripeSubscriptionId) {
+        setError('No subscription Id')
         return
       }
 
@@ -110,7 +110,7 @@ export const useSubscription = (args: {
           setIsLoading(true)
 
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionID}`,
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/subscriptions/${stripeSubscriptionId}`,
             {
               body: JSON.stringify(newSubscription),
               credentials: 'include',
@@ -148,7 +148,7 @@ export const useSubscription = (args: {
         clearTimeout(timer)
       }
     },
-    [delay, stripeSubscriptionID, team?.id],
+    [delay, stripeSubscriptionId, team?.id],
   )
 
   const memoizedState = useMemo(

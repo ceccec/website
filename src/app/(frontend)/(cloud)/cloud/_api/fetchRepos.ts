@@ -20,7 +20,7 @@ export const fetchRepos = async (args: {
   per_page?: number
 }): Promise<RepoResults> => {
   const { install, page, per_page } = args
-  const installID = install && typeof install === 'object' ? install.id : install
+  const installId = install && typeof install === 'object' ? install.id : install
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
   if (!token) {
@@ -31,7 +31,7 @@ export const fetchRepos = async (args: {
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`,
     {
       body: JSON.stringify({
-        route: `GET /user/installations/${installID}/repositories?${new URLSearchParams({
+        route: `GET /user/installations/${installId}/repositories?${new URLSearchParams({
           page: page?.toString() ?? '1',
           per_page: per_page?.toString() ?? '30',
         })}`,
@@ -75,11 +75,11 @@ export const fetchReposClient = async ({
   page?: number
   per_page?: number
 }): Promise<RepoResults> => {
-  const installID = install && typeof install === 'object' ? install.id : install
+  const installId = install && typeof install === 'object' ? install.id : install
 
   const docs = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`, {
     body: JSON.stringify({
-      route: `GET /user/installations/${installID}/repositories?${new URLSearchParams({
+      route: `GET /user/installations/${installId}/repositories?${new URLSearchParams({
         page: page?.toString() ?? '1',
         per_page: per_page?.toString() ?? '30',
       })}`,

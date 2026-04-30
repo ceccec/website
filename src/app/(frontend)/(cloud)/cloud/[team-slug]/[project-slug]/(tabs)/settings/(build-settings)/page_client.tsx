@@ -105,8 +105,8 @@ export const ProjectBuildSettingsPage: React.FC<{
         <UniqueProjectSlug
           disabled={environmentSlug !== 'prod'}
           initialValue={project?.slug}
-          projectID={project?.id}
-          teamID={typeof project?.team === 'string' ? project?.team : project?.team?.id}
+          projectId={project?.id}
+          teamId={typeof project?.team === 'string' ? project?.team : project?.team?.id}
         />
         <Text
           initialValue={project?.rootDirectory || '/'}

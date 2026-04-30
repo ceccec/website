@@ -75,7 +75,7 @@ export const CloudPage: React.FC<{
         // this gives the user a visual indicator that something is happening
         const start = Date.now()
 
-        // reduce user teams to an array of team IDs
+        // reduce user teams to an array of team Ids
         const userTeams =
           user?.teams?.map(({ team }) =>
             team && typeof team === 'object' && team !== null && 'id' in team ? team.id : team,
@@ -90,7 +90,7 @@ export const CloudPage: React.FC<{
             const projectsRes = await fetchProjectsClient({
               page: searchChanged || teamChanged ? 1 : page,
               search: debouncedSearch,
-              teamIDs: teams,
+              teamIds: teams,
             })
 
             const end = Date.now()

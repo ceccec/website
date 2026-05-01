@@ -2,10 +2,12 @@
  * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
  * @see https://payloadcms.com/docs/local-api/overview
  */
-import config from '@payload-config'
-import { getPayload } from 'payload'
+import config from ‘@payload-config’
+import { getPayload } from ‘payload’
 
-import sanitizeSlug from '../utilities/sanitizeSlug'
+import { processBatch } from ‘../utilities/BatchProcessor’
+import { httpClient } from ‘../utilities/HttpClient’
+import sanitizeSlug from ‘../utilities/sanitizeSlug’
 
 const { GITHUB_ACCESS_TOKEN } = process.env
 const headers = {
@@ -119,13 +121,15 @@ async function fetchGitHub(): Promise<void> {
     }`
   }
 
-  const initialReq: any = await fetch('https://api.github.com/graphql', {
+  const initialResponse = await fetch('https://api.github.com/graphql', {
     body: JSON.stringify({
       query: createQuery(null, false),
     }),
     headers,
     method: 'POST',
-  }).then((res) => res.json())
+  })
+
+  const initialReq: any = await initialResponse.json()
 
   if (initialReq.errors) {
     console.error('[fetchGitHub] GitHub API returned errors:', JSON.stringify(initialReq.errors))
@@ -142,61 +146,35 @@ async function fetchGitHub(): Promise<void> {
   let cursor = initialReq.data.repository.discussions.pageInfo.endCursor
 
   while (hasNextPage) {
-    let nextReq
-    const retries = 3
-    let success = false
+    // Use unified HttpClient with exponential backoff for retries
+    const nextResponse = await httpClient.fetch('https://api.github.com/graphql', {
+      body: JSON.stringify({
+        query: createQuery(cursor, hasNextPage),
+      }),
+      headers,
+      method: 'POST',
+    }, {
+      maxRetries: 3,
+      baseDelay: 3000,
+      backoffMultiplier: 1, // Use fixed 3s delay instead of exponential
+    })
 
-    // Retry logic for timeouts
-    for (let attempt = 0; attempt <= retries && !success; attempt++) {
-      try {
-        nextReq = await fetch('https://api.github.com/graphql', {
-          body: JSON.stringify({
-            query: createQuery(cursor, hasNextPage),
-          }),
-          headers,
-          method: 'POST',
-        }).then((res) => res.json())
+    const nextReq: any = await nextResponse.json()
 
-        // Check for timeout or service errors in the response
-        if (nextReq.message && nextReq.message.includes("couldn't respond")) {
-          if (attempt < retries) {
-            console.warn(
-              `[fetchGitHub] GitHub API timeout, retrying in 3s (attempt ${attempt + 1}/${retries + 1})`,
-            )
-            await new Promise((resolve) => setTimeout(resolve, 3000))
-            continue
-          } else {
-            console.error('[fetchGitHub] GitHub API timeout after retries:', nextReq.message)
-            throw new Error(`GitHub API timeout: ${nextReq.message}`)
-          }
-        }
-
-        if (nextReq.errors) {
-          console.error('[fetchGitHub] GitHub API returned errors:', JSON.stringify(nextReq.errors))
-          throw new Error(`GitHub API error: ${nextReq.errors[0]?.message || 'Unknown error'}`)
-        }
-
-        if (!nextReq.data?.repository?.discussions) {
-          console.error('[fetchGitHub] Unexpected GitHub API response:', JSON.stringify(nextReq))
-          throw new Error('GitHub API returned unexpected response structure')
-        }
-
-        success = true
-      } catch (error) {
-        if (attempt < retries) {
-          console.warn(
-            `[fetchGitHub] Error fetching discussions page, retrying (attempt ${attempt + 1}/${retries + 1}):`,
-            error.message,
-          )
-          await new Promise((resolve) => setTimeout(resolve, 3000))
-        } else {
-          throw error
-        }
-      }
+    // Check for timeout or service errors in the response
+    if (nextReq.message && nextReq.message.includes("couldn't respond")) {
+      console.error('[fetchGitHub] GitHub API timeout:', nextReq.message)
+      throw new Error(`GitHub API timeout: ${nextReq.message}`)
     }
 
-    if (!success || !nextReq) {
-      throw new Error('Failed to fetch GitHub discussions after retries')
+    if (nextReq.errors) {
+      console.error('[fetchGitHub] GitHub API returned errors:', JSON.stringify(nextReq.errors))
+      throw new Error(`GitHub API error: ${nextReq.errors[0]?.message || 'Unknown error'}`)
+    }
+
+    if (!nextReq.data?.repository?.discussions) {
+      console.error('[fetchGitHub] Unexpected GitHub API response:', JSON.stringify(nextReq))
+      throw new Error('GitHub API returned unexpected response structure')
     }
 
     discussionData.push(...nextReq.data.repository.discussions.nodes)
@@ -322,22 +300,24 @@ async function fetchGitHub(): Promise<void> {
     }`,
   )
 
-  const populateAll = discussionsToSync.map(async (discussion) => {
-    if (!discussion) {
-      return
-    }
+  // Upsert discussions to database using segmented batch processing
+  await processBatch(
+    discussionsToSync,
+    async (discussion) => {
+      if (!discussion) {
+        return
+      }
 
-    const existingDiscussion = existingDiscussions.find((d) => d.githubId === discussion.id)
-    const data = {
-      slug: discussion.slug,
-      communityHelpJSON: discussion,
-      communityHelpType: 'github' as const,
-      githubId: discussion.id,
-      threadCreatedAt: discussion.createdAt,
-      title: discussion.title,
-    }
+      const existingDiscussion = existingDiscussions.find((d) => d.githubId === discussion.id)
+      const data = {
+        slug: discussion.slug,
+        communityHelpJSON: discussion,
+        communityHelpType: 'github' as const,
+        githubId: discussion.id,
+        threadCreatedAt: discussion.createdAt,
+        title: discussion.title,
+      }
 
-    try {
       if (existingDiscussion) {
         // Update existing discussion
         await payload.update({
@@ -360,15 +340,13 @@ async function fetchGitHub(): Promise<void> {
           `[fetchGitHub] Successfully created discussion "${discussion.title}" (#${discussion.id})`,
         )
       }
-    } catch (error) {
-      console.error(
-        `[fetchGitHub] Exception processing discussion "${discussion.title}" (#${discussion.id}):`,
-        error,
-      )
-    }
-  })
-
-  await Promise.all(populateAll)
+    },
+    {
+      mode: 'segmented', // Process in segments for database safety
+      segmentSize: 10,
+      enableLogging: true,
+    },
+  )
   console.log('[fetchGitHub] Sync completed!')
   console.timeEnd('[fetchGitHub] Total duration')
 }

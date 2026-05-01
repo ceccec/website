@@ -1,0 +1,20 @@
+---
+description: Custom components overview + admin UI swaps — https://payloadcms.com/docs/custom-components/overview
+globs: src/**/importMap*.{ts,tsx},src/components/AfterNavActions/**/*.{ts,tsx},src/components/BeforeDashboard/**/*.{ts,tsx},src/**/admin/**/*.{ts,tsx},src/payload.config.ts
+alwaysApply: false
+---
+
+# Custom admin components
+
+**Official entry:** [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) — replace or extend Admin Panel UI with React; read **performance** on that page ([#performance](https://payloadcms.com/docs/custom-components/overview#performance)).
+
+- **Surfaces:** [Root components](https://payloadcms.com/docs/custom-components/root-components) · [Custom providers](https://payloadcms.com/docs/custom-components/custom-providers) · [Dashboard](https://payloadcms.com/docs/custom-components/dashboard)
+- **Views:** [List view](https://payloadcms.com/docs/custom-components/list-view) · [Edit view](https://payloadcms.com/docs/custom-components/edit-view) · [Document views](https://payloadcms.com/docs/custom-components/document-views) · [Custom views](https://payloadcms.com/docs/custom-components/custom-views)
+
+## Repo wiring
+
+- Register paths in `payload.config.ts` `admin.components`; run **`pnpm generate:importmap`** after moving or adding components.
+
+## Checklist
+
+- [ ] Server vs client boundaries respected for imported modules.

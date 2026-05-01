@@ -1,0 +1,37 @@
+---
+description: Official Payload guides & examples — docs-first workflow + monorepo examples
+globs: scripts/**/*.{mjs,ts,js},src/components/RenderBlocks/**/*.{ts,tsx},src/plugins/**/*.{ts,tsx},src/collections/**/*.{ts,tsx},src/blocks/**/*.{ts,tsx},src/config/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Payload guides & examples (workflow)
+
+Follow **[official documentation](https://payloadcms.com/docs/)** first (same content as [`payloadcms/payload` docs](https://github.com/payloadcms/payload/tree/main/docs)), then align implementation with the closest **example** or template—not ad hoc patterns.
+
+## Read order (Payload-recommended shape)
+
+1. **Concepts & config** — [Getting started](https://payloadcms.com/docs/getting-started/what-is-payload) · [Concepts](https://payloadcms.com/docs/getting-started/concepts) · [Configuration overview](https://payloadcms.com/docs/configuration/overview).
+2. **Examples hub** — [Examples overview](https://payloadcms.com/docs/examples/overview) (templates / reference apps listed there).
+3. **Source examples** — Monorepo [`examples/`](https://github.com/payloadcms/payload/tree/main/examples) alongside the docs (useful when the overview links to a specific app).
+4. **Topic docs** — Use `payload-features-overview.mdc`, `payload-ecosystem.mdc`, and `payload-basics.mdc` for the URL ↔ rule map; open the **overview** link for the feature you touch.
+
+## Patterns aligned with guides
+
+| Topic | Official guide | This repo |
+|-------|----------------|-----------|
+| Schema & types | [Collections](https://payloadcms.com/docs/configuration/collections) · [TypeScript](https://payloadcms.com/docs/typescript/overview) | `src/collections`, `src/plugins/schema` → `pnpm generate:types` |
+| Blocks (page builder) | [Blocks field](https://payloadcms.com/docs/fields/blocks) | Allowlists: `src/plugins/schema/layoutBlockReferences.ts`; UI map: `src/components/RenderBlocks/registry.tsx` + `RenderBlocks` |
+| Rich text | [Rich text overview](https://payloadcms.com/docs/rich-text/overview) · [Rich text blocks](https://payloadcms.com/docs/rich-text/blocks) | `src/config/payloadLexicalEditor.ts`, Docs editor in `collections/Docs`, render: `components/RichText` |
+| Admin UI | [Custom components](https://payloadcms.com/docs/custom-components/overview) | `admin.components` / field `admin.components` → `pnpm generate:importmap` |
+| Plugins | [Plugins overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api) | `src/plugins/index.ts`, `src/plugins/*/` factories |
+
+## Copy from examples, adapt paths
+
+- Prefer **patterns** from official examples (hooks shape, access, plugin merge order), not file-for-file copies—this repo uses its own **plugin pipeline** and **schema** layout (`payload-plugins.mdc`, `payload-basics.mdc`).
+- Before diffing an external template, **align `payload` / `@payloadcms/*` versions** in `package.json`.
+
+## Checklist
+
+- [ ] Skim the relevant **overview** doc + **Examples overview** entry before a large feature (auth, multi-tenant, ecommerce, forms, etc.).
+- [ ] Cross-check monorepo `examples/` when the docs reference a specific app.
+- [ ] After schema or admin component changes: `pnpm generate:types` and, if needed, `pnpm generate:importmap` (`payload-typescript.mdc`, `payload-custom-components.mdc`).

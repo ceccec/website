@@ -1,0 +1,39 @@
+---
+description: Efficient rule reads — triage, only applicable topic .mdc files, parallel Read; hubs when routing unclear
+alwaysApply: true
+---
+
+# Read project rules (agent-efficient)
+
+**Goal:** Correct behavior with **few tool calls** — read **only** rules that apply to **this** task, **once**, ideally in **parallel**.
+
+## 1. Triage (no files yet)
+
+Decide what you will touch: schema/config, hooks, admin UI, migrations/DB, plugins/commerce, deploy/CI, App Router / Next.js, Docker, Lexical, etc. If the scope is **narrow** (one bug in one component with no Payload/schema change), you may skip **Payload** topic rules **unless** the fix touches `payload-*.mdc` conventions; for **Next-only** fixes, use **`next-features-overview.mdc`** to open the right **`next-*.mdc`** (you still have **`next-basics.mdc`** in context when always-on).
+
+## 2. Route without redundancy
+
+| Intent | Where to read |
+|--------|----------------|
+| Payload schema, hooks, admin, plugins, APIs | **`payload-basics.mdc`** → name 1–3 **`payload-*.mdc`** files (do not open every hub) |
+| Next.js (always-on context) | **`next-basics.mdc`** is always applied; use **`next-features-overview.mdc`** to pick **`next-*.mdc`** topics |
+| Full stack: CMS + App Router / cache / `next.config` | **`payload-basics.mdc`** + **`next-features-overview.mdc`** + selected **`next-*.mdc`** (Payload leads) |
+| Deploy / CI / migrate / OpenNext / both stacks | **`payload-deployment.mdc`**; Next platform docs → **`next-deployment.mdc`** |
+| Next-only (no schema change) | **`next-features-overview.mdc`** → specific **`next-*.mdc`** (routing, caching, config, …) |
+| Routing still unclear | **Payload:** `payload-features-overview` / `payload-ecosystem` / `payload-deployment` — **Next:** `next-features-overview` |
+
+## 3. Read batch
+
+- **Parallel:** `Read` every **selected** topic file in **one** message with multiple tool calls (hub + topics together only if you opened a hub).
+- **Depth:** Read applicable topic rule(s) **in full**. Do **not** read unrelated `payload-*.mdc` files “just in case.”
+- **Scoped:** **`docker-stack.mdc`** only for Docker paths it describes. **`next-*.mdc`** is not a substitute for **`payload-deployment.mdc`** when the task is migrate/CI/build/wrangler scripts.
+
+## 4. When scope expands
+
+If mid-task you touch another area, **read that topic rule next** (same batch efficiency)—then continue.
+
+## 5. Anti-patterns
+
+- Reading all hubs or all `payload-*.mdc` files up front.
+- Implementing Payload/schema/deploy behavior from memory when a **single** topic rule would settle it.
+- Serializing `Read` calls when batching is possible.

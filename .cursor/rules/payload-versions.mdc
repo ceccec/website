@@ -1,0 +1,17 @@
+---
+description: Versions, drafts (_status), autosave, restore workflows
+globs: src/plugins/schema/**/*.{ts,tsx},src/collections/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Versions & drafts
+
+- **Docs:** [Versions](https://payloadcms.com/docs/versions/overview) · [Drafts](https://payloadcms.com/docs/versions/drafts)
+- **Collection:** `versions: { drafts: true, ... }` enables **_status** and draft lifecycle; hooks may branch on **draft vs published**.
+- **Queries:** Use **`where`** / API params to exclude drafts from public site unless intentional (`draft=true` query patterns per REST docs).
+- **Redirects / sitemap:** Only published docs should appear — align **revalidation** with publish/ unpublish hooks if you cache by tag.
+
+## Checklist
+
+- [ ] Public `find` / `getCachedDocument` use correct **depth** and **where** for published-only.
+- [ ] After changing version settings, run migrations if Payload requires schema updates.

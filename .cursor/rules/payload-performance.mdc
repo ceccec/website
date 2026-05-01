@@ -1,0 +1,17 @@
+---
+description: depth, select, pagination, indexes — avoid over-fetching in Local API
+globs: src/app/_data/**/*.{ts,tsx},src/utilities/getDocument.ts,src/utilities/getRedirects.ts,src/**/*getPayload*.{ts,tsx}
+alwaysApply: false
+---
+
+# Performance
+
+- **Docs:** [Performance](https://payloadcms.com/docs/performance/overview) · [Queries](https://payloadcms.com/docs/queries/overview) · [Query depth](https://payloadcms.com/docs/queries/depth) · [Select](https://payloadcms.com/docs/queries/select) · [Database indexes](https://payloadcms.com/docs/database/indexes)
+- **Local API:** Prefer **`select`** to trim fields, **`depth` as low as** still correct for the UI, **`limit` + pagination** for lists. Avoid `depth: 10` by default. Depth does not apply to GraphQL the same way — query **shape** determines population ([depth doc](https://payloadcms.com/docs/queries/depth)).
+- **Caching:** Next `unstable_cache` / `revalidateTag` — **cache keys must include** `depth` (and locale if localized) when caching `find` results (see `getDocument.ts`).
+- **Hooks / APIs:** Keep hooks and validations lightweight; offload long work to [jobs](https://payloadcms.com/docs/jobs-queue/overview). Block references reduce admin payload ([blocks field](https://payloadcms.com/docs/fields/blocks#block-references)).
+
+## Checklist
+
+- [ ] List pages: measure N+1 from population; reduce **depth** or split queries.
+- [ ] **`defaultDepth`** in config is understood project-wide (this repo sets it in `payload.config.ts`).

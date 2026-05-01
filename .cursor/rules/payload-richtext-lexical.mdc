@@ -1,0 +1,18 @@
+---
+description: Lexical rich text — features, blocks, rendering, HTML conversion
+globs: src/config/payloadLexicalEditor.ts,src/components/RichText/**/*.{ts,tsx},src/fields/richText/**/*.{ts,tsx},src/collections/Docs/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Rich text (Lexical)
+
+- **Docs:** [Rich text overview](https://payloadcms.com/docs/rich-text/overview) · [Official features](https://payloadcms.com/docs/rich-text/official-features) · [Custom features](https://payloadcms.com/docs/rich-text/custom-features) · [Converters](https://payloadcms.com/docs/rich-text/converters) · [Rendering on demand](https://payloadcms.com/docs/rich-text/rendering-on-demand)
+- **Editor config:** `src/config/payloadLexicalEditor.ts` — `lexicalEditor({ features: ... })`; **Docs** collection may use a **different** feature set (`src/collections/Docs/index.ts` `contentLexicalEditorFeatures`).
+- **Blocks inside Lexical:** `BlocksFeature` — block slugs must match **blocks registered** in schema and **JSX converters** in `src/components/RichText/index.tsx` (or equivalent).
+- **Serialization:** Stored as JSON (**Lexical editor state**). Do not treat as HTML unless you run official conversion utilities ([Lexical → HTML](https://payloadcms.com/docs/rich-text/converting-html)) where applicable.
+- **Custom nodes:** Label / LargeBody and other custom features: keep **server + client** feature pair in `src/fields/richText/features` in sync.
+
+## Checklist
+
+- [ ] New block in editor: block config in schema + converter in `RichText` (or `lexicalHTML` if you output HTML).
+- [ ] `DefaultNodeTypes` / `SerializedBlockNode` types updated or extended when adding nodes.

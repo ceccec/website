@@ -1,0 +1,21 @@
+---
+description: Local API — server functions, non-Next usage, access in Local API
+globs: src/lib/getPayload.ts,src/**/*server*.ts,src/app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Local API (advanced)
+
+Core entry remains [`getPayload`](https://payloadcms.com/docs/local-api/overview) + config.
+
+- **Server Functions:** [Server functions](https://payloadcms.com/docs/local-api/server-functions) — patterns outside classic route handlers where Local API is still valid.
+- **Outside Next.js:** [Outside Next.js](https://payloadcms.com/docs/local-api/outside-nextjs) — standalone Node / custom servers must still load config and adapter consistently.
+- **Access:** [Local API access control](https://payloadcms.com/docs/local-api/access-control) — `overrideAccess`, `user`, and when bypass applies.
+
+## Repo
+
+- Prefer `@root/lib/getPayload` in this codebase; match **depth** / **locale** to consumers.
+
+## Checklist
+
+- [ ] Long-running **CLI scripts** use `getPayload({ config })` with `@payload-config` (e.g. `fetchDiscord.ts`). `src/migrate.ts` uses `@root/lib/getPayload` like Next.

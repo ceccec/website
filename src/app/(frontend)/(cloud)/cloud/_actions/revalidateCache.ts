@@ -9,15 +9,26 @@ import { revalidatePath } from 'next/cache'
 // according to their docs, it is possible to purge this using a `Server Action`
 // https://nextjs.org/docs/app/building-your-application/caching#router-cache
 // https://nextjs.org/docs/app/building-your-application/caching#invalidation-1
-export async function revalidateCache(args: { path?: string; tag?: string }): Promise<void> {
-  const { path, tag } = args
+export async function revalidateCache(args: {
+  path?: string
+  tag?: string
+  tags?: string[]
+}): Promise<void> {
+  const { path, tag, tags } = args
 
-  if (!path && !tag) {
-    throw new Error('No path or tag provided')
+  if (!path && !tag && !tags) {
+    throw new Error('No path or tag(s) provided')
   }
 
   try {
-    if (tag) {
+    // Handle multiple tags (new pattern via uuidTags)
+    if (tags && tags.length > 0) {
+      for (const t of tags) {
+        revalidateTagImmediate(t)
+      }
+    }
+    // Handle single tag (legacy pattern for backwards compatibility)
+    else if (tag) {
       revalidateTagImmediate(tag)
     }
 

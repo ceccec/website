@@ -65,6 +65,7 @@ const aliasPairs = [
   ['@root', 'src'],
   ['@scss', 'src/css'],
   ['@types', 'src/payload-types.ts'],
+  ['@uuid', 'src/utilities/uuidTags.ts'],
   ['@utilities', 'src/utilities'],
 ]
 

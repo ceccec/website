@@ -5,6 +5,7 @@ import { revalidateCache } from '@cloud/_actions/revalidateCache'
 import { Button } from '@components/Button/index'
 import { Heading } from '@components/Heading/index'
 import { useModal } from '@faceless-ui/modal'
+import { uuidTags } from '@uuid'
 import Form from '@forms/Form/index'
 import Submit from '@forms/Submit/index'
 import React from 'react'
@@ -102,7 +103,7 @@ export const UpdateRolesConfirmationForm: React.FC<UpdateRolesConfirmationFormPr
     onRolesUpdated(newRoles)
 
     await revalidateCache({
-      tag: `team_${team.id}`,
+      tags: [uuidTags.cloud.teamById(team.id)],
     })
 
     toast.success('Roles updated successfully.')

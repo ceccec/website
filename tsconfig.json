@@ -76,6 +76,9 @@
       "@utilities/*": [
         "./src/utilities/*"
       ],
+      "@uuid": [
+        "./src/utilities/uuidTags.ts"
+      ],
       "@payload-config": [
         "./src/payload.config.ts"
       ]

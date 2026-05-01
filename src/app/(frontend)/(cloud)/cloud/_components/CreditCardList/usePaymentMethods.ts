@@ -5,6 +5,7 @@ import { revalidateCache } from '@cloud/_actions/revalidateCache'
 import { fetchPaymentMethod } from '@cloud/_api/fetchPaymentMethod'
 import { fetchPaymentMethodsClient } from '@cloud/_api/fetchPaymentMethods'
 import { updateCustomer } from '@cloud/_api/updateCustomer'
+import { uuidTags } from '@uuid'
 import { useElements, useStripe } from '@stripe/react-stripe-js'
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -173,9 +174,11 @@ export const usePaymentMethods = (args: {
 
         toast.success(`Payment method deleted successfully.`)
 
-        await revalidateCache({
-          tag: `team_${team?.slug}`,
-        })
+        if (team?.id) {
+          await revalidateCache({
+            tags: [uuidTags.cloud.teamById(team.id)],
+          })
+        }
       } catch (err: unknown) {
         const message = (err as Error)?.message || 'Something went wrong'
         setError(message)
@@ -239,9 +242,11 @@ export const usePaymentMethods = (args: {
 
         toast.success(`Payment method added successfully.`)
 
-        await revalidateCache({
-          tag: `team_${team?.slug}`,
-        })
+        if (team?.id) {
+          await revalidateCache({
+            tags: [uuidTags.cloud.teamById(team.id)],
+          })
+        }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'Unknown error'
         setError(msg)

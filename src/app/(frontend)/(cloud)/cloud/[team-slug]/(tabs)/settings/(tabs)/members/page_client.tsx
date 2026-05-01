@@ -14,6 +14,7 @@ import { Banner } from '@components/Banner'
 import { HR } from '@components/HR/index'
 import { ModalWindow } from '@components/ModalWindow/index'
 import { useModal } from '@faceless-ui/modal'
+import { uuidTags } from '@uuid'
 import Form from '@forms/Form/index'
 import FormProcessing from '@forms/FormProcessing/index'
 import FormSubmissionError from '@forms/FormSubmissionError/index'
@@ -170,9 +171,11 @@ export const TeamMembersPage: React.FC<{
 
       toast.success('Team updated successfully.')
 
-      await revalidateCache({
-        tag: `team_${team?.id}`,
-      })
+      if (team?.id) {
+        await revalidateCache({
+          tags: [uuidTags.cloud.teamById(team.id)],
+        })
+      }
     },
     [user, team, setTeam],
   )

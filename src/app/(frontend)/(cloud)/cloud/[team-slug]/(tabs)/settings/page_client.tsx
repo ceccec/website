@@ -12,6 +12,7 @@ import Form from '@forms/Form/index'
 import FormProcessing from '@forms/FormProcessing/index'
 import FormSubmissionError from '@forms/FormSubmissionError/index'
 import Submit from '@forms/Submit/index'
+import { uuidTags } from '@uuid'
 import { useAuth } from '@root/providers/Auth/index'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
@@ -76,9 +77,11 @@ export const TeamSettingsPage: React.FC<{
 
       toast.success(`Team settings updated successfully.`)
 
-      await revalidateCache({
-        tag: `team_${team?.id}`,
-      })
+      if (team?.id) {
+        await revalidateCache({
+          tags: [uuidTags.cloud.teamById(team.id)],
+        })
+      }
 
       // if the team slug has changed, redirect to the new URL
       if (response.doc.slug !== team?.slug) {

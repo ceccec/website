@@ -1,17 +1,17 @@
 /**
- * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
+ * CLI (`payload run`): Local API with explicit config — Payload's recommended pattern for scripts.
  * @see https://payloadcms.com/docs/local-api/overview
  */
 // @ts-ignore
-import * as discordMDX from ‘discord-markdown’
+import * as discordMDX from 'discord-markdown'
 const { toHTML } = discordMDX
-import config from ‘@payload-config’
-import cliProgress from ‘cli-progress’
-import { getPayload } from ‘payload’
+import config from '@payload-config'
+import cliProgress from 'cli-progress'
+import { getPayload } from 'payload'
 
-import { processBatch } from ‘../utilities/BatchProcessor’
-import { httpClient } from ‘../utilities/HttpClient’
-import sanitizeSlug from ‘../utilities/sanitizeSlug’
+import { processBatch } from '../utilities/BatchProcessor'
+import { httpClient } from '../utilities/HttpClient'
+import sanitizeSlug from '../utilities/sanitizeSlug'
 
 const { DISCORD_GUILD_ID, DISCORD_SCRAPE_CHANNEL_ID, DISCORD_TOKEN } = process.env
 const DISCORD_API_BASE = 'https://discord.com/api/v10'

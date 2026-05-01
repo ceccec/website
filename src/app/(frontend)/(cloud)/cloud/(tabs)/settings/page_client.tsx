@@ -16,6 +16,7 @@ import FormProcessing from '@forms/FormProcessing/index'
 import FormSubmissionError from '@forms/FormSubmissionError/index'
 import Submit from '@forms/Submit/index'
 import { useAuth } from '@root/providers/Auth/index'
+import { uuidTags } from '@uuid'
 import React, { Fragment, useCallback } from 'react'
 import { toast } from 'sonner'
 

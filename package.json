@@ -119,7 +119,6 @@
     "uuid": "10.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260429.1",
     "@next/bundle-analyzer": "16.2.4",
     "@next/eslint-plugin-next": "16.2.4",
     "@octokit/types": "^9.0.0",
@@ -136,7 +135,7 @@
     "prettier": "3.8.3",
     "strip-json-comments": "3.1.1",
     "typescript": "5.8.3",
-    "wrangler": "^4.86.0"
+    "wrangler": "^4.87.0"
   },
   "_futureDependencies": {
     "_comment": "Not installed — JSON cannot use // comments; copy a line into dependencies/devDependencies when you implement the feature.",

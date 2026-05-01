@@ -27,37 +27,33 @@ export const fetchRepos = async (args: {
     throw new Error('No token provided')
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`,
-    {
-      body: JSON.stringify({
-        route: `GET /user/installations/${installId}/repositories?${new URLSearchParams({
-          page: page?.toString() ?? '1',
-          per_page: per_page?.toString() ?? '30',
-        })}`,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `JWT ${token}` } : {}),
-      },
-      method: 'POST',
-      next: {
-        tags: ['repos'],
-      },
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`, {
+    body: JSON.stringify({
+      route: `GET /user/installations/${installId}/repositories?${new URLSearchParams({
+        page: page?.toString() ?? '1',
+        per_page: per_page?.toString() ?? '30',
+      })}`,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `JWT ${token}` } : {}),
     },
-  )
+    method: 'POST',
+    next: {
+      tags: ['repos'],
+    },
+  })
 
   if (!response.ok) {
     throw new Error(`Error getting repositories: ${response.status} ${response.statusText}`)
   }
 
-  const json = await response.json() as GitHubProxyBody
+  const json = (await response.json()) as GitHubProxyBody
   if (json.errors) {
     throw new Error(json?.errors?.[0]?.message ?? 'Error fetching docs')
   }
 
   const docs: RepoResults = json?.data
-    })
 
   if (!docs) {
     throw new Error('Error fetching repositories')

@@ -1,13 +1,13 @@
 /**
- * CLI (`payload run`): Local API with explicit config — Payload’s recommended pattern for scripts.
+ * CLI (`payload run`): Local API with explicit config — Payload's recommended pattern for scripts.
  * @see https://payloadcms.com/docs/local-api/overview
  */
-import config from ‘@payload-config’
-import { getPayload } from ‘payload’
+import config from '@payload-config'
+import { getPayload } from 'payload'
 
-import { processBatch } from ‘../utilities/BatchProcessor’
-import { httpClient } from ‘../utilities/HttpClient’
-import sanitizeSlug from ‘../utilities/sanitizeSlug’
+import { processBatch } from '../utilities/BatchProcessor'
+import { httpClient } from '../utilities/HttpClient'
+import sanitizeSlug from '../utilities/sanitizeSlug'
 
 const { GITHUB_ACCESS_TOKEN } = process.env
 const headers = {

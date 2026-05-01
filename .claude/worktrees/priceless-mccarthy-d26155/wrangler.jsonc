@@ -1,0 +1,65 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Cloudflare reads this file for deploy (https://developers.cloudflare.com/workers/platform/deploy-buttons/#automatic-resource-provisioning).
+  // OpenNext full ISR/on-demand revalidation: https://opennext.js.org/cloudflare/caching
+  // Account targeting (optional): top-level "account_id" OR env CLOUDFLARE_ACCOUNT_ID — https://developers.cloudflare.com/workers/wrangler/configuration/#inheritable-keys
+  // Find account Id: https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/
+  // Auth: `wrangler login` locally; CI use CLOUDFLARE_API_TOKEN — https://developers.cloudflare.com/workers/wrangler/ci-cd/
+  "name": "payload-website",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-04-29",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "REPLACE_AFTER_wrangler_d1_create",
+      "database_name": "payload-website"
+    },
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "REPLACE_AFTER_wrangler_d1_create_next_tag_cache",
+      "database_name": "payload-website-next-tag-cache",
+      "migrations_dir": "d1-migrations/next-tag-cache"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "opennext-cache-v1",
+      "new_sqlite_classes": ["DOQueueHandler"]
+    }
+  ],
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "payload-website"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "payload-website-media"
+    },
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "payload-website-opennext-cache"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,19 @@
+---
+description: Payload auth — users, sessions, collection access, API auth
+globs: src/collections/Users.{ts,tsx},src/collections/Users/**/*.{ts,tsx},src/access/**/*.{ts,tsx},src/**/*access*.ts,src/**/auth/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Payload authentication
+
+- **Docs:** [Authentication](https://payloadcms.com/docs/authentication/overview) · [Access control](https://payloadcms.com/docs/access-control/overview)
+- **Users collection:** `src/collections/Users` (or plugin-driven users) — **`auth: true`** patterns, `token` use, and **forgot-password** / **reset** fields follow Payload’s auth field set.
+- **`req.user`:** In Local API and Next integrated routes, use **`Request` + user** as documented; do not invent parallel session stores unless required.
+- **`access` functions:** Reuse project helpers (e.g. `src/access/isAdmin.ts`, `src/plugins/schema/.../access`) and keep **read/create/update/delete** consistent for the same role model.
+- **API routes** (Next): forward cookies or headers as needed for REST/GraphQL; respect **CORS** and **CSRF** from `payload.config` (`src/config/trustedOrigins.ts`).
+
+## Checklist
+
+- [ ] New collection: `access` defined for all operations that apply.
+- [ ] Field-level `access` only when you need to hide specific fields in admin or API.
+- [ ] No hard-coded user ids in app code; use `req.user` / session.

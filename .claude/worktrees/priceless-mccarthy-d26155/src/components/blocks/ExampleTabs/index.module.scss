@@ -1,0 +1,69 @@
+@use '@scss/common' as *;
+
+.intro {
+  margin-bottom: 1.5rem;
+}
+
+.tabsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.12));
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tab {
+  @include label;
+  background: transparent;
+  border: none;
+  color: var(--color-foreground, inherit);
+  cursor: pointer;
+  opacity: 0.55;
+  padding: 0.25rem 0;
+  text-align: left;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.85;
+  }
+}
+
+.tabActive {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.tabPanel {
+  min-height: 0.5rem;
+}
+
+.tabPanelHidden {
+  display: none;
+}
+
+.tabPanelActive {
+  display: block;
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.exampleCode {
+  min-width: 0;
+}
+
+.exampleMedia {
+  min-width: 0;
+}

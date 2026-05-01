@@ -1,0 +1,10 @@
+{
+  "bindings": {
+    "PAYLOAD_SECRET": {
+      "description": "**Required** for Payload and for **`pnpm build`** / `payload migrate` in [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/). Use the **same** value under Worker **Variables & secrets** and **Build variables & secrets**. Generate: `openssl rand -hex 32`. URLs and most integrations belong in **Payload Admin → Globals** after deploy."
+    },
+    "GITHUB_ACCESS_TOKEN": {
+      "description": "**Optional.** GitHub PAT — add under **Build variables & secrets** if you need **`pnpm generate:llms`** to refresh `public/llms*.txt` during CI. See [Deploy buttons — secrets](https://developers.cloudflare.com/workers/platform/deploy-buttons/#worker-environment-variables-and-secrets); dotenv names also appear in `.dev.vars.example`."
+    }
+  }
+}

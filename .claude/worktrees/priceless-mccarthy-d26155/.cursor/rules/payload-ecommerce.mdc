@@ -1,0 +1,17 @@
+---
+description: plugin-ecommerce — payments, carts, Stripe, webhooks
+globs: src/plugins/ecommerce/**/*.{ts,tsx},src/plugins/env.ts,src/payload.config.ts
+alwaysApply: false
+---
+
+# Ecommerce plugin
+
+- **Docs:** [Ecommerce overview](https://payloadcms.com/docs/ecommerce/overview) · [Ecommerce plugin](https://payloadcms.com/docs/plugins/ecommerce)
+- **This repo:** Optional (`@payloadcms/plugin-ecommerce`); Stripe keys and webhooks documented in `package.json` / `.env.example`.
+- **Payments:** Webhook route must **verify** Stripe signature; use idempotent order updates.
+- **Users as customers:** Align with **Users** collection and **auth**; do not store raw card data.
+
+## Checklist
+
+- [ ] `PAYLOAD_ECOMMERCE` / Stripe env vars set per environment.
+- [ ] Test checkout and webhook in staging with Stripe test mode.

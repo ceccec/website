@@ -8,6 +8,9 @@
     "pnpm": ">=10.33.2"
   },
   "scripts": {
+    "test": "cross-env NODE_OPTIONS=--no-deprecation jest",
+    "test:watch": "cross-env NODE_OPTIONS=--no-deprecation jest --watch",
+    "test:coverage": "cross-env NODE_OPTIONS=--no-deprecation jest --coverage",
     "build": "node scripts/build.mjs",
     "build:vercel": "cross-env PAYLOAD_HOSTING=vercel node scripts/build.mjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",

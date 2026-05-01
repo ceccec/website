@@ -1,0 +1,89 @@
+---
+description: Payload CMS — schema-first workflow, Local API, depth/relations, repo map + full docs TOC
+alwaysApply: true
+---
+
+# Payload basics
+
+Use **[official docs](https://payloadcms.com/docs/)** as source of truth (mirrored from [`payloadcms/payload` docs](https://github.com/payloadcms/payload/tree/main/docs)). Prefer **schema → Local API → UI**, not the reverse.
+
+## Discovering documentation (humans, agents, crawlers)
+
+- **Site & navigation:** Use the [docs](https://payloadcms.com/docs/) sidebar and search; this repo’s **documentation reference map** (below) and **`payload-features-overview.mdc`** map areas → rules.
+- **Machine-friendly doc lists:** The marketing site may publish **[`/docs/llms.txt`](https://payloadcms.com/docs/llms.txt)** (same pattern as many Vercel doc sites — a compact index of doc URLs). If that URL is unavailable, use the **[GitHub `docs/` tree](https://github.com/payloadcms/payload/tree/main/docs)** or **`pnpm generate:llms`** in this repo to refresh committed `public/llms.txt` / `public/llms-full.txt` from GitHub (**`payload-deployment.mdc`**).
+- **Full-site sitemaps:** **[payloadcms.com/sitemap.xml](https://payloadcms.com/sitemap.xml)** is usually a **sitemap index** that points at split files (e.g. **`sitemap-0.xml`**, **`sitemap-1.xml`**, …) listing **every** crawlable URL — blog, marketing, case studies, **and** `/docs/...` — so it is **large and mixed-scope**. Prefer **`llms.txt`** (when present) or the **hub rules** for docs-shaped work; use the sitemap when you need **complete** domain coverage or audit crawls.
+- **Markdown:** Official pages sometimes offer **`.md`** variants or note “available as Markdown” in the page footer — same idea as Next.js docs.
+
+**Feature hub:** `payload-features-overview.mdc` maps [custom components](https://payloadcms.com/docs/custom-components/overview), [authentication](https://payloadcms.com/docs/authentication/overview), [rich text](https://payloadcms.com/docs/rich-text/overview), [live preview](https://payloadcms.com/docs/live-preview/overview), [versions](https://payloadcms.com/docs/versions/overview), [upload](https://payloadcms.com/docs/upload/overview), [folders](https://payloadcms.com/docs/folders/overview), [email](https://payloadcms.com/docs/email/overview), [jobs queue](https://payloadcms.com/docs/jobs-queue/overview), [query presets](https://payloadcms.com/docs/query-presets/overview), [trash](https://payloadcms.com/docs/trash/overview), [troubleshooting](https://payloadcms.com/docs/troubleshooting/troubleshooting), [TypeScript](https://payloadcms.com/docs/typescript/overview), and other areas to the matching `.cursor/rules/payload-*.mdc` files.
+
+**Ecosystem hub:** `payload-ecosystem.mdc` maps [plugins overview](https://payloadcms.com/docs/plugins/overview), [ecommerce overview](https://payloadcms.com/docs/ecommerce/overview), [examples overview](https://payloadcms.com/docs/examples/overview), and [Vercel Content Link](https://payloadcms.com/docs/integrations/vercel-content-link) to the matching rules (`payload-plugins`, `payload-ecommerce`, `payload-examples`, `payload-docs-support`).
+
+**Deployment hub:** `payload-deployment.mdc` maps [building without a database connection](https://payloadcms.com/docs/production/building-without-a-db-connection), [deployment](https://payloadcms.com/docs/production/deployment), [preventing abuse](https://payloadcms.com/docs/production/preventing-abuse), and [performance overview](https://payloadcms.com/docs/performance/overview) to `payload-deployment` (build/CI entry), `payload-security-deployment`, and `payload-performance`.
+
+**Next.js (companion stack):** **`next-basics.mdc`** (always-on) and **`next-features-overview.mdc`** (hub) map [nextjs.org/docs](https://nextjs.org/docs/) to **`next-*.mdc`** topic rules. **Payload still leads**; canonical **boundary** and **`getPayload`/depth** stay in **§ Payload vs Next.js** and **When changing behavior** below.
+
+**Rules discipline:** hubs above **link** to one topic rule each—do not paste duplicate doc tables or long prose into multiple `.mdc` files. TS naming + generated-type workflow → **`payload-typescript.mdc`** only.
+
+**Reading discipline:** follow **`agent-read-rules.mdc`** — route via this file, read **only** applicable topic rules **in full**, batched in parallel when possible.
+
+## Payload vs Next.js (boundary)
+
+**→ Next.js when Payload is not enough:** Payload covers **schema, access, hooks, Local API, admin UI, versions/uploads/plugins**. What fits poorly there — **Middleware**, **Route Handlers** (`src/app/api/**`), **`draftMode` / `headers()` / `cookies()`**, **App Router caching** (`unstable_cache`, `revalidateTag`, ISR), **streaming**, **redirects** outside the redirects plugin, **image/font optimization**, **edge-only** behavior — belongs in **Next.js** (`src/app`, `middleware.ts`). Still **read/write CMS data via `getPayload`** from RSC and handlers; Next owns **request lifecycle and delivery**, not a duplicate editorial source.
+
+**→ Payload when Next.js is not enough:** Do not treat Next as the CMS. **Authorable content**, **structured fields**, **relationships**, **uploads**, **drafts/versions**, **role-based access**, **validation on save**, **admin workflows**, and anything that should **migrate with the DB** belong in **Payload** (collections/globals/blocks/plugins). Avoid hard-coding copy or page structure in React when editors should own it; avoid ad hoc JSON files or env-only “content” for what should be queryable and permissioned like other documents.
+
+## When changing behavior
+
+1. **Collections / globals / fields / plugins** — prefer **`src/plugins/schema`** (and `getSchemaPlugins` order in `src/plugins/index.ts`) when wiring is **shared or template-scoped**; otherwise edit **`src/collections`**, **`src/globals`**, **`src/fields`**, **`src/blocks`**; adjust `access` and `hooks` per docs (`payload-plugins.mdc`).
+2. **Regenerate** — `pnpm generate:types` (and `pnpm generate:importmap` if admin imports/custom components changed).
+3. **Database** — adapter/migrations follow [Database overview](https://payloadcms.com/docs/database/overview); prod deploy uses project scripts (see `package.json`).
+4. **Consumers** — Next server: `@root/lib/getPayload`; scripts/CLI: `getPayload({ config })` + `@payload-config`. `src/migrate.ts` (Slate → Lexical) also uses `@root/lib/getPayload`. Match **`depth`** to what the UI needs; cache keys must include **`depth`** when using `unstable_cache` around `find` (see `utilities/getDocument.ts`).
+
+## Documentation reference map (sidebar order)
+
+| Area | Entry points |
+|------|----------------|
+| **Getting started** | [What is Payload?](https://payloadcms.com/docs/getting-started/what-is-payload) · [Concepts](https://payloadcms.com/docs/getting-started/concepts) · [Installation](https://payloadcms.com/docs/getting-started/installation) |
+| **Configuration** | [Overview](https://payloadcms.com/docs/configuration/overview) · [Collections](https://payloadcms.com/docs/configuration/collections) · [Globals](https://payloadcms.com/docs/configuration/globals) · [Localization / i18n](https://payloadcms.com/docs/configuration/localization) · [Environment vars](https://payloadcms.com/docs/configuration/environment-vars) |
+| **Database** | [Overview](https://payloadcms.com/docs/database/overview) · [Postgres](https://payloadcms.com/docs/database/postgres) · [MongoDB](https://payloadcms.com/docs/database/mongodb) · [SQLite](https://payloadcms.com/docs/database/sqlite) · [Migrations](https://payloadcms.com/docs/database/migrations) · [Indexes](https://payloadcms.com/docs/database/indexes) · [Transactions](https://payloadcms.com/docs/database/transactions) |
+| **Fields** | [Overview](https://payloadcms.com/docs/fields/overview) · [Blocks](https://payloadcms.com/docs/fields/blocks) · [Relationship](https://payloadcms.com/docs/fields/relationship) · [Upload](https://payloadcms.com/docs/fields/upload) · [Rich text](https://payloadcms.com/docs/fields/rich-text) · [Join](https://payloadcms.com/docs/fields/join) · *(see sidebar for full list)* |
+| **Hooks** | [Overview](https://payloadcms.com/docs/hooks/overview) · [Collections](https://payloadcms.com/docs/hooks/collections) · [Globals](https://payloadcms.com/docs/hooks/globals) · [Fields](https://payloadcms.com/docs/hooks/fields) · [Context](https://payloadcms.com/docs/hooks/context) |
+| **Access control** | [Overview](https://payloadcms.com/docs/access-control/overview) · [Collections](https://payloadcms.com/docs/access-control/collections) · [Globals](https://payloadcms.com/docs/access-control/globals) · [Fields](https://payloadcms.com/docs/access-control/fields) |
+| **Authentication** | [Overview](https://payloadcms.com/docs/authentication/overview) · [Operations](https://payloadcms.com/docs/authentication/operations) · [Cookies](https://payloadcms.com/docs/authentication/cookies) · [JWT](https://payloadcms.com/docs/authentication/jwt) · [API keys](https://payloadcms.com/docs/authentication/api-keys) |
+| **Queries** | [Overview](https://payloadcms.com/docs/queries/overview) · [Depth](https://payloadcms.com/docs/queries/depth) · [Select](https://payloadcms.com/docs/queries/select) · [Sort](https://payloadcms.com/docs/queries/sort) · [Pagination](https://payloadcms.com/docs/queries/pagination) |
+| **Local API** | [Overview](https://payloadcms.com/docs/local-api/overview) · [Access control](https://payloadcms.com/docs/local-api/access-control) · [Server functions](https://payloadcms.com/docs/local-api/server-functions) · [Outside Next.js](https://payloadcms.com/docs/local-api/outside-nextjs) |
+| **REST API** | [Overview](https://payloadcms.com/docs/rest-api/overview) |
+| **GraphQL** | [Overview](https://payloadcms.com/docs/graphql/overview) · [Schema](https://payloadcms.com/docs/graphql/graphql-schema) · [Extending](https://payloadcms.com/docs/graphql/extending) |
+| **Admin** | [Overview](https://payloadcms.com/docs/admin/overview) · [Metadata](https://payloadcms.com/docs/admin/metadata) · [Preview](https://payloadcms.com/docs/admin/preview) · [Customizing CSS](https://payloadcms.com/docs/admin/customizing-css) · [Customizing location](https://payloadcms.com/docs/admin/customizing-location) · [React hooks (UI)](https://payloadcms.com/docs/admin/react-hooks) · [Locked documents](https://payloadcms.com/docs/admin/locked-documents) · [Preferences](https://payloadcms.com/docs/admin/preferences) — *Cursor:* \`payload-admin.mdc\`, \`payload-admin-ui-surfaces.mdc\` |
+| **Custom components** | [Overview](https://payloadcms.com/docs/custom-components/overview) · [Root](https://payloadcms.com/docs/custom-components/root-components) · [List / Edit / Document views](https://payloadcms.com/docs/custom-components/list-view) |
+| **Rich text** | [Overview](https://payloadcms.com/docs/rich-text/overview) · [Blocks](https://payloadcms.com/docs/rich-text/blocks) · [Converting HTML / JSX / MD](https://payloadcms.com/docs/rich-text/converting-html) |
+| **Upload & storage** | [Upload overview](https://payloadcms.com/docs/upload/overview) · [Storage adapters](https://payloadcms.com/docs/upload/storage-adapters) |
+| **Versions** | [Overview](https://payloadcms.com/docs/versions/overview) · [Drafts](https://payloadcms.com/docs/versions/drafts) · [Autosave](https://payloadcms.com/docs/versions/autosave) |
+| **Live preview** | [Overview](https://payloadcms.com/docs/live-preview/overview) · [Client / Server / Frontend](https://payloadcms.com/docs/live-preview/client) |
+| **Jobs queue** | [Overview](https://payloadcms.com/docs/jobs-queue/overview) · [Tasks](https://payloadcms.com/docs/jobs-queue/tasks) · [Queues](https://payloadcms.com/docs/jobs-queue/queues) · [Schedules](https://payloadcms.com/docs/jobs-queue/schedules) · [Workflows](https://payloadcms.com/docs/jobs-queue/workflows) |
+| **Email** | [Overview](https://payloadcms.com/docs/email/overview) |
+| **TypeScript** | [Overview](https://payloadcms.com/docs/typescript/overview) · [Generating types](https://payloadcms.com/docs/typescript/generating-types) · [TS plugin](https://payloadcms.com/docs/typescript/ts-plugin) |
+| **Plugins** | [Overview](https://payloadcms.com/docs/plugins/overview) · [Plugin API](https://payloadcms.com/docs/plugins/plugin-api) · [Build your own](https://payloadcms.com/docs/plugins/build-your-own) |
+| **Production** | [Deployment](https://payloadcms.com/docs/production/deployment) · [Building without a DB](https://payloadcms.com/docs/production/building-without-a-db-connection) · [Preventing abuse](https://payloadcms.com/docs/production/preventing-abuse) — *Cursor:* \`payload-deployment.mdc\`, \`payload-security-deployment.mdc\` |
+| **Performance** | [Overview](https://payloadcms.com/docs/performance/overview) |
+| **Folders / Trash / Presets** | [Folders](https://payloadcms.com/docs/folders/overview) · [Trash](https://payloadcms.com/docs/trash/overview) · [Query presets](https://payloadcms.com/docs/query-presets/overview) |
+| **Migration & support** | [Migration guide](https://payloadcms.com/docs/migration-guide/overview) · [Troubleshooting](https://payloadcms.com/docs/troubleshooting/troubleshooting) · [Integrations](https://payloadcms.com/docs/integrations/vercel-content-link) |
+
+**Repo map:** `src/payload.config.ts` · `src/lib/payloadDB.ts` · `src/plugins/index.ts` · `src/plugins/schema`, `src/collections` · `src/fields` · `src/lib/getPayload.ts` · `src/app/_data`, `src/utilities/getDocument.ts`, `src/utilities/getRedirects.ts`
+
+## Invariants
+
+- **Admin custom UI:** Follow [Custom components — overview](https://payloadcms.com/docs/custom-components/overview), register paths under `admin.components` / field `admin.components`, run **`pnpm generate:importmap`** — see `payload-custom-components.mdc`.
+- **Relations:** Generated types use `number \| Doc` (or similar). Treat **Id vs populated** explicitly: use **`depth`** / **`populate`** for nested data, or **narrow** in components (`typeof x === 'object' && x !== null` before field access).
+- **REST / `fetch`:** Response bodies are **`unknown`** until validated or asserted at the boundary—same as Payload’s REST contract: **type at the edge**, not `any` throughout.
+- **`getPayload`:** Payload 3 caches the instance; **do not** add a second module-level cache in `getPayload.ts`.
+
+## Anti-patterns
+
+- Editing only React components when the **schema or depth** is what changed.
+- Assuming **`slug` queries** return populated relations without setting **`depth`**.
+- **Skipping** `generate:types` after collection/field/plugin changes.
+
+If ambiguous, open the matching overview link first, then implement.
+
+**Topic rules:** `.cursor/rules/payload-*.mdc` — start from **`payload-features-overview.mdc`** (features), **`payload-ecosystem.mdc`** (plugins, commerce, examples, integrations), and **`payload-deployment.mdc`** (production: build without DB, deploy, abuse, performance links) for the overview URL ↔ rule map; then hooks, queries, folders/trash/presets, **admin** + **admin-ui-surfaces**, custom components, local-api-advanced, docs-support, plus APIs, auth, Lexical, storage, preview, versions, jobs, email, migrations, i18n, TypeScript, plugins, security, performance, multi-tenant, ecommerce, forms. **Next.js** topic rules → **`next-features-overview.mdc`** ( **`next-*.mdc`** ). Regenerate: Payload **`pnpm generate:cursor-rules:payload`** (**does not** overwrite `payload-basics.mdc`); Next **`pnpm generate:cursor-rules:next`** (sources **`scripts/definitions/next-bodies/*.md`** + hub table in **`scripts/generate-next-cursor-rules.mjs`**; **does not** overwrite **`next-basics.mdc`**). Run **`pnpm generate:cursor-rules`** for both.

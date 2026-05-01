@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Bindings for `payload migrate`, `payload run`, and `wrangler d1` during `deploy:database`.
+  // Keeps D1 + R2 (Payload) without DO queue / OpenNext worker — avoids workerd warnings when
+  // `.open-next/worker.js` does not exist yet. Keep `d1_databases` and `r2_buckets` in sync with `wrangler.jsonc`.
+  "name": "payload-website",
+  "main": "scripts/minimal-payload-cli-worker.mjs",
+  "compatibility_date": "2026-04-29",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "REPLACE_AFTER_wrangler_d1_create",
+      "database_name": "payload-website"
+    },
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "REPLACE_AFTER_wrangler_d1_create_next_tag_cache",
+      "database_name": "payload-website-next-tag-cache",
+      "migrations_dir": "d1-migrations/next-tag-cache"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "payload-website-media"
+    },
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "payload-website-opennext-cache"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+description: Docker Compose — self-contained stack (images only, no SaaS plumbing)
+globs: docker-compose.yml,Dockerfile,docker/**,.env.docker.example
+---
+
+# Docker stack rules
+
+- **Source of truth:** [`docker/CONVENTIONS.md`](docker/CONVENTIONS.md) — infrastructure must use **published OCI images** (Mongo, MinIO, Mailpit, Nginx, Node base); default compose must not require **Vercel Blob**, **SendGrid**, **Cloudflare R2**, or **Algolia** for core CMS + uploads + mail capture.
+- **Payload:** DB [`src/lib/payloadDB.ts`](src/lib/payloadDB.ts); storage [`src/plugins/storage/config.ts`](src/plugins/storage/config.ts) (`S3_*` → MinIO); email [`src/payload.config.ts`](src/payload.config.ts) (`SMTP_*` → Mailpit).
+- **Docs:** [DOCKER.md](DOCKER.md) for operator steps; optional SaaS (Stripe, GitHub fetch, Algolia) stays optional per CONVENTIONS.
+
+When adding services: prefer **official** or **widely used** images on Docker Hub / quay.io; document the SaaS equivalent they replace in `docker/CONVENTIONS.md`.
+
+**Doc search:** `src/app/(frontend)/api/docs-local-search/route.ts` uses **`rg`** only when **not** `deploymentTarget === 'cloudflare'` and env is set — keeps Cloudflare Workers + Vercel builds safe.

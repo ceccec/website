@@ -1,0 +1,25 @@
+---
+description: CSS, Tailwind, Sass — styling in App Router
+globs: src/**/*.{css,scss},tailwind.config*.{js,ts,cjs,mjs}
+alwaysApply: false
+---
+
+# Styling
+
+## Official docs
+
+- [CSS](https://nextjs.org/docs/app/getting-started/css) — global, CSS Modules, Tailwind, external packages
+- [Tailwind CSS v3](https://nextjs.org/docs/app/guides/tailwind-v3-css)
+- [Sass](https://nextjs.org/docs/app/guides/sass)
+- [CSS-in-JS](https://nextjs.org/docs/app/guides/css-in-js) (compatibility notes)
+- Config: [cssChunking](https://nextjs.org/docs/app/api-reference/config/next-config-js/cssChunking), [inlineCss](https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss)
+
+## Checklist
+
+- [ ] Prefer colocation and CSS Modules or design-system patterns consistent with the repo.
+- [ ] **Tailwind v3** doc path if you need broader browser support per [Tailwind v3 guide](https://nextjs.org/docs/app/guides/tailwind-v3-css); **v4** may use different setup — follow current Next + Tailwind release notes.
+- [ ] Third-party component CSS: see [Package bundling](https://nextjs.org/docs/app/guides/package-bundling) if tree-shaking or side effects are an issue.
+
+**More:** **`next-features-overview.mdc`**
+
+Regenerate via `pnpm generate:cursor-rules:next` after editing `scripts/definitions/next-bodies/*.md`, `scripts/definitions/next-cursor-rules.manifest.json`, or the hub table in `scripts/generate-next-cursor-rules.mjs`.

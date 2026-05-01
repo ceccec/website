@@ -1,0 +1,47 @@
+import type { Redirect } from '@types'
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
+
+import { revalidateDocumentIdCache } from '@root/utilities/revalidateDocumentIdCache'
+import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
+
+/**
+ * When a redirect targets a document by Id, `getCachedDocumentById` may cache that row
+ * (`payload-performance` / `getDocument` tag shape).
+ */
+function revalidateRedirectReferenceTargets(redirect: null | Redirect | undefined): void {
+  const reference = redirect?.to?.reference
+  if (!reference) {
+    return
+  }
+  const { relationTo, value } = reference
+  if (typeof value === 'number') {
+    revalidateDocumentIdCache(relationTo, value)
+  }
+}
+
+export const revalidateRedirects: CollectionAfterChangeHook = ({
+  doc,
+  previousDoc,
+  req: { payload },
+}) => {
+  payload.logger.info(`Revalidating redirects`)
+
+  revalidateTagImmediate('redirects')
+  revalidateRedirectReferenceTargets(doc as Redirect)
+  revalidateRedirectReferenceTargets(previousDoc as Redirect | undefined)
+
+  return doc
+}
+
+/** Runs when a redirect document is deleted — keep redirect list + destination Id caches aligned. */
+export const revalidateRedirectsAfterDelete: CollectionAfterDeleteHook<Redirect> = ({
+  doc,
+  req: { payload },
+}) => {
+  payload.logger.info(`Revalidating redirects (after delete)`)
+
+  revalidateTagImmediate('redirects')
+  revalidateRedirectReferenceTargets(doc)
+
+  return doc
+}

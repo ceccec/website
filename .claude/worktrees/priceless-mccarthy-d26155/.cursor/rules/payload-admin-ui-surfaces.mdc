@@ -1,0 +1,63 @@
+---
+description: Admin UI surfaces — metadata, preview, CSS, location, React hooks, locked docs, preferences
+globs: src/payload.config.ts,src/app/(payload)/**/*.{ts,tsx},src/**/*.scss,src/components/AfterNavActions/**/*.{ts,tsx},src/components/BeforeDashboard/**/*.{ts,tsx},src/collections/Docs/**/*.{ts,tsx},src/globals/**/*.tsx,src/fields/**/*.tsx,src/blocks/**/Field/**/*.tsx,src/components/TableCheckboxField/**/*.tsx,src/components/Sync*.tsx,src/components/RedeployButton/**/*.tsx,src/components/RefreshMdxToLexicalButton/**/*.tsx
+alwaysApply: false
+---
+
+# Admin UI surfaces (first-party docs)
+
+Read these **before** swapping views, metadata, or admin styling.
+
+## Doc map
+
+| Feature | Documentation |
+|---------|----------------|
+| **Page metadata** (root / collection / global / view) | [Admin — Metadata](https://payloadcms.com/docs/admin/metadata) |
+| **Draft preview** from admin | [Admin — Preview](https://payloadcms.com/docs/admin/preview) |
+| **Custom CSS / SCSS** (global `custom.scss`, BEM, layers, `@payloadcms/ui/scss`) | [Customizing CSS & SCSS](https://payloadcms.com/docs/admin/customizing-css) |
+| **Move admin URL / folder structure** | [Customizing location](https://payloadcms.com/docs/admin/customizing-location) |
+| **React hooks** (admin UI client, not config `hooks`) | [React hooks](https://payloadcms.com/docs/admin/react-hooks) |
+| **Locked documents** (concurrent editing) | [Locked documents](https://payloadcms.com/docs/admin/locked-documents) |
+| **User preferences** (stored per user) | [Preferences](https://payloadcms.com/docs/admin/preferences) |
+| **Replacing admin UI (React)** | [Custom components — overview](https://payloadcms.com/docs/custom-components/overview) |
+
+## Admin React hooks vs config hooks
+
+- **Docs:** [React hooks](https://payloadcms.com/docs/admin/react-hooks) — use inside **`'use client'`** custom admin components (`admin.components`, field `admin.components`). Import from **`@payloadcms/ui`**.
+- **Not** [config hooks](https://payloadcms.com/docs/hooks/overview) (`beforeChange`, `afterRead`, … on collections/globals/fields) — those are **`payload-hooks.mdc`**.
+
+### Lexical rich text + `useField`
+
+Programmatic updates often need **`initialValue` as well as `value`** (or `dispatchFields` with `UPDATE`) or the Lexical UI will not re-render until refresh. See **“Updating Lexical Rich Text Fields”** in the official React hooks doc.
+
+### This repo — `@payloadcms/ui` usage
+
+| Hook | Role | Where |
+|------|------|--------|
+| `useField` | Custom field ↔ form state | `src/components/TableCheckboxField/index.tsx`, `src/fields/addToDocs/Label.tsx` |
+| `useFormFields` | Selector over document fields | `src/collections/Docs/blocks/code/CodeFields.tsx`, `src/collections/Docs/SaveButton/index.tsx` (version field) |
+| `useRowLabel` | Array row labels | `src/globals/CustomRowLabelTabs.tsx`, `src/globals/CustomRowLabelNavItems.tsx` |
+| `useConfig` | `api` route, `serverURL`, branding | `src/components/BeforeDashboard/index.tsx`, `SyncDocsButton`, `SyncCommunityHelp`, `SyncToAlgolia`, `RedeployButton`, `RefreshMdxToLexicalButton` |
+| `toast` | Admin notifications | Same + `BeforeDashboard` |
+| `useForm`, `useFormModified` | Submit / dirty state | `src/collections/Docs/SaveButton/index.tsx` |
+| `useDocumentInfo` | `id`, `collectionSlug`, … | `SaveButton` |
+| `useEditDepth`, `useOperation`, `useLocale`, `useHotkey` | Drawer depth, create vs update, locale, shortcuts | `SaveButton` |
+
+**Do not** import **`useFormField` / `useField` / `dispatchFields`** from `@forms/*` or `src/forms/*` inside Payload admin components — that is the **marketing-site form** context. Use **`useFormFields`**, **`useField`**, **`useAllFormFields`**, etc. from **`@payloadcms/ui`** per the doc.
+
+### Not yet used here (see full hook list in doc)
+
+Examples to reach for when building admin UI: `useAllFormFields`, `usePreferences`, `useTranslation`, admin `useAuth`, `usePreviewURL`, `useRouteTransition`, … — confirm names against current **`@payloadcms/ui`** exports and the official page.
+
+## How this differs from other rules
+
+- **`payload-preview-drafts.mdc`:** Next.js **`/api/preview`**, `draftMode`, `NEXT_PRIVATE_DRAFT_SECRET`, and **`@payloadcms/live-preview-react`** on the **marketing site**.
+- **`payload-hooks.mdc`:** Config **collection/global/field hooks** — unrelated to **React hooks** above.
+- **`payload-custom-components.mdc`:** Replacing admin UI with **custom React components** (root, list, edit, document views).
+
+## Checklist
+
+- [ ] Root `admin.meta` (title suffix, icons, OG, robots) matches branding; env-driven favicon if used (`PAYLOAD_ADMIN_FAVICON_URL` pattern).
+- [ ] Collection/global `admin.meta` used when a section needs its own titles/descriptions.
+- [ ] Styling: prefer `@layer payload` / variables from [@payloadcms/ui scss](https://github.com/payloadcms/payload/tree/3.x/packages/ui/src/scss) over brittle deep selectors.
+- [ ] New admin client component: **`'use client'`**, hooks from **`@payloadcms/ui`**, then `pnpm generate:importmap` if registered via config paths.

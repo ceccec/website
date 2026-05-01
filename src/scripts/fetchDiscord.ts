@@ -3,13 +3,15 @@
  * @see https://payloadcms.com/docs/local-api/overview
  */
 // @ts-ignore
-import * as discordMDX from 'discord-markdown'
+import * as discordMDX from ‘discord-markdown’
 const { toHTML } = discordMDX
-import config from '@payload-config'
-import cliProgress from 'cli-progress'
-import { getPayload } from 'payload'
+import config from ‘@payload-config’
+import cliProgress from ‘cli-progress’
+import { getPayload } from ‘payload’
 
-import sanitizeSlug from '../utilities/sanitizeSlug'
+import { processBatch } from ‘../utilities/BatchProcessor’
+import { httpClient } from ‘../utilities/HttpClient’
+import sanitizeSlug from ‘../utilities/sanitizeSlug’
 
 const { DISCORD_GUILD_ID, DISCORD_SCRAPE_CHANNEL_ID, DISCORD_TOKEN } = process.env
 const DISCORD_API_BASE = 'https://discord.com/api/v10'
@@ -50,18 +52,9 @@ type ExistingThread = {
   messageCount: number
 }
 
-function segmentArray(array, segmentSize) {
-  const result: Array<(typeof array)[0]> = []
-  for (let i = 0; i < array.length; i += segmentSize) {
-    result.push(array.slice(i, i + segmentSize))
-  }
-  return result
-}
-
 async function fetchFromDiscord(
   endpoint: string,
   fetchType: 'messages' | 'threads',
-  retries = 3,
 ): Promise<any[]> {
   const baseURL = `${DISCORD_API_BASE}${endpoint}`
   const allResults: Message[] | Thread[] = []
@@ -71,42 +64,16 @@ async function fetchFromDiscord(
     const url = new URL(baseURL)
     Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value))
 
-    let response
-    let lastError
+    // Use unified HttpClient with exponential backoff for retries
+    const response = await httpClient.fetch(url.toString(), { headers }, {
+      maxRetries: 3,
+      baseDelay: 2000,
+      retryableStatuses: [429, 503],
+    })
 
-    // Retry logic for transient failures
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        response = await fetch(url, { headers })
-
-        if (response.ok) {
-          break // Success, exit retry loop
-        }
-
-        // If it's a 503 Service Unavailable or 429 Rate Limit, retry
-        if (response.status === 503 || response.status === 429) {
-          const waitTime = response.status === 429 ? 5000 : 2000 // Wait longer for rate limits
-          console.warn(
-            `[fetchDiscord] ${response.status} ${response.statusText} for ${endpoint}, retrying in ${waitTime}ms (attempt ${attempt + 1}/${retries + 1})`,
-          )
-          await new Promise((resolve) => setTimeout(resolve, waitTime))
-          continue
-        }
-
-        // For other errors, throw immediately
-        throw new Error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`)
-      } catch (error) {
-        lastError = error
-        if (attempt < retries) {
-          console.warn(`[fetchDiscord] Error fetching ${endpoint}, retrying (attempt ${attempt + 1}/${retries + 1}):`, error)
-          await new Promise((resolve) => setTimeout(resolve, 2000))
-        }
-      }
-    }
-
-    if (!response || !response.ok) {
-      console.error(`[fetchDiscord] Failed to fetch ${endpoint} after ${retries + 1} attempts, skipping...`)
-      throw lastError || new Error(`Failed to fetch ${endpoint}`)
+    if (!response.ok) {
+      console.error(`[fetchDiscord] Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`)
+      throw new Error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()
@@ -297,33 +264,31 @@ async function fetchDiscord() {
 
   bar.start(threadsToSync.length, 0)
 
-  const threadSegments = segmentArray(threadsToSync, 10)
-  const populatedThreads: any[] = []
-
-  for (const segment of threadSegments) {
-    const threadPromises = segment.map(async (thread) => {
-      try {
-        const messages = await fetchFromDiscord(`/channels/${thread.id}/messages`, 'messages')
-        return createSanitizedThread(thread, messages)
-      } catch (error) {
-        console.error(
-          `[fetchDiscord] Failed to fetch messages for thread "${thread.name}" (${thread.id}), skipping:`,
-          error.message,
-        )
-        return null // Return null for failed threads so we can filter them out
-      }
-    })
-
-    const sanitizedThreads = await Promise.all(threadPromises)
-    const successfulThreads = sanitizedThreads.filter((t) => t !== null)
-    populatedThreads.push(...successfulThreads)
-    bar.update(populatedThreads.length)
-  }
+  // Use unified BatchProcessor with segmented strategy (10 threads per segment)
+  const populatedThreads = await processBatch(
+    threadsToSync,
+    async (thread) => {
+      const messages = await fetchFromDiscord(`/channels/${thread.id}/messages`, 'messages')
+      return createSanitizedThread(thread, messages)
+    },
+    {
+      mode: 'segmented',
+      segmentSize: 10,
+      onProgress: (processed) => {
+        bar.update(processed)
+      },
+    },
+  )
 
   bar.stop()
 
-  const populateAll = async () => {
-    for (const thread of populatedThreads) {
+  // Filter out null (failed) entries
+  const successfulThreads = populatedThreads.filter((t) => t !== null)
+
+  // Upsert threads to database
+  await processBatch(
+    successfulThreads,
+    async (thread) => {
       const existingThread = existingThreadIds.find(
         (existing) => existing.discordId === thread.info.id,
       )
@@ -336,39 +301,34 @@ async function fetchDiscord() {
         title: thread.info.name,
       }
 
-      try {
-        if (existingThread) {
-          // Update existing thread
-          await payload.update({
-            id: existingThread.docId,
-            collection: 'community-help',
-            data,
-            overrideAccess: true,
-          })
-          console.log(
-            `[fetchDiscord] Successfully updated thread "${thread.info.name}" (${thread.info.id})`,
-          )
-        } else {
-          // Create new thread
-          await payload.create({
-            collection: 'community-help',
-            data,
-            overrideAccess: true,
-          })
-          console.log(
-            `[fetchDiscord] Successfully created thread "${thread.info.name}" (${thread.info.id})`,
-          )
-        }
-      } catch (error) {
-        console.error(
-          `[fetchDiscord] Exception processing thread "${thread.info.name}" (${thread.info.id}):`,
-          error,
+      if (existingThread) {
+        // Update existing thread
+        await payload.update({
+          id: existingThread.docId,
+          collection: 'community-help',
+          data,
+          overrideAccess: true,
+        })
+        console.log(
+          `[fetchDiscord] Successfully updated thread "${thread.info.name}" (${thread.info.id})`,
+        )
+      } else {
+        // Create new thread
+        await payload.create({
+          collection: 'community-help',
+          data,
+          overrideAccess: true,
+        })
+        console.log(
+          `[fetchDiscord] Successfully created thread "${thread.info.name}" (${thread.info.id})`,
         )
       }
-    }
-  }
-
-  await populateAll()
+    },
+    {
+      mode: 'sequential', // Sequential for database safety
+      enableLogging: true,
+    },
+  )
   console.log('[fetchDiscord] Sync completed!')
   console.timeEnd('[fetchDiscord] Total duration')
 }

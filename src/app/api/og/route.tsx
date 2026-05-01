@@ -280,7 +280,11 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     )
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
-    console.error(`${error.message}`) // eslint-disable-line no-console
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    console.error(`[og] Error generating image: ${error.message}`) // eslint-disable-line no-console
+    // OG image generation is a client error (invalid params) not a server error
+    return NextResponse.json(
+      { error: error.message, code: 'OG_GENERATION_ERROR' },
+      { status: 400 },
+    )
   }
 }

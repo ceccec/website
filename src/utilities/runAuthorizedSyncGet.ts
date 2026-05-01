@@ -2,26 +2,33 @@ import type { NextRequest } from 'next/server'
 
 import { NextResponse } from 'next/server'
 
-import { authorizeSyncApi } from './authorizeSyncApi'
+import { ApiResponse } from './ApiResponse'
+import { authService } from './AuthService'
 
 /**
- * Shared pattern for GET routes that run cron/admin-authorized sync work and return `{ success: true }`.
+ * Shared pattern for GET routes that run cron/admin-authorized sync work.
+ * Returns standardized ApiResponse envelope.
+ *
+ * @example
+ * export async function GET(req: NextRequest): Promise<NextResponse> {
+ *   return runAuthorizedSyncGet(req, () => syncToAlgolia())
+ * }
  */
 export async function runAuthorizedSyncGet(
   req: NextRequest,
   handler: () => Promise<void>,
 ): Promise<NextResponse> {
-  const denied = await authorizeSyncApi(req)
-  if (denied) {
-    return denied
+  const auth = await authService.authorizeSync(req)
+  if (!auth.authorized) {
+    return ApiResponse.unauthorized(auth.reason)
   }
 
   try {
     await handler()
-    return NextResponse.json({ success: true }, { status: 200 })
+    return ApiResponse.success({ message: 'Sync completed successfully' })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
-    console.error('Sync handler error:', message, error)
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[runAuthorizedSyncGet] Handler error:', message, error)
+    return ApiResponse.serverError(message)
   }
 }

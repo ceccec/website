@@ -8,28 +8,28 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
   try {
     // Make sure the font exists in the specified path:
     const untitledSansRegularFont = await fetch(
-      new URL('../../../../../public/fonts/UntitledSans-Regular.woff', import.meta.url),
+      new URL('../../../../public/fonts/UntitledSans-Regular.woff', import.meta.url),
     ).then((res) => res.arrayBuffer())
 
     const untitledSansMediumFont = await fetch(
-      new URL('../../../../../public/fonts/UntitledSans-Medium.woff', import.meta.url),
+      new URL('../../../../public/fonts/UntitledSans-Medium.woff', import.meta.url),
     ).then((res) => res.arrayBuffer())
 
     const robotoFont = await fetch(
-      new URL('../../../../../public/fonts/RobotoMono-Regular.woff', import.meta.url),
+      new URL('../../../../public/fonts/RobotoMono-Regular.woff', import.meta.url),
     ).then((res) => res.arrayBuffer())
 
     const { searchParams: earlyParams } = new URL(req.url)
     const isReleases = earlyParams.get('type') === 'releases'
 
     const faviconDataUrl = await fetch(
-      new URL('../../../../../public/images/favicon-light.png', import.meta.url),
+      new URL('../../../../public/images/favicon-light.png', import.meta.url),
     )
       .then((res) => res.arrayBuffer())
       .then((buf) => `data:image/png;base64,${Buffer.from(buf).toString('base64')}`)
 
     const releasesBgDataUrl = isReleases
-      ? await fetch(new URL('../../../../../public/images/release-notes-bg.jpg', import.meta.url))
+      ? await fetch(new URL('../../../../public/images/release-notes-bg.jpg', import.meta.url))
           .then((res) => res.arrayBuffer())
           .then((buf) => `data:image/jpeg;base64,${Buffer.from(buf).toString('base64')}`)
       : null
@@ -280,7 +280,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     )
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
-    console.error(`${e.message}`) // eslint-disable-line no-console
+    console.error(`${error.message}`) // eslint-disable-line no-console
     return NextResponse.error()
   }
 }

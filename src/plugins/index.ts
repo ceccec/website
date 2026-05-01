@@ -16,6 +16,7 @@ import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 
 import { adminListSearchPlugin } from './adminListSearch'
 import { googleAnalyticsConfig } from './google-analytics/config'
+import { getPaymentProvider } from './payments'
 import { opsCounter } from './opsCounter'
 import { opsCounterConfig } from './opsCounter/config'
 import { getOptionalOfficialPlugins } from './optionalOfficialPlugins'
@@ -23,6 +24,8 @@ import { getSchemaPlugins } from './schema'
 import { website } from './website'
 
 export type { DeploymentRuntimeOptions } from '@root/lib/deploymentTarget'
+export { getPaymentProvider } from './payments'
+export type { PaymentProvider } from './payments'
 
 export type GetPluginsOptions = DeploymentRuntimeOptions
 

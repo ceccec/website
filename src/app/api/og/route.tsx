@@ -280,7 +280,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     )
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
-    console.error(`${e.message}`) // eslint-disable-line no-console
+    console.error(`${error.message}`) // eslint-disable-line no-console
     return NextResponse.error()
   }
 }

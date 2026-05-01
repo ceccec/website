@@ -13,7 +13,7 @@ import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
  * - Configuration — this file; plugins `src/plugins`; env-driven URL/origins `src/config/trustedOrigins.ts`, `utilities/getURL.ts`
  * - Database — `resolvePayloadDB` (`src/lib/payloadDB.ts`), Cloudflare bindings `assertCloudflarePayloadBindings`
  * - Admin UI — `admin.*` below; nav/dashboard slots `components/AfterNavActions`, `components/BeforeDashboard`
- * - Live preview — `admin.livePreview`; draft route `app/(frontend)/api/preview/route.ts` (secret cookie — `.env.example`)
+ * - Live preview — `admin.livePreview`; draft route `app/api/preview/route.ts` (secret cookie — `.env.example`)
  * - Local API — `src/lib/getPayload.ts`, `app/_data`, `utilities/getDocument`, docs pages under `app/(frontend)/(pages)/docs`
  * - Lexical — `config/payloadLexicalEditor.ts`
  * - Email — `email/sendgridMailTransport.ts`, `email/nodemailer` adapter below

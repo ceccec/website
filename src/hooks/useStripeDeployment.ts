@@ -29,6 +29,11 @@ import {
 } from '@utilities/deploymentErrors'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  createSetupIntentAction,
+  updatePaymentMethodAction,
+  createSubscriptionAction,
+} from '@cloud/_actions/paymentActions'
 
 interface UseStripeDeploymentResult {
   deploy: (params: ExecuteDeploymentParams) => Promise<void>
@@ -109,28 +114,12 @@ export function useStripeDeployment(
           setState(prev => ({ ...prev, status: 'validating-card' }))
 
           // Create SetupIntent to validate card
-          const setupResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/stripe/setup-intent`,
-            {
-              body: JSON.stringify({
-                teamId: typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id,
-              }),
-              credentials: 'include',
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-            },
-          )
+          const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
 
-          if (!setupResponse.ok) {
-            throw createDeploymentError(DeploymentErrorCode.CARD_VALIdATION_FAILED, {
-              message: 'Failed to create SetupIntent',
-            })
-          }
-
-          const { client_secret: setupSecret } = (await setupResponse.json())
+          const setupIntent = await createSetupIntentAction(teamId)
 
           // Confirm card with SetupIntent
-          const confirmResult = await stripe.confirmCardSetup(setupSecret, {
+          const confirmResult = await stripe.confirmCardSetup(setupIntent.client_secret, {
             payment_method: {
               billing_details: {},
               card: elements.getElement('cardNumber')!,
@@ -176,11 +165,8 @@ export function useStripeDeployment(
           !teamHasDefaultPaymentMethod(checkoutState.team)
         ) {
           try {
-            await updateCustomer(checkoutState.team, {
-              invoice_settings: {
-                default_payment_method: paymentMethodId,
-              },
-            })
+            const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
+            await updatePaymentMethodAction(teamId, paymentMethodId)
           } catch (err) {
             // Log but don't fail - proceed with deployment
             console.error('Failed to set default payment method:', err)
@@ -244,30 +230,15 @@ export function useStripeDeployment(
         // === Stage 5: Create Subscription ===
         setState(prev => ({ ...prev, status: 'creating-subscription' }))
 
-        const subscriptionResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/subscriptions`,
-          {
-            body: JSON.stringify({
-              freeTrial: checkoutState.freeTrial,
-              plan: typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id,
-              team:
-                typeof checkoutState.team === 'string'
-                  ? checkoutState.team
-                  : checkoutState.team?.id,
-            }),
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
-          },
+        const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
+        const planId = typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id
+
+        const subscription = await createSubscriptionAction(
+          teamId,
+          planId,
+          paymentMethodId || undefined,
+          { freeTrial: checkoutState.freeTrial }
         )
-
-        if (!subscriptionResponse.ok) {
-          throw createDeploymentError(DeploymentErrorCode.SUBSCRIPTION_FAILED, {
-            message: 'Failed to create subscription - project deployed but billing incomplete',
-          })
-        }
-
-        const { subscription } = (await subscriptionResponse.json())
 
         setState(prev => ({
           ...prev,

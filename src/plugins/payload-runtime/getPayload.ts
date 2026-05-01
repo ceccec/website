@@ -15,9 +15,11 @@ import {
   MemoryStorageBackend,
   getStorageBackend,
 } from '@root/lib/storage'
+import { LocalStorageBackend } from '@root/lib/storage/local'
 import {
   initializeImageTransformer,
   NextjsImageTransformer,
+  CloudflareImageTransformer,
   getImageTransformer,
 } from '@root/lib/images'
 
@@ -131,25 +133,33 @@ function initializePlatformBackends(): void {
   if (capabilities.r2Storage) {
     console.info('[Storage] Using Cloudflare R2 backend')
     // TODO: Initialize R2StorageBackend
+    // const { R2StorageBackend } = await import('@root/lib/storage/r2')
     // initializeStorageBackend(new R2StorageBackend(env.R2))
   } else if (capabilities.vercelBlob) {
     console.info('[Storage] Using Vercel Blob backend')
     // TODO: Initialize VercelBlobStorageBackend
+    // const { VercelBlobStorageBackend } = await import('@root/lib/storage/vercel-blob')
     // initializeStorageBackend(new VercelBlobStorageBackend(process.env.BLOB_READ_WRITE_TOKEN))
   } else if (process.env.S3_ENDPOINT) {
     console.info('[Storage] Using S3-compatible backend')
-    // TODO: Initialize S3StorageBackend
-    // initializeStorageBackend(new S3StorageBackend({...}))
+    // TODO: Initialize S3StorageBackend with proper client
+    // const { S3StorageBackend } = await import('@root/lib/storage/s3')
+    // const s3Client = new S3Client({...})
+    // initializeStorageBackend(new S3StorageBackend(s3Client, process.env.S3_BUCKET!))
+  } else if (capabilities.isDocker) {
+    console.info('[Storage] Using local filesystem backend (development mode)')
+    initializeStorageBackend(new LocalStorageBackend(process.env.UPLOAD_DIR || './uploads'))
   } else {
-    console.warn('[Storage] No cloud storage configured; using in-memory')
+    console.warn('[Storage] No storage backend configured; using in-memory (data lost on restart)')
     initializeStorageBackend(new MemoryStorageBackend())
   }
 
   // Initialize image transformer
   if (capabilities.imageOptimization) {
     console.info('[Images] Using Cloudflare Image Optimization')
-    // TODO: Initialize CloudflareImageTransformer
-    // initializeImageTransformer(new CloudflareImageTransformer())
+    initializeImageTransformer(
+      new CloudflareImageTransformer(process.env.NEXT_PUBLIC_SITE_URL || ''),
+    )
   } else {
     console.info('[Images] Using Next.js default image optimization')
     initializeImageTransformer(new NextjsImageTransformer())

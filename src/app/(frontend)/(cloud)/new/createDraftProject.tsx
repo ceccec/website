@@ -66,7 +66,7 @@ export const createDraftProject = async ({
 
     if (projectReq.ok) {
       await revalidateCache({
-        tag: 'projects',
+        tags: [uuidTags.cloud.projects],
       })
 
       if (typeof onSubmit === 'function' && project != null) {

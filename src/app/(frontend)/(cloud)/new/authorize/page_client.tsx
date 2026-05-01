@@ -69,7 +69,7 @@ export const AuthorizePage: React.FC = () => {
 
           if (token) {
             await revalidateCache({
-              tag: 'user',
+              tags: [uuidTags.cloud.user],
             })
 
             router.push(redirectRef.current)

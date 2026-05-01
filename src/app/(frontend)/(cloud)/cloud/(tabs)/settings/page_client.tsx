@@ -73,7 +73,7 @@ export const SettingsPage: React.FC<{
         setFormToShow('account')
 
         await revalidateCache({
-          tag: 'user',
+          tags: [uuidTags.cloud.user],
         })
       } catch (err) {
         const message = err?.message || `An error occurred while attempting to update your account`

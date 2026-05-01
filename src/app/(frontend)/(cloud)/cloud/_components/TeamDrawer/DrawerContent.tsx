@@ -101,7 +101,7 @@ export const TeamDrawerContent: React.FC<TeamDrawerProps> = ({
 
           // revalidate this tag so that the next client-side navigation to this page is up to date
           await revalidateCache({
-            tag: 'teams',
+            tags: [uuidTags.cloud.teams],
           })
 
           // automatically redirect to the new team

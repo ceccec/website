@@ -48,7 +48,7 @@ export const fetchInvoices = async (team?: string | Team): Promise<InvoicesResul
     throw new Error('No token provided')
   }
 
-  const res: InvoicesResult = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${teamId}/invoices`,
     {
       headers: {
@@ -57,7 +57,9 @@ export const fetchInvoices = async (team?: string | Team): Promise<InvoicesResul
       },
       method: 'POST',
     },
-  )?.then((r) => r.json())
+  )
+
+  const res: InvoicesResult = await response.json()
 
   return res
 }

@@ -17,7 +17,7 @@ export const fetchPaymentMethods = async (args: {
     throw new Error('No token provided')
   }
 
-  const paymentMethods: PaymentMethod[] = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/payment-methods`,
     {
       headers: {
@@ -26,18 +26,18 @@ export const fetchPaymentMethods = async (args: {
       },
       method: 'GET',
     },
-  ).then(async (res) => {
-    const json: {
-      data: PaymentMethod[]
-      message: string
-    } = await res.json()
-    if (!res.ok) {
-      throw new Error(json.message)
-    }
-    return json?.data
-  })
+  )
 
-  return paymentMethods
+  const json: {
+    data: PaymentMethod[]
+    message: string
+  } = await response.json()
+
+  if (!response.ok) {
+    throw new Error(json.message)
+  }
+
+  return json?.data
 }
 
 export const fetchPaymentMethodsClient = async (args: {
@@ -48,7 +48,7 @@ export const fetchPaymentMethodsClient = async (args: {
     throw new Error('Cannot fetch payment method without team')
   }
 
-  const paymentMethods: PaymentMethod[] = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${team?.id}/payment-methods`,
     {
       credentials: 'include',
@@ -57,16 +57,16 @@ export const fetchPaymentMethodsClient = async (args: {
       },
       method: 'GET',
     },
-  ).then(async (res) => {
-    const json: {
-      data: PaymentMethod[]
-      message: string
-    } = await res.json()
-    if (!res.ok) {
-      throw new Error(json.message)
-    }
-    return json?.data
-  })
+  )
 
-  return paymentMethods
+  const json: {
+    data: PaymentMethod[]
+    message: string
+  } = await response.json()
+
+  if (!response.ok) {
+    throw new Error(json.message)
+  }
+
+  return json?.data
 }

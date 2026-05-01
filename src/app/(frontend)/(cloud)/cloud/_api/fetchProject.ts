@@ -1,13 +1,13 @@
 import type { Project } from '@root/payload-cloud-types'
 
 import { PROJECT_QUERY } from '@data/project'
+import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
 import { mergeProjectEnvironment } from '@root/utilities/merge-project-environment'
 import { cookies } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 
 import type { Subscription } from './fetchSubscriptions'
 import type { Customer, TeamWithCustomer } from './fetchTeam'
-import type { GraphQLJsonBody } from './graphqlJson'
 
 import { payloadCloudToken } from './token'
 
@@ -25,7 +25,7 @@ export const fetchProject = async (args: {
     throw new Error('No token provided')
   }
 
-  const doc = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: PROJECT_QUERY,
       variables: {
@@ -40,19 +40,15 @@ export const fetchProject = async (args: {
     method: 'POST',
     next: { tags: [`project_${projectSlug}`] },
   })
-    ?.then((res) => res.json())
-    ?.then((json: unknown) => {
-      const res = json as GraphQLJsonBody<{ Projects?: { docs?: Project[] } }>
-      if (res.errors) {
-        throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
-      }
-      return res?.data?.Projects?.docs?.[0]
-    })
 
-  if (!doc) {
+  const projectsData = await parseGraphQLResponse<{ docs?: Project[] }>(response, 'Projects')
+  const project = projectsData?.docs?.[0]
+
+  if (!project) {
     throw new Error('Project not found')
   }
-  return doc
+
+  return project
 }
 
 export const fetchProjectAndRedirect = async (args: {

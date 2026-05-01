@@ -27,7 +27,7 @@ export const fetchRepos = async (args: {
     throw new Error('No token provided')
   }
 
-  const docs = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/users/github`,
     {
       body: JSON.stringify({
@@ -46,18 +46,17 @@ export const fetchRepos = async (args: {
       },
     },
   )
-    ?.then((res) => {
-      if (!res.ok) {
-        throw new Error(`Error getting repositories: ${res.status} ${res.statusText}`)
-      }
-      return res.json()
-    })
-    ?.then((json: unknown) => {
-      const res = json as GitHubProxyBody
-      if (res.errors) {
-        throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs')
-      }
-      return res?.data
+
+  if (!response.ok) {
+    throw new Error(`Error getting repositories: ${response.status} ${response.statusText}`)
+  }
+
+  const json = await response.json() as GitHubProxyBody
+  if (json.errors) {
+    throw new Error(json?.errors?.[0]?.message ?? 'Error fetching docs')
+  }
+
+  const docs: RepoResults = json?.data
     })
 
   if (!docs) {

@@ -1,10 +1,8 @@
 import type { Team } from '@root/payload-cloud-types'
 
 import { TEAM_QUERY, TEAMS_QUERY } from '@data/team'
-import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
+import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
 import { notFound } from 'next/navigation'
-
-import type { GraphQLJsonBody } from './graphqlJson'
 
 import { payloadCloudToken } from './token'
 
@@ -32,7 +30,7 @@ export const fetchTeams = async (teamIds: string[]): Promise<Team[]> => {
     throw new Error('No token provided')
   }
 
-  const res: Team[] = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: TEAMS_QUERY,
       variables: {
@@ -48,16 +46,10 @@ export const fetchTeams = async (teamIds: string[]): Promise<Team[]> => {
     method: 'POST',
     next: { tags: ['teams'] },
   })
-    ?.then((r) => r.json())
-    ?.then((json: unknown) => {
-      const data = json as GraphQLJsonBody<{ Teams?: { docs?: Team[] } }>
-      if (data.errors) {
-        throw new Error(data?.errors?.[0]?.message ?? 'Error fetching doc')
-      }
-      return data?.data?.Teams?.docs ?? []
-    })
 
-  return res
+  const teamsData = await parseGraphQLResponse<{ docs?: Team[] }>(response, 'Teams')
+
+  return teamsData?.docs ?? []
 }
 
 export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
@@ -68,7 +60,7 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
   }
 
   try {
-    const doc = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
       body: JSON.stringify({
         query: TEAM_QUERY,
         variables: {
@@ -81,21 +73,17 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
       },
       method: 'POST',
     })
-      ?.then((res) => res.json())
-      ?.then((json: unknown) => {
-        const res = json as GraphQLJsonBody<{ Teams?: { docs?: Team[] } }>
-        if (res.errors) {
-          throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
-        }
-        return res?.data?.Teams?.docs?.[0]
-      })
 
-    if (!doc) {
+    const teamsData = await parseGraphQLResponse<{ docs?: Team[] }>(response, 'Teams')
+    const team = teamsData?.docs?.[0]
+
+    if (!team) {
       return notFound()
     }
-    return doc
+
+    return team
   } catch (error) {
-    console.error(error)
+    console.error('[fetchTeam] Error:', error)
     return notFound()
   }
 }

@@ -1,11 +1,10 @@
 import type { Template } from '@root/payload-cloud-types'
 
 import { TEMPLATE } from '@data/templates'
-
-import type { GraphQLJsonBody } from './graphqlJson'
+import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
 
 export const fetchTemplate = async (templateSlug?: string): Promise<Template> => {
-  const doc = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: TEMPLATE,
       variables: {
@@ -18,17 +17,13 @@ export const fetchTemplate = async (templateSlug?: string): Promise<Template> =>
     },
     method: 'POST',
   })
-    ?.then((res) => res.json())
-    ?.then((json: unknown) => {
-      const res = json as GraphQLJsonBody<{ Templates?: { docs?: Template[] } }>
-      if (res.errors) {
-        throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
-      }
-      return res?.data?.Templates?.docs?.[0]
-    })
 
-  if (!doc) {
+  const templatesData = await parseGraphQLResponse<{ docs?: Template[] }>(response, 'Templates')
+  const template = templatesData?.docs?.[0]
+
+  if (!template) {
     throw new Error('Template not found')
   }
-  return doc
+
+  return template
 }

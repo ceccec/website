@@ -1,10 +1,8 @@
 import type { Project } from '@root/payload-cloud-types'
 
 import { PROJECT_QUERY, PROJECTS_QUERY } from '@data/project'
+import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
 import { mergeProjectEnvironment } from '@root/utilities/merge-project-environment'
-import { parsePayloadGraphQLBody } from '@root/utilities/payloadCloudJson'
-
-import type { GraphQLJsonBody } from './graphqlJson'
 
 import { payloadCloudToken } from './token'
 
@@ -24,7 +22,7 @@ export const fetchProjects = async (teamIds: string[]): Promise<ProjectsRes> => 
     throw new Error('No token provided')
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: PROJECTS_QUERY,
       variables: {
@@ -40,19 +38,14 @@ export const fetchProjects = async (teamIds: string[]): Promise<ProjectsRes> => 
     method: 'POST',
     next: { tags: ['projects'] },
   })
-    ?.then((r) => r.json())
-    ?.then((json: unknown) => {
-      const data = json as GraphQLJsonBody<{ Projects?: ProjectsRes }>
-      if (data.errors) {
-        throw new Error(data?.errors?.[0]?.message ?? 'Error fetching doc')
-      }
-      return data?.data?.Projects
-    })
 
-  if (!res) {
+  const projects = await parseGraphQLResponse<ProjectsRes>(response, 'Projects')
+
+  if (!projects) {
     throw new Error('Projects not found')
   }
-  return res
+
+  return projects
 }
 
 export const fetchProjectsClient = async ({
@@ -66,7 +59,7 @@ export const fetchProjectsClient = async ({
   search?: string
   teamIds: Array<string | undefined>
 }): Promise<ProjectsRes> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: PROJECTS_QUERY,
       variables: {
@@ -82,13 +75,8 @@ export const fetchProjectsClient = async ({
     },
     method: 'POST',
   })
-    .then((r) => r.json())
-    ?.then((json: unknown) => {
-      const data = json as GraphQLJsonBody<{ Projects?: ProjectsRes }>
-      return data?.data?.Projects
-    })
 
-  return res as ProjectsRes
+  return await parseGraphQLResponse<ProjectsRes>(response, 'Projects')
 }
 
 export const fetchProjectClient = async ({

@@ -55,7 +55,7 @@ export const fetchSubscriptions = async (team?: string | Team): Promise<Subscrip
     throw new Error('No token provided')
   }
 
-  const body = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/teams/${teamId}/subscriptions`,
     {
       headers: {
@@ -64,7 +64,9 @@ export const fetchSubscriptions = async (team?: string | Team): Promise<Subscrip
       },
       method: 'POST',
     },
-  )?.then((r) => r.json())
+  )
+
+  const body = await response.json()
 
   return body as SubscriptionsResult
 }

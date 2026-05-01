@@ -1,8 +1,7 @@
 import type { Template } from '@root/payload-cloud-types'
 
 import { TEMPLATES } from '@data/templates'
-
-import type { GraphQLJsonBody } from './graphqlJson'
+import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
 
 import { payloadCloudToken } from './token'
 
@@ -10,7 +9,7 @@ export const fetchTemplates = async (): Promise<Template[]> => {
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null
 
-  const doc: Template[] = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql`, {
     body: JSON.stringify({
       query: TEMPLATES,
     }),
@@ -21,14 +20,8 @@ export const fetchTemplates = async (): Promise<Template[]> => {
     method: 'POST',
     next: { tags: ['templates'] },
   })
-    ?.then((res) => res.json())
-    ?.then((json: unknown) => {
-      const res = json as GraphQLJsonBody<{ Templates?: { docs?: Template[] } }>
-      if (res.errors) {
-        throw new Error(res?.errors?.[0]?.message ?? 'Error fetching doc')
-      }
-      return res?.data?.Templates?.docs ?? []
-    })
 
-  return doc
+  const templatesData = await parseGraphQLResponse<{ docs?: Template[] }>(response, 'Templates')
+
+  return templatesData?.docs ?? []
 }

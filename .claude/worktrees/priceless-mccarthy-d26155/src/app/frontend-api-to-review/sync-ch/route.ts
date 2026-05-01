@@ -3,9 +3,9 @@ import type { NextRequest, NextResponse } from 'next/server'
 import clearDuplicateThreads from '@root/scripts/clearDuplicateThreads'
 import { runAuthorizedSyncGet } from '@root/utilities/runAuthorizedSyncGet'
 
-import fetchDiscord from '../../../../scripts/fetchDiscord'
-import fetchGitHub from '../../../../scripts/fetchGitHub'
-import { syncToAlgolia } from '../../../../scripts/syncToAlgolia'
+import fetchDiscord from '@root/scripts/fetchDiscord'
+import fetchGitHub from '@root/scripts/fetchGitHub'
+import { syncToAlgolia } from '@root/scripts/syncToAlgolia'
 
 export const maxDuration = 300 // 5 mins (max on vercel pro plan)
 export const dynamic = 'force-dynamic'

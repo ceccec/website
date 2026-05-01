@@ -15,6 +15,13 @@ export async function runAuthorizedSyncGet(
   if (denied) {
     return denied
   }
-  await handler()
-  return NextResponse.json({ success: true }, { status: 200 })
+
+  try {
+    await handler()
+    return NextResponse.json({ success: true }, { status: 200 })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Sync handler error:', message, error)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

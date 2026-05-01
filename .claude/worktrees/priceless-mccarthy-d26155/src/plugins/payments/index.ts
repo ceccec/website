@@ -22,4 +22,4 @@ export { revolutProvider } from './providers/revolut'
 /**
  * Default export: ready-to-use payment provider
  */
-export { getPaymentProvider as default }
+export { getPaymentProvider as default } from './providers/factory'

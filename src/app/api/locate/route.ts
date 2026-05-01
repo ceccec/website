@@ -85,7 +85,17 @@ const locate = (countryCode: null | string = null): boolean =>
   countryCode ? gdprCountryCodes.indexOf(countryCode) > -1 : true
 
 export function GET(req: Request) {
-  const country = req.headers.get('x-vercel-ip-country')
-  const isGDPR = locate(country)
-  return new Response(JSON.stringify({ country, isGDPR }))
+  try {
+    const country = req.headers.get('x-vercel-ip-country')
+    const isGDPR = locate(country)
+    return new Response(JSON.stringify({ country, isGDPR }), {
+      headers: { 'content-type': 'application/json' },
+    })
+  } catch (error) {
+    console.error('Locate route error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to determine location' }), {
+      status: 500,
+      headers: { 'content-type': 'application/json' },
+    })
+  }
 }

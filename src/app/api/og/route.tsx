@@ -281,6 +281,6 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
     console.error(`${error.message}`) // eslint-disable-line no-console
-    return NextResponse.error()
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 }

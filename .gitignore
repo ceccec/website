@@ -58,3 +58,4 @@ next-env.d.ts
 !.env.example
 !.env.docker.example
 .env.docker
+.claude

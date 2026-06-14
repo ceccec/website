@@ -2,25 +2,24 @@ import type { Repo } from '@cloud/_api/fetchRepos'
 import type { Project, User } from '@root/payload-cloud-types'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
-import { assertRecordPayload, isRecord } from '@utilities/payloadCloudJson'
 
 export const createDraftProject = async ({
-  installId,
+  installID,
   makePrivate,
   onSubmit,
   projectName,
   repo,
-  teamId,
-  templateId,
+  teamID,
+  templateID,
   user,
 }: {
-  installId: number | undefined
+  installID: number | undefined
   makePrivate?: boolean
   onSubmit?: (project: Project) => void
   projectName?: string
   repo: Partial<Repo>
-  teamId: string | undefined
-  templateId?: string // only applies to `clone` flow
+  teamID: string | undefined
+  templateID?: string // only applies to `clone` flow
   user: null | undefined | User
 }): Promise<void> => {
   if (!user) {
@@ -31,22 +30,21 @@ export const createDraftProject = async ({
     throw new Error('You must be a member of a team to create a project')
   }
 
+  if (!teamID) {
+    throw new Error('Team is required — select a team before continuing.')
+  }
+
   try {
     const draftProject: Partial<Project> = {
       name: projectName || repo?.name || 'Untitled Project',
       defaultDomain: undefined,
-      installId: installId ? installId.toString() : undefined,
+      installID: installID ? installID.toString() : undefined,
       makePrivate,
       repositoryFullName: repo?.full_name,
-      repositoryId: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
+      repositoryID: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
       repositoryName: repo?.name,
-      team:
-        teamId ||
-        // fallback to first team
-        (typeof user.teams?.[0]?.team === 'string'
-          ? user.teams?.[0]?.team
-          : user.teams?.[0]?.team?.id),
-      template: templateId,
+      team: teamID,
+      template: templateID,
       // `buildScript`, `installScript`, and `runScript` are automatically set by the API based on any `package-lock.json` found in the repo
       // the user can change these later to whatever they want, but this prevents the user from having `yarn` commands set on an `npm` project, for example
     }
@@ -60,24 +58,18 @@ export const createDraftProject = async ({
       method: 'POST',
     })
 
-    const body = assertRecordPayload(await projectReq.json())
-    const project = body.doc as Project | undefined
-    const projectErrs = Array.isArray(body.errors) ? body.errors : undefined
+    const { doc: project, errors: projectErrs } = await projectReq.json()
 
     if (projectReq.ok) {
       await revalidateCache({
-        tags: [uuidTags.cloud.projects],
+        tag: 'projects',
       })
 
-      if (typeof onSubmit === 'function' && project != null) {
-        await Promise.resolve(onSubmit(project))
+      if (typeof onSubmit === 'function') {
+        await onSubmit(project)
       }
     } else {
-      const firstErr =
-        projectErrs?.[0] && isRecord(projectErrs[0]) && typeof projectErrs[0].message === 'string'
-          ? projectErrs[0].message
-          : undefined
-      throw new Error(firstErr ?? 'Failed to create project')
+      throw new Error(projectErrs[0].message)
     }
   } catch (err: unknown) {
     console.error(err) // eslint-disable-line no-console

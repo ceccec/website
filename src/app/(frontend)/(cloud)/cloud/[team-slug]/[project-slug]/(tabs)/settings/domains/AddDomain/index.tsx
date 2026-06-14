@@ -2,7 +2,6 @@
 
 import type { OnSubmit } from '@forms/types'
 import type { Project, Team } from '@root/payload-cloud-types'
-import type { AddDomainFormData } from '@root/types/forms'
 
 import { Text } from '@forms/fields/Text/index'
 import Form from '@forms/Form/index'
@@ -14,7 +13,7 @@ import { toast } from 'sonner'
 
 import classes from './index.module.scss'
 
-const generateUUId = () => {
+const generateUUID = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
@@ -23,43 +22,35 @@ const domainFieldPath = 'newDomain'
 export const AddDomain: React.FC<{
   environmentSlug: string
   project: Project
+  scopedDomains: NonNullable<Project['domains']>
   team: Team
-}> = ({ environmentSlug, project, team }) => {
-  const [fieldKey, setFieldKey] = React.useState(generateUUId())
+}> = ({ environmentSlug, project, scopedDomains, team }) => {
+  const [fieldKey, setFieldKey] = React.useState(generateUUID())
 
-  const projectId = project?.id
-  const projectDomains = project?.domains
+  const projectID = project?.id
 
   const router = useRouter()
 
   const saveDomain = React.useCallback<OnSubmit>(
     async ({ data }) => {
-      const formData = data as Partial<AddDomainFormData>
-      // The type `Project.domains[0]` -> does not work because the array is not required - Payload type issue?
       const newDomain: {
-        cloudflareId?: string
+        cloudflareID?: string
         domain: string
         id?: string
       } = {
-        domain: formData[domainFieldPath] as string,
+        domain: data[domainFieldPath] as string,
       }
 
-      const domainExists = projectDomains?.find(
+      const domainExists = scopedDomains.find(
         (projectDomain) => projectDomain.domain === newDomain.domain,
       )
-
-      // TODO - toast messages
 
       if (!domainExists) {
         try {
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
-              environmentSlug ? `?env=${environmentSlug}` : ''
-            }`,
+            `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/domains?env=${encodeURIComponent(environmentSlug)}`,
             {
-              body: JSON.stringify({
-                domains: [newDomain, ...(projectDomains || [])],
-              }),
+              body: JSON.stringify([newDomain, ...scopedDomains]),
               credentials: 'include',
               headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +61,7 @@ export const AddDomain: React.FC<{
 
           if (req.status === 200) {
             router.refresh()
-            setFieldKey(generateUUId())
+            setFieldKey(generateUUID())
             toast.success('Domain added successfully.')
           }
 
@@ -79,10 +70,10 @@ export const AddDomain: React.FC<{
           console.error(e) // eslint-disable-line no-console
         }
       } else {
-        setFieldKey(generateUUId())
+        setFieldKey(generateUUID())
       }
     },
-    [projectId, projectDomains],
+    [projectID, scopedDomains, environmentSlug, router],
   )
 
   return (

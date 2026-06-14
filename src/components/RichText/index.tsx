@@ -10,6 +10,8 @@ import type {
   BannerBlock,
   BrBlock,
   BulletListBlock,
+  CardBlock,
+  CardGroupBlock,
   CodeBlock,
   CommandLineBlock,
   Doc,
@@ -39,18 +41,16 @@ import { Video } from '@components/RichText/Video'
 import SpotlightAnimation from '@components/SpotlightAnimation'
 import { TemplateCards } from '@components/TemplateCardsBlock'
 import YouTube from '@components/YouTube/index'
-import { useLivePreview } from '@payloadcms/live-preview-react'
 
 import './index.scss'
 
+import { useLivePreview } from '@payloadcms/live-preview-react'
 import {
   type JSXConverters,
   type JSXConvertersFunction,
   RichText as SerializedRichText,
 } from '@payloadcms/richtext-lexical/react'
 import { Download } from '@root/components/blocks/Download'
-import { resolveGlobalField } from '@root/lib/resolveGlobalField'
-import { useSitePublicConfigOptional } from '@root/providers/SitePublicConfig'
 import { getVideo } from '@root/utilities/get-video'
 import React, { useCallback, useMemo, useState } from 'react'
 
@@ -58,6 +58,8 @@ import type { AllowedElements } from '../SpotlightAnimation/types'
 
 import { Arrow } from './Arrow'
 import { BulletList } from './BulletList'
+import { Card } from './Card/index'
+import { CardGroup } from './CardGroup/index'
 import { type AddHeading, type Heading, type IContext, RichTextContext } from './context'
 import { Heading as HeadingComponent } from './Heading'
 import { LightDarkImage } from './LightDarkImage/index'
@@ -82,6 +84,8 @@ export type NodeTypes =
       | BannerBlock
       | BrBlock
       | BulletListBlock
+      | CardBlock
+      | CardGroupBlock
       | CodeBlock
       | CommandLineBlock
       | DownloadBlockType
@@ -118,10 +122,30 @@ export const jsxConverters: (args: { toc?: boolean }) => JSXConvertersFunction<N
         BulletList: ({ node }) => {
           return <BulletList items={node.fields.items} />
         },
+        Card: ({ node }) => {
+          return (
+            <Card
+              description={node.fields.description}
+              link={node.fields.link}
+              title={node.fields.title}
+            />
+          )
+        },
+        CardGroup: ({ node, nodesToJSX }) => {
+          const Children = nodesToJSX({
+            nodes: node.fields.content?.root?.children as SerializedLexicalNode[],
+          })
+          return <CardGroup>{Children}</CardGroup>
+        },
         Code: ({ node }) => {
           const codeString: string = node.fields.code ?? ''
           return (
-            <Code children={codeString?.trim()} disableMinHeight parentClassName={'lexical-code'} />
+            <Code
+              children={codeString?.trim()}
+              disableMinHeight
+              language={node.fields.language ?? undefined}
+              parentClassName={'lexical-code'}
+            />
           )
         },
         commandLine: ({ node }) => {
@@ -245,7 +269,6 @@ export const jsxConverters: (args: { toc?: boolean }) => JSXConvertersFunction<N
   }
 
 export const RichTextWithTOC: React.FC<Props> = ({ className, content: _content }) => {
-  const site = useSitePublicConfigOptional()
   const [toc, setTOC] = useState<Map<string, Heading>>(new Map())
 
   const initialData = useMemo(() => ({ content: _content }) as Doc, [_content])
@@ -255,7 +278,7 @@ export const RichTextWithTOC: React.FC<Props> = ({ className, content: _content 
   } = useLivePreview<Doc>({
     depth: 2,
     initialData,
-    serverURL: resolveGlobalField(site.cmsUrl, process.env.NEXT_PUBLIC_CMS_URL),
+    serverURL: process.env.NEXT_PUBLIC_CMS_URL as string,
   })
 
   const addHeading: AddHeading = useCallback(

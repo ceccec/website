@@ -73,9 +73,19 @@ export interface Config {
     callout: Callout;
     cta: Cta;
     downloadBlock: DownloadBlockType;
+    LightDarkImage: LightDarkImageBlock;
+    PayloadMedia: PayloadMediaBlock;
+    TableWithDrawers: TableWithDrawersBlock;
+    YouTube: YoutubeBlock;
+    Pill: PillBlock;
+    Arrow: ArrowBlock;
+    BulletList: BulletListBlock;
+    Card: CardBlock;
+    CardGroup: CardGroupBlock;
     cardGrid: CardGrid;
     caseStudyCards: CaseStudyCards;
     caseStudiesHighlight: CaseStudiesHighlight;
+    Upload: UploadBlock;
     caseStudyParallax: CaseStudyParallax;
     codeFeature: CodeFeature;
     content: Content;
@@ -89,26 +99,15 @@ export interface Config {
     mediaBlock: MediaBlock;
     mediaContent: MediaContent;
     mediaContentAccordion: MediaContentAccordion;
+    RestExamples: RestExamplesBlock;
     pricing: Pricing;
     reusableContentBlock: ReusableContentBlock;
+    Resource: ResourceBlock;
     slider: Slider;
     statement: Statement;
     steps: StepsBlock;
     stickyHighlights: StickyHighlights;
     exampleTabs: ExampleTabsBlock;
-    code: Code;
-    LightDarkImage: LightDarkImageBlock;
-    PayloadMedia: PayloadMediaBlock;
-    TableWithDrawers: TableWithDrawersBlock;
-    YouTube: YoutubeBlock;
-    Pill: PillBlock;
-    Arrow: ArrowBlock;
-    BulletList: BulletListBlock;
-    Upload: UploadBlock;
-    RestExamples: RestExamplesBlock;
-    Resource: ResourceBlock;
-    Banner: BannerBlock;
-    Code: CodeBlock;
     spotlight: SpotlightBlock;
     video: VideoBlock;
     br: BrBlock;
@@ -117,22 +116,26 @@ export interface Config {
     command: Command;
     link: Link;
     templateCards: TemplateCardsBlock;
+    Banner: BannerBlock;
+    Code: CodeBlock;
+    code: Code;
   };
   collections: {
-    users: User;
-    media: Media;
-    'reusable-content': ReusableContent;
     'case-studies': CaseStudy;
     'community-help': CommunityHelp;
+    docs: Doc;
+    'docs-feedback': DocsFeedback;
+    media: Media;
+    pages: Page;
     posts: Post;
     categories: Category;
-    docs: Doc;
+    'reusable-content': ReusableContent;
+    users: User;
     partners: Partner;
     industries: Industry;
     specialties: Specialty;
     regions: Region;
     budgets: Budget;
-    pages: Page;
     forms: Form;
     'form-submissions': FormSubmission;
     redirects: Redirect;
@@ -142,28 +145,29 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    categories: {
-      posts: 'posts';
-    };
     docs: {
       guides: 'posts';
     };
+    categories: {
+      posts: 'posts';
+    };
   };
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    'reusable-content': ReusableContentSelect<false> | ReusableContentSelect<true>;
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     'community-help': CommunityHelpSelect<false> | CommunityHelpSelect<true>;
+    docs: DocsSelect<false> | DocsSelect<true>;
+    'docs-feedback': DocsFeedbackSelect<false> | DocsFeedbackSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    docs: DocsSelect<false> | DocsSelect<true>;
+    'reusable-content': ReusableContentSelect<false> | ReusableContentSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     industries: IndustriesSelect<false> | IndustriesSelect<true>;
     specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
     regions: RegionsSelect<false> | RegionsSelect<true>;
     budgets: BudgetsSelect<false> | BudgetsSelect<true>;
-    pages: PagesSelect<false> | PagesSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -175,41 +179,25 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale:
-    | ('false' | 'none' | 'null')
-    | false
-    | null
-    | ('bg' | 'en' | 'es' | 'de' | 'ja' | 'ar')
-    | ('bg' | 'en' | 'es' | 'de' | 'ja' | 'ar')[];
+  fallbackLocale: null;
   globals: {
-    'admin-settings': AdminSetting;
-    'public-site-settings': PublicSiteSetting;
-    'integration-secrets': IntegrationSecret;
     footer: Footer;
     'main-menu': MainMenu;
-    topBar: TopBar;
     'get-started': GetStarted;
     'partner-program': PartnerProgram;
+    topBar: TopBar;
   };
   globalsSelect: {
-    'admin-settings': AdminSettingsSelect<false> | AdminSettingsSelect<true>;
-    'public-site-settings': PublicSiteSettingsSelect<false> | PublicSiteSettingsSelect<true>;
-    'integration-secrets': IntegrationSecretsSelect<false> | IntegrationSecretsSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'main-menu': MainMenuSelect<false> | MainMenuSelect<true>;
-    topBar: TopBarSelect<false> | TopBarSelect<true>;
     'get-started': GetStartedSelect<false> | GetStartedSelect<true>;
     'partner-program': PartnerProgramSelect<false> | PartnerProgramSelect<true>;
+    topBar: TopBarSelect<false> | TopBarSelect<true>;
   };
-  locale: 'bg' | 'en' | 'es' | 'de' | 'ja' | 'ar';
-  widgets: {
-    'analytics-overview': AnalyticsOverviewWidget;
-    'top-pages': TopPagesWidget;
-    'active-users': ActiveUsersWidget;
-    'channel-groups': ChannelGroupsWidget;
-    collections: CollectionsWidget;
+  locale: null;
+  user: User & {
+    collection: 'users';
   };
-  user: User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -311,10 +299,6 @@ export interface MediaExampleBlock {
  */
 export interface Media {
   id: string;
-  /**
-   * SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfId).
-   */
-  contentSha256?: string | null;
   alt: string;
   /**
    * Choose an upload to render if the visitor is using dark mode.
@@ -1054,7 +1038,7 @@ export interface Partner {
    * Set to inactive to hide this partner from the directory.
    */
   agency_status?: ('active' | 'inactive') | null;
-  hubspotId?: string | null;
+  hubspotID?: string | null;
   logo: string | Media;
   /**
    * This field is managed by the Featured Partners field in the Partner Program collection
@@ -1887,11 +1871,11 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
-  hubSpotFormId?: string | null;
+  hubSpotFormID?: string | null;
   /**
    * Attached to submission button to track clicks
    */
-  customId?: string | null;
+  customID?: string | null;
   requireRecaptcha?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -2926,7 +2910,6 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3090,6 +3073,45 @@ export interface BulletListBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardBlock".
+ */
+export interface CardBlock {
+  title: string;
+  description: string;
+  /**
+   * URL the card links to, e.g. /docs/authentication/overview
+   */
+  link: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'Card';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGroupBlock".
+ */
+export interface CardGroupBlock {
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'CardGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "UploadBlock".
  */
 export interface UploadBlock {
@@ -3180,64 +3202,6 @@ export interface ResourceBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  type?: ('alert' | 'default' | 'error' | 'info' | 'success' | 'warning') | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?:
-    | (
-        | 'bash'
-        | 'css'
-        | 'dockerfile'
-        | 'env'
-        | 'graphql'
-        | 'html'
-        | 'http'
-        | 'js'
-        | 'json'
-        | 'jsx'
-        | 'plaintext'
-        | 'scss'
-        | 'sh'
-        | 'text'
-        | 'ts'
-        | 'tsx'
-        | 'vue'
-        | 'yaml'
-        | 'yml'
-      )
-    | null;
-  code?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Code';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "SpotlightBlock".
  */
 export interface SpotlightBlock {
@@ -3323,14 +3287,72 @@ export interface TemplateCardsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  type?: ('alert' | 'default' | 'error' | 'info' | 'success' | 'warning') | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'Banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  language?:
+    | (
+        | 'bash'
+        | 'css'
+        | 'dockerfile'
+        | 'env'
+        | 'graphql'
+        | 'html'
+        | 'http'
+        | 'js'
+        | 'json'
+        | 'jsx'
+        | 'plaintext'
+        | 'scss'
+        | 'sh'
+        | 'text'
+        | 'ts'
+        | 'tsx'
+        | 'vue'
+        | 'yaml'
+        | 'yml'
+      )
+    | null;
+  code?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'Code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "community-help".
  */
 export interface CommunityHelp {
   id: string;
   title?: string | null;
   communityHelpType?: ('discord' | 'github') | null;
-  githubId?: string | null;
-  discordId?: string | null;
+  githubID?: string | null;
+  discordID?: string | null;
   communityHelpJSON:
     | {
         [k: string]: unknown;
@@ -3345,6 +3367,21 @@ export interface CommunityHelp {
   helpful?: boolean | null;
   relatedDocs?: (string | Doc)[] | null;
   threadCreatedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "docs-feedback".
+ */
+export interface DocsFeedback {
+  id: string;
+  /**
+   * The docs page key, e.g. "getting-started/what-is-payload".
+   */
+  path: string;
+  helpful: number;
+  notHelpful: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -3418,24 +3455,28 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: string | Media;
-      } | null)
-    | ({
-        relationTo: 'reusable-content';
-        value: string | ReusableContent;
-      } | null)
-    | ({
         relationTo: 'case-studies';
         value: string | CaseStudy;
       } | null)
     | ({
         relationTo: 'community-help';
         value: string | CommunityHelp;
+      } | null)
+    | ({
+        relationTo: 'docs';
+        value: string | Doc;
+      } | null)
+    | ({
+        relationTo: 'docs-feedback';
+        value: string | DocsFeedback;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
       } | null)
     | ({
         relationTo: 'posts';
@@ -3446,8 +3487,12 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
-        relationTo: 'docs';
-        value: string | Doc;
+        relationTo: 'reusable-content';
+        value: string | ReusableContent;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
       } | null)
     | ({
         relationTo: 'partners';
@@ -3468,10 +3513,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'budgets';
         value: string | Budget;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: string | Page;
       } | null)
     | ({
         relationTo: 'forms';
@@ -3529,85 +3570,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  firstName?: T;
-  lastName?: T;
-  twitter?: T;
-  photo?: T;
-  roles?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  contentSha256?: T;
-  alt?: T;
-  darkModeFallback?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reusable-content_select".
- */
-export interface ReusableContentSelect<T extends boolean = true> {
-  title?: T;
-  layout?:
-    | T
-    | {
-        banner?:
-          | T
-          | {
-              bannerFields?:
-                | T
-                | {
-                    settings?:
-                      | T
-                      | {
-                          theme?: T;
-                          background?: T;
-                        };
-                    type?: T;
-                    addCheckmark?: T;
-                    content?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "case-studies_select".
  */
 export interface CaseStudiesSelect<T extends boolean = true> {
@@ -3638,91 +3600,14 @@ export interface CaseStudiesSelect<T extends boolean = true> {
 export interface CommunityHelpSelect<T extends boolean = true> {
   title?: T;
   communityHelpType?: T;
-  githubId?: T;
-  discordId?: T;
+  githubID?: T;
+  discordID?: T;
   communityHelpJSON?: T;
   introDescription?: T;
   slug?: T;
   helpful?: T;
   relatedDocs?: T;
   threadCreatedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
- */
-export interface PostsSelect<T extends boolean = true> {
-  title?: T;
-  featuredMedia?: T;
-  image?: T;
-  videoUrl?: T;
-  dynamicThumbnail?: T;
-  thumbnail?: T;
-  category?: T;
-  tags?: T;
-  excerpt?: T;
-  content?:
-    | T
-    | {
-        banner?:
-          | T
-          | {
-              bannerFields?:
-                | T
-                | {
-                    settings?:
-                      | T
-                      | {
-                          theme?: T;
-                          background?: T;
-                        };
-                    type?: T;
-                    addCheckmark?: T;
-                    content?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-      };
-  relatedPosts?: T;
-  relatedDocs?: T;
-  slug?: T;
-  authorType?: T;
-  authors?: T;
-  guestAuthor?: T;
-  guestSocials?:
-    | T
-    | {
-        youtube?: T;
-        twitter?: T;
-        linkedin?: T;
-        website?: T;
-      };
-  publishedOn?: T;
-  addToDocs?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  headline?: T;
-  description?: T;
-  posts?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3750,98 +3635,33 @@ export interface DocsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partners_select".
+ * via the `definition` "docs-feedback_select".
  */
-export interface PartnersSelect<T extends boolean = true> {
-  name?: T;
-  website?: T;
-  email?: T;
-  slug?: T;
-  agency_status?: T;
-  hubspotId?: T;
-  logo?: T;
-  featured?: T;
-  topContributor?: T;
-  content?:
-    | T
-    | {
-        bannerImage?: T;
-        overview?: T;
-        services?: T;
-        idealProject?: T;
-        caseStudy?: T;
-        contributions?:
-          | T
-          | {
-              type?: T;
-              repo?: T;
-              number?: T;
-              id?: T;
-            };
-        projects?:
-          | T
-          | {
-              year?: T;
-              name?: T;
-              link?: T;
-              id?: T;
-            };
-      };
-  city?: T;
-  regions?: T;
-  specialties?: T;
-  budgets?: T;
-  industries?: T;
-  social?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "industries_select".
- */
-export interface IndustriesSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
+export interface DocsFeedbackSelect<T extends boolean = true> {
+  path?: T;
+  helpful?: T;
+  notHelpful?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "specialties_select".
+ * via the `definition` "media_select".
  */
-export interface SpecialtiesSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  darkModeFallback?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regions_select".
- */
-export interface RegionsSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "budgets_select".
- */
-export interface BudgetsSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4008,6 +3828,237 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  featuredMedia?: T;
+  image?: T;
+  videoUrl?: T;
+  dynamicThumbnail?: T;
+  thumbnail?: T;
+  category?: T;
+  tags?: T;
+  excerpt?: T;
+  content?:
+    | T
+    | {
+        banner?:
+          | T
+          | {
+              bannerFields?:
+                | T
+                | {
+                    settings?:
+                      | T
+                      | {
+                          theme?: T;
+                          background?: T;
+                        };
+                    type?: T;
+                    addCheckmark?: T;
+                    content?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  relatedPosts?: T;
+  relatedDocs?: T;
+  slug?: T;
+  authorType?: T;
+  authors?: T;
+  guestAuthor?: T;
+  guestSocials?:
+    | T
+    | {
+        youtube?: T;
+        twitter?: T;
+        linkedin?: T;
+        website?: T;
+      };
+  publishedOn?: T;
+  addToDocs?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  headline?: T;
+  description?: T;
+  posts?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reusable-content_select".
+ */
+export interface ReusableContentSelect<T extends boolean = true> {
+  title?: T;
+  layout?:
+    | T
+    | {
+        banner?:
+          | T
+          | {
+              bannerFields?:
+                | T
+                | {
+                    settings?:
+                      | T
+                      | {
+                          theme?: T;
+                          background?: T;
+                        };
+                    type?: T;
+                    addCheckmark?: T;
+                    content?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  twitter?: T;
+  photo?: T;
+  roles?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  website?: T;
+  email?: T;
+  slug?: T;
+  agency_status?: T;
+  hubspotID?: T;
+  logo?: T;
+  featured?: T;
+  topContributor?: T;
+  content?:
+    | T
+    | {
+        bannerImage?: T;
+        overview?: T;
+        services?: T;
+        idealProject?: T;
+        caseStudy?: T;
+        contributions?:
+          | T
+          | {
+              type?: T;
+              repo?: T;
+              number?: T;
+              id?: T;
+            };
+        projects?:
+          | T
+          | {
+              year?: T;
+              name?: T;
+              link?: T;
+              id?: T;
+            };
+      };
+  city?: T;
+  regions?: T;
+  specialties?: T;
+  budgets?: T;
+  industries?: T;
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "industries_select".
+ */
+export interface IndustriesSelect<T extends boolean = true> {
+  name?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "specialties_select".
+ */
+export interface SpecialtiesSelect<T extends boolean = true> {
+  name?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions_select".
+ */
+export interface RegionsSelect<T extends boolean = true> {
+  name?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "budgets_select".
+ */
+export interface BudgetsSelect<T extends boolean = true> {
+  name?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms_select".
  */
 export interface FormsSelect<T extends boolean = true> {
@@ -4136,8 +4187,8 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
-  hubSpotFormId?: T;
-  customId?: T;
+  hubSpotFormID?: T;
+  customID?: T;
   requireRecaptcha?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -4214,116 +4265,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * Dashboard workspace settings (visible only to admins). Changes apply immediately after save.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admin-settings".
- */
-export interface AdminSetting {
-  id: string;
-  showDashboardNotice?: boolean | null;
-  /**
-   * Shown at the top of the Payload dashboard for all admin users.
-   */
-  dashboardNotice?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * Preferred place for site URLs and public analytics/search Ids after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "public-site-settings".
- */
-export interface PublicSiteSetting {
-  id: string;
-  /**
-   * Overrides `NEXT_PUBLIC_SITE_URL` / metadata base when set.
-   */
-  siteUrl?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_CMS_URL` for media and API links when set.
-   */
-  cmsUrl?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_CLOUD_CMS_URL` for Cloud onboarding when set.
-   */
-  cloudCmsUrl?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_GA_MEASUREMENT_ID` when set.
-   */
-  gaMeasurementId?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_GTM_MEASUREMENT_ID` when set.
-   */
-  gtmContainerId?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_FACEBOOK_PIXEL_ID` when set.
-   */
-  facebookPixelId?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_ENABLE_BETA_DOCS` when checked.
-   */
-  enableBetaDocs?: boolean | null;
-  /**
-   * Overrides `NEXT_PUBLIC_ENABLE_LEGACY_DOCS` when checked.
-   */
-  enableLegacyDocs?: boolean | null;
-  /**
-   * Overrides `NEXT_PUBLIC_NEWSLETTER_FORM_ID` when set.
-   */
-  newsletterFormId?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` when set.
-   */
-  recaptchaSiteKey?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_ID` when set.
-   */
-  algoliaApplicationId?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME` when set.
-   */
-  algoliaCommunityIndexName?: string | null;
-  /**
-   * Overrides `NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY` for the header doc search.
-   */
-  algoliaDocsearchKey?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * Preferred place for integration secrets after deploy (no redeploy). Overrides Worker **NEXT_PRIVATE_*** / **CRON_SECRET** when set. Use one-click Worker env only for bootstrap or secrets that must stay outside Admin.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "integration-secrets".
- */
-export interface IntegrationSecret {
-  id: string;
-  /**
-   * Overrides `NEXT_PRIVATE_HUBSPOT_PORTAL_KEY` when set.
-   */
-  hubspotPortalKey?: string | null;
-  /**
-   * Overrides `NEXT_PRIVATE_RECAPTCHA_SECRET_KEY` when set.
-   */
-  recaptchaSecretKey?: string | null;
-  /**
-   * Overrides `NEXT_PRIVATE_ALGOLIA_API_KEY` when set.
-   */
-  algoliaAdminApiKey?: string | null;
-  /**
-   * Overrides `NEXT_PRIVATE_REVALIdATION_KEY` when set.
-   */
-  revalidationKey?: string | null;
-  /**
-   * Overrides `NEXT_PRIVATE_CRON_KEY` / `CRON_SECRET` when set.
-   */
-  cronSecret?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4525,37 +4466,6 @@ export interface MainMenu {
       }[]
     | null;
   menuCta: {
-    type?: ('reference' | 'custom') | null;
-    newTab?: boolean | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: string | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: string | Post;
-        } | null)
-      | ({
-          relationTo: 'case-studies';
-          value: string | CaseStudy;
-        } | null);
-    url?: string | null;
-    label: string;
-    customId?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "topBar".
- */
-export interface TopBar {
-  id: string;
-  enableTopBar?: boolean | null;
-  message?: string | null;
-  link?: {
     type?: ('reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
@@ -4803,50 +4713,34 @@ export interface PartnerProgram {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admin-settings_select".
+ * via the `definition` "topBar".
  */
-export interface AdminSettingsSelect<T extends boolean = true> {
-  showDashboardNotice?: T;
-  dashboardNotice?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "public-site-settings_select".
- */
-export interface PublicSiteSettingsSelect<T extends boolean = true> {
-  siteUrl?: T;
-  cmsUrl?: T;
-  cloudCmsUrl?: T;
-  gaMeasurementId?: T;
-  gtmContainerId?: T;
-  facebookPixelId?: T;
-  enableBetaDocs?: T;
-  enableLegacyDocs?: T;
-  newsletterFormId?: T;
-  recaptchaSiteKey?: T;
-  algoliaApplicationId?: T;
-  algoliaCommunityIndexName?: T;
-  algoliaDocsearchKey?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "integration-secrets_select".
- */
-export interface IntegrationSecretsSelect<T extends boolean = true> {
-  hubspotPortalKey?: T;
-  recaptchaSecretKey?: T;
-  algoliaAdminApiKey?: T;
-  revalidationKey?: T;
-  cronSecret?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+export interface TopBar {
+  id: string;
+  enableTopBar?: boolean | null;
+  message?: string | null;
+  link?: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'case-studies';
+          value: string | CaseStudy;
+        } | null);
+    url?: string | null;
+    label: string;
+    customId?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4994,27 +4888,6 @@ export interface MainMenuSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "topBar_select".
- */
-export interface TopBarSelect<T extends boolean = true> {
-  enableTopBar?: T;
-  message?: T;
-  link?:
-    | T
-    | {
-        type?: T;
-        newTab?: T;
-        reference?: T;
-        url?: T;
-        label?: T;
-        customId?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "get-started_select".
  */
 export interface GetStartedSelect<T extends boolean = true> {
@@ -5117,53 +4990,24 @@ export interface PartnerProgramSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "analytics-overview_widget".
+ * via the `definition` "topBar_select".
  */
-export interface AnalyticsOverviewWidget {
-  data?: {
-    period?: ('7days' | '30days' | '90days') | null;
-  };
-  width: 'medium' | 'large' | 'x-large' | 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "top-pages_widget".
- */
-export interface TopPagesWidget {
-  data?: {
-    period?: ('7days' | '30days' | '90days') | null;
-  };
-  width: 'medium' | 'large' | 'x-large' | 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "active-users_widget".
- */
-export interface ActiveUsersWidget {
-  data?: {
-    [k: string]: unknown;
-  };
-  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "channel-groups_widget".
- */
-export interface ChannelGroupsWidget {
-  data?: {
-    period?: ('7days' | '30days' | '90days') | null;
-  };
-  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "collections_widget".
- */
-export interface CollectionsWidget {
-  data?: {
-    [k: string]: unknown;
-  };
-  width: 'full';
+export interface TopBarSelect<T extends boolean = true> {
+  enableTopBar?: T;
+  message?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        customId?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

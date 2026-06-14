@@ -19,27 +19,31 @@ type Props = {
   domain: NonNullable<Project['domains']>[0]
   environmentSlug: string
   project: Project
+  scopedDomains: NonNullable<Project['domains']>
   team: Team
 }
 
-export const ManageDomain: React.FC<Props> = ({ domain, environmentSlug, project, team }) => {
+export const ManageDomain: React.FC<Props> = ({
+  domain,
+  environmentSlug,
+  project,
+  scopedDomains,
+  team,
+}) => {
   const { id, domain: domainURL, recordContent, recordName, recordType } = domain
   const modalSlug = `delete-domain-${id}`
   const router = useRouter()
 
   const { closeModal, openModal } = useModal()
-  const projectId = project?.id
-  const [projectDomains, setProjectDomains] = React.useState(project?.domains || [])
+  const projectID = project?.id
 
   const patchDomains = React.useCallback(
     async (domains: Props['domain'][]) => {
       try {
         const req = await fetch(
-          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectId}${
-            environmentSlug ? `?env=${environmentSlug}` : ''
-          }`,
+          `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/projects/${projectID}/domains?env=${encodeURIComponent(environmentSlug)}`,
           {
-            body: JSON.stringify({ domains }),
+            body: JSON.stringify(domains),
             credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
@@ -51,7 +55,6 @@ export const ManageDomain: React.FC<Props> = ({ domain, environmentSlug, project
         if (req.status === 200) {
           const res = await req.json()
           router.refresh()
-          setProjectDomains(domains)
           return res
         }
       } catch (e) {
@@ -60,17 +63,17 @@ export const ManageDomain: React.FC<Props> = ({ domain, environmentSlug, project
 
       return null
     },
-    [projectId, environmentSlug],
+    [projectID, environmentSlug, router],
   )
 
   const deleteDomain = React.useCallback(async () => {
-    const remainingDomains = (projectDomains || []).filter(
+    const remainingDomains = scopedDomains.filter(
       (existingDomain) => existingDomain.id !== id,
     )
 
     await patchDomains(remainingDomains)
     closeModal(modalSlug)
-  }, [id, closeModal, projectDomains, patchDomains, modalSlug])
+  }, [id, closeModal, scopedDomains, patchDomains, modalSlug])
 
   return (
     <React.Fragment>

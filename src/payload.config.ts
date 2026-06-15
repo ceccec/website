@@ -18,6 +18,7 @@ import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
 import { getDeploymentTarget } from '@root/lib/deploymentTarget'
 import { resolvePayloadDB } from '@root/lib/payloadDB'
+import { storage as resolveStorage } from '@root/plugins/storage/config'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
 import { createSendGridMailTransport } from './email/sendgridMailTransport'
@@ -625,16 +626,20 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   storage: [
-    vercelBlobStorage({
-      cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
-      collections: {
-        media: {
-          generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
-        },
-      },
-      enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    // Cloudflare → R2 (Workers-native object storage via the resolved binding). Other targets keep
+    // the existing Vercel Blob adapter, which falls back to local disk when disabled / no token.
+    deploymentTarget === 'cloudflare'
+      ? resolveStorage({ cloudflare, deploymentTarget })
+      : vercelBlobStorage({
+          cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
+          collections: {
+            media: {
+              generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
+            },
+          },
+          enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
+          token: process.env.BLOB_READ_WRITE_TOKEN || '',
+        }),
   ],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

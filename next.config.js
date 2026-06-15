@@ -3,6 +3,7 @@
  */
 import { withPayload } from '@payloadcms/next/withPayload'
 import path from 'path'
+import { builtinModules } from 'node:module'
 import { fileURLToPath } from 'node:url'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -195,13 +196,13 @@ const nextConfig = withBundleAnalyzer({
   turbopack: {
     resolveAlias: turbopackAliases,
   },
-  webpack: (config, { webpack }) => {
+  webpack: (config, { webpack, isServer }) => {
     const configCopy = { ...config }
     configCopy.plugins = [...(config.plugins ?? [])]
-    if (
+    const isCloudflareInnerBuild =
       process.env.OPEN_NEXT_INNER_BUILD === '1' &&
       getDeploymentTargetFromEnv(process.env) === 'cloudflare'
-    ) {
+    if (isCloudflareInnerBuild) {
       for (const pkg of OPENNEXT_CLOUDFLARE_IGNORED_OPTIONAL_PAYLOAD_PACKAGES) {
         configCopy.plugins.push(
           new webpack.IgnorePlugin({ resourceRegExp: resourceRegExpForExactPackageName(pkg) }),
@@ -219,6 +220,25 @@ const nextConfig = withBundleAnalyzer({
         ...config.resolve.alias,
         ...webpackAliases,
       },
+    }
+    /**
+     * `@payloadcms/ui`'s `shared` export pulls the full `payload` server barrel into the **client**
+     * bundle (via `@payloadcms/richtext-lexical`/`plugin-seo` client components), dragging Node-only
+     * deps — pino-pretty → `worker_threads`, telemetry → `node:assert`, undici → `node:async_hooks`
+     * / `node:buffer` / `node:console`. They're dead in the browser, so stub every Node built-in in
+     * the client compile and normalize the `node:` scheme (webpack errors on it otherwise). The
+     * server bundle is handled separately by `serverExternalPackages`.
+     */
+    if (isCloudflareInnerBuild && !isServer) {
+      configCopy.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+          resource.request = resource.request.replace(/^node:/, '')
+        }),
+      )
+      configCopy.resolve.fallback = {
+        ...configCopy.resolve.fallback,
+        ...Object.fromEntries(builtinModules.map((m) => [m, false])),
+      }
     }
     return configCopy
   },

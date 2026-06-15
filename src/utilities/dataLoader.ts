@@ -21,7 +21,7 @@
 import type { CollectionSlug, JoinQuery, TypedLocale, Where } from 'payload'
 
 import { type PayloadLocale, resolvePayloadLocale } from '@root/i18n/payloadLocale'
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { draftMode } from 'next/headers'
 
 export type DataLoaderContext = {

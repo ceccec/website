@@ -9,7 +9,7 @@
  */
 import 'dotenv/config'
 
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { seedDemoContent } from '@root/seed/seedDemoContent'
 
 try {

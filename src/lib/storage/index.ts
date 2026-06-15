@@ -208,8 +208,11 @@ export class MemoryStorageBackend implements StorageBackend {
 let globalStorageBackend: StorageBackend | null = null
 
 /**
- * Initialize the global storage backend
- * Called during app startup in src/plugins/payload-runtime/getPayload.ts
+ * Initialize the global storage backend.
+ *
+ * Not currently auto-invoked: the platform-backend bootstrap was removed when the two getPayload
+ * entries were consolidated onto `@root/lib/getPayload`. Nothing in the app reads this backend yet
+ * (only unit tests) — call this explicitly once a consumer is wired up.
  */
 export function initializeStorageBackend(backend: StorageBackend): void {
   globalStorageBackend = backend

@@ -1,4 +1,4 @@
-import { getDeploymentTarget } from '@root/plugins/payload-runtime/deploymentTarget'
+import { getDeploymentTarget } from '@root/lib/deploymentTarget'
 import { execFile } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'

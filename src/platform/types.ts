@@ -1,4 +1,4 @@
-import type { DeploymentTarget } from '@root/plugins/payload-runtime/deploymentTarget'
+import type { DeploymentTarget } from '@root/lib/deploymentTarget'
 import type { TypedLocale } from 'payload'
 
 /**

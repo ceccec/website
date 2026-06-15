@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import type { PayloadRequest } from 'payload'
 
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { createMarketingCheckout } from '@root/plugins/site-billing/marketingCheckout'
 import { NextResponse } from 'next/server'
 

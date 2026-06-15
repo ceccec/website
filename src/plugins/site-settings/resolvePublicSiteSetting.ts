@@ -1,5 +1,5 @@
 import { multiTenantEnabled } from '@root/plugins/env'
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { payloadCacheKey, uuidTags } from '@uuid'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'

@@ -10,7 +10,7 @@ import { NextRequest } from 'next/server'
 /**
  * Mock Payload and Stripe modules
  */
-jest.mock('@root/plugins/payload-runtime/getPayload', () => ({
+jest.mock('@root/lib/getPayload', () => ({
   getPayload: jest.fn(),
 }))
 
@@ -18,7 +18,7 @@ jest.mock('@root/plugins/site-billing/marketingCheckout', () => ({
   createMarketingCheckout: jest.fn(),
 }))
 
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { createMarketingCheckout } from '@root/plugins/site-billing/marketingCheckout'
 
 /**

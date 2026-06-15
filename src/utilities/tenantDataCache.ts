@@ -19,7 +19,7 @@ import {
   resolveContentTenantIdsForHost,
   whereTenantIn,
 } from '@root/plugins/multi-tenant/tenantHierarchy'
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import {
   normalizeRequestHost,
 } from '@root/plugins/site-settings/tenantPublicSite'

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 
-import { getPayload } from '@root/plugins/payload-runtime/getPayload'
+import { getPayload } from '@root/lib/getPayload'
 import { formatPagePath } from '@root/utilities/formatPagePath'
 import { NextResponse } from 'next/server'
 

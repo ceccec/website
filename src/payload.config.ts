@@ -11,7 +11,6 @@ import {
   LinkFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { resolveCloudflareContext } from '@root/config/resolveCloudflareContext'
 import link from '@root/fields/link'
 import { LabelFeature } from '@root/fields/richText/features/label/server'
@@ -626,20 +625,10 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   storage: [
-    // Cloudflare → R2 (Workers-native object storage via the resolved binding). Other targets keep
-    // the existing Vercel Blob adapter, which falls back to local disk when disabled / no token.
-    deploymentTarget === 'cloudflare'
-      ? resolveStorage({ cloudflare, deploymentTarget })
-      : vercelBlobStorage({
-          cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
-          collections: {
-            media: {
-              generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
-            },
-          },
-          enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
-          token: process.env.BLOB_READ_WRITE_TOKEN || '',
-        }),
+    // Resolve by deployment target: Cloudflare → R2; Vercel/Node → S3 / Vercel Blob (disabled →
+    // local disk). All non-R2 adapters are loaded lazily via `nodeRequire`, so the OpenNext build's
+    // `webpack.IgnorePlugin` can drop them without a static import crashing at runtime.
+    resolveStorage({ cloudflare, deploymentTarget }),
   ],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

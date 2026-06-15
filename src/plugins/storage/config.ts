@@ -57,7 +57,15 @@ export function storage(opts: DeploymentRuntimeOptions): StorageAdapter {
   const { vercelBlobStorage } =
     nodeRequire('@payloadcms/storage-vercel-blob') as typeof VercelBlobStoragePkg
   return vercelBlobStorage({
-    collections: mediaCollections,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
+    collections: {
+      media: {
+        generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
+      },
+    },
+    // Disabled by default → Payload falls back to local disk storage (preserves prior dev behavior).
+    // Opt in to Vercel Blob with BLOB_STORAGE_ENABLED + BLOB_READ_WRITE_TOKEN.
+    enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
+    token: process.env.BLOB_READ_WRITE_TOKEN || '',
   })
 }

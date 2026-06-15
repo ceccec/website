@@ -1,4 +1,4 @@
-@use '~@payloadcms/ui/scss';
+@use '~@payloadcms/ui/scss' as *;
 
 .rich-text-label-node {
   font-size: base(0.7);

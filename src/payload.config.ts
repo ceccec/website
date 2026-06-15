@@ -94,6 +94,7 @@ import createReleasePost from './scripts/createReleasePost'
 import { createReleasePostFromAdmin } from './scripts/createReleasePostFromAdmin'
 import redeployWebsite from './scripts/redeployWebsite'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
+import { seedHandler } from './endpoints/seed'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -114,7 +115,7 @@ export default buildConfig({
     },
     components: {
       afterNavLinks: ['@root/components/AfterNavActions'],
-      beforeDashboard: ['@root/components/BeforeDashboard'],
+      beforeDashboard: ['@root/components/BeforeDashboard', '@root/components/SeedButton'],
     },
     importMap: {
       baseDir: dirname,
@@ -414,6 +415,11 @@ export default buildConfig({
       handler: createReleasePostFromAdmin,
       method: 'post',
       path: '/create-release-post-from-admin',
+    },
+    {
+      handler: seedHandler,
+      method: 'post',
+      path: '/seed',
     },
   ],
   globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar, IntegrationSecrets, PublicSiteSettings],

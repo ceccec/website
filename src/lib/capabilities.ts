@@ -63,10 +63,12 @@ export function detectCapabilities(env?: any): PlatformCapabilities {
   // Cloudflare bindings
   const hasR2 = !!env?.R2 || (typeof globalThis !== 'undefined' && !!(globalThis as any).__R2_BUCKET__)
   const hasD1 = !!env?.D1 || (typeof globalThis !== 'undefined' && !!(globalThis as any).__D1_DATABASE__)
-  const hasKV = !!env?.KV_NAMESPACE || (typeof globalThis !== 'undefined' && !!(globalThis as any).__KV_NAMESPACE__)
+  // Binding name follows config/wrangler.optional-bindings.jsonc (`KV_CACHE`); `KV_NAMESPACE` kept for back-compat.
+  const hasKV = !!env?.KV_CACHE || !!env?.KV_NAMESPACE || (typeof globalThis !== 'undefined' && !!(globalThis as any).__KV_NAMESPACE__)
   const hasDO = !!env?.NEXT_CACHE_DO_QUEUE || (typeof globalThis !== 'undefined' && !!(globalThis as any).__DO_QUEUE__)
   const hasImages = !!env?.IMAGES || (typeof globalThis !== 'undefined' && !!(globalThis as any).__IMAGES__)
-  const hasAnalyticsEngine = !!env?.ANALYTICS_ENGINE || (typeof globalThis !== 'undefined' && !!(globalThis as any).__AE__)
+  // Binding name follows config/wrangler.optional-bindings.jsonc (`ANALYTICS`); `ANALYTICS_ENGINE` kept for back-compat.
+  const hasAnalyticsEngine = !!env?.ANALYTICS || !!env?.ANALYTICS_ENGINE || (typeof globalThis !== 'undefined' && !!(globalThis as any).__AE__)
 
   // Database connection strings
   const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL

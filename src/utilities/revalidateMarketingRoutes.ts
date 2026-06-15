@@ -2,7 +2,7 @@ import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
 /**
  * Central Next.js cache paths for marketing routes — single source for hooks + ISR alignment.
  */
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@utilities/safeRevalidate'
 
 import { revalidateDocumentIdCache } from './revalidateDocumentIdCache'
 
@@ -15,16 +15,16 @@ export function revalidateArchivesListing(): void {
 
 /** Shell globals (footer, nav, top bar) affect every page layout. */
 export function revalidateRootLayout(): void {
-  revalidatePath('/', 'layout')
+  safeRevalidatePath('/', 'layout')
 }
 
 export function revalidateGetStartedPage(): void {
-  revalidatePath('/get-started')
+  safeRevalidatePath('/get-started')
 }
 
 /** Partner program global + partner listing chrome */
 export function revalidatePartnersProgramLayout(): void {
-  revalidatePath('/partners', 'layout')
+  safeRevalidatePath('/partners', 'layout')
 }
 
 type MarketingCollectionSlug = 'case-studies' | 'partners' | 'posts'
@@ -41,28 +41,28 @@ export function revalidateMarketingDocument(
 
 /** `/posts/[category]` listing */
 export function revalidateBlogCategory(categorySlug: string): void {
-  revalidatePath(`/posts/${categorySlug}`)
+  safeRevalidatePath(`/posts/${categorySlug}`)
 }
 
 /** `/posts/[category]/[slug]` post detail */
 export function revalidateBlogPost(categorySlug: string, postSlug: string): void {
-  revalidatePath(`/posts/${categorySlug}/${postSlug}`)
+  safeRevalidatePath(`/posts/${categorySlug}/${postSlug}`)
 }
 
 /** `/docs/[topic]/[doc]` — topic + slug as stored; slug may include `.mdx` suffix */
 export function revalidateDocsTopicDoc(topic: string, docSlug: string): void {
   const slug = docSlug.replace(/\.mdx$/i, '')
-  revalidatePath(`/docs/${topic}/${slug}`)
+  safeRevalidatePath(`/docs/${topic}/${slug}`)
 }
 
 /** `/case-studies/[slug]` + listing */
 export function revalidateCaseStudy(slug: string): void {
-  revalidatePath(`/case-studies/${slug}`)
-  revalidatePath('/case-studies', 'page')
+  safeRevalidatePath(`/case-studies/${slug}`)
+  safeRevalidatePath('/case-studies', 'page')
 }
 
 /** `/partners/[slug]` + listing */
 export function revalidatePartner(slug: string): void {
-  revalidatePath(`/partners/${slug}`)
-  revalidatePath('/partners', 'page')
+  safeRevalidatePath(`/partners/${slug}`)
+  safeRevalidatePath('/partners', 'page')
 }

@@ -1,7 +1,7 @@
 /**
  * Page collection URLs — breadcrumbs override bare slug routes (`/[slug]` vs `/home` → `/`).
  */
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@utilities/safeRevalidate'
 
 type PageLike = {
   breadcrumbs?: { url: string }[] | null
@@ -11,17 +11,17 @@ type PageLike = {
 export function revalidatePagePublicUrls(doc: PageLike): void {
   if (doc.breadcrumbs && doc.breadcrumbs.length > 0) {
     const url = doc.breadcrumbs[doc.breadcrumbs.length - 1].url
-    revalidatePath(url)
+    safeRevalidatePath(url)
     if (doc.breadcrumbs[0]?.url === '/home') {
-      revalidatePath('/')
+      safeRevalidatePath('/')
     }
     return
   }
 
   if (doc.slug) {
-    revalidatePath(`/${doc.slug}`)
+    safeRevalidatePath(`/${doc.slug}`)
     if (doc.slug === 'home') {
-      revalidatePath('/')
+      safeRevalidatePath('/')
     }
   }
 }

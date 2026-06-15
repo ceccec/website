@@ -54,6 +54,17 @@ describe('Capability Detection', () => {
       expect(caps.isCloudflare).toBe(false) // deployment target detected separately
     })
 
+    it('should detect KV/Analytics via the documented binding names (KV_CACHE, ANALYTICS)', () => {
+      // config/wrangler.optional-bindings.jsonc tells users to bind these as KV_CACHE / ANALYTICS.
+      const caps = detectCapabilities({
+        KV_CACHE: { get: jest.fn(), put: jest.fn() },
+        ANALYTICS: { writeDataPoint: jest.fn() },
+      })
+
+      expect(caps.kvStorage).toBe(true)
+      expect(caps.analyticsEngine).toBe(true)
+    })
+
     it('should detect Postgres from DATABASE_URL', () => {
       process.env.DATABASE_URL = 'postgres://user:pass@localhost/db'
 

@@ -22,8 +22,16 @@ function s3StorageEnabled(): boolean {
 export function storage(opts: DeploymentRuntimeOptions): StorageAdapter {
   const { cloudflare, deploymentTarget } = opts
   if (deploymentTarget === 'cloudflare') {
+    // `R2` is typed optional in cloudflare-env.d.ts (a binding may be absent per environment);
+    // fail loudly with a binding-specific message rather than passing `undefined` into r2Storage.
+    const bucket = cloudflare?.env.R2
+    if (!bucket) {
+      throw new Error(
+        '[storage] Cloudflare `R2` binding is required for @payloadcms/storage-r2 but is undefined. Declare it in wrangler.jsonc under `r2_buckets`.',
+      )
+    }
     return r2Storage({
-      bucket: cloudflare!.env.R2,
+      bucket,
       collections: mediaCollections,
     })
   }

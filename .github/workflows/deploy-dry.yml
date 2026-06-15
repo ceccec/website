@@ -33,5 +33,13 @@ jobs:
       - name: Validate vercel.json
         run: pnpm run deploy:vercel:dry
 
-      - name: Validate Wrangler config (types codegen)
-        run: pnpm exec wrangler types --env-interface CloudflareEnv /tmp/cloudflare-env.ci.d.ts
+      - name: Validate Wrangler config + check env types are in sync
+        # Regenerate into the committed path and fail if it drifted. `--env-file config/empty.env`
+        # makes output deterministic (bindings-only) regardless of local .env/.dev.vars, so this
+        # matches what `pnpm generate:types:cloudflare` produces on any machine. Keep them in sync.
+        run: |
+          pnpm exec wrangler types --env-interface CloudflareEnv --env-file config/empty.env cloudflare-env.d.ts
+          git diff --exit-code cloudflare-env.d.ts || {
+            echo "::error::cloudflare-env.d.ts is out of sync with wrangler.jsonc — run 'pnpm generate:types:cloudflare' and commit the result."
+            exit 1
+          }

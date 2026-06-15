@@ -126,6 +126,25 @@ const nextConfig = withBundleAnalyzer({
       }
     : {}),
   reactStrictMode: true,
+  /**
+   * OpenNext/Cloudflare: keep Payload's server-only dependency chain out of the Next (webpack) bundle
+   * so its Node built-ins are provided by workerd's `nodejs_compat` at runtime instead of failing to
+   * bundle. All three observed failures route through `payload/dist/index.js`:
+   *   - logger → pino-pretty → pino-abstract-transport → `worker_threads`
+   *   - telemetry → `node:assert`
+   *   - uploads/safeFetch → undici → `node:async_hooks` / `node:buffer` / `node:console`
+   * `payload` is a direct, server-only dependency (no client components — those live in
+   * `@payloadcms/ui`), so externalizing it stops the chain; the rest are belt-and-suspenders.
+   * `withPayload` merges this with its own list (which already externalizes pino/graphql/sharp).
+   */
+  serverExternalPackages: [
+    'payload',
+    'pino-pretty',
+    'pino-abstract-transport',
+    'thread-stream',
+    'sonic-boom',
+    'undici',
+  ],
   images: {
     // Default: built-in Next.js loader (no CF /cdn-cgi/image/). Opt-in paid zone transforms via env.
     ...(process.env.NEXT_PUBLIC_CF_IMAGE_RESIZING === 'true'

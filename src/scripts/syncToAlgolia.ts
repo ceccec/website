@@ -11,8 +11,6 @@ const appId = NEXT_PUBLIC_ALGOLIA_CH_ID || ''
 const apiKey = NEXT_PRIVATE_ALGOLIA_API_KEY || ''
 const indexName = NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME || ''
 
-const client = algoliasearch(appId, apiKey)
-
 interface DiscordDoc {
   author: string
   createdAt: string
@@ -74,6 +72,10 @@ export const syncToAlgolia = async (): Promise<void> => {
   if (!appId || !apiKey || !indexName) {
     throw new Error('Algolia environment variables are not set')
   }
+
+  // Created lazily (not at module scope): the route importing this is loaded during the build's
+  // page-data collection, where `algoliasearch('')` would throw "appId is missing" with no env.
+  const client = algoliasearch(appId, apiKey)
 
   const communityHelpThreads: { docs?: CommunityHelpRestDoc[] } = await fetch(
     `${NEXT_PUBLIC_CMS_URL}/api/community-help?limit=0`,

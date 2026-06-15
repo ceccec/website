@@ -58,7 +58,7 @@ Copy from `config/wrangler.optional-bindings.jsonc` into root `wrangler.jsonc` *
 
 ## E. “Full coverage” checklist for operators
 
-1. **Baseline:** `wrangler.jsonc` + `PAYLOAD_SECRET` + **two D1s** (Payload + OpenNext tag cache) + Durable Object queue + R2 buckets (see `src/lib/assertCloudflarePayloadBindings.ts` for Payload’s `D1` + `R2`).
+1. **Baseline:** `wrangler.jsonc` + `PAYLOAD_SECRET` + **two D1s** (Payload + OpenNext tag cache) + Durable Object queue + R2 buckets (Payload’s `D1` + `R2` are validated at point of use — `resolvePayloadDB` in `src/lib/payloadDB.ts` and `storage` in `src/plugins/storage/config.ts`).
 2. **Media:** R2 + Next Image **implemented**. **Zone image transforms:** opt in with `NEXT_PUBLIC_CF_IMAGE_RESIZING` + transformations on the zone (see §B). **Stream** is **not** integrated—plan separately if you need adaptive streaming.
 3. **Optional CF primitives:** merge snippets from `wrangler.optional-bindings.jsonc` only when you have a concrete use (cache, queue, AI, etc.) and understand **pricing**.
 4. **Env catalog:** document new secrets in `config/cloudflare-env-reference.md`. Add to `config/cloudflare.bindings.json` only if the **Deploy** wizard should list them; re-run `sync-cloudflare-bindings.mjs`.
@@ -86,8 +86,7 @@ Copy from `config/wrangler.optional-bindings.jsonc` into root `wrangler.jsonc` *
 | `config/cloudflare.bindings.json` | `cloudflare.bindings` for Deploy wizard help text (synced to `package.json`) |
 | `config/cloudflare-env-reference.md` | Full env var catalog (human reference) |
 | `scripts/sync-cloudflare-bindings.mjs` | Sync JSON → `package.json` |
-| `src/lib/assertCloudflarePayloadBindings.ts` | Runtime assertion for D1 + R2 |
-| `src/lib/payloadDB.ts` | `resolvePayloadDB` — D1 / Postgres / MongoDB routing |
+| `src/lib/payloadDB.ts` | `resolvePayloadDB` — D1 / Postgres / MongoDB routing (throws if `D1` binding missing) |
 | `src/plugins/storage/config.ts` | R2 vs S3 vs Vercel Blob |
 | `src/lib/cloudflareImageLoader.ts` | Optional CF `/cdn-cgi/image/` pipeline for `next/image` |
 | `next.config.js` | Sets `images.loader` when `NEXT_PUBLIC_CF_IMAGE_RESIZING=true` |

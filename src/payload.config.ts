@@ -1,5 +1,4 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
@@ -13,9 +12,12 @@ import {
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { resolveCloudflareContext } from '@root/config/resolveCloudflareContext'
 import link from '@root/fields/link'
 import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
+import { getDeploymentTarget } from '@root/lib/deploymentTarget'
+import { resolvePayloadDB } from '@root/lib/payloadDB'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
 import { createSendGridMailTransport } from './email/sendgridMailTransport'
@@ -106,6 +108,15 @@ const sendgridConfig = {
     apiKey: sendGridAPIKey,
   }),
 }
+
+// Resolve the database by deployment target (see `src/lib/payloadDB.ts` + `.env.example`):
+//   • Cloudflare  → D1 (needs the Workers/Wrangler binding, resolved below)
+//   • Vercel/Node → Postgres or MongoDB (DATABASE_URL / MONGODB_URL / legacy DATABASE_URI)
+// Cloudflare bindings only exist at runtime, so resolve them before `buildConfig` and only when the
+// target is actually Cloudflare (keeps Mongo/Postgres dev off the Wrangler proxy path).
+const deploymentTarget = getDeploymentTarget()
+const cloudflare =
+  deploymentTarget === 'cloudflare' ? await resolveCloudflareContext() : undefined
 
 export default buildConfig({
   admin: {
@@ -321,9 +332,7 @@ export default buildConfig({
     'https://payloadcms.com',
     'https://discord.com/api',
   ].filter(Boolean),
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
-  }),
+  db: resolvePayloadDB({ cloudflare, deploymentTarget }),
   defaultDepth: 1,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [

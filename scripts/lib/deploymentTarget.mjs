@@ -8,7 +8,11 @@ export function getDeploymentTargetFromEnv(env = process.env) {
   if (
     env.PAYLOAD_DB_ADAPTER?.toLowerCase() === 'mongodb' ||
     env.MONGODB_URL?.trim().startsWith('mongodb') ||
-    env.DATABASE_URL?.trim().startsWith('mongodb')
+    env.DATABASE_URL?.trim().startsWith('mongodb') ||
+    // Legacy/upstream-template var name (`src/payload.config.ts` historically read DATABASE_URI).
+    // Recognizing it keeps existing Mongo dev/prod setups on the Node/Vercel path instead of
+    // falling through to the Cloudflare + D1 default.
+    env.DATABASE_URI?.trim().startsWith('mongodb')
   ) {
     return 'vercel'
   }

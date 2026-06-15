@@ -9,20 +9,31 @@ import { nodeRequire } from './nodeRequire'
 import { PAYLOAD_SQL_ID_TYPE } from './payloadIdType'
 
 function mongoConnectionString(): string {
+  // `DATABASE_URI` is the legacy/upstream-template name; `MONGODB_URL` / `DATABASE_URL` are this
+  // project's documented names (.env.example). Accept all three so existing setups keep working.
   const adapterEnv = process.env.PAYLOAD_DB_ADAPTER?.toLowerCase()
   if (adapterEnv === 'mongodb') {
-    const url = (process.env.MONGODB_URL || process.env.DATABASE_URL || '').trim()
+    const url = (
+      process.env.MONGODB_URL ||
+      process.env.DATABASE_URL ||
+      process.env.DATABASE_URI ||
+      ''
+    ).trim()
     if (!url.startsWith('mongodb')) {
       throw new Error(
-        'PAYLOAD_DB_ADAPTER=mongodb requires MONGODB_URL or a mongodb:// / mongodb+srv:// DATABASE_URL',
+        'PAYLOAD_DB_ADAPTER=mongodb requires MONGODB_URL / DATABASE_URL / DATABASE_URI (mongodb:// or mongodb+srv://)',
       )
     }
     return url
   }
-  const direct = process.env.MONGODB_URL?.trim()
-  if (direct?.startsWith('mongodb')) {return direct}
-  const databaseUrl = process.env.DATABASE_URL?.trim()
-  if (databaseUrl?.startsWith('mongodb')) {return databaseUrl}
+  for (const candidate of [
+    process.env.MONGODB_URL,
+    process.env.DATABASE_URL,
+    process.env.DATABASE_URI,
+  ]) {
+    const trimmed = candidate?.trim()
+    if (trimmed?.startsWith('mongodb')) {return trimmed}
+  }
   return ''
 }
 

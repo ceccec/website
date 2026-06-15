@@ -224,12 +224,30 @@ const nextConfig = withBundleAnalyzer({
     /**
      * `@payloadcms/ui`'s `shared` export pulls the full `payload` server barrel into the **client**
      * bundle (via `@payloadcms/richtext-lexical`/`plugin-seo` client components), dragging Node-only
-     * deps — pino-pretty → `worker_threads`, telemetry → `node:assert`, undici → `node:async_hooks`
-     * / `node:buffer` / `node:console`. They're dead in the browser, so stub every Node built-in in
-     * the client compile and normalize the `node:` scheme (webpack errors on it otherwise). The
-     * server bundle is handled separately by `serverExternalPackages`.
+     * server deps that can't run in the browser:
+     *   - pino-pretty → pino-abstract-transport → `worker_threads`
+     *   - payload telemetry → `node:assert`
+     *   - undici → `node:async_hooks`/`buffer`/`console` plus non-builtins `sqlite` / `util/types`
+     * They're all dead in the browser (e.g. payload's `safeFetch` is server-only), so for the client
+     * compile: (1) IgnorePlugin the server-only leaf packages so their whole subtrees drop out — this
+     * covers undici's non-builtin imports that a Node-builtin fallback can't; and (2) normalize the
+     * `node:` scheme and stub every Node built-in for anything payload imports directly (telemetry).
+     * The server bundle is handled separately by `serverExternalPackages`.
      */
     if (isCloudflareInnerBuild && !isServer) {
+      const clientStubbedServerPackages = [
+        'undici',
+        'pino',
+        'pino-pretty',
+        'pino-abstract-transport',
+        'thread-stream',
+        'sonic-boom',
+      ]
+      for (const pkg of clientStubbedServerPackages) {
+        configCopy.plugins.push(
+          new webpack.IgnorePlugin({ resourceRegExp: resourceRegExpForExactPackageName(pkg) }),
+        )
+      }
       configCopy.plugins.push(
         new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
           resource.request = resource.request.replace(/^node:/, '')

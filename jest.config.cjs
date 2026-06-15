@@ -55,11 +55,29 @@ const customJestConfig = {
     },
   },
 
+  // Keep in sync with `compilerOptions.paths` in tsconfig.json so jest resolves the same aliases.
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@blocks/(.*)$': '<rootDir>/src/components/blocks/$1',
+    '^@cloud/(.*)$': '<rootDir>/src/app/(frontend)/(cloud)/cloud/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@data$': '<rootDir>/src/app/_data',
+    '^@data/(.*)$': '<rootDir>/src/app/_data/$1',
+    '^@docs/(.*)$': '<rootDir>/src/docs/$1',
+    '^@forms/(.*)$': '<rootDir>/src/forms/$1',
+    '^@graphics/(.*)$': '<rootDir>/src/graphics/$1',
+    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@icons/(.*)$': '<rootDir>/src/icons/$1',
+    '^@payload-config$': '<rootDir>/src/payload.config.ts',
+    '^@providers$': '<rootDir>/src/providers',
+    '^@providers/(.*)$': '<rootDir>/src/providers/$1',
     '^@root/(.*)$': '<rootDir>/src/$1',
-    '^@uuid$': '<rootDir>/src/lib/capabilities.ts',
-    '^@uuid/(.*)$': '<rootDir>/src/lib/$1',
+    '^@scss/(.*)$': '<rootDir>/src/css/$1',
+    '^@types$': '<rootDir>/src/payload-types.ts',
+    '^@utilities$': '<rootDir>/src/utilities',
+    '^@utilities/(.*)$': '<rootDir>/src/utilities/$1',
+    // `@uuid` → uuidTags.ts (matches tsconfig; was wrongly pointed at lib/capabilities.ts).
+    '^@uuid$': '<rootDir>/src/utilities/uuidTags.ts',
   },
 
   transform: {
@@ -73,7 +91,9 @@ const customJestConfig = {
     '^.+\\.module\\.(css|sass|scss)$',
   ],
 
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  // `__tests__/utils/` holds shared helpers (no test cases) — the broad testMatch above would
+  // otherwise run them as empty suites ("must contain at least one test").
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/src/__tests__/utils/'],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

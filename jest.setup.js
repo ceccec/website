@@ -61,5 +61,6 @@ if (typeof global.fetch === 'undefined') {
   global.fetch = jest.fn()
 }
 
-// Suppress specific node deprecation warnings
-process.noDeprecation = true
+// Deprecation warnings are suppressed via NODE_OPTIONS=--no-deprecation in the `test` script.
+// Don't reassign process.noDeprecation here: once the flag is set it's a read-only property
+// (Node 24) and assigning throws "Cannot assign to read only property 'noDeprecation'".

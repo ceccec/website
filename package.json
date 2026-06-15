@@ -169,6 +169,9 @@
     "overrides": {
       "formdata-node": "6.0.3",
       "preact": ">=10.28.2"
+    },
+    "patchedDependencies": {
+      "payload@4.0.0-canary.1": "patches/payload@4.0.0-canary.1.patch"
     }
   },
   "packageManager": "pnpm@10.33.2",

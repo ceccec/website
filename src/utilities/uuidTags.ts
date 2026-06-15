@@ -92,6 +92,33 @@ export const uuidTags = {
   },
 
   /**
+   * Category archive listings (`fetchArchive` / `/posts/[category]`).
+   * Usage: revalidateTagImmediate(uuidTags.archivesCategory('my-category'))
+   */
+  archivesCategory: (categorySlug: string): string => {
+    return `archives_category_${categorySlug}`
+  },
+
+  /**
+   * Locale-scoped zero-arg list fetchers (posts, case studies, partners, …).
+   * Usage: revalidateTagImmediate(uuidTags.localeList('posts'))
+   */
+  localeList: (resource: string): string => {
+    return `locale_list_${resource}`
+  },
+
+  /** Invalidates all community-help cache */
+  communityHelp: 'community_help_all',
+
+  /**
+   * Community-help slug listings grouped by `communityHelpType`.
+   * Usage: revalidateTagImmediate(uuidTags.communityHelpTypeList('discussion'))
+   */
+  communityHelpTypeList: (type: string): string => {
+    return `community_help_type_${type}`
+  },
+
+  /**
    * Tenant/multi-tenant public site tags
    */
   tenantsPublicSite: 'tenants_public_site_all',
@@ -102,4 +129,19 @@ export const uuidTags = {
   tenantContent: (tenantId: string | number): string => {
     return `tenant_content_${tenantId}`
   },
+}
+
+/**
+ * True for plain objects/arrays worth deep-traversing (not primitives or null).
+ */
+export function isJsonLikeNode(value: unknown): value is Record<string, unknown> | unknown[] {
+  return typeof value === 'object' && value !== null
+}
+
+/**
+ * Pass-through deep wrapper for Local API doc results. UUID-precise invalidation is handled by the
+ * cache tags above; doc payloads are returned unchanged.
+ */
+export function deepUuidWrap<T>(value: T): T {
+  return value
 }

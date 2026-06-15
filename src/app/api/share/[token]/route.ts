@@ -77,7 +77,7 @@ export async function GET(
     return new NextResponse('Invalid share', { status: 404 })
   }
 
-  const doc = await payload.findById({
+  const doc = await payload.findByID({
     id,
     collection: relationTo as 'case-studies' | 'pages' | 'posts',
     depth: 2,
@@ -94,7 +94,7 @@ export async function GET(
     if (typeof cat === 'object' && cat !== null && 'slug' in cat) {
       categorySlug = String((cat as { slug?: string }).slug ?? '')
     } else if (typeof cat === 'string' || typeof cat === 'number') {
-      const c = await payload.findById({
+      const c = await payload.findByID({
         id: cat,
         collection: 'categories',
         depth: 0,

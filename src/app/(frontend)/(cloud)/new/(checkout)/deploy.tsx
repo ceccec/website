@@ -104,9 +104,11 @@ export const deploy = async (args: {
           team: typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team.id,
           ...formState,
           // remove all empty environment variables
-          environmentVariables: formState.environmentVariables?.filter(
-            ({ key, value }) => key && value,
-          ),
+          environmentVariables: (
+            formState.environmentVariables as
+              | { key?: string; value?: string }[]
+              | undefined
+          )?.filter(({ key, value }) => key && value),
           installId,
         },
       }),

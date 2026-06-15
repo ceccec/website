@@ -40,7 +40,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
     id: formId,
     confirmationMessage,
     confirmationType,
-    customId,
+    customID: customId,
     redirect: formRedirect,
     submitButtonLabel,
   } = form

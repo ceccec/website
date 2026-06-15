@@ -32,7 +32,7 @@ export const Posts: CollectionConfig = {
         const categoryId = typeof data?.category === 'string' ? data.category : undefined
         if (categoryId) {
           try {
-            const cat = await req.payload.findById({
+            const cat = await req.payload.findByID({
               id: categoryId,
               collection: 'categories',
               depth: 0,
@@ -52,7 +52,7 @@ export const Posts: CollectionConfig = {
       const categoryId = typeof doc?.category === 'string' ? doc.category : undefined
       if (categoryId) {
         try {
-          const cat = await req.payload.findById({
+          const cat = await req.payload.findByID({
             id: categoryId,
             collection: 'categories',
             depth: 0,
@@ -154,7 +154,7 @@ export const Posts: CollectionConfig = {
             afterChange: [
               async ({ previousValue, req, value }) => {
                 try {
-                  const category = await req.payload.findById({
+                  const category = await req.payload.findByID({
                     id: value,
                     collection: 'categories',
                     select: {
@@ -168,7 +168,7 @@ export const Posts: CollectionConfig = {
                   revalidateBlogCategory(category.slug)
 
                   if (previousValue != null && previousValue !== value) {
-                    const previousCategory = await req.payload.findById({
+                    const previousCategory = await req.payload.findByID({
                       id: previousValue,
                       collection: 'categories',
                       select: {
@@ -204,8 +204,7 @@ export const Posts: CollectionConfig = {
     {
       name: 'content',
       type: 'blocks',
-      blockReferences: getPostContentBlockReferences(Banner),
-      blocks: [],
+      blocks: getPostContentBlockReferences(Banner),
       required: true,
     },
     {
@@ -239,7 +238,7 @@ export const Posts: CollectionConfig = {
 
               await Promise.all(
                 value.map(async (docId) => {
-                  const d = await req.payload.findById({
+                  const d = await req.payload.findByID({
                     id: docId,
                     collection: 'docs',
                     select: {
@@ -340,15 +339,13 @@ export const Posts: CollectionConfig = {
     },
     addToDocs,
   ],
-  forceSelect: {
-    relatedPosts: true,
-  },
+  select: ({ select }) => (select ? { ...select, relatedPosts: true } : select),
   hooks: {
     afterChange: [
       async ({ doc, previousDoc, req }) => {
         try {
           revalidateDocumentIdCache('posts', doc.id)
-          const category = await req.payload.findById({
+          const category = await req.payload.findByID({
             id: doc.category,
             collection: 'categories',
             select: {
@@ -368,7 +365,7 @@ export const Posts: CollectionConfig = {
             prev.slug != null &&
             (prev.category !== doc.category || prev.slug !== doc.slug)
           ) {
-            const prevCategory = await req.payload.findById({
+            const prevCategory = await req.payload.findByID({
               id: prev.category,
               collection: 'categories',
               select: {
@@ -388,7 +385,7 @@ export const Posts: CollectionConfig = {
       async ({ doc, req }) => {
         try {
           revalidateDocumentIdCache('posts', doc.id)
-          const category = await req.payload.findById({
+          const category = await req.payload.findByID({
             id: doc.category,
             collection: 'categories',
             select: {

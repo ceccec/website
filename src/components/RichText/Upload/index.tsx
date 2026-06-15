@@ -36,7 +36,7 @@ export const RichTextUpload: React.FC<Props> = (props) => {
   if (fields?.enableLink) {
     Wrap = CMSLink
     wrapProps = {
-      ...fields?.link,
+      ...(fields?.link ?? {}),
     }
   }
 

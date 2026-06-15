@@ -12,6 +12,7 @@ import {
   assertCapability,
   getCapabilitySummary,
 } from '@root/lib/capabilities'
+import * as capabilitiesModule from '@root/lib/capabilities'
 
 describe('Capability Detection', () => {
   beforeEach(() => {
@@ -125,7 +126,7 @@ describe('Capability Detection', () => {
     })
 
     it('should cache detection results', () => {
-      const detectSpy = jest.spyOn(global, 'detectCapabilities')
+      const detectSpy = jest.spyOn(capabilitiesModule, 'detectCapabilities')
 
       getCapabilities()
       getCapabilities()

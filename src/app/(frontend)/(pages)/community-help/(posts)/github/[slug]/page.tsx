@@ -15,7 +15,7 @@ import { GithubDiscussionPage } from './client_page'
 type DateFromSource = string
 
 const isDiscussionData = (
-  data: Record<string, unknown>,
+  data: unknown,
 ): data is {
   communityHelpJSON: {
     answer?: Answer

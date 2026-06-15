@@ -59,10 +59,10 @@ export const resolvePublicSiteSetting = cache(async (): Promise<ResolvedPublicSi
 
   return unstable_cache(
     async () => loadMergedForHost(hostKey),
-    payloadCacheKey({
+    [payloadCacheKey({
       host: hostKey || 'none',
       op: 'resolvePublicSiteSetting',
-    }),
+    })],
     {
       tags: [uuidTags.tenantsPublicSite],
     },

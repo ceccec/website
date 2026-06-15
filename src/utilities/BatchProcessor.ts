@@ -127,7 +127,7 @@ async function processParallel<T, R>(
   let completed = 0
 
   for (let i = 0; i < items.length; i++) {
-    const promise = (async () => {
+    const work = (async () => {
       try {
         const result = await processor(items[i], i)
         results[i] = result
@@ -140,8 +140,12 @@ async function processParallel<T, R>(
 
       completed++
       onProgress?.(completed, items.length)
-      inProgress.delete(promise)
     })()
+
+    // `work` is fully assigned before `.finally` runs, so it can be removed by reference.
+    const promise: Promise<void> = work.finally(() => {
+      inProgress.delete(promise)
+    })
 
     inProgress.add(promise)
 

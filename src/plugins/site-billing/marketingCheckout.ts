@@ -7,7 +7,7 @@
 
 import Stripe from 'stripe'
 
-const STRIPE_API_VERSION = '2025-03-31.basil' as Stripe.StripeConfig['apiVersion']
+const STRIPE_API_VERSION = '2026-05-27.dahlia'
 
 interface CreateMarketingCheckoutParams {
   cancelUrl: string

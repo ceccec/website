@@ -8,16 +8,16 @@
 /** Deployment error categories */
 export enum DeploymentErrorCode {
   CARD_DECLINED = 'CARD_DECLINED',
-  CARD_VALIdATION_FAILED = 'CARD_VALIdATION_FAILED',
+  CARD_VALIDATION_FAILED = 'CARD_VALIDATION_FAILED',
   DEPLOYMENT_ALREADY_EXISTS = 'DEPLOYMENT_ALREADY_EXISTS',
   // Deployment errors
   DEPLOYMENT_FAILED = 'DEPLOYMENT_FAILED',
   // Infrastructure errors
   GITHUB_INTEGRATION_ERROR = 'GITHUB_INTEGRATION_ERROR',
 
-  INVALId_CARD = 'INVALId_CARD',
-  INVALId_PLAN = 'INVALId_PLAN',
-  INVALId_TEMPLATE = 'INVALId_TEMPLATE',
+  INVALID_CARD = 'INVALID_CARD',
+  INVALID_PLAN = 'INVALID_PLAN',
+  INVALID_TEMPLATE = 'INVALID_TEMPLATE',
 
   NO_INSTALLATION = 'NO_INSTALLATION',
   // Payment errors
@@ -33,7 +33,7 @@ export enum DeploymentErrorCode {
   // Project creation errors
   PROJECT_CREATE_FAILED = 'PROJECT_CREATE_FAILED',
 
-  REPO_NAME_INVALId = 'REPO_NAME_INVALId',
+  REPO_NAME_INVALID = 'REPO_NAME_INVALID',
   STRIPE_INTEGRATION_ERROR = 'STRIPE_INTEGRATION_ERROR',
   SUBSCRIPTION_FAILED = 'SUBSCRIPTION_FAILED',
 
@@ -59,7 +59,7 @@ const ERROR_MAP: Record<DeploymentErrorCode, Omit<DeploymentError, 'code'>> = {
     recoveryAction: 'select-payment',
     userMessage: 'Your card was declined. Please use a different payment method.',
   },
-  [DeploymentErrorCode.CARD_VALIdATION_FAILED]: {
+  [DeploymentErrorCode.CARD_VALIDATION_FAILED]: {
     message: 'Stripe SetupIntent validation failed',
     recoveryAction: 'select-payment',
     userMessage: 'The payment method validation failed. Please check your card details.',
@@ -79,12 +79,17 @@ const ERROR_MAP: Record<DeploymentErrorCode, Omit<DeploymentError, 'code'>> = {
     recoveryAction: 'contact-support',
     userMessage: 'Failed to create repository on GitHub. Please check your GitHub permissions.',
   },
-  [DeploymentErrorCode.INVALId_CARD]: {
+  [DeploymentErrorCode.INVALID_CARD]: {
     message: 'Invalid card data',
     recoveryAction: 'select-payment',
     userMessage: 'The payment method is invalid. Please check your card details.',
   },
-  [DeploymentErrorCode.INVALId_TEMPLATE]: {
+  [DeploymentErrorCode.INVALID_PLAN]: {
+    message: 'Selected plan is invalid',
+    recoveryAction: 'retry',
+    userMessage: 'The selected plan is invalid. Please choose another plan.',
+  },
+  [DeploymentErrorCode.INVALID_TEMPLATE]: {
     message: 'Template not found or invalid',
     recoveryAction: 'retry',
     userMessage: 'The selected template is not available.',
@@ -115,7 +120,7 @@ const ERROR_MAP: Record<DeploymentErrorCode, Omit<DeploymentError, 'code'>> = {
     userMessage: 'You must log in to deploy a project.',
   },
   [DeploymentErrorCode.PAYMENT_METHOD_MISSING]: {
-    message: 'Payment method Id missing after SetupIntent',
+    message: 'Payment method ID missing after SetupIntent',
     recoveryAction: 'select-payment',
     userMessage: 'Payment method could not be processed. Please try again.',
   },
@@ -129,7 +134,7 @@ const ERROR_MAP: Record<DeploymentErrorCode, Omit<DeploymentError, 'code'>> = {
     recoveryAction: 'retry',
     userMessage: 'Could not create project draft. Please try again.',
   },
-  [DeploymentErrorCode.REPO_NAME_INVALId]: {
+  [DeploymentErrorCode.REPO_NAME_INVALID]: {
     message: 'Repository name is invalid',
     recoveryAction: 'retry',
     userMessage: 'The repository name is invalid or already exists in your organization.',

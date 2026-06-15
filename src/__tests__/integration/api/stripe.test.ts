@@ -4,7 +4,7 @@
  * Tests the payment checkout initiation endpoint for Stripe and Revolut payments.
  */
 
-import { POST } from '@/app/api/stripe/checkout-session/route'
+import { POST } from '@root/app/api/stripe/checkout-session/route'
 import { NextRequest } from 'next/server'
 
 /**
@@ -20,6 +20,15 @@ jest.mock('@root/plugins/site-billing/marketingCheckout', () => ({
 
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import { createMarketingCheckout } from '@root/plugins/site-billing/marketingCheckout'
+
+/**
+ * Typed view of the checkout route's JSON body. The route responds with either
+ * `{ error }` on failure or `{ provider, url }` on success; this exposes those
+ * fields for assertions without changing the call's runtime behavior.
+ */
+type CheckoutResponseBody = { error?: string; provider?: string; url?: string }
+const readBody = (response: { json(): Promise<unknown> }): Promise<CheckoutResponseBody> =>
+  response.json() as Promise<CheckoutResponseBody>
 
 describe('Stripe Checkout API Route', () => {
   const mockPayload = {
@@ -50,7 +59,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(400)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toContain('Invalid JSON')
     })
 
@@ -66,7 +75,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(400)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toContain('successUrl')
     })
 
@@ -82,7 +91,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(400)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toContain('cancelUrl')
     })
 
@@ -98,7 +107,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(400)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toContain('priceId')
       expect(data.error).toContain('plan')
     })
@@ -164,7 +173,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(401)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toBe('Unauthorized')
     })
 
@@ -183,7 +192,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(401)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toBe('Unauthorized')
     })
 
@@ -427,7 +436,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(200)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.url).toBe(checkoutUrl)
       expect(data.provider).toBe('stripe')
     })
@@ -449,7 +458,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(400)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.error).toBe('Invalid price ID')
     })
 
@@ -471,7 +480,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(200)
-      const data = await response.json()
+      const data = await readBody(response)
       expect(data.provider).toBe('revolut')
     })
   })
@@ -495,7 +504,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(200)
-      const data = await response.json()
+      const data = await readBody(response)
 
       expect(mockPayload.auth).toHaveBeenCalled()
       expect(mockPayload.findById).toHaveBeenCalled()
@@ -522,7 +531,7 @@ describe('Stripe Checkout API Route', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(200)
-      const data = await response.json()
+      const data = await readBody(response)
 
       expect(data.url).toBeDefined()
       expect(data.provider).toBe('revolut')

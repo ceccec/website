@@ -18,7 +18,7 @@ import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
-import nodemailerSendgrid from 'nodemailer-sendgrid'
+import { createSendGridMailTransport } from './email/sendgridMailTransport'
 import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
@@ -79,14 +79,19 @@ import { Partners } from './collections/Partners'
 import { Posts } from './collections/Posts'
 import { ReusableContent } from './collections/ReusableContent'
 import { Users } from './collections/Users'
+import { Shares } from './collections/Shares'
+import { Subscriptions } from './collections/Subscriptions'
+import { Teams } from './collections/Teams'
 import { Footer } from './globals/Footer'
 import { GetStarted } from './globals/GetStarted'
+import { IntegrationSecrets } from './globals/IntegrationSecrets'
 import { MainMenu } from './globals/MainMenu'
 import { PartnerProgram } from './globals/PartnerProgram'
+import { PublicSiteSettings } from './globals/PublicSiteSettings'
 import { TopBar } from './globals/TopBar'
-import { opsCounterPlugin } from './plugins/opsCounter'
+import { opsCounter as opsCounterPlugin } from './plugins/opsCounter'
 import createReleasePost from './scripts/createReleasePost'
-import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
+import { createReleasePostFromAdmin } from './scripts/createReleasePostFromAdmin'
 import redeployWebsite from './scripts/redeployWebsite'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
 
@@ -96,7 +101,7 @@ const dirname = path.dirname(filename)
 const sendGridAPIKey = process.env.SENDGRID_API_KEY
 
 const sendgridConfig = {
-  transportOptions: nodemailerSendgrid({
+  transportOptions: createSendGridMailTransport({
     apiKey: sendGridAPIKey,
   }),
 }
@@ -306,6 +311,9 @@ export default buildConfig({
     Specialties,
     Regions,
     Budgets,
+    Shares,
+    Subscriptions,
+    Teams,
   ],
   cors: [
     process.env.PAYLOAD_PUBLIC_APP_URL || '',
@@ -408,7 +416,7 @@ export default buildConfig({
       path: '/create-release-post-from-admin',
     },
   ],
-  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
+  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar, IntegrationSecrets, PublicSiteSettings],
   graphQL: {
     disablePlaygroundInProduction: false,
   },
@@ -454,7 +462,7 @@ export default buildConfig({
         hooks: {
           afterChange: [
             ({ doc }) => {
-              revalidateTag(`form-${doc.title}`)
+              revalidateTag(`form-${doc.title}`, 'max')
             },
           ],
         },
@@ -485,7 +493,7 @@ export default buildConfig({
                   method: 'POST',
                 },
               )
-              const data = await res.json()
+              const data = (await res.json()) as { success?: boolean }
               if (!data.success) {
                 return 'Invalid captcha'
               } else {
@@ -500,7 +508,7 @@ export default buildConfig({
               req.payload.logger.info('Form Submission Received')
               req.payload.logger.info(Object.fromEntries(req?.headers.entries()))
 
-              const body = req.json ? await req.json() : {}
+              const body = (req.json ? await req.json() : {}) as Record<string, unknown>
 
               const sendSubmissionToHubSpot = async (): Promise<void> => {
                 const { form, submissionData: submissionDataFromDoc } = doc
@@ -599,6 +607,9 @@ export default buildConfig({
         },
       },
     }),
+  ],
+  secret: process.env.PAYLOAD_SECRET || '',
+  storage: [
     vercelBlobStorage({
       cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
       collections: {
@@ -610,7 +621,6 @@ export default buildConfig({
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],
-  secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

@@ -75,7 +75,7 @@ export async function cachedWithTenantScope<R>(
   ]
   return unstable_cache(
     async () => run({ tenantIds, whereTenant }),
-    payloadCacheKey({ ...cacheShape, tenantIds }),
+    [payloadCacheKey({ ...cacheShape, tenantIds })],
     { tags },
   )()
 }

@@ -60,8 +60,7 @@ export const Pages: CollectionConfig = {
             {
               name: 'layout',
               type: 'blocks',
-              blockReferences: [...PAGE_LAYOUT_BLOCK_SLUGS],
-              blocks: [],
+              blocks: [...PAGE_LAYOUT_BLOCK_SLUGS],
               required: true,
             },
           ],

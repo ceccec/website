@@ -1,5 +1,6 @@
 'use client'
 
+import type { OnSubmit } from '@forms/types'
 import type { Project } from '@root/payload-cloud-types'
 import type { EnvironmentVariableFormData } from '@root/types/forms'
 
@@ -87,10 +88,11 @@ export const ManageEnv: React.FC<Props> = ({
     return null
   }, [environmentSlug, key, projectId])
 
-  const updateEnv = React.useCallback(
-    async ({ data }: { data: EnvironmentVariableFormData }) => {
-      const newEnvKey = data.envKey
-      const newEnvValue = data.envValue
+  const updateEnv = React.useCallback<OnSubmit>(
+    async ({ data }) => {
+      const formData = data as unknown as EnvironmentVariableFormData
+      const newEnvKey = formData.envKey
+      const newEnvValue = formData.envValue
 
       if (typeof newEnvValue === 'string' && typeof newEnvKey === 'string' && id) {
         try {

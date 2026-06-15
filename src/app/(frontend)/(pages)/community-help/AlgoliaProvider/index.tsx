@@ -1,18 +1,17 @@
-import type { SearchClient } from 'algoliasearch/lite'
-
-import algoliasearch from 'algoliasearch/lite'
+import { liteClient } from 'algoliasearch/lite'
 import React, { useState } from 'react'
 import { Configure, InstantSearch } from 'react-instantsearch'
 
 import { getInitialState } from './getInitialState'
 
-let searchClient: SearchClient
+type SearchClient = ReturnType<typeof liteClient>
+
+let searchClient: SearchClient | undefined
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_CH_ID
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_PUBLIC_KEY
 const indexName = process.env.NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME
-// @ts-ignore
 if (appId && apiKey) {
-  searchClient = algoliasearch(appId, apiKey)
+  searchClient = liteClient(appId, apiKey)
 }
 export const algoliaPerPage = 20
 

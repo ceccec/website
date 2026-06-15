@@ -49,8 +49,8 @@ export async function createSubscription(
         plan: planId,
         externalId: subscription.externalId,
         status: subscription.status,
-        currentPeriodStart: subscription.currentPeriodStart,
-        currentPeriodEnd: subscription.currentPeriodEnd,
+        currentPeriodStart: subscription.currentPeriodStart.toISOString(),
+        currentPeriodEnd: subscription.currentPeriodEnd.toISOString(),
         cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
         freeTrial: options?.freeTrial || false,
       },
@@ -82,11 +82,11 @@ export async function updateSubscription(
     data: {
       status: updates.status,
       cancelAtPeriodEnd: updates.cancelAtPeriodEnd,
-      currentPeriodEnd: updates.currentPeriodEnd,
+      currentPeriodEnd: updates.currentPeriodEnd?.toISOString(),
     },
   })
 
-  return updated as SubscriptionResponse
+  return updated as unknown as SubscriptionResponse
 }
 
 /**

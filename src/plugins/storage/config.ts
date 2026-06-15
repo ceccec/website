@@ -1,6 +1,6 @@
 import type * as S3StoragePkg from '@payloadcms/storage-s3'
 import type * as VercelBlobStoragePkg from '@payloadcms/storage-vercel-blob'
-import type { Plugin } from 'payload'
+import type { StorageAdapter } from 'payload'
 
 import { r2Storage } from '@payloadcms/storage-r2'
 
@@ -19,7 +19,7 @@ function s3StorageEnabled(): boolean {
   )
 }
 
-export function storage(opts: DeploymentRuntimeOptions): Plugin {
+export function storage(opts: DeploymentRuntimeOptions): StorageAdapter {
   const { cloudflare, deploymentTarget } = opts
   if (deploymentTarget === 'cloudflare') {
     return r2Storage({

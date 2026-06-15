@@ -21,7 +21,7 @@ export const BranchButtonPromise: PayloadServerReactComponent<CustomComponent> =
     return null
   }
 
-  const doc = await payload.findById({
+  const doc = await payload.findByID({
     id: documentId,
     collection: 'docs',
     depth: 0,

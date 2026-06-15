@@ -22,15 +22,15 @@ export const ArrayProvider: React.FC<{
 }> = (props) => {
   const { children, clearCount, instantiateEmpty } = props
 
-  const [uuids, setUUIds] = React.useState<string[]>(instantiateEmpty ? [] : [uuid()])
+  const [uuids, setUUIDs] = React.useState<string[]>(instantiateEmpty ? [] : [uuid()])
 
   const addRow = React.useCallback(() => {
-    setUUIds((prev) => [...prev, uuid()])
+    setUUIDs((prev) => [...prev, uuid()])
   }, [])
 
   const removeRow = React.useCallback(
     (index: number) => {
-      setUUIds((prev) => {
+      setUUIDs((prev) => {
         const initialRows = (instantiateEmpty ? [] : [uuid()]) as string[]
         const remainingRows = prev.filter((_, i) => i !== index)
         return remainingRows.length > 0 ? remainingRows : initialRows
@@ -40,7 +40,7 @@ export const ArrayProvider: React.FC<{
   )
 
   const clearRows = React.useCallback(() => {
-    setUUIds(instantiateEmpty ? [] : [uuid()])
+    setUUIDs(instantiateEmpty ? [] : [uuid()])
   }, [instantiateEmpty])
 
   React.useEffect(() => {

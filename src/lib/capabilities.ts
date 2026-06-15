@@ -16,8 +16,7 @@
  * }
  */
 
-import type { CloudflareEnv } from '../../cloudflare-env'
-import { DeploymentTarget, detectDeploymentTarget } from './deploymentTarget'
+import { DeploymentTarget, getDeploymentTarget } from './deploymentTarget'
 
 /**
  * Platform capabilities available in this runtime
@@ -59,7 +58,7 @@ export interface PlatformCapabilities {
  * - Service credentials (Vercel Blob, Redis)
  */
 export function detectCapabilities(env?: any): PlatformCapabilities {
-  const deploymentTarget = detectDeploymentTarget()
+  const deploymentTarget = getDeploymentTarget()
 
   // Cloudflare bindings
   const hasR2 = !!env?.R2 || (typeof globalThis !== 'undefined' && !!(globalThis as any).__R2_BUCKET__)
@@ -72,8 +71,8 @@ export function detectCapabilities(env?: any): PlatformCapabilities {
   // Database connection strings
   const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL
   const mongoUrl = process.env.MONGODB_URL
-  const hasPostgres = postgresUrl?.startsWith('postgres')
-  const hasMongoDB = mongoUrl?.startsWith('mongodb')
+  const hasPostgres = postgresUrl?.startsWith('postgres') ?? false
+  const hasMongoDB = mongoUrl?.startsWith('mongodb') ?? false
 
   // Vercel services
   const hasVercelBlob = !!process.env.BLOB_READ_WRITE_TOKEN
@@ -81,8 +80,10 @@ export function detectCapabilities(env?: any): PlatformCapabilities {
 
   const isCloudflare = deploymentTarget === 'cloudflare'
   const isVercel = deploymentTarget === 'vercel'
-  const isDocker = deploymentTarget === 'docker'
-  const isDevelopment = deploymentTarget === 'docker' || !process.env.NEXT_PUBLIC_IS_LIVE
+  // `getDeploymentTarget()` is narrowed to 'cloudflare' | 'vercel'; widen to compare against the
+  // 'docker' sentinel so the check stays valid if the underlying resolver gains that target.
+  const isDocker = (deploymentTarget as string) === 'docker'
+  const isDevelopment = isDocker || !process.env.NEXT_PUBLIC_IS_LIVE
 
   return {
     // Cloudflare services

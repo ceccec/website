@@ -1,4 +1,4 @@
-import type { Topic } from '@root/collections/Docs/types'
+import type { Topic, TopicGroup } from '@root/collections/Docs/types'
 import type { Metadata } from 'next'
 
 import { Banner } from '@components/Banner'
@@ -37,7 +37,7 @@ export default async function DocsPage(args: {
   const payload = await getPayload()
 
   let curTopic: null | Topic = null
-  let curTopicGroup: Record<string, unknown> | null = null
+  let curTopicGroup: null | TopicGroup = null
 
   for (const topicGroup of topicGroups) {
     const found = topicGroup.topics.find((topic) => topic.slug === topicSlug)
@@ -49,7 +49,7 @@ export default async function DocsPage(args: {
     }
   }
 
-  if (!curTopic) {
+  if (!curTopic || !curTopicGroup) {
     return notFound()
   }
 

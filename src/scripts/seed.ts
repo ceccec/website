@@ -10,11 +10,13 @@ import 'dotenv/config'
 
 import type { Payload } from 'payload'
 
+import type { Content } from '@root/payload-types'
+
 import { marketingContentEnabled } from '@root/plugins/env'
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 
 /** Minimal Lexical root for one paragraph (content block `columnOne`). */
-const WELCOME_LEXICAL = {
+const WELCOME_LEXICAL: Content['contentFields']['columnOne'] = {
   root: {
     type: 'root',
     children: [
@@ -25,20 +27,22 @@ const WELCOME_LEXICAL = {
             type: 'text',
             detail: 0,
             format: 0,
-            mode: 'normal' as const,
+            mode: 'normal',
             style: '',
             text: 'Welcome. Edit this page in the Payload admin.',
             version: 1,
           },
         ],
-        direction: 'ltr' as const,
-        format: '' as const,
+        direction: 'ltr',
+        format: '',
         indent: 0,
+        textFormat: 0,
+        textStyle: '',
         version: 1,
       },
     ],
-    direction: 'ltr' as const,
-    format: '' as const,
+    direction: 'ltr',
+    format: '',
     indent: 0,
     version: 1,
   },

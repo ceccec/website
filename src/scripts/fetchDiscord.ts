@@ -57,12 +57,13 @@ async function fetchFromDiscord(
   fetchType: 'messages' | 'threads',
 ): Promise<any[]> {
   const baseURL = `${DISCORD_API_BASE}${endpoint}`
-  const allResults: Message[] | Thread[] = []
-  const params: Record<string, string> = fetchType === 'messages' ? { limit: '100' } : {}
+  const allResults: (Message | Thread)[] = []
+  const params: Record<string, string | undefined> =
+    fetchType === 'messages' ? { limit: '100' } : {}
 
   while (true) {
     const url = new URL(baseURL)
-    Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value))
+    Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, String(value)))
 
     // Use unified HttpClient with exponential backoff for retries
     const response = await httpClient.fetch(url.toString(), { headers }, {
@@ -76,14 +77,21 @@ async function fetchFromDiscord(
       throw new Error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`)
     }
 
-    const data = await response.json()
     if (fetchType === 'threads') {
-      allResults.push(...(data.threads || []))
+      const data = (await response.json()) as {
+        has_more?: boolean
+        threads?: (Thread & {
+          thread_metadata: { archive_timestamp?: string }
+        })[]
+      }
+      const threads = data.threads || []
+      allResults.push(...threads)
       if (!data.has_more) {
         break
       }
-      params.before = data.threads[data.threads.length - 1]?.thread_metadata?.archive_timestamp
+      params.before = threads[threads.length - 1]?.thread_metadata?.archive_timestamp
     } else {
+      const data = (await response.json()) as (Message & { id?: string })[]
       allResults.push(...data)
       if (data.length < 100) {
         break

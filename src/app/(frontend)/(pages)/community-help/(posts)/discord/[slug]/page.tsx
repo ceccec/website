@@ -13,7 +13,7 @@ import type { Messages } from './client_page'
 import { DiscordThreadPage } from './client_page'
 
 const isThreadData = (
-  data: Record<string, unknown>,
+  data: unknown,
 ): data is {
   communityHelpJSON: {
     info: {

@@ -2,6 +2,7 @@ import type { Team } from '@root/payload-cloud-types'
 
 import { TEAM_QUERY, TEAMS_QUERY } from '@data/team'
 import { parseGraphQLResponse } from '@root/utilities/GraphQLParser'
+import { parsePayloadGraphQLBody } from '@utilities/payloadCloudJson'
 import { notFound } from 'next/navigation'
 
 import { payloadCloudToken } from './token'

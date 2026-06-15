@@ -1,19 +1,29 @@
 /**
  * Payload marketing `find`s + `unstable_cache` + next-intl locale.
  * Dynamic APIs (`getLocale`, `draftMode`, `resolvePayloadLocale`) stay **outside** cache callbacks.
- * All memoized keys use {@link payloadCacheKey} from `@uuid` (UUId v5); cache entries carry **tags**
+ * All memoized keys use {@link payloadCacheKey} from `@uuid` (UUID v5); cache entries carry **tags**
  * aligned with {@link uuidTags} + Payload hooks (`revalidateTag`).
  */
 
-import type { DraftLocaleOpt } from '@data/index'
 import type { CommunityHelp } from '@root/payload-types'
 import type { TypedLocale } from 'payload'
 
+import { type PayloadLocale } from '@root/i18n/payloadLocale'
 import { ARCHIVES_CACHE_TAG } from '@root/utilities/revalidateMarketingRoutes'
 import { payloadCacheKey, uuidTags } from '@uuid'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { getLocale } from 'next-intl/server'
+
+/**
+ * Optional `{ draft, locale }` argument accepted by marketing fetchers when invoked from a
+ * cached (non-draft) context. `locale` is a {@link PayloadLocale} because the generated
+ * `TypedLocale` resolves to `null` in this project (localization is configured at runtime).
+ */
+export type DraftLocaleOpt = {
+  draft?: boolean
+  locale?: PayloadLocale
+}
 
 /** `cachedSlugDraftLocale` namespace → Payload collection slug for {@link uuidTags.collectionSlug}. */
 const MARKETING_NAMESPACE_COLLECTION: Record<string, string> = {
@@ -24,9 +34,9 @@ const MARKETING_NAMESPACE_COLLECTION: Record<string, string> = {
   partner: 'partners',
 }
 
-/** Single cast used everywhere we pair Payload locale with next-intl. */
-export async function getRequestLocale(): Promise<TypedLocale> {
-  return (await getLocale()) as TypedLocale
+/** Single source of the request locale wherever we pair Payload locale with next-intl. */
+export async function getRequestLocale(): Promise<PayloadLocale> {
+  return await getLocale()
 }
 
 /**
@@ -35,8 +45,8 @@ export async function getRequestLocale(): Promise<TypedLocale> {
  */
 export function runDraftLocaleCache<R>(
   draft: boolean,
-  locale: TypedLocale,
-  cacheShape: unknown,
+  locale: PayloadLocale,
+  cacheShape: Record<string, unknown>,
   uncached: () => Promise<R>,
   cached: () => Promise<R>,
   cacheOptions?: { revalidate?: false | number; tags?: string[] },
@@ -44,7 +54,7 @@ export function runDraftLocaleCache<R>(
   if (draft) {
     return uncached()
   }
-  return unstable_cache(cached, payloadCacheKey(cacheShape), cacheOptions)()
+  return unstable_cache(cached, [payloadCacheKey(cacheShape)], cacheOptions)()
 }
 
 /** Read draft flag once for pages that call multiple cached helpers. */
@@ -144,7 +154,7 @@ export async function cachedBlogDetailDraftLocale<R>(
 export async function cachedSlugLocaleOnly<R>(
   slug: string,
   draft: boolean,
-  find: (slug: string, localeArg?: TypedLocale) => Promise<R>,
+  find: (slug: string, localeArg?: PayloadLocale) => Promise<R>,
   cacheNamespace: string,
   depthKey: string,
 ): Promise<R> {
@@ -170,7 +180,7 @@ export async function cachedSlugLocaleOnly<R>(
 export async function cachedArchiveByCategory<R>(
   categorySlug: string,
   draft: boolean,
-  find: (slug: string, draftArg?: boolean, localeArg?: TypedLocale) => Promise<R>,
+  find: (slug: string, draftArg?: boolean, localeArg?: PayloadLocale) => Promise<R>,
   depthKey: string,
 ): Promise<R> {
   const locale = await getRequestLocale()
@@ -194,7 +204,7 @@ export async function cachedArchiveByCategory<R>(
 
 /** Zero-arg list fetchers — pass locale into `find(locale)`. */
 export async function cachedLocaleList<R>(
-  find: (localeArg?: TypedLocale) => Promise<R>,
+  find: (localeArg?: PayloadLocale) => Promise<R>,
   cacheKeyPrefix: readonly string[],
   cacheOptions?: { revalidate?: false | number; tags?: string[] },
 ): Promise<R> {
@@ -208,12 +218,14 @@ export async function cachedLocaleList<R>(
   }
   return unstable_cache(
     () => find(locale),
-    payloadCacheKey({
-      kind: 'marketing',
-      locale,
-      prefix: [...cacheKeyPrefix],
-      variant: 'localeList',
-    }),
+    [
+      payloadCacheKey({
+        kind: 'marketing',
+        locale,
+        prefix: [...cacheKeyPrefix],
+        variant: 'localeList',
+      }),
+    ],
     mergedOptions,
   )()
 }
@@ -222,7 +234,7 @@ export async function cachedLocaleList<R>(
 export async function cachedCommunityHelpsByType<R>(
   type: CommunityHelp['communityHelpType'],
   draft: boolean,
-  find: (communityHelpType: CommunityHelp['communityHelpType'], localeArg?: TypedLocale) => Promise<R>,
+  find: (communityHelpType: CommunityHelp['communityHelpType'], localeArg?: PayloadLocale) => Promise<R>,
   cacheNamespace: string,
   depthKey: string,
 ): Promise<R> {

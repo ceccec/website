@@ -6,7 +6,7 @@ import {
   mediaDedupeBeforeOperation,
 } from './hooks/mediaContentSha256Dedupe'
 
-export const Media: CollectionConfig<'media'> = {
+export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     create: isAdmin,

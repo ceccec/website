@@ -55,16 +55,15 @@ describe('NextjsImageTransformer', () => {
 
   describe('canOptimize', () => {
     it('should return true for local URLs', () => {
-      expect(transformer.canOptimize('/images/test.jpg')).toBe(true)
+      expect(transformer.canOptimize()).toBe(true)
     })
 
     it('should return true for external URLs', () => {
-      expect(transformer.canOptimize('https://example.com/image.jpg')).toBe(true)
+      expect(transformer.canOptimize()).toBe(true)
     })
 
     it('should return true for any URL', () => {
-      expect(transformer.canOptimize('')).toBe(true)
-      expect(transformer.canOptimize('not-a-url')).toBe(true)
+      expect(transformer.canOptimize()).toBe(true)
     })
   })
 
@@ -267,12 +266,7 @@ describe('PassthroughImageTransformer', () => {
 
     it('should return URL unchanged with options', () => {
       const url = 'https://example.com/image.jpg'
-      const options: ImageTransformOptions = {
-        width: 1200,
-        format: 'webp',
-        quality: 85,
-      }
-      const result = transformer.transform(url, options)
+      const result = transformer.transform(url)
       expect(result).toBe(url)
     })
 
@@ -284,9 +278,7 @@ describe('PassthroughImageTransformer', () => {
 
   describe('canOptimize', () => {
     it('should return true for any URL', () => {
-      expect(transformer.canOptimize('/images/test.jpg')).toBe(true)
-      expect(transformer.canOptimize('https://example.com/image.jpg')).toBe(true)
-      expect(transformer.canOptimize('')).toBe(true)
+      expect(transformer.canOptimize()).toBe(true)
     })
   })
 

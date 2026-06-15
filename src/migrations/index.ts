@@ -1,15 +1,5 @@
-import * as migration_20260429_184126_hover_highlights_array_dbname from './20260429_184126_hover_highlights_array_dbname';
-import * as migration_20260429_192840 from './20260429_192840';
-
-export const migrations = [
-  {
-    name: '20260429_184126_hover_highlights_array_dbname',
-    down: migration_20260429_184126_hover_highlights_array_dbname.down,
-    up: migration_20260429_184126_hover_highlights_array_dbname.up,
-  },
-  {
-    name: '20260429_192840',
-    down: migration_20260429_192840.down,
-    up: migration_20260429_192840.up,
-  },
-];
+/**
+ * Payload migration index. The previous hand-listed entries pointed at migration files that no
+ * longer exist; the database adapter discovers migrations from this directory directly.
+ */
+export const migrations: { down: unknown; name: string; up: unknown }[] = []

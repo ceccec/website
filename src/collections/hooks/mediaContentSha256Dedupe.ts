@@ -34,7 +34,7 @@ export async function sha256HexFromRequestFile(req: PayloadRequest): Promise<str
 /** Runs before create / updateById when a new file is present — blocks a second blob for identical bytes. */
 export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> = async (input) => {
   const { context, operation, req } = input
-  if ((operation !== 'create' && operation !== 'updateById') || !req.file) {
+  if ((operation !== 'create' && operation !== 'updateByID') || !req.file) {
     return
   }
 
@@ -45,7 +45,7 @@ export const mediaDedupeBeforeOperation: CollectionBeforeOperationHook<'media'> 
 
   ;(context as Record<string, unknown>)[MEDIA_CONTENT_SHA256_CONTEXT_KEY] = hash
 
-  const currentId = operation === 'updateById' ? String(input.args.id) : undefined
+  const currentId = operation === 'updateByID' ? String(input.args.id) : undefined
 
   const where: Where =
     currentId !== undefined

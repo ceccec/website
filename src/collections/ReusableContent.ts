@@ -26,8 +26,7 @@ export const ReusableContent: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: getReusableContentLayoutBlockReferences(Banner),
-      blocks: [],
+      blocks: getReusableContentLayoutBlockReferences(Banner),
       required: true,
     },
   ],

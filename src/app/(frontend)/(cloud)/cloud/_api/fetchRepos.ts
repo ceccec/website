@@ -53,7 +53,7 @@ export const fetchRepos = async (args: {
     throw new Error(json?.errors?.[0]?.message ?? 'Error fetching docs')
   }
 
-  const docs: RepoResults = json?.data
+  const docs: RepoResults | undefined = json?.data
 
   if (!docs) {
     throw new Error('Error fetching repositories')

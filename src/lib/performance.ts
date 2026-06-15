@@ -194,7 +194,7 @@ export class APIPerformanceAnalyzer {
    * Get all endpoint reports
    */
   getAllReports() {
-    const reports = []
+    const reports: NonNullable<ReturnType<APIPerformanceAnalyzer['getReport']>>[] = []
     for (const [key] of this.durations) {
       const [method, ...pathParts] = key.split(' ')
       const path = pathParts.join(' ')
@@ -289,7 +289,7 @@ export class DatabasePerformanceAnalyzer {
    * Get all collection reports
    */
   getAllCollectionReports() {
-    const reports = []
+    const reports: NonNullable<ReturnType<DatabasePerformanceAnalyzer['getCollectionReport']>>[] = []
     for (const [collection] of this.collectionDurations) {
       const report = this.getCollectionReport(collection)
       if (report) {
@@ -330,7 +330,12 @@ export class CachePerformanceAnalyzer {
     const total = this.hits + this.misses
     const hitRate = total === 0 ? 0 : this.hits / total
 
-    let hitStats = null
+    let hitStats: {
+      avgTime: number
+      minTime: number
+      maxTime: number
+      p95: number
+    } | null = null
     if (this.hitDurations.length > 0) {
       const sorted = [...this.hitDurations].sort((a, b) => a - b)
       const sum = this.hitDurations.reduce((a, b) => a + b, 0)

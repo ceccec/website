@@ -2,7 +2,7 @@
 
 import { Gutter } from '@components/Gutter'
 import { Heading } from '@components/Heading'
-import { isValidParamId } from '@root/utilities/isValidParamId'
+import { isValidParamId } from '@root/utilities/isValidParamID'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -52,7 +52,7 @@ export const JoinTeam: React.FC = () => {
           }
         } catch (err: unknown) {
         const error = err instanceof Error ? err : new Error(String(err))
-          setError(`An error occurred while accepting team invitation: ${e.message}`)
+          setError(`An error occurred while accepting team invitation: ${error.message}`)
           setLoading(false)
         }
       }

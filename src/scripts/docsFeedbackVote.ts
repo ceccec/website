@@ -4,7 +4,7 @@ type VoteType = 'helpful' | 'notHelpful'
 
 const docsFeedbackVote: PayloadHandler = async (req) => {
   try {
-    const body = req.json ? await req.json() : {}
+    const body = (req.json ? await req.json() : {}) as { path?: unknown; vote?: unknown }
     const path = typeof body?.path === 'string' ? body.path.trim() : ''
     const vote = body?.vote as VoteType
 

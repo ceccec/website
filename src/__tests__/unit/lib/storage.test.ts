@@ -302,7 +302,7 @@ describe('MemoryStorageBackend', () => {
     })
 
     it('should ignore expiration seconds parameter', async () => {
-      const url = await backend.getSignedUrl('key', 3600)
+      const url = await backend.getSignedUrl('key')
       expect(url).toBe('memory://key')
     })
 

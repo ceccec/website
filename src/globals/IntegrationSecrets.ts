@@ -51,7 +51,7 @@ export const IntegrationSecrets: GlobalConfig = {
             {
               name: 'revalidationKey',
               type: 'text',
-              admin: { description: 'Overrides `NEXT_PRIVATE_REVALIdATION_KEY` when set.' },
+              admin: { description: 'Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.' },
               label: 'On-demand revalidation secret',
             },
           ],

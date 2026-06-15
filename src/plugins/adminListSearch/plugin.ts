@@ -6,7 +6,7 @@ function dedupeStrings(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))]
 }
 
-/** Ensures admin quick-search matches partial UUIds on `id` plus title; omits duplicate `id` column in favor of {@link SHORT_ID_FIELD}. */
+/** Ensures admin quick-search matches partial UUIDs on `id` plus title; omits duplicate `id` column in favor of {@link SHORT_ID_FIELD}. */
 function mergeListSearchableFields(collection: CollectionConfig): string[] | undefined {
   const admin = collection.admin
   const explicit = admin?.listSearchableFields
@@ -53,9 +53,8 @@ function shortIdUiField(): CollectionConfig['fields'][number] {
       components: {
         Cell: '@root/components/Admin/ShortIdCell#ShortIdCell',
       },
-      disableBulkEdit: true,
     },
-    label: 'Id',
+    label: 'ID',
   }
 }
 
@@ -75,7 +74,7 @@ function patchCollection(collection: CollectionConfig): CollectionConfig {
 }
 
 /**
- * Admin list: search includes `id` (partial UUId via `like`) plus title column; first column shows a short Id prefix (full id on hover). Edit URLs unchanged.
+ * Admin list: search includes `id` (partial UUID via `like`) plus title column; first column shows a short Id prefix (full id on hover). Edit URLs unchanged.
  */
 export function adminListSearchPlugin(): Plugin {
   return (config) => ({

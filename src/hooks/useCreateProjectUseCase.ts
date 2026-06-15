@@ -60,7 +60,7 @@ export function useCreateProjectUseCase(): UseCreateProjectUseCaseResult {
       }
 
       if (!params.repo?.name) {
-        const err = createDeploymentError(DeploymentErrorCode.REPO_NAME_INVALId)
+        const err = createDeploymentError(DeploymentErrorCode.REPO_NAME_INVALID)
         setError(err.userMessage)
         toast.error(getErrorToastMessage(err).title)
         throw new Error(err.message)

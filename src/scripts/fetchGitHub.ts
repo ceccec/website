@@ -20,6 +20,64 @@ type ExistingDiscussion = {
   githubId: string
 }
 
+/** GitHub GraphQL author shape. */
+type GithubAuthor = {
+  avatarUrl: string
+  login: string
+  url: string
+}
+
+type GithubReplyNode = {
+  node: {
+    author: GithubAuthor
+    bodyHTML: string
+    createdAt: string
+  }
+}
+
+type GithubCommentNode = {
+  node: {
+    author: GithubAuthor
+    bodyHTML: string
+    createdAt: string
+    replies: { edges: GithubReplyNode[] }
+  }
+}
+
+/** A single `discussions.nodes[]` entry from the GitHub GraphQL response. */
+type GithubDiscussionNode = {
+  answer: {
+    author: GithubAuthor | null
+    bodyHTML: string
+    createdAt: string
+    replies: { edges: GithubReplyNode[] }
+  } | null
+  answerChosenAt: null | string
+  answerChosenBy: { login: string } | null
+  author: GithubAuthor | null
+  bodyHTML: string
+  category: { id: string; isAnswerable: boolean }
+  comments: { edges: GithubCommentNode[]; totalCount: number }
+  createdAt: string
+  number: number
+  title: string
+  upvoteCount: number
+  url: string
+}
+
+type GithubDiscussionsResponse = {
+  data?: {
+    repository?: {
+      discussions?: {
+        nodes: GithubDiscussionNode[]
+        pageInfo: { endCursor: null | string; hasNextPage: boolean }
+      }
+    }
+  }
+  errors?: { message?: string }[]
+  message?: string
+}
+
 async function fetchGitHub(): Promise<void> {
   if (!GITHUB_ACCESS_TOKEN) {
     console.log('[fetchGitHub] No GitHub access token found - skipping discussions retrieval')
@@ -29,9 +87,9 @@ async function fetchGitHub(): Promise<void> {
   console.time('[fetchGitHub] Total duration')
   console.log('[fetchGitHub] Starting GitHub discussions sync...')
 
-  const discussionData: any = []
+  const discussionData: GithubDiscussionNode[] = []
 
-  const createQuery = (cursor = null, hasNextPage: boolean): string => {
+  const createQuery = (cursor: null | string = null, hasNextPage: boolean): string => {
     const queryLine =
       cursor && hasNextPage
         ? `(first: 100, categoryId: "MDE4OkRpc2N1c3Npb25DYXRlZ29yeTMyMzY4NTUw", after: "${
@@ -129,7 +187,7 @@ async function fetchGitHub(): Promise<void> {
     method: 'POST',
   })
 
-  const initialReq: any = await initialResponse.json()
+  const initialReq = (await initialResponse.json()) as GithubDiscussionsResponse
 
   if (initialReq.errors) {
     console.error('[fetchGitHub] GitHub API returned errors:', JSON.stringify(initialReq.errors))
@@ -159,7 +217,7 @@ async function fetchGitHub(): Promise<void> {
       backoffMultiplier: 1, // Use fixed 3s delay instead of exponential
     })
 
-    const nextReq: any = await nextResponse.json()
+    const nextReq = (await nextResponse.json()) as GithubDiscussionsResponse
 
     // Check for timeout or service errors in the response
     if (nextReq.message && nextReq.message.includes("couldn't respond")) {

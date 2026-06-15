@@ -21,6 +21,6 @@ export async function resolveIntegrationSecrets(): Promise<ResolvedIntegrationSe
     ),
     hubspotPortalKey: process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY?.trim() ?? '',
     recaptchaSecretKey: process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY?.trim() ?? '',
-    revalidationKey: process.env.NEXT_PRIVATE_REVALIdATION_KEY?.trim() ?? '',
+    revalidationKey: process.env.NEXT_PRIVATE_REVALIDATION_KEY?.trim() ?? '',
   }
 }

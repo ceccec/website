@@ -25,7 +25,7 @@ export class VercelBlobStorageBackend implements StorageBackend {
 
   private async initializeClient(token: string): Promise<void> {
     try {
-      const { put, get, delete: deleteBlob, list } = await import('@vercel/blob')
+      const { put, get, del: deleteBlob, list } = await import('@vercel/blob')
       this.blobClient = { put, get, delete: deleteBlob, list }
     } catch (err) {
       console.error('[Storage] Vercel Blob not available:', err)

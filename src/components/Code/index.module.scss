@@ -78,29 +78,26 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 
   @include dark-custom-scrollbar;
 
-  :global {
-    .token.important,
-    .token.bold {
-      font-weight: bold;
-    }
+  @include global-selectors(('.token.important', '.token.bold')) {
+    font-weight: bold;
+  }
 
-    .token.italic {
-      font-style: italic;
-    }
+  @include g('.token.italic') {
+    font-style: italic;
+  }
 
-    .token.entity {
-      cursor: help;
-    }
+  @include g('.token.entity') {
+    cursor: help;
+  }
 
-    .token-line {
-      display: block;
-      text-wrap: nowrap;
-    }
+  @include g('.token-line') {
+    display: block;
+    text-wrap: nowrap;
+  }
 
-    .token-line:not(:last-child) {
-      height: initial;
-      min-height: 1rem;
-    }
+  @include g('.token-line:not(:last-child)') {
+    height: initial;
+    min-height: 1rem;
   }
 
   @include large-break {

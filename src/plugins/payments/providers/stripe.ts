@@ -21,7 +21,7 @@ import type {
 /**
  * Stripe API version — keep in sync with @payloadcms/plugin-ecommerce
  */
-const STRIPE_API_VERSION = '2025-03-31.basil' as Stripe.StripeConfig['apiVersion']
+const STRIPE_API_VERSION = '2026-05-27.dahlia'
 
 /**
  * Lazy-loaded Stripe singleton
@@ -121,8 +121,8 @@ export const stripeProvider: PaymentProvider = {
       teamId,
       planId,
       status: mapStripeSubscriptionStatus(subscription.status),
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      currentPeriodStart: new Date(subscription.items.data[0].current_period_start * 1000),
+      currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
       clientSecret: '', // Not typically returned from subscription
     }
@@ -153,8 +153,8 @@ export const stripeProvider: PaymentProvider = {
         ? subscription.items.data[0].price.id
         : '',
       status: mapStripeSubscriptionStatus(subscription.status),
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      currentPeriodStart: new Date(subscription.items.data[0].current_period_start * 1000),
+      currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     }
   },

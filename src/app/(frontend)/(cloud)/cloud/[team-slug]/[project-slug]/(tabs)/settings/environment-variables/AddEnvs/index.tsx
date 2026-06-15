@@ -2,7 +2,10 @@
 
 import type { OnSubmit } from '@forms/types'
 import type { Project } from '@root/payload-cloud-types'
-import type { AddEnvironmentVariablesFormData } from '@root/types/forms'
+import type {
+  AddEnvironmentVariablesFormData,
+  EnvironmentVariableItem,
+} from '@root/types/forms'
 
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
 import { ArrayProvider, useArray } from '@forms/fields/Array/context'
@@ -36,10 +39,11 @@ export const AddEnvsComponent: React.FC<AddEnvsProps> = (props) => {
   const handleSubmit: OnSubmit = React.useCallback(
     async ({ unflattenedData }) => {
       const formData = unflattenedData as Partial<AddEnvironmentVariablesFormData>
-      if (formData?.newEnvs?.length > 0) {
-        const sanitizedEnvs = formData.newEnvs.reduce((acc, env) => {
+      const newEnvs = formData?.newEnvs
+      if (newEnvs && newEnvs.length > 0) {
+        const sanitizedEnvs = newEnvs.reduce<EnvironmentVariableItem[]>((acc, env) => {
           const envKey = env.key?.trim()
-          if (envKey && !acc.includes(envKey)) {
+          if (envKey && !acc.some((existing) => existing.key === envKey)) {
             acc.push({
               key: envKey,
               value: env.value,

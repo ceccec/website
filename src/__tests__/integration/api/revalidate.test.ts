@@ -4,7 +4,7 @@
  * Tests the cache revalidation endpoint for secure tag-based revalidation.
  */
 
-import { GET } from '@/app/api/revalidate/route'
+import { GET } from '@root/app/api/revalidate/route'
 import { NextRequest } from 'next/server'
 
 /**
@@ -17,10 +17,19 @@ jest.mock('@utilities/revalidateTagImmediate', () => ({
 import { revalidateTagImmediate } from '@utilities/revalidateTagImmediate'
 import { uuidTags } from '@uuid'
 
+/**
+ * The route returns a NextResponse whose `.json()` body carries the revalidation
+ * result. These tests read it synchronously; this typed view exposes the fields
+ * under assertion without altering the call's runtime behavior.
+ */
+type RevalidateResponseBody = { now?: number; revalidated?: boolean }
+const readBody = (response: ReturnType<typeof GET>): RevalidateResponseBody =>
+  (response as unknown as { json(): RevalidateResponseBody }).json()
+
 describe('Revalidation API Route', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    process.env.NEXT_PRIVATE_REVALIdATION_KEY = 'test-secret-key'
+    process.env.NEXT_PRIVATE_REVALIDATION_KEY = 'test-secret-key'
   })
 
   describe('Authentication', () => {
@@ -173,7 +182,7 @@ describe('Revalidation API Route', () => {
       )
 
       const response = GET(request)
-      const data = response.json()
+      const data = readBody(response)
 
       expect(data).toHaveProperty('now')
       expect(typeof data.now).toBe('number')
@@ -200,11 +209,11 @@ describe('Revalidation API Route', () => {
       const response = GET(request)
       const text = JSON.stringify(response)
 
-      expect(text).not.toContain(process.env.NEXT_PRIVATE_REVALIdATION_KEY)
+      expect(text).not.toContain(process.env.NEXT_PRIVATE_REVALIDATION_KEY)
     })
 
     it('should handle missing secret environment variable gracefully', () => {
-      delete process.env.NEXT_PRIVATE_REVALIdATION_KEY
+      delete process.env.NEXT_PRIVATE_REVALIDATION_KEY
 
       const request = new NextRequest(
         new URL(
@@ -220,7 +229,7 @@ describe('Revalidation API Route', () => {
     })
 
     it('should be case-sensitive for secret', () => {
-      process.env.NEXT_PRIVATE_REVALIdATION_KEY = 'TestSecret'
+      process.env.NEXT_PRIVATE_REVALIDATION_KEY = 'TestSecret'
 
       const request = new NextRequest(
         new URL(
@@ -288,7 +297,7 @@ describe('Revalidation API Route', () => {
       const response = GET(request)
       const after = Date.now()
 
-      const data = response.json()
+      const data = readBody(response)
 
       expect(data.now).toBeGreaterThanOrEqual(before)
       expect(data.now).toBeLessThanOrEqual(after)

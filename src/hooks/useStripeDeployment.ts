@@ -114,7 +114,7 @@ export function useStripeDeployment(
           setState(prev => ({ ...prev, status: 'validating-card' }))
 
           // Create SetupIntent to validate card
-          const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
+          const teamId = (typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id) ?? ''
 
           const setupIntent = await createSetupIntentAction(teamId)
 
@@ -132,21 +132,21 @@ export function useStripeDeployment(
                 message: confirmResult.error.message,
               })
             }
-            throw createDeploymentError(DeploymentErrorCode.CARD_VALIdATION_FAILED, {
+            throw createDeploymentError(DeploymentErrorCode.CARD_VALIDATION_FAILED, {
               message: confirmResult.error.message || 'Card validation failed',
             })
           }
 
-          // Extract payment method Id
-          const setupIntent = confirmResult.setupIntent
-          if (!setupIntent?.payment_method) {
+          // Extract payment method ID
+          const confirmedSetupIntent = confirmResult.setupIntent
+          if (!confirmedSetupIntent?.payment_method) {
             throw createDeploymentError(DeploymentErrorCode.PAYMENT_METHOD_MISSING)
           }
 
           paymentMethodId =
-            typeof setupIntent.payment_method === 'string'
-              ? setupIntent.payment_method
-              : setupIntent.payment_method.id
+            typeof confirmedSetupIntent.payment_method === 'string'
+              ? confirmedSetupIntent.payment_method
+              : confirmedSetupIntent.payment_method.id
 
           if (!paymentMethodId) {
             throw createDeploymentError(DeploymentErrorCode.PAYMENT_METHOD_MISSING)
@@ -162,10 +162,12 @@ export function useStripeDeployment(
         if (
           paymentMethodId &&
           checkoutState.team &&
-          !teamHasDefaultPaymentMethod(checkoutState.team)
+          !teamHasDefaultPaymentMethod(
+            checkoutState.team as unknown as Parameters<typeof teamHasDefaultPaymentMethod>[0],
+          )
         ) {
           try {
-            const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
+            const teamId = (typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id) ?? ''
             await updatePaymentMethodAction(teamId, paymentMethodId)
           } catch (err) {
             // Log but don't fail - proceed with deployment
@@ -205,7 +207,11 @@ export function useStripeDeployment(
           },
         )
 
-        const deployBody = (await deployResponse.json())
+        const deployBody = (await deployResponse.json()) as {
+          doc?: unknown
+          error?: string
+          message?: string
+        }
 
         if (!deployResponse.ok) {
           if (deployResponse.status === 409) {
@@ -230,7 +236,7 @@ export function useStripeDeployment(
         // === Stage 5: Create Subscription ===
         setState(prev => ({ ...prev, status: 'creating-subscription' }))
 
-        const teamId = typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id
+        const teamId = (typeof checkoutState.team === 'string' ? checkoutState.team : checkoutState.team?.id) ?? ''
         const planId = typeof checkoutState.plan === 'string' ? checkoutState.plan : checkoutState.plan.id
 
         const subscription = await createSubscriptionAction(

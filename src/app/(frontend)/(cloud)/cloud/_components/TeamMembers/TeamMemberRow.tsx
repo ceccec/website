@@ -27,7 +27,7 @@ export const TeamMemberRow: React.FC<{
   // Called when there's a change in the roles of the team member. It triggers the onUpdateRoles prop.
   const handleRolesChange = (newRoles: string[]) => {
     if (onUpdateRoles) {
-      onUpdateRoles(newRoles)
+      onUpdateRoles(newRoles as ('admin' | 'owner' | 'user')[])
     }
   }
 

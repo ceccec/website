@@ -124,7 +124,7 @@ export const Text: React.FC<
             const onChangeFunction = customOnChange ? customOnChange : onChange
 
             if (!disabled && !readOnly) {
-              onChangeFunction(e.target.value)
+              (onChangeFunction as (value: string) => void)(e.target.value)
             }
           }}
           placeholder={placeholder}

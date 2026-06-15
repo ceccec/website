@@ -105,8 +105,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'beforeDirectory',
           type: 'blocks',
-          blockReferences: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
-          blocks: [],
+          blocks: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
           label: 'Before Directory Blocks',
           labels: {
             plural: 'Blocks',
@@ -116,8 +115,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'afterDirectory',
           type: 'blocks',
-          blockReferences: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
-          blocks: [],
+          blocks: [...PARTNER_PROGRAM_DIRECTORY_BLOCK_SLUGS],
           label: 'After Directory Blocks',
           labels: {
             plural: 'Blocks',

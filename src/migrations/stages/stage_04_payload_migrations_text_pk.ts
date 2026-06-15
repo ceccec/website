@@ -4,7 +4,7 @@ import { sql } from '@payloadcms/db-d1-sqlite'
 
 /**
  * Legacy **`payload_migrations`** rows used **`integer`** PKs; with **`idType: 'uuidv7'`** (`payloadDB.ts`)
- * Payload inserts UUId strings — D1 returns **`SQLITE_MISMATCH`**. Rebuild the table with **`id` text**.
+ * Payload inserts UUID strings — D1 returns **`SQLITE_MISMATCH`**. Rebuild the table with **`id` text**.
  */
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.run(sql`
@@ -32,5 +32,5 @@ FROM \`payload_migrations\`;
 }
 
 export async function down(_args: MigrateDownArgs): Promise<void> {
-  // SQLite UUId PK → integer not reversible without losing ids.
+  // SQLite UUID PK → integer not reversible without losing ids.
 }

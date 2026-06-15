@@ -68,7 +68,7 @@ export async function loadTenantIdsForContentVisibility(
 ): Promise<(number | string)[]> {
   if (!multiTenantEnabled()) {return []}
 
-  const doc = await payload.findById({
+  const doc = await payload.findByID({
     id: tenantId,
     collection: TENANTS_COLLECTION,
     depth: 0,
@@ -152,7 +152,7 @@ export async function listAncestorTenantIds(
     if (seen.has(key)) {break}
     seen.add(key)
 
-    const doc = await payload.findById({
+    const doc = await payload.findByID({
       id: current,
       collection: TENANTS_COLLECTION,
       depth: 0,

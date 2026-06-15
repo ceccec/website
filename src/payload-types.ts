@@ -60,6 +60,214 @@ export type SupportedTimezones =
   | 'Pacific/Noumea'
   | 'Pacific/Auckland'
   | 'Pacific/Fiji';
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalNodes_FA07DFAB".
+ */
+export type LexicalNodes_FA07DFAB =
+  | SerializedTextNode
+  | SerializedTabNode
+  | SerializedLineBreakNode
+  | SerializedParagraphNode<LexicalNodes_FA07DFAB>
+  | SerializedHorizontalRuleNode
+  | SerializedUploadNode<'media'>
+  | SerializedQuoteNode<LexicalNodes_FA07DFAB>
+  | SerializedRelationshipNode<
+      | 'case-studies'
+      | 'community-help'
+      | 'docs'
+      | 'docs-feedback'
+      | 'pages'
+      | 'posts'
+      | 'categories'
+      | 'reusable-content'
+      | 'users'
+      | 'partners'
+      | 'industries'
+      | 'specialties'
+      | 'regions'
+      | 'budgets'
+      | 'shares'
+      | 'subscriptions'
+      | 'teams'
+      | 'redirects'
+      | 'payload-kv'
+      | 'payload-locked-documents'
+      | 'payload-preferences'
+      | 'payload-migrations'
+    >
+  | SerializedAutoLinkNode<LexicalNodes_FA07DFAB, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_FA07DFAB, LexicalLinkFields>
+  | SerializedListNode<LexicalNodes_FA07DFAB>
+  | SerializedListItemNode<LexicalNodes_FA07DFAB>
+  | SerializedHeadingNode<LexicalNodes_FA07DFAB>;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalNodes_3C30F578".
+ */
+export type LexicalNodes_3C30F578 =
+  | SerializedTextNode
+  | SerializedTabNode
+  | SerializedLineBreakNode
+  | SerializedParagraphNode<LexicalNodes_3C30F578>
+  | SerializedBlockNode<
+      | SpotlightBlock
+      | VideoBlock
+      | BrBlock
+      | BannerBlock
+      | VideoDrawerBlock
+      | TemplateCardsBlock
+      | CodeBlock
+      | DownloadBlockType
+      | CommandLineBlock
+    >
+  | SerializedUploadNode<'media', LexicalUploadFields_F19C4182>
+  | SerializedTableNode<LexicalNodes_3C30F578>
+  | SerializedTableCellNode<LexicalNodes_3C30F578>
+  | SerializedTableRowNode<LexicalNodes_3C30F578>
+  | SerializedAutoLinkNode<LexicalNodes_3C30F578, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_3C30F578, LexicalLinkFields>
+  | SerializedHorizontalRuleNode
+  | SerializedQuoteNode<LexicalNodes_3C30F578>
+  | SerializedRelationshipNode<
+      | 'case-studies'
+      | 'community-help'
+      | 'docs'
+      | 'docs-feedback'
+      | 'pages'
+      | 'posts'
+      | 'categories'
+      | 'reusable-content'
+      | 'users'
+      | 'partners'
+      | 'industries'
+      | 'specialties'
+      | 'regions'
+      | 'budgets'
+      | 'shares'
+      | 'subscriptions'
+      | 'teams'
+      | 'redirects'
+      | 'payload-kv'
+      | 'payload-locked-documents'
+      | 'payload-preferences'
+      | 'payload-migrations'
+    >
+  | SerializedListNode<LexicalNodes_3C30F578>
+  | SerializedListItemNode<LexicalNodes_3C30F578>
+  | SerializedHeadingNode<LexicalNodes_3C30F578>;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalNodes_F336B350".
+ */
+export type LexicalNodes_F336B350 =
+  | SerializedTextNode
+  | SerializedTabNode
+  | SerializedLineBreakNode
+  | SerializedParagraphNode<LexicalNodes_F336B350>
+  | SerializedBlockNode<CodeBlock>
+  | SerializedHorizontalRuleNode
+  | SerializedUploadNode<'media'>
+  | SerializedQuoteNode<LexicalNodes_F336B350>
+  | SerializedRelationshipNode<
+      | 'case-studies'
+      | 'community-help'
+      | 'docs'
+      | 'docs-feedback'
+      | 'pages'
+      | 'posts'
+      | 'categories'
+      | 'reusable-content'
+      | 'users'
+      | 'partners'
+      | 'industries'
+      | 'specialties'
+      | 'regions'
+      | 'budgets'
+      | 'shares'
+      | 'subscriptions'
+      | 'teams'
+      | 'redirects'
+      | 'payload-kv'
+      | 'payload-locked-documents'
+      | 'payload-preferences'
+      | 'payload-migrations'
+    >
+  | SerializedAutoLinkNode<LexicalNodes_F336B350, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_F336B350, LexicalLinkFields>
+  | SerializedListNode<LexicalNodes_F336B350>
+  | SerializedListItemNode<LexicalNodes_F336B350>
+  | SerializedHeadingNode<LexicalNodes_F336B350>;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalNodes_9642494C".
+ */
+export type LexicalNodes_9642494C =
+  | SerializedTextNode
+  | SerializedTabNode
+  | SerializedLineBreakNode
+  | SerializedParagraphNode<LexicalNodes_9642494C>
+  | SerializedBlockNode<CardBlock>;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalNodes_B3DBC2E4".
+ */
+export type LexicalNodes_B3DBC2E4 =
+  | SerializedTextNode
+  | SerializedTabNode
+  | SerializedLineBreakNode
+  | SerializedParagraphNode<LexicalNodes_B3DBC2E4>
+  | SerializedBlockNode<
+      | CodeBlock
+      | BannerBlock
+      | YoutubeBlock
+      | LightDarkImageBlock
+      | PayloadMediaBlock
+      | UploadBlock
+      | RestExamplesBlock
+      | ResourceBlock
+      | TableWithDrawersBlock
+      | VideoDrawerBlock
+      | PillBlock
+      | ArrowBlock
+      | BulletListBlock
+      | CardBlock
+      | CardGroupBlock
+    >
+  | SerializedTableNode<LexicalNodes_B3DBC2E4>
+  | SerializedTableCellNode<LexicalNodes_B3DBC2E4>
+  | SerializedTableRowNode<LexicalNodes_B3DBC2E4>
+  | SerializedAutoLinkNode<LexicalNodes_B3DBC2E4, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_B3DBC2E4, LexicalLinkFields>
+  | SerializedHorizontalRuleNode
+  | SerializedQuoteNode<LexicalNodes_B3DBC2E4>
+  | SerializedRelationshipNode<
+      | 'case-studies'
+      | 'community-help'
+      | 'docs'
+      | 'docs-feedback'
+      | 'pages'
+      | 'posts'
+      | 'categories'
+      | 'reusable-content'
+      | 'users'
+      | 'partners'
+      | 'industries'
+      | 'specialties'
+      | 'regions'
+      | 'budgets'
+      | 'shares'
+      | 'subscriptions'
+      | 'teams'
+      | 'redirects'
+      | 'payload-kv'
+      | 'payload-locked-documents'
+      | 'payload-preferences'
+      | 'payload-migrations'
+    >
+  | SerializedListNode<LexicalNodes_B3DBC2E4>
+  | SerializedListItemNode<LexicalNodes_B3DBC2E4>
+  | SerializedHeadingNode<LexicalNodes_B3DBC2E4>;
 
 export interface Config {
   auth: {
@@ -72,20 +280,20 @@ export interface Config {
     MediaExampleBlock: MediaExampleBlock;
     callout: Callout;
     cta: Cta;
-    downloadBlock: DownloadBlockType;
-    LightDarkImage: LightDarkImageBlock;
-    PayloadMedia: PayloadMediaBlock;
-    TableWithDrawers: TableWithDrawersBlock;
-    YouTube: YoutubeBlock;
-    Pill: PillBlock;
-    Arrow: ArrowBlock;
-    BulletList: BulletListBlock;
-    Card: CardBlock;
-    CardGroup: CardGroupBlock;
+    downloadBlock: DownloadBlockType_68EBC190;
+    LightDarkImage: LightDarkImageBlock_6F096CAB;
+    PayloadMedia: PayloadMediaBlock_B98BF7B5;
+    TableWithDrawers: TableWithDrawersBlock_DBA1DB72;
+    YouTube: YoutubeBlock_BD112EEE;
+    Pill: PillBlock_008E1595;
+    Arrow: ArrowBlock_11410E69;
+    BulletList: BulletListBlock_AE6F5703;
+    Card: CardBlock_46CA1B1B;
+    CardGroup: CardGroupBlock_B6AE197E;
     cardGrid: CardGrid;
     caseStudyCards: CaseStudyCards;
     caseStudiesHighlight: CaseStudiesHighlight;
-    Upload: UploadBlock;
+    Upload: UploadBlock_A477C89F;
     caseStudyParallax: CaseStudyParallax;
     codeFeature: CodeFeature;
     content: Content;
@@ -99,25 +307,25 @@ export interface Config {
     mediaBlock: MediaBlock;
     mediaContent: MediaContent;
     mediaContentAccordion: MediaContentAccordion;
-    RestExamples: RestExamplesBlock;
+    RestExamples: RestExamplesBlock_E7B4E708;
     pricing: Pricing;
     reusableContentBlock: ReusableContentBlock;
-    Resource: ResourceBlock;
+    Resource: ResourceBlock_2EC59281;
     slider: Slider;
     statement: Statement;
     steps: StepsBlock;
     stickyHighlights: StickyHighlights;
     exampleTabs: ExampleTabsBlock;
-    spotlight: SpotlightBlock;
-    video: VideoBlock;
-    br: BrBlock;
-    VideoDrawer: VideoDrawerBlock;
-    commandLine: CommandLineBlock;
+    spotlight: SpotlightBlock_02D290C9;
+    video: VideoBlock_80F6FF19;
+    br: BrBlock_A0F59A11;
+    VideoDrawer: VideoDrawerBlock_04DCF3A0;
+    commandLine: CommandLineBlock_3ADB97F5;
     command: Command;
     link: Link;
-    templateCards: TemplateCardsBlock;
-    Banner: BannerBlock;
-    Code: CodeBlock;
+    templateCards: TemplateCardsBlock_3E55F70A;
+    Banner: BannerBlock_66A9DC2C;
+    Code: CodeBlock_CA9B017F;
     code: Code;
   };
   collections: {
@@ -136,6 +344,9 @@ export interface Config {
     specialties: Specialty;
     regions: Region;
     budgets: Budget;
+    shares: Share;
+    subscriptions: Subscription;
+    teams: Team;
     forms: Form;
     'form-submissions': FormSubmission;
     redirects: Redirect;
@@ -168,6 +379,9 @@ export interface Config {
     specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
     regions: RegionsSelect<false> | RegionsSelect<true>;
     budgets: BudgetsSelect<false> | BudgetsSelect<true>;
+    shares: SharesSelect<false> | SharesSelect<true>;
+    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
+    teams: TeamsSelect<false> | TeamsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -186,6 +400,8 @@ export interface Config {
     'get-started': GetStarted;
     'partner-program': PartnerProgram;
     topBar: TopBar;
+    'integration-secrets': IntegrationSecret;
+    'public-site-settings': PublicSiteSetting;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
@@ -193,11 +409,18 @@ export interface Config {
     'get-started': GetStartedSelect<false> | GetStartedSelect<true>;
     'partner-program': PartnerProgramSelect<false> | PartnerProgramSelect<true>;
     topBar: TopBarSelect<false> | TopBarSelect<true>;
+    'integration-secrets': IntegrationSecretsSelect<false> | IntegrationSecretsSelect<true>;
+    'public-site-settings': PublicSiteSettingsSelect<false> | PublicSiteSettingsSelect<true>;
   };
   locale: null;
-  user: User & {
-    collection: 'users';
+  widgets: {
+    'analytics-overview': AnalyticsOverviewWidget;
+    'top-pages': TopPagesWidget;
+    'active-users': ActiveUsersWidget;
+    'channel-groups': ChannelGroupsWidget;
+    collections: CollectionsWidget;
   };
+  user: User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -223,7 +446,7 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blogContent".
+ * via the `definition` "BlogContent".
  */
 export interface BlogContent {
   blogContentFields: {
@@ -234,21 +457,7 @@ export interface BlogContent {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
   };
   id?: string | null;
   blockName?: string | null;
@@ -256,7 +465,7 @@ export interface BlogContent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blogMarkdown".
+ * via the `definition` "BlogMarkdown".
  */
 export interface BlogMarkdown {
   blogMarkdownFields: {
@@ -299,6 +508,10 @@ export interface MediaExampleBlock {
  */
 export interface Media {
   id: string;
+  /**
+   * SHA-256 of raw file bytes. Set automatically on upload; used to reject duplicate blobs (409 + duplicateOfId).
+   */
+  contentSha256?: string | null;
   alt: string;
   /**
    * Choose an upload to render if the visitor is using dark mode.
@@ -318,7 +531,7 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "callout".
+ * via the `definition` "Callout".
  */
 export interface Callout {
   calloutFields: {
@@ -329,21 +542,7 @@ export interface Callout {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     logo: string | Media;
     author?: string | null;
     role?: string | null;
@@ -360,7 +559,7 @@ export interface Callout {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cta".
+ * via the `definition` "Cta".
  */
 export interface Cta {
   ctaFields: {
@@ -372,21 +571,7 @@ export interface Cta {
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
     style?: ('buttons' | 'banner') | null;
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     commandLine?: string | null;
     links?:
       | {
@@ -499,21 +684,7 @@ export interface Page {
       id?: string | null;
       date: string;
       hideBreadcrumbs?: boolean | null;
-      richText?: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
+      richText?: LexicalRichText<LexicalNodes_3C30F578> | null;
       guests?:
         | {
             name?: string | null;
@@ -544,36 +715,8 @@ export interface Page {
       label: string;
       customId?: string | null;
     };
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    richText?: LexicalRichText<LexicalNodes_3C30F578> | null;
+    description?: LexicalRichText<LexicalNodes_3C30F578> | null;
     primaryButtons?:
       | {
           type?: ('link' | 'npmCta') | null;
@@ -603,36 +746,8 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
-    secondaryHeading?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    secondaryDescription?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    secondaryHeading?: LexicalRichText<LexicalNodes_3C30F578> | null;
+    secondaryDescription?: LexicalRichText<LexicalNodes_3C30F578> | null;
     links?:
       | {
           link: {
@@ -710,21 +825,7 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
-    logoShowcaseLabel?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    logoShowcaseLabel?: LexicalRichText<LexicalNodes_3C30F578> | null;
     logoShowcase?: (string | Media)[] | null;
   };
   layout: (
@@ -790,59 +891,8 @@ export interface Post {
   thumbnail?: (string | null) | Media;
   category: string | Category;
   tags?: string[] | null;
-  excerpt: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  content: (
-    | {
-        bannerFields: {
-          settings?: {
-            /**
-             * Leave blank for system default
-             */
-            theme?: ('light' | 'dark') | null;
-            background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
-          };
-          type?: ('default' | 'success' | 'warning' | 'error') | null;
-          addCheckmark?: boolean | null;
-          content: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
-        };
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'banner';
-      }
-    | BlogContent
-    | Code
-    | BlogMarkdown
-    | MediaBlock
-    | ReusableContentBlock
-  )[];
+  excerpt: LexicalRichText<LexicalNodes_3C30F578>;
+  content: (Banner | BlogContent | Code | BlogMarkdown | MediaBlock | ReusableContentBlock)[];
   relatedPosts?: (string | Post)[] | null;
   /**
    * Select the docs where you want to link to this guide. Be sure to select the correct version.
@@ -895,7 +945,28 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "code".
+ * via the `definition` "Banner".
+ */
+export interface Banner {
+  bannerFields: {
+    settings?: {
+      /**
+       * Leave blank for system default
+       */
+      theme?: ('light' | 'dark') | null;
+      background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
+    };
+    type?: ('default' | 'success' | 'warning' | 'error') | null;
+    addCheckmark?: boolean | null;
+    content: LexicalRichText<LexicalNodes_3C30F578>;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Code".
  */
 export interface Code {
   codeFields: {
@@ -912,21 +983,7 @@ export interface Code {
       | {
           row: number;
           label: string;
-          feature: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
+          feature: LexicalRichText<LexicalNodes_3C30F578>;
           enableLink?: boolean | null;
           link?: {
             type?: ('reference' | 'custom') | null;
@@ -963,21 +1020,7 @@ export interface Code {
 export interface CaseStudy {
   id: string;
   title: string;
-  introContent: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+  introContent: LexicalRichText<LexicalNodes_3C30F578>;
   industry?: string | null;
   useCase?: string | null;
   partner?: (string | null) | Partner;
@@ -1038,7 +1081,7 @@ export interface Partner {
    * Set to inactive to hide this partner from the directory.
    */
   agency_status?: ('active' | 'inactive') | null;
-  hubspotID?: string | null;
+  hubspotId?: string | null;
   logo: string | Media;
   /**
    * This field is managed by the Featured Partners field in the Partner Program collection
@@ -1050,51 +1093,9 @@ export interface Partner {
      * 1600 x 800px recommended
      */
     bannerImage: string | Media;
-    overview: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    services: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    idealProject: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    overview: LexicalRichText<LexicalNodes_3C30F578>;
+    services: LexicalRichText<LexicalNodes_3C30F578>;
+    idealProject: LexicalRichText<LexicalNodes_3C30F578>;
     caseStudy?: (string | null) | CaseStudy;
     /**
      * Contributions to Payload. Must be a valid GitHub issue, pull request, or discussion URL from a repo in the 'payloadcms' organization.
@@ -1190,7 +1191,7 @@ export interface Industry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cardGrid".
+ * via the `definition` "CardGrid".
  */
 export interface CardGrid {
   cardGridFields: {
@@ -1201,21 +1202,7 @@ export interface CardGrid {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     /**
      * These links will be placed above the card grid as calls-to-action.
      */
@@ -1279,7 +1266,7 @@ export interface CardGrid {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "caseStudyCards".
+ * via the `definition` "CaseStudyCards".
  */
 export interface CaseStudyCards {
   caseStudyCardFields?: {
@@ -1293,21 +1280,7 @@ export interface CaseStudyCards {
     pixels?: boolean | null;
     cards?:
       | {
-          richText: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
+          richText: LexicalRichText<LexicalNodes_3C30F578>;
           caseStudy: string | CaseStudy;
           id?: string | null;
         }[]
@@ -1319,7 +1292,7 @@ export interface CaseStudyCards {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "caseStudiesHighlight".
+ * via the `definition` "CaseStudiesHighlight".
  */
 export interface CaseStudiesHighlight {
   caseStudiesHighlightFields: {
@@ -1330,21 +1303,7 @@ export interface CaseStudiesHighlight {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     caseStudies: (string | CaseStudy)[];
   };
   id?: string | null;
@@ -1353,7 +1312,7 @@ export interface CaseStudiesHighlight {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "caseStudyParallax".
+ * via the `definition` "CaseStudyParallax".
  */
 export interface CaseStudyParallax {
   caseStudyParallaxFields?: {
@@ -1390,7 +1349,7 @@ export interface CaseStudyParallax {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "codeFeature".
+ * via the `definition` "CodeFeature".
  */
 export interface CodeFeature {
   codeFeatureFields: {
@@ -1410,21 +1369,7 @@ export interface CodeFeature {
      */
     alignment?: ('contentCode' | 'codeContent') | null;
     heading?: string | null;
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     links?:
       | {
           link: {
@@ -1459,21 +1404,7 @@ export interface CodeFeature {
             | {
                 row: number;
                 label: string;
-                feature: {
-                  root: {
-                    type: string;
-                    children: {
-                      type: any;
-                      version: number;
-                      [k: string]: unknown;
-                    }[];
-                    direction: ('ltr' | 'rtl') | null;
-                    format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                    indent: number;
-                    version: number;
-                  };
-                  [k: string]: unknown;
-                };
+                feature: LexicalRichText<LexicalNodes_3C30F578>;
                 enableLink?: boolean | null;
                 link?: {
                   type?: ('reference' | 'custom') | null;
@@ -1508,7 +1439,7 @@ export interface CodeFeature {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "content".
+ * via the `definition` "Content".
  */
 export interface Content {
   contentFields: {
@@ -1520,67 +1451,11 @@ export interface Content {
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
     useLeadingHeader?: boolean | null;
-    leadingHeader?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    leadingHeader?: LexicalRichText<LexicalNodes_3C30F578>;
     layout?: ('oneColumn' | 'twoColumns' | 'twoThirdsOneThird' | 'halfAndHalf' | 'threeColumns') | null;
-    columnOne: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    columnTwo?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    columnThree?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    columnOne: LexicalRichText<LexicalNodes_3C30F578>;
+    columnTwo?: LexicalRichText<LexicalNodes_3C30F578>;
+    columnThree?: LexicalRichText<LexicalNodes_3C30F578>;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1588,7 +1463,7 @@ export interface Content {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contentGrid".
+ * via the `definition` "ContentGrid".
  */
 export interface ContentGrid {
   contentGridFields?: {
@@ -1601,21 +1476,7 @@ export interface ContentGrid {
     };
     style?: ('gridBelow' | 'sideBySide') | null;
     showNumbers?: boolean | null;
-    content?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    content?: LexicalRichText<LexicalNodes_3C30F578> | null;
     links?:
       | {
           link: {
@@ -1643,21 +1504,7 @@ export interface ContentGrid {
       | null;
     cells?:
       | {
-          content: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
+          content: LexicalRichText<LexicalNodes_3C30F578>;
           id?: string | null;
         }[]
       | null;
@@ -1679,21 +1526,7 @@ export interface FormBlock {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     form: string | Form;
   };
   id?: string | null;
@@ -1707,135 +1540,13 @@ export interface FormBlock {
 export interface Form {
   id: string;
   title: string;
-  fields?:
-    | (
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            defaultValue?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'checkbox';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'country';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'email';
-          }
-        | {
-            message?: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'message';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'number';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            placeholder?: string | null;
-            options?:
-              | {
-                  label: string;
-                  value: string;
-                  id?: string | null;
-                }[]
-              | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'select';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'state';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'text';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'textarea';
-          }
-      )[]
-    | null;
+  fields?: (Checkbox | Country | Email | Message | Number | Select | State | Text | Textarea)[] | null;
   submitButtonLabel?: string | null;
   /**
    * Choose whether to display an on-page message or redirect to a different page after they submit the form.
    */
   confirmationType?: ('message' | 'redirect') | null;
-  confirmationMessage?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  confirmationMessage?: LexicalRichText<LexicalNodes_3C30F578>;
   redirect?: {
     url: string;
   };
@@ -1853,21 +1564,7 @@ export interface Form {
         /**
          * Enter the message that should be sent in this email.
          */
-        message?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
+        message?: LexicalRichText<LexicalNodes_3C30F578> | null;
         id?: string | null;
       }[]
     | null;
@@ -1882,7 +1579,134 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hoverCards".
+ * via the `definition` "Checkbox".
+ */
+export interface Checkbox {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  required?: boolean | null;
+  defaultValue?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'checkbox';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Country".
+ */
+export interface Country {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'country';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Email".
+ */
+export interface Email {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'email';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Message".
+ */
+export interface Message {
+  message?: LexicalRichText<LexicalNodes_3C30F578> | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'message';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Number".
+ */
+export interface Number {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  defaultValue?: number | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'number';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Select".
+ */
+export interface Select {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  defaultValue?: string | null;
+  placeholder?: string | null;
+  options?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'select';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "State".
+ */
+export interface State {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'state';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Text".
+ */
+export interface Text {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  defaultValue?: string | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'text';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Textarea".
+ */
+export interface Textarea {
+  name: string;
+  label?: string | null;
+  width?: number | null;
+  defaultValue?: string | null;
+  required?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textarea';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HoverCards".
  */
 export interface HoverCards {
   hoverCardsFields: {
@@ -1894,21 +1718,7 @@ export interface HoverCards {
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
     hideBackground?: boolean | null;
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     cards?:
       | {
           title: string;
@@ -1942,7 +1752,7 @@ export interface HoverCards {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hoverHighlights".
+ * via the `definition` "HoverHighlights".
  */
 export interface HoverHighlights {
   hoverHighlightsFields: {
@@ -2011,7 +1821,7 @@ export interface HoverHighlights {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "linkGrid".
+ * via the `definition` "LinkGrid".
  */
 export interface LinkGrid {
   linkGridFields?: {
@@ -2054,7 +1864,7 @@ export interface LinkGrid {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "logoGrid".
+ * via the `definition` "LogoGrid".
  */
 export interface LogoGrid {
   logoGridFields: {
@@ -2065,21 +1875,7 @@ export interface LogoGrid {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     enableLink?: boolean | null;
     link?: {
       type?: ('reference' | 'custom') | null;
@@ -2114,7 +1910,7 @@ export interface LogoGrid {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaBlock".
+ * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
   mediaBlockFields: {
@@ -2127,21 +1923,7 @@ export interface MediaBlock {
     };
     position?: ('default' | 'wide') | null;
     media: string | Media;
-    caption?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    caption?: LexicalRichText<LexicalNodes_3C30F578> | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -2149,7 +1931,7 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaContent".
+ * via the `definition` "MediaContent".
  */
 export interface MediaContent {
   mediaContentFields: {
@@ -2168,21 +1950,7 @@ export interface MediaContent {
      * Choose how wide the media should be.
      */
     mediaWidth?: ('stretch' | 'fit') | null;
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     enableLink?: boolean | null;
     link?: {
       type?: ('reference' | 'custom') | null;
@@ -2217,7 +1985,7 @@ export interface MediaContent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mediaContentAccordion".
+ * via the `definition` "MediaContentAccordion".
  */
 export interface MediaContentAccordion {
   mediaContentAccordionFields?: {
@@ -2245,21 +2013,7 @@ export interface MediaContentAccordion {
            */
           background?: ('none' | 'gradient' | 'scanlines') | null;
           mediaLabel: string;
-          mediaDescription: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
+          mediaDescription: LexicalRichText<LexicalNodes_3C30F578>;
           enableLink?: boolean | null;
           link?: {
             type?: ('reference' | 'custom') | null;
@@ -2292,7 +2046,7 @@ export interface MediaContentAccordion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pricing".
+ * via the `definition` "Pricing".
  */
 export interface Pricing {
   pricingFields?: {
@@ -2350,7 +2104,7 @@ export interface Pricing {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reusableContentBlock".
+ * via the `definition` "ReusableContentBlock".
  */
 export interface ReusableContentBlock {
   reusableContentBlockFields: {
@@ -2376,37 +2130,7 @@ export interface ReusableContent {
   id: string;
   title: string;
   layout: (
-    | {
-        bannerFields: {
-          settings?: {
-            /**
-             * Leave blank for system default
-             */
-            theme?: ('light' | 'dark') | null;
-            background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
-          };
-          type?: ('default' | 'success' | 'warning' | 'error') | null;
-          addCheckmark?: boolean | null;
-          content: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
-        };
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'banner';
-      }
+    | Banner
     | BlogContent
     | BlogMarkdown
     | Callout
@@ -2451,21 +2175,7 @@ export interface ComparisonTableType {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    introContent?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    introContent?: LexicalRichText<LexicalNodes_3C30F578> | null;
     style?: ('default' | 'centered') | null;
     header: {
       tableTitle: string;
@@ -2492,38 +2202,10 @@ export interface ComparisonTableType {
  * via the `definition` "ExampleTabsBlock".
  */
 export interface ExampleTabsBlock {
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  content?: LexicalRichText<LexicalNodes_3C30F578> | null;
   tabs: {
     label: string;
-    content?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    content?: LexicalRichText<LexicalNodes_3C30F578> | null;
     examples: (CodeExampleBlock | MediaExampleBlock)[];
     id?: string | null;
   }[];
@@ -2533,7 +2215,7 @@ export interface ExampleTabsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "slider".
+ * via the `definition` "Slider".
  */
 export interface Slider {
   sliderFields: {
@@ -2544,21 +2226,7 @@ export interface Slider {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    introContent?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    introContent?: LexicalRichText<LexicalNodes_3C30F578> | null;
     links?:
       | {
           link: {
@@ -2623,7 +2291,7 @@ export interface Slider {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "statement".
+ * via the `definition` "Statement".
  */
 export interface Statement {
   statementFields: {
@@ -2634,21 +2302,7 @@ export interface Statement {
       theme?: ('light' | 'dark') | null;
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+    richText: LexicalRichText<LexicalNodes_3C30F578>;
     links?:
       | {
           link: {
@@ -2699,21 +2353,7 @@ export interface StepsBlock {
       background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
     };
     steps: {
-      content: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      };
+      content: LexicalRichText<LexicalNodes_3C30F578>;
       media?: (string | null) | Media;
       id?: string | null;
     }[];
@@ -2724,7 +2364,7 @@ export interface StepsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "stickyHighlights".
+ * via the `definition` "StickyHighlights".
  */
 export interface StickyHighlights {
   stickyHighlightsFields?: {
@@ -2737,21 +2377,7 @@ export interface StickyHighlights {
     };
     highlights?:
       | {
-          richText: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          };
+          richText: LexicalRichText<LexicalNodes_3C30F578>;
           enableLink?: boolean | null;
           link?: {
             type?: ('reference' | 'custom') | null;
@@ -2779,21 +2405,7 @@ export interface StickyHighlights {
             | {
                 row: number;
                 label: string;
-                feature: {
-                  root: {
-                    type: string;
-                    children: {
-                      type: any;
-                      version: number;
-                      [k: string]: unknown;
-                    }[];
-                    direction: ('ltr' | 'rtl') | null;
-                    format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                    indent: number;
-                    version: number;
-                  };
-                  [k: string]: unknown;
-                };
+                feature: LexicalRichText<LexicalNodes_3C30F578>;
                 enableLink?: boolean | null;
                 link?: {
                   type?: ('reference' | 'custom') | null;
@@ -2833,21 +2445,7 @@ export interface StickyHighlights {
  */
 export interface Doc {
   id: string;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  content?: LexicalRichText<LexicalNodes_B3DBC2E4> | null;
   title: string;
   description?: string | null;
   keywords?: string | null;
@@ -2910,10 +2508,11 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "link".
+ * via the `definition` "Link".
  */
 export interface Link {
   link: {
@@ -2946,7 +2545,7 @@ export interface Link {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "command".
+ * via the `definition` "Command".
  */
 export interface Command {
   command: string;
@@ -2955,10 +2554,12 @@ export interface Command {
   blockType: 'command';
 }
 /**
+ * Multiple blocks resolve to the `DownloadBlockType` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DownloadBlockType".
+ * via the `definition` "DownloadBlockType_68EBC190".
  */
-export interface DownloadBlockType {
+export interface DownloadBlockType_68EBC190 {
   downloads?:
     | {
         name: string;
@@ -2982,10 +2583,12 @@ export interface DownloadBlockType {
   blockType: 'downloadBlock';
 }
 /**
+ * Multiple blocks resolve to the `LightDarkImageBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LightDarkImageBlock".
+ * via the `definition` "LightDarkImageBlock_6F096CAB".
  */
-export interface LightDarkImageBlock {
+export interface LightDarkImageBlock_6F096CAB {
   srcLight: string;
   srcDark: string;
   alt?: string | null;
@@ -2995,10 +2598,12 @@ export interface LightDarkImageBlock {
   blockType: 'LightDarkImage';
 }
 /**
+ * Multiple blocks resolve to the `PayloadMediaBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PayloadMediaBlock".
+ * via the `definition` "PayloadMediaBlock_B98BF7B5".
  */
-export interface PayloadMediaBlock {
+export interface PayloadMediaBlock_B98BF7B5 {
   media: string | Media;
   caption?: string | null;
   id?: string | null;
@@ -3006,10 +2611,12 @@ export interface PayloadMediaBlock {
   blockType: 'PayloadMedia';
 }
 /**
+ * Multiple blocks resolve to the `TableWithDrawersBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TableWithDrawersBlock".
+ * via the `definition` "TableWithDrawersBlock_DBA1DB72".
  */
-export interface TableWithDrawersBlock {
+export interface TableWithDrawersBlock_DBA1DB72 {
   columns?: string[] | null;
   rows?:
     | {
@@ -3025,20 +2632,24 @@ export interface TableWithDrawersBlock {
   blockType: 'TableWithDrawers';
 }
 /**
+ * Multiple blocks resolve to the `YoutubeBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "YoutubeBlock".
+ * via the `definition` "YoutubeBlock_BD112EEE".
  */
-export interface YoutubeBlock {
+export interface YoutubeBlock_BD112EEE {
   id?: string | null;
   title?: string | null;
   blockName?: string | null;
   blockType: 'YouTube';
 }
 /**
+ * Multiple blocks resolve to the `PillBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PillBlock".
+ * via the `definition` "PillBlock_008E1595".
  */
-export interface PillBlock {
+export interface PillBlock_008E1595 {
   /**
    * E.g., "1. DEFINE WORK" or "2. QUEUE JOBS"
    */
@@ -3048,20 +2659,24 @@ export interface PillBlock {
   blockType: 'Pill';
 }
 /**
+ * Multiple blocks resolve to the `ArrowBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArrowBlock".
+ * via the `definition` "ArrowBlock_11410E69".
  */
-export interface ArrowBlock {
+export interface ArrowBlock_11410E69 {
   direction: 'down' | 'up' | 'left' | 'right';
   id?: string | null;
   blockName?: string | null;
   blockType: 'Arrow';
 }
 /**
+ * Multiple blocks resolve to the `BulletListBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BulletListBlock".
+ * via the `definition` "BulletListBlock_AE6F5703".
  */
-export interface BulletListBlock {
+export interface BulletListBlock_AE6F5703 {
   items: {
     text: string;
     icon: 'check' | 'x';
@@ -3072,10 +2687,12 @@ export interface BulletListBlock {
   blockType: 'BulletList';
 }
 /**
+ * Multiple blocks resolve to the `CardBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CardBlock".
+ * via the `definition` "CardBlock_46CA1B1B".
  */
-export interface CardBlock {
+export interface CardBlock_46CA1B1B {
   title: string;
   description: string;
   /**
@@ -3087,60 +2704,38 @@ export interface CardBlock {
   blockType: 'Card';
 }
 /**
+ * Multiple blocks resolve to the `CardGroupBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CardGroupBlock".
+ * via the `definition` "CardGroupBlock_B6AE197E".
  */
-export interface CardGroupBlock {
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+export interface CardGroupBlock_B6AE197E {
+  content?: LexicalRichText<LexicalNodes_9642494C> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'CardGroup';
 }
 /**
+ * Multiple blocks resolve to the `UploadBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "UploadBlock".
+ * via the `definition` "UploadBlock_A477C89F".
  */
-export interface UploadBlock {
+export interface UploadBlock_A477C89F {
   src: string;
   alt?: string | null;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  caption?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'Upload';
 }
 /**
+ * Multiple blocks resolve to the `RestExamplesBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RestExamplesBlock".
+ * via the `definition` "RestExamplesBlock_E7B4E708".
  */
-export interface RestExamplesBlock {
+export interface RestExamplesBlock_E7B4E708 {
   data?:
     | {
         operation?: string | null;
@@ -3167,21 +2762,7 @@ export interface RestExamplesBlock {
             | number
             | boolean
             | null;
-          drawerContent?: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          } | null;
+          drawerContent?: LexicalRichText<LexicalNodes_F336B350> | null;
         };
         id?: string | null;
       }[]
@@ -3191,65 +2772,61 @@ export interface RestExamplesBlock {
   blockType: 'RestExamples';
 }
 /**
+ * Multiple blocks resolve to the `ResourceBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ResourceBlock".
+ * via the `definition` "ResourceBlock_2EC59281".
  */
-export interface ResourceBlock {
+export interface ResourceBlock_2EC59281 {
   post?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'Resource';
 }
 /**
+ * Multiple blocks resolve to the `SpotlightBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SpotlightBlock".
+ * via the `definition` "SpotlightBlock_02D290C9".
  */
-export interface SpotlightBlock {
+export interface SpotlightBlock_02D290C9 {
   element?: ('h1' | 'h2' | 'h3' | 'p') | null;
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  richText?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'spotlight';
 }
 /**
+ * Multiple blocks resolve to the `VideoBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoBlock".
+ * via the `definition` "VideoBlock_80F6FF19".
  */
-export interface VideoBlock {
+export interface VideoBlock_80F6FF19 {
   url?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'video';
 }
 /**
+ * Multiple blocks resolve to the `BrBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BrBlock".
+ * via the `definition` "BrBlock_A0F59A11".
  */
-export interface BrBlock {
+export interface BrBlock_A0F59A11 {
   ignore?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'br';
 }
 /**
+ * Multiple blocks resolve to the `VideoDrawerBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoDrawerBlock".
+ * via the `definition` "VideoDrawerBlock_04DCF3A0".
  */
-export interface VideoDrawerBlock {
+export interface VideoDrawerBlock_04DCF3A0 {
   id: string | null;
   label: string;
   drawerTitle: string;
@@ -3257,20 +2834,24 @@ export interface VideoDrawerBlock {
   blockType: 'VideoDrawer';
 }
 /**
+ * Multiple blocks resolve to the `CommandLineBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CommandLineBlock".
+ * via the `definition` "CommandLineBlock_3ADB97F5".
  */
-export interface CommandLineBlock {
+export interface CommandLineBlock_3ADB97F5 {
   command?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'commandLine';
 }
 /**
+ * Multiple blocks resolve to the `TemplateCardsBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TemplateCardsBlock".
+ * via the `definition` "TemplateCardsBlock_3E55F70A".
  */
-export interface TemplateCardsBlock {
+export interface TemplateCardsBlock_3E55F70A {
   templates?:
     | {
         name: string;
@@ -3286,35 +2867,25 @@ export interface TemplateCardsBlock {
   blockType: 'templateCards';
 }
 /**
+ * Multiple blocks resolve to the `BannerBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
+ * via the `definition` "BannerBlock_66A9DC2C".
  */
-export interface BannerBlock {
+export interface BannerBlock_66A9DC2C {
   type?: ('alert' | 'default' | 'error' | 'info' | 'success' | 'warning') | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  content?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'Banner';
 }
 /**
+ * Multiple blocks resolve to the `CodeBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
+ * via the `definition` "CodeBlock_CA9B017F".
  */
-export interface CodeBlock {
+export interface CodeBlock_CA9B017F {
   language?:
     | (
         | 'bash'
@@ -3351,8 +2922,8 @@ export interface CommunityHelp {
   id: string;
   title?: string | null;
   communityHelpType?: ('discord' | 'github') | null;
-  githubID?: string | null;
-  discordID?: string | null;
+  githubId?: string | null;
+  discordId?: string | null;
   communityHelpJSON:
     | {
         [k: string]: unknown;
@@ -3382,6 +2953,65 @@ export interface DocsFeedback {
   path: string;
   helpful: number;
   notHelpful: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shares".
+ */
+export interface Share {
+  id: string;
+  /**
+   * Opaque secret segment for `/api/share/[token]` — filled automatically on create.
+   */
+  token?: string | null;
+  resource:
+    | {
+        relationTo: 'posts';
+        value: string | Post;
+      }
+    | {
+        relationTo: 'pages';
+        value: string | Page;
+      }
+    | {
+        relationTo: 'case-studies';
+        value: string | CaseStudy;
+      };
+  /**
+   * Optional. After this instant the share URL responds with 410.
+   */
+  expiresAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: string;
+  team: string;
+  plan: string;
+  externalId: string;
+  status: 'active' | 'past_due' | 'incomplete' | 'incomplete_expired' | 'trialing' | 'succeeded' | 'canceled';
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  cancelAtPeriodEnd?: boolean | null;
+  freeTrial?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams".
+ */
+export interface Team {
+  id: string;
+  name?: string | null;
+  defaultPaymentMethod?: string | null;
+  stripeCustomer?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3515,6 +3145,18 @@ export interface PayloadLockedDocument {
         value: string | Budget;
       } | null)
     | ({
+        relationTo: 'shares';
+        value: string | Share;
+      } | null)
+    | ({
+        relationTo: 'subscriptions';
+        value: string | Subscription;
+      } | null)
+    | ({
+        relationTo: 'teams';
+        value: string | Team;
+      } | null)
+    | ({
         relationTo: 'forms';
         value: string | Form;
       } | null)
@@ -3600,8 +3242,8 @@ export interface CaseStudiesSelect<T extends boolean = true> {
 export interface CommunityHelpSelect<T extends boolean = true> {
   title?: T;
   communityHelpType?: T;
-  githubID?: T;
-  discordID?: T;
+  githubId?: T;
+  discordId?: T;
   communityHelpJSON?: T;
   introDescription?: T;
   slug?: T;
@@ -3649,6 +3291,7 @@ export interface DocsFeedbackSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  contentSha256?: T;
   alt?: T;
   darkModeFallback?: T;
   updatedAt?: T;
@@ -3972,7 +3615,7 @@ export interface PartnersSelect<T extends boolean = true> {
   email?: T;
   slug?: T;
   agency_status?: T;
-  hubspotID?: T;
+  hubspotId?: T;
   logo?: T;
   featured?: T;
   topContributor?: T;
@@ -4054,6 +3697,44 @@ export interface RegionsSelect<T extends boolean = true> {
 export interface BudgetsSelect<T extends boolean = true> {
   name?: T;
   value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shares_select".
+ */
+export interface SharesSelect<T extends boolean = true> {
+  token?: T;
+  resource?: T;
+  expiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions_select".
+ */
+export interface SubscriptionsSelect<T extends boolean = true> {
+  team?: T;
+  plan?: T;
+  externalId?: T;
+  status?: T;
+  currentPeriodStart?: T;
+  currentPeriodEnd?: T;
+  cancelAtPeriodEnd?: T;
+  freeTrial?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams_select".
+ */
+export interface TeamsSelect<T extends boolean = true> {
+  name?: T;
+  defaultPaymentMethod?: T;
+  stripeCustomer?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4390,21 +4071,7 @@ export interface MainMenu {
               };
               featuredLink?: {
                 tag?: string | null;
-                label?: {
-                  root: {
-                    type: string;
-                    children: {
-                      type: any;
-                      version: number;
-                      [k: string]: unknown;
-                    }[];
-                    direction: ('ltr' | 'rtl') | null;
-                    format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                    indent: number;
-                    version: number;
-                  };
-                  [k: string]: unknown;
-                } | null;
+                label?: LexicalRichText<LexicalNodes_3C30F578> | null;
                 links?:
                   | {
                       link: {
@@ -4495,44 +4162,8 @@ export interface MainMenu {
 export interface GetStarted {
   id: string;
   heading?: string | null;
-  tabs?:
-    | {
-        label: string;
-        content: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        };
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'richTextBlock';
-      }[]
-    | null;
-  sidebar?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  tabs?: RichTextBlock[] | null;
+  sidebar?: LexicalRichText<LexicalNodes_3C30F578> | null;
   sidebarLinks?:
     | {
         link: {
@@ -4571,6 +4202,17 @@ export interface GetStarted {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  label: string;
+  content: LexicalRichText<LexicalNodes_3C30F578>;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richTextBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partner-program".
  */
 export interface PartnerProgram {
@@ -4580,21 +4222,7 @@ export interface PartnerProgram {
    */
   contactForm: string | Form;
   hero?: {
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    richText?: LexicalRichText<LexicalNodes_3C30F578> | null;
     breadcrumbBarLinks?:
       | {
           link: {
@@ -4739,6 +4367,100 @@ export interface TopBar {
     label: string;
     customId?: string | null;
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Preferred place for integration secrets after deploy (no redeploy). Overrides Worker **NEXT_PRIVATE_*** / **CRON_SECRET** when set. Use one-click Worker env only for bootstrap or secrets that must stay outside Admin.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integration-secrets".
+ */
+export interface IntegrationSecret {
+  id: string;
+  /**
+   * Overrides `NEXT_PRIVATE_HUBSPOT_PORTAL_KEY` when set.
+   */
+  hubspotPortalKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_RECAPTCHA_SECRET_KEY` when set.
+   */
+  recaptchaSecretKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_ALGOLIA_API_KEY` when set.
+   */
+  algoliaAdminApiKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_REVALIDATION_KEY` when set.
+   */
+  revalidationKey?: string | null;
+  /**
+   * Overrides `NEXT_PRIVATE_CRON_KEY` / `CRON_SECRET` when set.
+   */
+  cronSecret?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Preferred place for site URLs and public analytics/search Ids after deploy — no Worker redeploy. Overrides environment variables when set. Same keys as optional **NEXT_PUBLIC_*** Worker vars; use Globals for day-to-day edits. This global is readable anonymously for public pages; keep secrets in **Integration secrets**.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-site-settings".
+ */
+export interface PublicSiteSetting {
+  id: string;
+  /**
+   * Overrides `NEXT_PUBLIC_SITE_URL` / metadata base when set.
+   */
+  siteUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_CMS_URL` for media and API links when set.
+   */
+  cmsUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_CLOUD_CMS_URL` for Cloud onboarding when set.
+   */
+  cloudCmsUrl?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_GA_MEASUREMENT_ID` when set.
+   */
+  gaMeasurementId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_GTM_MEASUREMENT_ID` when set.
+   */
+  gtmContainerId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_FACEBOOK_PIXEL_ID` when set.
+   */
+  facebookPixelId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ENABLE_BETA_DOCS` when checked.
+   */
+  enableBetaDocs?: boolean | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ENABLE_LEGACY_DOCS` when checked.
+   */
+  enableLegacyDocs?: boolean | null;
+  /**
+   * Overrides `NEXT_PUBLIC_NEWSLETTER_FORM_ID` when set.
+   */
+  newsletterFormId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` when set.
+   */
+  recaptchaSiteKey?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_ID` when set.
+   */
+  algoliaApplicationId?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME` when set.
+   */
+  algoliaCommunityIndexName?: string | null;
+  /**
+   * Overrides `NEXT_PUBLIC_ALGOLIA_DOCSEARCH_KEY` for the header doc search.
+   */
+  algoliaDocsearchKey?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -5011,10 +4733,608 @@ export interface TopBarSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integration-secrets_select".
+ */
+export interface IntegrationSecretsSelect<T extends boolean = true> {
+  hubspotPortalKey?: T;
+  recaptchaSecretKey?: T;
+  algoliaAdminApiKey?: T;
+  revalidationKey?: T;
+  cronSecret?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "public-site-settings_select".
+ */
+export interface PublicSiteSettingsSelect<T extends boolean = true> {
+  siteUrl?: T;
+  cmsUrl?: T;
+  cloudCmsUrl?: T;
+  gaMeasurementId?: T;
+  gtmContainerId?: T;
+  facebookPixelId?: T;
+  enableBetaDocs?: T;
+  enableLegacyDocs?: T;
+  newsletterFormId?: T;
+  recaptchaSiteKey?: T;
+  algoliaApplicationId?: T;
+  algoliaCommunityIndexName?: T;
+  algoliaDocsearchKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-overview_widget".
+ */
+export interface AnalyticsOverviewWidget {
+  data?: {
+    period?: ('7days' | '30days' | '90days') | null;
+  };
+  width: 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "top-pages_widget".
+ */
+export interface TopPagesWidget {
+  data?: {
+    period?: ('7days' | '30days' | '90days') | null;
+  };
+  width: 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "active-users_widget".
+ */
+export interface ActiveUsersWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "channel-groups_widget".
+ */
+export interface ChannelGroupsWidget {
+  data?: {
+    period?: ('7days' | '30days' | '90days') | null;
+  };
+  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SpotlightBlock".
+ */
+export interface SpotlightBlock {
+  id: string;
+  blockType: 'spotlight';
+  element?: ('h1' | 'h2' | 'h3' | 'p') | null;
+  richText?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  id: string;
+  blockType: 'video';
+  url?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BrBlock".
+ */
+export interface BrBlock {
+  id: string;
+  blockType: 'br';
+  ignore?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  id: string;
+  blockType: 'Banner';
+  type?: ('alert' | 'default' | 'error' | 'info' | 'success' | 'warning') | null;
+  content?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoDrawerBlock".
+ */
+export interface VideoDrawerBlock {
+  id: string;
+  blockType: 'VideoDrawer';
+  label: string;
+  drawerTitle: string;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TemplateCardsBlock".
+ */
+export interface TemplateCardsBlock {
+  id: string;
+  blockType: 'templateCards';
+  templates?:
+    | {
+        name: string;
+        description: string;
+        image: string;
+        slug: string;
+        order: number;
+        id?: string | null;
+      }[]
+    | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  id: string;
+  blockType: 'Code';
+  language?:
+    | (
+        | 'bash'
+        | 'css'
+        | 'dockerfile'
+        | 'env'
+        | 'graphql'
+        | 'html'
+        | 'http'
+        | 'js'
+        | 'json'
+        | 'jsx'
+        | 'plaintext'
+        | 'scss'
+        | 'sh'
+        | 'text'
+        | 'ts'
+        | 'tsx'
+        | 'vue'
+        | 'yaml'
+        | 'yml'
+      )
+    | null;
+  code?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DownloadBlockType".
+ */
+export interface DownloadBlockType {
+  id: string;
+  blockType: 'downloadBlock';
+  downloads?:
+    | {
+        name: string;
+        /**
+         * The file to download
+         */
+        file: string | Media;
+        /**
+         * Thumbnail for the download. Defaults to file for images
+         */
+        thumbnail?: (string | null) | Media;
+        thumbnailAppearance: 'cover' | 'contain';
+        background: 'auto' | 'light' | 'dark';
+        copyToClipboard?: boolean | null;
+        copyToClipboardText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommandLineBlock".
+ */
+export interface CommandLineBlock {
+  id: string;
+  blockType: 'commandLine';
+  command?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LexicalUploadFields_F19C4182".
+ */
+export interface LexicalUploadFields_F19C4182 {
+  enableLink?: boolean | null;
+  link?: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'case-studies';
+          value: string | CaseStudy;
+        } | null);
+    url?: string | null;
+    customId?: string | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "YoutubeBlock".
+ */
+export interface YoutubeBlock {
+  id: string;
+  blockType: 'YouTube';
+  title?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LightDarkImageBlock".
+ */
+export interface LightDarkImageBlock {
+  id: string;
+  blockType: 'LightDarkImage';
+  srcLight: string;
+  srcDark: string;
+  alt?: string | null;
+  caption?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PayloadMediaBlock".
+ */
+export interface PayloadMediaBlock {
+  id: string;
+  blockType: 'PayloadMedia';
+  media: string | Media;
+  caption?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "UploadBlock".
+ */
+export interface UploadBlock {
+  id: string;
+  blockType: 'Upload';
+  src: string;
+  alt?: string | null;
+  caption?: LexicalRichText<LexicalNodes_FA07DFAB> | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RestExamplesBlock".
+ */
+export interface RestExamplesBlock {
+  id: string;
+  blockType: 'RestExamples';
+  data?:
+    | {
+        operation?: string | null;
+        method?: string | null;
+        path?: string | null;
+        description?: string | null;
+        example?: {
+          slug?: string | null;
+          req?:
+            | {
+                [k: string]: unknown;
+              }
+            | unknown[]
+            | string
+            | number
+            | boolean
+            | null;
+          res?:
+            | {
+                [k: string]: unknown;
+              }
+            | unknown[]
+            | string
+            | number
+            | boolean
+            | null;
+          drawerContent?: LexicalRichText<LexicalNodes_F336B350> | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ResourceBlock".
+ */
+export interface ResourceBlock {
+  id: string;
+  blockType: 'Resource';
+  post?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TableWithDrawersBlock".
+ */
+export interface TableWithDrawersBlock {
+  id: string;
+  blockType: 'TableWithDrawers';
+  columns?: string[] | null;
+  rows?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PillBlock".
+ */
+export interface PillBlock {
+  id: string;
+  blockType: 'Pill';
+  /**
+   * E.g., "1. DEFINE WORK" or "2. QUEUE JOBS"
+   */
+  text: string;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArrowBlock".
+ */
+export interface ArrowBlock {
+  id: string;
+  blockType: 'Arrow';
+  direction: 'down' | 'up' | 'left' | 'right';
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BulletListBlock".
+ */
+export interface BulletListBlock {
+  id: string;
+  blockType: 'BulletList';
+  items: {
+    text: string;
+    icon: 'check' | 'x';
+    id?: string | null;
+  }[];
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardBlock".
+ */
+export interface CardBlock {
+  id: string;
+  blockType: 'Card';
+  title: string;
+  description: string;
+  /**
+   * URL the card links to, e.g. /docs/authentication/overview
+   */
+  link: string;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGroupBlock".
+ */
+export interface CardGroupBlock {
+  id: string;
+  blockType: 'CardGroup';
+  content?: LexicalRichText<LexicalNodes_9642494C> | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
   [k: string]: unknown;
+}
+
+/** @internal Core Lexical types — see @payloadcms/richtext-lexical. */
+export type LexicalElementFormat = 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+export type LexicalElementDirection = ('ltr' | 'rtl') | null;
+
+export interface SerializedLexicalElementBase<TChildren> {
+  children: TChildren[];
+  direction: LexicalElementDirection;
+  format: LexicalElementFormat;
+  indent: number;
+  textFormat?: number;
+  textStyle?: string;
+  version: number;
+}
+
+export type LexicalTextMode = 'normal' | 'token' | 'segmented';
+
+export interface SerializedTextNode {
+  type: 'text';
+  detail: number;
+  format: number;
+  mode: LexicalTextMode;
+  style: string;
+  text: string;
+  version: number;
+}
+
+export interface SerializedTabNode {
+  type: 'tab';
+  detail: number;
+  format: number;
+  mode: LexicalTextMode;
+  style: string;
+  text: string;
+  version: number;
+}
+
+export interface SerializedLineBreakNode {
+  type: 'linebreak';
+  version: number;
+}
+
+export interface SerializedParagraphNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'paragraph';
+  textFormat: number;
+  textStyle: string;
+}
+
+export type SerializedBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
+  type: 'block';
+  format: LexicalElementFormat;
+  version: number;
+  fields: { id: string; blockName?: string | null } & Omit<TFields, 'id' | 'blockName'>;
+} : never;
+export type SerializedInlineBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
+  type: 'inlineBlock';
+  version: number;
+  fields: { id: string } & Omit<TFields, 'id'>;
+} : never;
+
+export interface SerializedHorizontalRuleNode {
+  type: 'horizontalrule';
+  version: number;
+}
+
+export type SerializedUploadNode<TSlugs extends keyof Config['collections'], TFields = { [k: string]: unknown }> = {
+  type: 'upload';
+  format: LexicalElementFormat;
+  id: string;
+  version: number;
+  fields: TFields;
+} & {
+  [TSlug in TSlugs]: {
+    relationTo: TSlug;
+    value: number | string | Config['collections'][TSlug];
+  };
+}[TSlugs];
+
+export interface SerializedQuoteNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'quote';
+}
+
+export type SerializedRelationshipNode<TSlugs extends keyof Config['collections']> = {
+  type: 'relationship';
+  format: LexicalElementFormat;
+  version: number;
+} & {
+  [TSlug in TSlugs]: {
+    relationTo: TSlug;
+    value: number | string | Config['collections'][TSlug];
+  };
+}[TSlugs];
+
+export interface LexicalLinkFields {
+  [k: string]: unknown;
+  doc?: {
+    relationTo: string;
+    value: Config['db']['defaultIDType'] | { [k: string]: unknown; id: Config['db']['defaultIDType'] };
+  } | null;
+  linkType: 'custom' | 'internal';
+  newTab: boolean;
+  url?: string;
+}
+export interface SerializedLinkNode<TChildren, TFields = LexicalLinkFields> extends SerializedLexicalElementBase<TChildren> {
+  type: 'link';
+  fields: TFields;
+  id?: string;
+}
+export interface SerializedAutoLinkNode<TChildren, TFields = LexicalLinkFields> extends SerializedLexicalElementBase<TChildren> {
+  type: 'autolink';
+  fields: TFields;
+}
+
+export interface SerializedListNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'list';
+  checked?: boolean;
+  listType: 'number' | 'bullet' | 'check';
+  start: number;
+  tag: 'ul' | 'ol';
+}
+
+export interface SerializedListItemNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'listitem';
+  checked?: boolean;
+  value: number;
+}
+
+export interface SerializedHeadingNode<
+  TChildren,
+  TTag extends 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6',
+> extends SerializedLexicalElementBase<TChildren> {
+  type: 'heading';
+  tag: TTag;
+}
+
+/** Shape of a Lexical `richText` field. */
+export interface LexicalRichText<TNode> {
+  root: {
+    children: TNode[];
+    direction: LexicalElementDirection;
+    format: LexicalElementFormat;
+    indent: number;
+    type: 'root';
+    version: number;
+  };
+}
+
+export interface SerializedTableNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'table';
+  colWidths?: number[];
+  frozenColumnCount?: number;
+  frozenRowCount?: number;
+  rowStriping?: boolean;
+}
+export interface SerializedTableRowNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'tablerow';
+  height?: number;
+}
+export interface SerializedTableCellNode<TChildren> extends SerializedLexicalElementBase<TChildren> {
+  type: 'tablecell';
+  backgroundColor?: string | null;
+  colSpan?: number;
+  headerState: number;
+  rowSpan?: number;
+  verticalAlign?: string;
+  width?: number;
 }
 
 

@@ -71,8 +71,7 @@ export const CaseStudies: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: [...CASE_STUDY_LAYOUT_BLOCK_SLUGS],
-      blocks: [],
+      blocks: [...CASE_STUDY_LAYOUT_BLOCK_SLUGS],
     },
     slugField(),
     {

@@ -30,7 +30,7 @@ export const ResetPassword: React.FC = () => {
         })
       } catch (err: unknown) {
           const error = err instanceof Error ? err : new Error(String(err))
-        throw new Error(e.message)
+        throw new Error(error.message)
       }
     },
     [resetPassword, token],

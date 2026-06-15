@@ -38,10 +38,10 @@ export const createDraftProject = async ({
     const draftProject: Partial<Project> = {
       name: projectName || repo?.name || 'Untitled Project',
       defaultDomain: undefined,
-      installID: installID ? installID.toString() : undefined,
+      installId: installID ? installID.toString() : undefined,
       makePrivate,
       repositoryFullName: repo?.full_name,
-      repositoryID: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
+      repositoryId: repo?.id ? repo.id.toString() : undefined, // only applies to the `import` flow
       repositoryName: repo?.name,
       team: teamID,
       template: templateID,
@@ -58,18 +58,21 @@ export const createDraftProject = async ({
       method: 'POST',
     })
 
-    const { doc: project, errors: projectErrs } = await projectReq.json()
+    const { doc: project, errors: projectErrs } = (await projectReq.json()) as {
+      doc?: Project
+      errors?: { message: string }[]
+    }
 
     if (projectReq.ok) {
       await revalidateCache({
         tag: 'projects',
       })
 
-      if (typeof onSubmit === 'function') {
+      if (typeof onSubmit === 'function' && project) {
         await onSubmit(project)
       }
     } else {
-      throw new Error(projectErrs[0].message)
+      throw new Error(projectErrs?.[0]?.message ?? 'Something went wrong')
     }
   } catch (err: unknown) {
     console.error(err) // eslint-disable-line no-console

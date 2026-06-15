@@ -13,7 +13,7 @@
  * ```
  */
 
-import { getPayload } from 'payload'
+import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import type { SetupIntentResponse, SubscriptionResponse } from '@root/plugins/payments'
 import { getPaymentProvider } from '@root/plugins/payments'
 import {

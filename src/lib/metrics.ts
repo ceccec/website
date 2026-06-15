@@ -245,18 +245,18 @@ export const databaseMetrics = {
 
     metrics.recordHistogram('db_query_duration_ms', duration, {
       query_type: queryType,
-      collection,
+      collection: collection ?? 'unknown',
       status: success ? 'success' : 'error',
     })
 
     metrics.incrementCounter('db_queries_total', 1, {
       query_type: queryType,
-      collection,
+      collection: collection ?? 'unknown',
       status: success ? 'success' : 'error',
     })
   },
 
-  private getQueryType(query: string): string {
+  getQueryType(query: string): string {
     if (!query) return 'unknown'
     const firstWord = query.trim().split(/\s+/)[0].toUpperCase()
     return ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CALL'].includes(firstWord)

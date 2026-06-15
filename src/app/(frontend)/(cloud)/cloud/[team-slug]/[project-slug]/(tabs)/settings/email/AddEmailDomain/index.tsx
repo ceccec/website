@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 
 import classes from './index.module.scss'
 
-const generateUUId = () => {
+const generateUUID = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
@@ -23,7 +23,7 @@ export const AddEmailDomain: React.FC<{
   environmentSlug: string
   project: Project
 }> = ({ environmentSlug, project }) => {
-  const [fieldKey, setFieldKey] = React.useState(generateUUId())
+  const [fieldKey, setFieldKey] = React.useState(generateUUID())
 
   const projectId = project?.id
   const projectEmailDomains = project?.customEmailDomains
@@ -62,7 +62,7 @@ export const AddEmailDomain: React.FC<{
 
           if (req.status === 200) {
             // reloadProject()
-            setFieldKey(generateUUId())
+            setFieldKey(generateUUID())
             toast.success('Domain added successfully.')
           } else {
             const body = await req.json()
@@ -74,7 +74,7 @@ export const AddEmailDomain: React.FC<{
           console.error(e) // eslint-disable-line no-console
         }
       } else {
-        setFieldKey(generateUUId())
+        setFieldKey(generateUUID())
         toast.error('Domain already exists.')
       }
     },

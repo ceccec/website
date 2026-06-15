@@ -1,4 +1,4 @@
-import algoliasearch from 'algoliasearch'
+import { algoliasearch } from 'algoliasearch'
 
 const {
   NEXT_PRIVATE_ALGOLIA_API_KEY,
@@ -12,8 +12,6 @@ const apiKey = NEXT_PRIVATE_ALGOLIA_API_KEY || ''
 const indexName = NEXT_PUBLIC_ALGOLIA_CH_INDEX_NAME || ''
 
 const client = algoliasearch(appId, apiKey)
-
-const index = client.initIndex(indexName)
 
 interface DiscordDoc {
   author: string
@@ -152,6 +150,10 @@ export const syncToAlgolia = async (): Promise<void> => {
 
   const records = [...discordDocs, ...githubDocs]
 
-  await index.saveObjects(records).wait()
+  await client.saveObjects({
+    indexName,
+    objects: records as unknown as Record<string, unknown>[],
+    waitForTasks: true,
+  })
 }
 

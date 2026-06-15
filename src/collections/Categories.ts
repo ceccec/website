@@ -64,10 +64,7 @@ export const Categories: CollectionConfig = {
       on: 'category',
     },
   ],
-  forceSelect: {
-    name: true,
-    slug: true,
-  },
+  select: ({ select }) => (select ? { ...select, name: true, slug: true } : select),
   hooks: {
     afterChange: [
       ({ doc, previousDoc }) => {

@@ -9,7 +9,7 @@ import { Breadcrumbs } from '@components/Breadcrumbs/index'
 import { Gutter } from '@components/Gutter/index'
 import { Heading } from '@components/Heading/index'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
-import { uuid as generateUUId } from '@root/utilities/uuid'
+import { uuid as generateUUID } from '@root/utilities/uuid'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 
@@ -44,7 +44,7 @@ export default async () => {
     })
   }
 
-  const uuid = generateUUId()
+  const uuid = generateUUID()
 
   return (
     <Fragment>

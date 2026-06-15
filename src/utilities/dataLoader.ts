@@ -18,16 +18,16 @@
  *     .find()
  */
 
-import type { TypedLocale, Where } from 'payload'
+import type { CollectionSlug, JoinQuery, TypedLocale, Where } from 'payload'
 
-import { resolvePayloadLocale } from '@root/i18n/payloadLocale'
+import { type PayloadLocale, resolvePayloadLocale } from '@root/i18n/payloadLocale'
 import { getPayload } from '@root/plugins/payload-runtime/getPayload'
 import { draftMode } from 'next/headers'
 
 export type DataLoaderContext = {
   depth?: number
   draft?: boolean
-  locale?: TypedLocale
+  locale?: PayloadLocale
 }
 
 /** Builder for data loading operations. Fluent API with optional cache/revalidation support. */
@@ -37,7 +37,7 @@ export class DataLoaderBuilder {
   private _draft: boolean | undefined
   private _joins?: Record<string, any>
   private _limit?: number
-  private _locale: TypedLocale | undefined
+  private _locale: PayloadLocale | undefined
   private _overrideAccess: boolean = false
   private _select?: Record<string, boolean>
   private _sort?: string | string[]
@@ -53,7 +53,7 @@ export class DataLoaderBuilder {
   }
 
   /** Resolve locale (context > arg > default). */
-  private async resolveLocale(localeArg?: TypedLocale): Promise<TypedLocale> {
+  private async resolveLocale(localeArg?: PayloadLocale): Promise<PayloadLocale> {
     if (localeArg) {return localeArg}
     if (this.context?.locale) {return this.context.locale}
     return resolvePayloadLocale()
@@ -72,44 +72,44 @@ export class DataLoaderBuilder {
   }
 
   /** Execute multi-doc query. */
-  async find<T = any>(localeArg?: TypedLocale): Promise<T[]> {
+  async find<T = any>(localeArg?: PayloadLocale): Promise<T[]> {
     const locale = await this.resolveLocale(localeArg)
     const draft = await this.resolveDraft()
     const payload = await getPayload()
 
     const result = await payload.find({
-      collection: this._collection,
+      collection: this._collection as CollectionSlug,
       depth: this._depth,
       draft,
       limit: this._limit ?? 300,
-      locale,
+      locale: locale as TypedLocale,
       overrideAccess: this._overrideAccess,
       select: this._select,
       where: this._where,
       ...(this._sort && { sort: this._sort }),
-      ...(this._joins && { joins: this._joins }),
+      ...(this._joins && { joins: this._joins as JoinQuery<CollectionSlug> }),
     })
 
     return result.docs as T[]
   }
 
   /** Execute single-doc query. */
-  async findOne<T = any>(localeArg?: TypedLocale): Promise<T | undefined> {
+  async findOne<T = any>(localeArg?: PayloadLocale): Promise<T | undefined> {
     const locale = await this.resolveLocale(localeArg)
     const draft = await this.resolveDraft()
     const payload = await getPayload()
 
     const result = await payload.find({
-      collection: this._collection,
+      collection: this._collection as CollectionSlug,
       depth: this._depth,
       draft,
       limit: 1,
-      locale,
+      locale: locale as TypedLocale,
       overrideAccess: this._overrideAccess,
       select: this._select,
       where: this._where,
       ...(this._sort && { sort: this._sort }),
-      ...(this._joins && { joins: this._joins }),
+      ...(this._joins && { joins: this._joins as JoinQuery<CollectionSlug> }),
     })
 
     return (result.docs[0] as T) ?? undefined

@@ -20,7 +20,7 @@ interface UpdateRolesConfirmationFormProps {
   onRolesUpdated: (newRoles: ('admin' | 'owner' | 'user')[]) => void
   originalRoles: ('admin' | 'owner' | 'user')[][]
   selectedMember: Member
-  setRoles: string[]
+  setRoles: React.Dispatch<React.SetStateAction<('admin' | 'owner' | 'user')[][]>>
   team: Team
   user: User
 }

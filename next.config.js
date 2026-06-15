@@ -139,6 +139,11 @@ const nextConfig = withBundleAnalyzer({
       {
         pathname: '/api/media/file/**',
       },
+      {
+        // Dynamically-generated OG thumbnails (e.g. video posts with `dynamicThumbnail`). The query
+        // (`?type=…&title=…`) varies per post, so match the pathname and omit `search` to allow any.
+        pathname: '/api/og',
+      },
     ],
     remotePatterns: [
       ...localhost,

@@ -1,7 +1,14 @@
-@use '~@payloadcms/ui/scss';
+@use '~@payloadcms/ui/scss' as *;
 
 .refresh-docs-button {
-  @extend %btn-reset;
+  // Payload 4 removed the %btn-reset placeholder; inline the equivalent reset.
+  appearance: none;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
   padding-top: base(0.75);
   cursor: pointer;
 
